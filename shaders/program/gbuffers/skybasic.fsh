@@ -5,18 +5,18 @@ uniform mat4 gbufferModelView;
 uniform vec3 fogColor;
 uniform vec3 skyColor;
 
-float fogify(float x, float w) {
-	return w / fma(x, x, w);
-}
-
-vec3 calcSkyColor(vec3 pos) {
-	float upDot = dot(pos, gbufferModelView[1].xyz);
-	return mix(skyColor, fogColor * sRGB_to_ACEScg, fogify(max(upDot, 0.0), 0.25));
-}
+#include "/lib/calculate_sky.glsl"
 
 void main() {
-	vec3 skyColor = stars.a > 0.5 ? stars.rgb : calcSkyColor(normalize(projectInverse(vec3(position.xy / vec2(viewWidth, viewHeight) * 2 - 1, 1))));
-	
+	// TODO: fix
+	vec3 skyColorProcessed = skyColor;
+	#ifdef GAMMA_CORRECT_PRE
+        // linearize albedo
+        skyColorProcessed = gammaCorrection(skyColorProcessed, GAMMA);
+    #endif
+	// vec3 skyColor = stars.a > 0.5 ? stars.rgb : calcSkyColor(normalize(projectInverse(vec3(position.xy / vec2(viewWidth, viewHeight) * 2 - 1, 1))));
+	vec3 skyColor = stars.a > 0.5 ? stars.rgb : skyColorProcessed * sRGB_to_ACEScg;
+
 	diffuseBuffer = opaque(skyColor);
 	normalBuffer = opaque(normal);
 	lightmapBuffer = vec4(light, 0);

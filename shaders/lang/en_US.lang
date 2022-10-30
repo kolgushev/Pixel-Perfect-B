@@ -134,9 +134,39 @@ screen.COLORS=Colors
         option.COLORS_CONTRAST_BRIGHT_BIAS=Contrast Lightness Bias
         
         screen.COLORS_SATURATION_WEIGHTS_PREFS=Color Control
-            screen.COLORS_SATURATION_WEIGHTS_RED=Crimson
-            screen.COLORS_SATURATION_WEIGHTS_GREEN=Lush
-            screen.COLORS_SATURATION_WEIGHTS_BLUE=Aqua
+            option.COLORS_SATURATION_WEIGHTS_RED=Crimson
+            option.COLORS_SATURATION_WEIGHTS_GREEN=Lush
+            option.COLORS_SATURATION_WEIGHTS_BLUE=Aqua
+    
+    screen.TONEMAPPING=Color Management
+        option.USE_LUT=Use LUT
+            option.USE_LUT.comment=To use your own colorgrading, unzip this shader's folder, go to '[unzipped folder]/shaders/LUTs' and put a .cube file there. Run the python script in the same folder to use your file as the default LUT.
+                value.USE_LUT.true=Yes
+                value.USE_LUT.false=No
+        option.GAMMA_CORRECT=Gamma correction
+            value.GAMMA_CORRECT.true=On
+            value.GAMMA_CORRECT.false=Off
+        option.GAMMA_CORRECT_PRE=Gamma Correction Prefilter
+            option.GAMMA_CORRECT_PRE.comment=Linearize the Minecraft textures before initializing the shader
+            value.GAMMA_CORRECT_PRE.true=On
+            value.GAMMA_CORRECT_PRE.false=Off
+        screen.ACES=ACES
+            screen.ACES.comment=Academy Color Encoding System.
+            option.USE_ACES=Use ACES
+                value.USE_ACES.true=Yes
+                value.USE_ACES.false=No
+            option.OUTPUT_COLORSPACE=Output Colorspace
+                value.OUTPUT_COLORSPACE.0=sRGB
+                value.OUTPUT_COLORSPACE.1=ACEScg (raw)
+                value.OUTPUT_COLORSPACE.2=ACES2065-1
+            option.RTT_MODE=RTT
+                option.RTT_MODE.comment=Attempts to fit the in-scene brightness values to ones your monitor can display. Basically brightness correction.
+                value.RTT_MODE.0=None
+                value.RTT_MODE.1=Divide by 16
+                value.RTT_MODE.2=Reinhardt
+                value.RTT_MODE.3=Unreal Engine 4
+
+
 
 screen.RESOURCEPACK=Resourcepack Settings
     screen.RESOURCEPACK.comment=Make sure to look at these settings if you have a resourcepack enabled.

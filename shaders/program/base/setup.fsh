@@ -18,3 +18,4 @@ in vec4 masks;
 in vec3 velocity;
 
 #include "/lib/to_viewspace.glsl"
+#include "/lib/tonemapping.glsl"

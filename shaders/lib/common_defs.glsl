@@ -19,6 +19,9 @@
 #define RCP_7 0.14285714285
 #define RCP_16 0.0625
 
+#define GAMMA 2.2
+#define RCP_GAMMA 0.45454545455
+
 #define LIGHT_MATRIX mat4(vec4(0.00390625, 0.0, 0.0, 0.0), vec4(0.0, 0.00390625, 0.0, 0.0), vec4(0.0, 0.0, 0.00390625, 0.0), vec4(0.03125, 0.03125, 0.03125, 1.0))
 #define NOISETEX_RES 512
 
@@ -163,9 +166,10 @@
 #define USE_ACES
 // output mapping: 0:sRGB 1:ACEScg(raw) 2:ACES2065-1
 #define OUTPUT_COLORSPACE 0 // [0 1 2]
-// output mapping: 0:none 1:use normal RTT 2: divide by 16
-#define RTT_MODE 1 // [0 1 2]
+// output mapping: 0:none 1: divide by 16 2:reinhardt 3:use normal RTT
+#define RTT_MODE 3 // [0 1 2 3]
 #define GAMMA_CORRECT
+#define GAMMA_CORRECT_PRE
 
 // #define USE_NIGHT_EFFECT
 #define NIGHT_EFFECT_SATURATION 0.3 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
@@ -174,9 +178,10 @@
 
 #define OVEREXPOSE_SKY 1.6 // [0.0 0.5 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
 
-#define SSAO_ENABLED
+// #define SSAO_ENABLED
 #define AO_INTENSITY 1.6 // [0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
 
+// #define AUTO_EXPOSE
 #define EXPOSURE_SAMPLES 9 // [1 2 3 4 5 7 9 11 20 25 30 36 42]
 #define EXPOSURE_UPDATE_SPEED 0.024 // [0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1]
 #define MIN_EXPOSURE 0.26 // [0.01 0.016 0.1 0.26 0.63 1.3 2.0 2.4 4.1 6.6 10.0]

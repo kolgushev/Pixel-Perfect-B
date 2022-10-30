@@ -57,6 +57,7 @@ const bool colortex7Clear = false;
 
 #include "/lib/to_viewspace.glsl"
 #include "/lib/linearize_depth.fsh"
+#include "/lib/tonemapping.glsl"
 
 void main() {
     #define READ_DEPTH

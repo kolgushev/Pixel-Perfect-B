@@ -22,16 +22,18 @@ void main() {
     #define WRITE_GENERIC3
     #include "/program/base/passthrough_1.fsh"
 
-    if(renderable != 0) {
-        vec2 pixelSize = 0.5 / vec2(viewWidth, viewHeight);
-        generic3.a = texture(colortex7, pixelSize).a;
+    #if defined AUTO_EXPOSE || defined DEBUG_VIEW
+        if(renderable != 0) {
+            vec2 pixelSize = 0.5 / vec2(viewWidth, viewHeight);
+            generic3.a = texture(colortex7, pixelSize).a;
 
-        // albedo = opaque(getNoise(NOISETEX_RES, 0, 1).rgb);
-        // albedo = opaque1(hand(texture(depthtex0, texcoordMod).r));
-    }
+            // albedo = opaque(getNoise(NOISETEX_RES, 0, 1).rgb);
+            // albedo = opaque1(hand(texture(depthtex0, texcoordMod).r));
+        }
 
-    // store linear depth for next frame deghosting
-    generic2.r = length(generic.rgb);
+        // store linear depth for next frame deghosting
+        generic2.r = length(generic.rgb);
+    #endif
 
     #include "/program/base/passthrough_2.fsh"
 }
