@@ -1,0 +1,8 @@
+#define LUT_DIM 3
+#define LUT_SIZE 33
+#define LUT_SIZE_RCP 0.030303030303030304
+#define LUT_SIZE_RCP1 0.03125
+#define LUT_LINEAR_MAPPING
+#define LUT_DOMAIN_ADD vec3(0.0, 0.0, 0.0)
+#define LUT_DOMAIN_MULT vec3(1.0, 1.0, 1.0)
+#define LUT_RANGE_MULT 1.0

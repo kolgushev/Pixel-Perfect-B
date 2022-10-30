@@ -1,0 +1,166 @@
+screen.POST_PROCESSING=Post Processing
+    screen.POST_PROCESSING.comment=Any effects that are applied after the image has been rendered.
+    option.CONTRAST=Contrast
+        option.CONTRAST.comment=Higher contrast intensifies colors, white and black levels, while lower contrast decreases them. Too much contrast may cause color clipping, while too little may make everything look grayed out. No performance impact.
+    option.EXPOSURE=Exposure
+        option.EXPOSURE.comment=Increases the brightness of the image while preserving dark areas. You can also control this setting through the vanilla "Brightness" slider. No performance impact.
+    
+    option.DENOISE_PREFS=Denoising
+        option.DENOISE_PREFS.comment=Denoising attempts to smooth out your image without increasing the required samples.
+        option.DENOISE=Denoise
+            option.DENOISE.comment=Enable Ambient Occlusion and Global Illumination denoising where possible, making the image less grainy. Enabled ➤ Variable performance impact.
+        option.DENOISE_MULT=Denoise Radius
+            option.DENOISE_MULT.comment=Increases the smoothness of the image, but may make it look less accurate. Increased ➤ Small performance impact.
+        option.MAX_COMPLETE_SAMPLE_DIAMETER=Max Radius
+            option.MAX_COMPLETE_SAMPLE_DIAMETER.comment=Sets the maximum amount the denoise radius can be changed by the scene data (for instance closer objects may have a larger sample radius than those farther away). Increased ➤ Variable performance impact.
+
+
+    screen.EXPOSURE_PREFS=Auto-Exposure
+        screen.EXPOSURE_PREFS.comment=Controls how the image adjusts to the environment's brighness, similar to how your eyes adjust to bright lights.
+        option.EXPOSURE_SAMPLES=Samples
+            option.EXPOSURE_SAMPLES.comment=Adjusts how many areas of the screen are "sampled" to determine exposure. Lower samples may lead to some flickering or less accurate auto-exposure. Increased ➤ Small performance impact.
+        option.EXPOSURE_UPDATE_SPEED=Adjustment Speed
+            option.EXPOSURE_UPDATE_SPEED.comment=Changes how fast the exposure adapts to changes in lighting. Increasing this setting will decrease smoothness but increase responsiveness. Setting this higher than intended may cause extreme flickering in some cases! No performance impact.
+        option.MIN_EXPOSURE=Minimum Exposure
+            option.MIN_EXPOSURE.comment=Changes the darkest that auto-exposure can make your image. Setting this too high may cause bright environments (like daylit outdoors) to look blown-out. No performance impact.
+        option.MAX_EXPOSURE=Maximum Exposure
+            option.MAX_EXPOSURE.comment=Changes the brightest that auto-exposure is allowed to make your image. Setting this too low may lead to unlit areas (like caves) losing detail and looking too dark. No performance impact.
+        option.EXPOSURE_BOUNDS=Stabilization Bounds
+            option.EXPOSURE_BOUNDS.comment=Decreases flickering by limiting individual samples. Setting this too low may limit responsiveness, even with adjustment speed set high. Setting this too high may cause extreme flickering!. No performance impact.
+
+screen.LIGHTING=Lighting
+    option.CUTOUT_ALIGN_STRENGTH=Grass Transluscency
+        option.CUTOUT_ALIGN_STRENGTH.comment=Makes grass shading less harsh and more like vanilla. No performance impact.
+
+    screen.LIGHT_STRENGTH=Light Brightness
+        screen.LIGHT_STRENGTH.comment=Control the brightness of individual lights.
+        option.MIN_LIGHT_MULT=Minimum Light
+            option.MIN_LIGHT_MULT.comment=Sets the minimum light level that must be maintained. For instance, a minimum light strength of 0 will result in completely black caves.
+        option.AMBIENT_LIGHT_MULT=Ambient Light
+            option.AMBIENT_LIGHT_MULT.comment=Sets the ambient light level. This is similar to minimum light, but affects all areas of the game, not just the darkest ones.
+        option.REAL_LIGHTING=Realistic Light Strengths
+            option.REAL_LIGHTING.comment=BETA!. This feature is in beta and won't look good. Sets light levels to their real-life values. No performance impact.
+        option.SUN_LIGHT_MULT_USER=Sunlight
+            option.SUN_LIGHT_MULT_USER.comment=Strength of direct sunlight during the day.
+        option.SKY_LIGHT_MULT_USER=Sky Light
+            option.SKY_LIGHT_MULT_USER.comment=Strength of indirect skylight during the day.
+        option.SKY_LIGHT_MULT_OVERCAST_USER=Sky Light (Cloudy)
+            option.SKY_LIGHT_MULT_OVERCAST_USER.comment=Strength of indirect skylight during a very cloudy/rainy day.
+        option.NIGHT_SKY_LIGHT_MULT_USER=Sky Light (Nighttime)
+            option.NIGHT_SKY_LIGHT_MULT_USER.comment=Strength of indirect skylight during the night.
+        option.MOON_LIGHT_MULT_USER=Moon Light
+            option.MOON_LIGHT_MULT_USER.comment=Strength of direct moonlight during the night.
+        option.BLOCK_LIGHT_MULT_USER=Block Light
+            option.BLOCK_LIGHT_MULT_USER.comment=Strength of block light (torch, sea lantern, glowstone, etc.)
+
+    screen.SSAO=Ambient Occlusion (SSAO)
+        screen.SSAO.comment=SSAO darkens crevices in between blocks, emulating a similar effect in real life.
+        option.SSAO_ENABLED=Enabled
+            value.SSAO_ENABLED.true=Yes
+            value.SSAO_ENABLED.false=No
+        option.AO_RADIUS=Radius
+            option.AO_RADIUS.comment=Increases the sample radius of the ambient occlusion, spreading out and smoothing dark areas. No performance impact.
+        option.AO_INTENSITY=Strength
+            option.AO_INTENSITY.comment=Increases the strength of the SSAO effect, further darkening crevices. No performance impact.
+        option.PRETTY_AO=Smoother AO
+            option.PRETTY_AO.comment=Takes the square root of ambient occlusion effects, making them look nicer. Enabled ➤ Negligible performance impact.
+        option.TEMPORAL_UPDATE_SPEED_AO=Update Speed
+            option.TEMPORAL_UPDATE_SPEED_AO.comment=Changes preservation of AO samples over time. Decreasing this setting makes AO look smoother at the cost of taking longer to adjust to changes. No performance impact.
+        option.AO_SAMPLES=Samples
+            option.AO_SAMPLES.comment=Adjusts how many areas of the screen are "sampled" to determine ambient occlusion. Using a higher number of samples increase smoothness. Increased ➤ Medium performance impact.
+
+    screen.SSGI=Global Illumination (SSGI)
+        screen.SSGI.comment=Screen-Space Global Illumination is a distant relative of raytracing, and provides a similar look while being more performant.
+        option.SSGI_ENABLED=Enabled
+            option.SSGI_ENABLED.comment=Enabled ➤ High performance impact.
+            value.SSGI_ENABLED.true=Yes
+            value.SSGI_ENABLED.false=No
+        option.COLORED_LIGHT_ONLY=Mode
+            option.COLORED_LIGHT_ONLY.comment=BETA!. The Global Illumination mode behaves as expected, projecting and bouncing light around the entire scene. Colored Light mode only changes the color of vanilla lighting. Global Illumination ➤ Low performance impact.
+            value.COLORED_LIGHT_ONLY.false=Global Illumination
+            value.COLORED_LIGHT_ONLY.true=Colored Light
+        option.DIM_LIGHT_DESAT_USER=Desaturate Dim Block Light
+            option.DIM_LIGHT_DESAT_USER.comment=When coloring Minecraft's built in lighting, desaturate low-light samples to avoid awkward coloring when the light is offscreen. Increasing this setting decreases the awkward color effect but also decreases overall light color. No performance impact.
+        option.BOUNCE_MULT=Strength
+            option.BOUNCE_MULT.comment=Control the brightness of SSGI. 1.0, the default, is the most physically accurate. No performance impact.
+        option.LIT_MULTIPLIER=Light Source Strength
+            option.LIT_MULTIPLIER.comment=Increase the strength of the global illumination emitted by light sources. This will not affect how bright the light sources look.
+        option.TEMPORAL_UPDATE_SPEED_USER=Update Speed
+            option.TEMPORAL_UPDATE_SPEED_USER.comment=Changes preservation of GI samples over time. Decreasing this setting makes GI look smoother at the cost of taking longer to adjust to changes. No performance impact.
+
+        screen.ADVANCED_SSGI=Advanced SSGI
+            screen.ADVANCED_SSGI.comment=Only change these settings if you know what they do (or are willing to spend a bunch of time fine-tuning).
+            option.USE_SECONDARY_BOUNCES=Use Last Frame GI
+                option.USE_SECONDARY_BOUNCES.comment=Reproject the previous frame's GI values to simulate multiple bounces. Keeping this on is recommended. On ➤ Negligible performance impact.
+            option.ADAPTIVE_SAMPLING_SSGI=Adaptive Sampling
+                option.ADAPTIVE_SAMPLING_SSGI.comment=BETA!. Increase or decrease samples based on already-accumulated samples. Disabling this will make some areas look grainier than others. Enabling this may destabilize framerate. On ➤ Variable performance impact.
+            option.SCREEN_SAMPLES=Samples
+                option.SCREEN_SAMPLES.comment=Adjusts how many areas of the screen are "sampled" to determine global illumination / colored lighting. Using a higher number of samples increase smoothness. Increased ➤ High performance impact.
+            option.MIN_SAMPLES=Minimum Samples
+            option.MAX_SAMPLES=Maximum Samples
+            option.MAX_NEW_SAMPLES=Revealed Multiplier
+            option.MAX_LIGHT_PROPAGATION=Maximum Light Distance
+                option.MAX_LIGHT_PROPAGATION.comment=BETA!. Only applies if COLORED_LIGHT_ONLY is on. No performance impact.
+            option.SELF_ILLUMINATION=Self-Illumination
+                option.SELF_ILLUMINATION.comment=Determines how much flat planes can illuminate themselves. For instance, if a sea lantern were placed in a hole with flat terrain surrounding it, a higher self-illumination would cause it to light up more of the terrain (even if it's technically inset into the terrain).
+            option.POWERFUL_SAMPLE=Closer Sampling
+                option.POWERFUL_SAMPLE.comment=BETA!. When sampling a pixel, prioritize samples closer in proximity to it. May result in less-accurate lighting if Old Sampling is enabled.
+            option.POWERFUL_SAMPLE_AMOUNT=Closer Sampling Amount
+                option.POWERFUL_SAMPLE_AMOUNT=Determines how much closer samples are prioritized when Closer Sampling is turned on.
+            option.OLD_SAMPLING=Old Sampling
+                option.OLD_SAMPLING.comment=Removes proximity correction, prioritizing only sample amount. This may look less grainy, but will result in faraway light sources not affecting the environment.
+
+screen.COLORS=Colors
+    option.VANILLA_COLORS=Vanilla Colors
+        value.VANILLA_COLORS.0.0=Vibrant
+        value.VANILLA_COLORS.1.0=Vanilla-ish
+    option.SUN_TEMP=Sunlight Temperature
+        option.SUN_TEMP.comment=Sunlight temperature in Kelvin. The default value is the most physically-accurate. Lower temperatures are redder, while higher temps are more white-ish.
+        suffix.SUN_TEMP=k
+    option.TORCH_TEMP=Block Light Temperature
+        option.TORCH_TEMP.comment=Block light temperature in Kelvin. The default value is the most physically-accurate. Lower temperatures are redder, while higher temps are more white-ish.
+        suffix.TORCH_TEMP=k
+    option.SKY_SATURATION=Sky Vibrance
+    option.SKY_BRIGHTNESS=Sky Brightness
+
+    screen.REALISTIC_COLORS_PREFS=Realistic Colors
+        screen.REALISTIC_COLORS_PREFS.comment=Minecraft's default graphics aren't always the most realistic. This subset of options allows the Minecraft textures to be toned down to physically-accurate levels. Feel free to turn this off if you don't like how it looks or if you're using a realistic resource pack.
+        option.REALISTIC_COLORS=Enabled
+            option.REALISTIC_COLORS.comment=Feel free to turn this off if you don't like how it looks or if you're using a realistic resource pack.
+            value.REALISTIC_COLORS.true=Yes
+            value.REALISTIC_COLORS.false=No
+        option.COLORS_SATURATION=Saturation
+        option.COLORS_CONTRAST=Contrast
+        option.COLORS_CONTRAST_BRIGHT_BIAS=Contrast Lightness Bias
+        
+        screen.COLORS_SATURATION_WEIGHTS_PREFS=Color Control
+            screen.COLORS_SATURATION_WEIGHTS_RED=Crimson
+            screen.COLORS_SATURATION_WEIGHTS_GREEN=Lush
+            screen.COLORS_SATURATION_WEIGHTS_BLUE=Aqua
+
+screen.RESOURCEPACK=Resourcepack Settings
+    screen.RESOURCEPACK.comment=Make sure to look at these settings if you have a resourcepack enabled.
+    option.TEX_RENDER=Pixel Perfect
+        option.TEX_RENDER.comment=Enables the authentic Pixel Perfect look by using a single color per Minecraft texture pixel. Off ➤ Performance impact varies.
+    option.TEX_RES=Resource Pack Resolution
+        option.TEX_RES.comment=Anything above 1024×1024 is near-identical to just turning off the Pixel Perfect setting
+        value.TEX_RES.0.25=4×4
+        value.TEX_RES.0.125=8×8
+        value.TEX_RES.0.0625=16×16
+        value.TEX_RES.0.03125=32×32
+        value.TEX_RES.0.015625=64×64
+        value.TEX_RES.0.0078125=128×128
+        value.TEX_RES.0.00390625=256×256
+        value.TEX_RES.0.001953125=512×512
+        value.TEX_RES.0.0009765625=1024×1024
+
+screen.MISC=Misc
+    option.STREAMER_MODE=Streamer Mode
+        option.STREAMER_MODE.comment=Brightens up dark areas, won't look as good but plays nice with compression
+
+screen.ADVANCED=Advanced
+    option.DEBUG_VIEW=Debug View
+        option.DEBUG_VIEW.comment=Disables all existing albedo writes to allow the developer (and you, within license restrictions) to create their own for debugging purposes
+
+    screen.AUTO_ADDED=Automatic Settings
+        screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work.
