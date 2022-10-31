@@ -43,3 +43,4 @@ out float currentSkyWhitePoint;
 
 #include "/lib/to_viewspace.glsl"
 #include "/lib/calculate_lighting.glsl"
+#include "/lib/tonemapping.glsl"

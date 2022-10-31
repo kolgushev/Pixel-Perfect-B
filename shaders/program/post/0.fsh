@@ -59,6 +59,13 @@ const bool colortex7Clear = false;
 #include "/lib/linearize_depth.fsh"
 #include "/lib/tonemapping.glsl"
 
+// masks:
+// r - sky
+// g - terrain / grass normals
+// b - emissiveness
+
+// coord.ba and lightmap.a combine to form velocity vectors
+
 void main() {
     #define READ_DEPTH
     
@@ -83,11 +90,19 @@ void main() {
     #define READ_GENERIC3
     #define WRITE_GENERIC3
     
+    // these don't do anything, just flags so I know I'm modifying these here
+    #define READ_COORD
     #define WRITE_COORD
     
     #include "/program/base/passthrough_1_unalign.fsh"
 
+    // transfer transparent masks
+    if(coord.a > 0.5) {
+        masks = vec4(masks.r, coord.gba);
+    }
+    
     // albedo = opaque(vec3(texcoordReproject, 0));
+    
     /* correct textures */
     float terrainMask = float(masks.g);
     float skyMask = float(masks.r);
@@ -248,8 +263,15 @@ void main() {
     }
 
     // albedo = opaque(vec3(approachOne(generic2.a)) * normal);
-    // albedo = opaque1(approachOne(generic2.a));
-    // albedo = opaque1(masks.b + 0.1);
+    // albedo = opaque(normal);
+    // albedo = opaque1(depth);
+    // albedo = opaque(fma(vec3(coord.ba, lightmap.a), vec3(0.5), vec3(0.5)));
+    // albedo = opaque(masks.rgb);
+    // albedo = opaque(coord.aaa);
+    // albedo = opaque(1 - (1 / (masks.aaa + 1) ) );
+    // albedo = opaque(1 - (1 / (lightmap.rgb + 1) ) );
+    // albedo = opaque(normal.rgb);
+
 
     #ifndef TEX_RENDER
         renderable = 0.5;

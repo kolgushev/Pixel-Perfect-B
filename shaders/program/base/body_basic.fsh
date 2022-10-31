@@ -1,6 +1,5 @@
 // set albedo color, multiply by biome color (for grass, leaves, etc.)
 vec4 albedo = texture(texture, texcoord);
-albedo *= color;
 vec3 albedoProcessed = albedo.rgb;
 #ifdef GAMMA_CORRECT_PRE
     albedoProcessed = gammaCorrection(albedo.rgb, GAMMA);
@@ -10,6 +9,7 @@ albedo.rgb = albedoProcessed * sRGB_to_ACEScg;
 // it also provides a miniscule performance improvement since we don't have to calculate and apply lightmap
 if(albedo.a < alphaTestRef) discard;
 
+albedo *= color;
 
 diffuseBuffer = albedo;
 normalBuffer = opaque(normal);
@@ -21,4 +21,8 @@ float depthSpherical = length(position) / far;
 coordBuffer = masks.r > 0.5 ? vec4(0, 0, 0, 0) : vec4(0, 1, velocity.xy);
 lightmapBuffer = vec4(light, velocity.z);
 
-maskBuffer = vec4(masks);
+#ifndef transparent
+    maskBuffer = vec4(masks);
+#else
+    coordBuffer.gba = masks.gba;
+#endif

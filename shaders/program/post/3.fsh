@@ -74,6 +74,6 @@ void main() {
         // albedo = opaque(diffuse / 10000);
         // albedo = opaque(bounceLighting / 1000);
         // albedo = opaque1(ambientOcclusion);
-    // }
+        // albedo = opaque(lightmap.rgb / 10);
     #include "/program/base/passthrough_2.fsh"
 }

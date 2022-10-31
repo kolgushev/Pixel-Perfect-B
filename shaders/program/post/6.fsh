@@ -9,11 +9,12 @@ uniform float screenBrightness;
 uniform mat4 gbufferModelView;
 uniform vec3 fogColor;
 uniform vec3 skyColor;
+// uniform float fogStart;
 uniform float far;
 uniform int worldTime;
 
 #include "/program/base/samplers.fsh"
-uniform sampler2D depthtex2;
+uniform sampler2D shadowcolor1;
 
 #include "/lib/calculate_sky.glsl"
 #include "/lib/tonemapping.glsl"
@@ -43,6 +44,7 @@ void main() {
     #endif
 
     // compute fog
+    // float far_rcp = 1 / fogStart;
     float far_rcp = 1 / far;
     float fog = masks.r < 0.5 ? length(generic.xz) * far_rcp : 0;
     float maskingFog = masks.r < 0.5 ? abs(generic.y) * far_rcp : 0;
@@ -116,8 +118,8 @@ void main() {
         float heightOffsetHigh = tileIdHigh * LUT_SIZE_RCP;
         vec2 lutCoordHigh = vec2(noBorder.r, noBorder.g * LUT_SIZE_RCP + heightOffsetHigh);
         
-        vec3 colorCorrectedLow = texture(depthtex2, lutCoordLow).rgb;
-        vec3 colorCorrectedHigh = texture(depthtex2, lutCoordHigh).rgb;
+        vec3 colorCorrectedLow = texture(shadowcolor1, lutCoordLow).rgb;
+        vec3 colorCorrectedHigh = texture(shadowcolor1, lutCoordHigh).rgb;
         
         double mixer = mod(colorCorrected.b, LUT_SIZE_RCP1) * (LUT_SIZE - 1);
         

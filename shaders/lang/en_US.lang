@@ -4,16 +4,6 @@ screen.POST_PROCESSING=Post Processing
         option.CONTRAST.comment=Higher contrast intensifies colors, white and black levels, while lower contrast decreases them. Too much contrast may cause color clipping, while too little may make everything look grayed out. No performance impact.
     option.EXPOSURE=Exposure
         option.EXPOSURE.comment=Increases the brightness of the image while preserving dark areas. You can also control this setting through the vanilla "Brightness" slider. No performance impact.
-    
-    option.DENOISE_PREFS=Denoising
-        option.DENOISE_PREFS.comment=Denoising attempts to smooth out your image without increasing the required samples.
-        option.DENOISE=Denoise
-            option.DENOISE.comment=Enable Ambient Occlusion and Global Illumination denoising where possible, making the image less grainy. Enabled ➤ Variable performance impact.
-        option.DENOISE_MULT=Denoise Radius
-            option.DENOISE_MULT.comment=Increases the smoothness of the image, but may make it look less accurate. Increased ➤ Small performance impact.
-        option.MAX_COMPLETE_SAMPLE_DIAMETER=Max Radius
-            option.MAX_COMPLETE_SAMPLE_DIAMETER.comment=Sets the maximum amount the denoise radius can be changed by the scene data (for instance closer objects may have a larger sample radius than those farther away). Increased ➤ Variable performance impact.
-
 
     screen.EXPOSURE_PREFS=Auto-Exposure
         screen.EXPOSURE_PREFS.comment=Controls how the image adjusts to the environment's brighness, similar to how your eyes adjust to bright lights.
@@ -53,11 +43,12 @@ screen.LIGHTING=Lighting
         option.BLOCK_LIGHT_MULT_USER=Block Light
             option.BLOCK_LIGHT_MULT_USER.comment=Strength of block light (torch, sea lantern, glowstone, etc.)
 
-    screen.SSAO=Ambient Occlusion (SSAO)
-        screen.SSAO.comment=SSAO darkens crevices in between blocks, emulating a similar effect in real life.
-        option.SSAO_ENABLED=Enabled
-            value.SSAO_ENABLED.true=Yes
-            value.SSAO_ENABLED.false=No
+    screen.SSAO=Ambient Occlusion
+        screen.SSAO.comment=Ambient Occlusion darkens crevices in between blocks, emulating a similar effect in real life.
+        option.AO_MODE=Mode
+            value.AO_MODE.0=Off
+            value.AO_MODE.1=Vanilla
+            value.AO_MODE.2=SSAO
         option.AO_RADIUS=Radius
             option.AO_RADIUS.comment=Increases the sample radius of the ambient occlusion, spreading out and smoothing dark areas. No performance impact.
         option.AO_INTENSITY=Strength

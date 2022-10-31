@@ -130,6 +130,7 @@
 #define LIT_PARTIAL 6
 #define LIT_PARTIAL_CUTOUTS 7
 #define LIT_PARTIAL_CUTOUTS_UPSIDE_DOWN 8
+#define LIT_PROBLEMATIC 9
 
 
 
@@ -144,21 +145,11 @@
 #define TORCH_TEMP 4000 // [1500 2000 2500 3000 3500 4000 45000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000]
 // #define REALISTIC_COLORS
 #define COLORS_SATURATION 1.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
-#define COLORS_CONTRAST 0.9 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+#define COLORS_CONTRAST 1.0 // [0.7 0.8 0.85 0.9 0.95 0.97 1.0 1.03 1.05 1.1 1.15 1.2 1.3]
 #define COLORS_CONTRAST_BRIGHT_BIAS 0.6 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define COLORS_SATURATION_WEIGHTS_RED 1.0 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define COLORS_SATURATION_WEIGHTS_GREEN 0.7 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define COLORS_SATURATION_WEIGHTS_BLUE 1.0 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define AO_RADIUS 1.2 // [0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6]
-#define TEMPORAL_UPDATE_SPEED_AO 0.0026 // [0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1]
-#define AO_SAMPLES 9 // [1 2 4 6 9 12 16 20 25 30 36 42 49 56]
-#define USE_SECONDARY_BOUNCES
-
-#define MAX_COMPLETE_SAMPLE_DIAMETER 20.0 // [4.0 6.0 8.0 10.0 12.0 14.0 16.0 18.0 20.0 22.0 24.0 28.0 30.0]
-#define DENOISE_MULT 1.0 // [0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0]
-// #define DENOISE
-
-#define PRETTY_AO
+#define COLORS_SATURATION_WEIGHTS_RED 1.0 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+#define COLORS_SATURATION_WEIGHTS_GREEN 1.0 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+#define COLORS_SATURATION_WEIGHTS_BLUE 1.0 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
 #define SKY_SATURATION 1.0 // [0.5 0.75 1.0 1.13 1.69 2.53 3.8 5.7]
 #define SKY_BRIGHTNESS 1.0 // [1.0 1.2 1.4 1.6 1.8 2.0 2.0 2.2 2.4 2.6 2.8 3.0]
@@ -166,7 +157,7 @@
 #define USE_ACES
 // output mapping: 0:sRGB 1:ACEScg(raw) 2:ACES2065-1
 #define OUTPUT_COLORSPACE 0 // [0 1 2]
-// output mapping: 0:none 1: divide by 16 2:reinhardt 3:use normal RTT
+// output mapping: 0:none 1:divide by 16 2:reinhardt 3:use normal RTT
 #define RTT_MODE 3 // [0 1 2 3]
 #define GAMMA_CORRECT
 #define GAMMA_CORRECT_PRE
@@ -178,8 +169,23 @@
 
 #define OVEREXPOSE_SKY 1.6 // [0.0 0.5 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
 
-// #define SSAO_ENABLED
+// output mapping: 0:none 1:vanilla 2:SSAO
+#define AO_MODE 1 // [0 1 2]
+
+#if AO_MODE == 2
+    #define SSAO_ENABLED
+#endif
+
 #define AO_INTENSITY 1.6 // [0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
+#define VANILLA_AO_INTENSITY (AO_INTENSITY * 0.5)
+
+// #ifdef SSAO_ENABLED
+    #define AO_RADIUS 1.2 // [0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6]
+    #define TEMPORAL_UPDATE_SPEED_AO 0.0026 // [0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1]
+    #define AO_SAMPLES 9 // [1 2 4 6 9 12 16 20 25 30 36 42 49 56]
+
+    #define PRETTY_AO
+// #endif
 
 // #define AUTO_EXPOSE
 #define EXPOSURE_SAMPLES 9 // [1 2 3 4 5 7 9 11 20 25 30 36 42]
@@ -198,7 +204,9 @@
 #define MAX_LIGHT_PROPAGATION 16 // [3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24]
 #define LIT_MULTIPLIER 2.0 // [0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.0 2.2 2.4 2.6 2.8 3.0]
 // #define STREAMER_MODE
+
 #define SSGI_ENABLED
+#define USE_SECONDARY_BOUNCES
 #define BOUNCE_MULT 1.0 // [0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.0 2.2 2.4 2.6 2.8 3.0]
 // #define COLORED_LIGHT_ONLY
 #define MIN_LIGHT_MULT_USER 0.66 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
@@ -222,7 +230,7 @@
 #define BLOCK_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
 // #define DEBUG_VIEW
-#define TEX_RENDER
+// #define TEX_RENDER
 #define TEX_RES 0.0625 // [0.25 0.125 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
 
 
@@ -242,17 +250,17 @@
 #define TEMPORAL_UPDATE_SPEED (TEMPORAL_UPDATE_SPEED_WEIGHT * TEMPORAL_UPDATE_SPEED_USER)
 
 #ifndef REAL_LIGHTING
-    #define SUN_LIGHT_MULT (5f * SUN_LIGHT_MULT_USER)
-    #define SKY_LIGHT_MULT (3f * SKY_LIGHT_MULT_USER)
+    #define SUN_LIGHT_MULT (5.0 * SUN_LIGHT_MULT_USER)
+    #define SKY_LIGHT_MULT (3.0 * SKY_LIGHT_MULT_USER)
     #define SKY_LIGHT_MULT_OVERCAST (0.3 * SKY_LIGHT_MULT_OVERCAST_USER)
     #define MOON_LIGHT_MULT (0.2 * MOON_LIGHT_MULT_USER)
     #define NIGHT_SKY_LIGHT_MULT (0.1 * NIGHT_SKY_LIGHT_MULT_USER)
-    #define BLOCK_LIGHT_MULT (1.6 * BLOCK_LIGHT_MULT_USER)
+    #define BLOCK_LIGHT_MULT (5.0 * BLOCK_LIGHT_MULT_USER)
 #else
     // in lumens per meter² (lux) / 1000
-    #define SUN_LIGHT_MULT 1110
-    #define SKY_LIGHT_MULT 195
-    #define SKY_LIGHT_MULT_OVERCAST 10
+    #define SUN_LIGHT_MULT 1110.0
+    #define SKY_LIGHT_MULT 195.0
+    #define SKY_LIGHT_MULT_OVERCAST 10.0
     #define MOON_LIGHT_MULT 0.00075
     // TODO: measure night sky
     #define NIGHT_SKY_LIGHT_MULT 0.00001
@@ -262,28 +270,15 @@
 #define MAX_LIGHT_PROPAGATION_INVERSE (1 / MAX_LIGHT_PROPAGATION)
 
 #ifdef STREAMER_MODE
-    #if !defined SSGI_ENABLED || defined COLORED_LIGHT_ONLY
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.1)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.1)
-    #else
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.05)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.05)
-    #endif
-#elif !defined SSGI_ENABLED || defined COLORED_LIGHT_ONLY
-    #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.03)
-    #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.03)
+    #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.7)
+    #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.7)
 #else
-    #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.015)
-    #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.015)
+    #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.3)
+    #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.3)
 #endif
 
-#ifndef SSGI_ENABLED
-    #define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * sRGB_to_ACEScg)
-    #define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * sRGB_to_ACEScg)
-#else
-    #define TORCH_TINT (vec3(1) * sRGB_to_ACEScg)
-    #define TORCH_TINT_VANILLA (vec3(1) * sRGB_to_ACEScg)
-#endif
+#define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * sRGB_to_ACEScg)
+#define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * sRGB_to_ACEScg)
 
 #define AMBIENT_COLOR (vec3(1) * sRGB_to_ACEScg)
 #define DAY_SKY_COLOR ((vec3(0.5, 0.8, 1.0) * sRGB_to_ACEScg) * SKY_LIGHT_MULT)

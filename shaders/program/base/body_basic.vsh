@@ -6,7 +6,13 @@ bool entityMask = masks.g < 0.5 && masks.r < 0.5;
 gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
 texcoord = vaUV0;
 light = vec3((LIGHT_MATRIX * vec4(vaUV2, 1, 1)).xy, 1);
-color = vec4(vaColor.rgb * sRGB_to_ACEScg, vaColor.a);
+
+vec3 vaColorProcessed = vaColor.rgb;
+#ifdef GAMMA_CORRECT_PRE
+    vaColorProcessed = gammaCorrection(vaColor.rgb, GAMMA);
+#endif
+color.rgb = vaColorProcessed * sRGB_to_ACEScg;
+
 normal = entityMask ? viewInverse(vaNormal) : vaNormal;
 // normal = vaNormal;
 velocity = at_velocity;
@@ -29,13 +35,13 @@ float skyAmount = fma((viewInverse(cutoutNormal).y - 1), RCP_3, 1f);
 // Do the lighting calculations
 vec2 lightAdjusted = max(vec2(light.rg) - 0.0313, 0);
 
-vec4 lightColor = getLightColor(lightAdjusted, sunShading, moonShading, moonPhase * RCP_7, worldTime, rainStrength, skyAmount, AMBIENT_LIGHT_MULT, MIN_LIGHT_MULT);
+// adjust light level of buggy lights
+if(masks.b > 1.5) {
+    lightAdjusted = vec2(1.0, lightAdjusted.g - 1);
+}
 
-// sky light affects bounce light
-#ifndef COLORED_LIGHT_ONLY
-    masks.a = lightColor.a;
-#endif
+vec4 lightColor = getLightColor(lightAdjusted, sunShading, moonShading, moonPhase * RCP_7, worldTime, rainStrength, skyAmount, AMBIENT_LIGHT_MULT, MIN_LIGHT_MULT);
+lightColor.rgb *= 1 - (1 - pow2(vaColor.a)) * VANILLA_AO_INTENSITY;
 
 // store calculated data in lightmap
 light = lightColor.rgb;
-// color = opaque(lightColor.rgb);

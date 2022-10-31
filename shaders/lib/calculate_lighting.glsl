@@ -6,11 +6,14 @@
 vec4 getLightColor(in vec2 lightmap, in float sunShading, in float moonShading, in float moonPhase, in int time, in float rain, in float skyShading, in float ambientLightMult, in float minLightMult) {
     float skyTransition = skyTime(time);
 
-    #if !defined SSGI_ENABLED && !defined COLORED_LIGHT_ONLY
-        vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), pow2(lightmap.x)), VANILLA_COLORS);
-    #else
-        vec3 torchColor = vec3(1);
-    #endif
+    // TODO: find out why this is failing
+    // #if VANILLA_COLORS == 0.0
+    //     vec3 torchColor = vec3(TORCH_TINT);
+    // #else
+    //     vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), VANILLA_COLORS);
+    // #endif
+
+    vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), 0);
 
     vec3 skyColor = mix(mix(NIGHT_SKY_COLOR, DAY_SKY_COLOR, skyTransition), mix(NIGHT_SKY_COLOR_VANILLA, DAY_SKY_COLOR_VANILLA, skyTransition), VANILLA_COLORS);
 

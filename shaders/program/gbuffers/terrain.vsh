@@ -9,6 +9,7 @@ void main() {
 
    masks.b =
       float(mc_Entity.x == LIT)
+   +  float(mc_Entity.x == LIT_PROBLEMATIC) * 2
    +  float(mc_Entity.x == LIT_CUTOUTS)
    +  float(mc_Entity.x == LIT_CUTOUTS_UPSIDE_DOWN)
    +  float(mc_Entity.x == LIT_PARTIAL)
