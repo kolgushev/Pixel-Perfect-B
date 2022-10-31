@@ -273,14 +273,19 @@
     #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.7)
     #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.7)
 #else
-    #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.3)
-    #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.3)
+    #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.2)
+    #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.2)
 #endif
 
 #define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * sRGB_to_ACEScg)
 #define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * sRGB_to_ACEScg)
 
-#define AMBIENT_COLOR (vec3(1) * sRGB_to_ACEScg)
+#ifdef DIM_NETHER
+    #define AMBIENT_COLOR ((vec3(4.2, 1.5, 0.9) * 2.0) * sRGB_to_ACEScg)
+#else
+    #define AMBIENT_COLOR ((vec3(1.0, 1.0, 1.0) * 1.0) * sRGB_to_ACEScg)
+#endif
+
 #define DAY_SKY_COLOR ((vec3(0.5, 0.8, 1.0) * sRGB_to_ACEScg) * SKY_LIGHT_MULT)
 #define NIGHT_SKY_COLOR ((vec3(1, 0.98, 0.95) * sRGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
 #define DAY_SKY_COLOR_VANILLA ((vec3(1) * sRGB_to_ACEScg) * SKY_LIGHT_MULT)
