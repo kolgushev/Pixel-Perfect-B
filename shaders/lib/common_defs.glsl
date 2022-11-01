@@ -280,8 +280,10 @@
 #define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * sRGB_to_ACEScg)
 #define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * sRGB_to_ACEScg)
 
-#ifdef DIM_NETHER
+#if defined DIM_NETHER
     #define AMBIENT_COLOR ((vec3(4.2, 1.5, 0.9) * 2.0) * sRGB_to_ACEScg)
+#elif defined DIM_END
+    #define AMBIENT_COLOR ((vec3(1.5, 0.9, 2.2) * 0.5) * sRGB_to_ACEScg)
 #else
     #define AMBIENT_COLOR ((vec3(1.0, 1.0, 1.0) * 1.0) * sRGB_to_ACEScg)
 #endif
