@@ -79,10 +79,9 @@ void main() {
     
     vec4 albedo = texture(colortex0, texcoord);
     vec4 normal = texture(colortex1, texcoord);
-    // vec4 lightmap = texture(colortex2, texcoord);
+    vec4 generic = texture(colortex2, texcoord);
     vec4 coord = texture(colortex3, texcoord);
     vec4 masks = vec4(texture(colortex4, texcoord));
-    vec4 generic = texture(colortex5, texcoord);
     vec4 generic2 = texture(colortex6, texcoord);    
     vec4 generic3 = texture(colortex7, texcoord);
 
@@ -94,19 +93,6 @@ void main() {
     float terrainMask = float(masks.g);
     float skyMask = float(masks.r);
     // albedo = opaque(vec3(masks.rgb) / 3);
-
-    vec4 texcoordTransformed = vec4(texcoord * 2 - 1, 0, 1);
-
-    // more realistic albedo
-    #ifdef REALISTIC_COLORS
-        if(skyMask < 0.5) {
-            float saturation = COLORS_SATURATION * dot(normalize(albedo.rgb), COLORS_SATURATION_WEIGHTS);
-            vec3 saturated = saturateRGB(saturation) * albedo.rgb;
-            vec3 contrasted = fma((saturated - COLORS_CONTRAST_BRIGHT_BIAS), vec3(COLORS_CONTRAST), vec3(COLORS_CONTRAST_BRIGHT_BIAS));
-            albedo.rgb = clamp(contrasted, 0, 1);
-            // albedo.rgb = normalize(albedo.rgb);
-        }
-    #endif
     
     /* standardize normal space */
     // terrain normals are worldspace while everything else is viewspace
@@ -119,7 +105,7 @@ void main() {
     vec3 worldSpace = generic.xyz;
 
     /* transfer the normal map to worldspace */
-    normal = opaque(normalWorldSpace);
+    normal.xyz = normalWorldSpace;
 
     /* reproject textures from previous frame */
     

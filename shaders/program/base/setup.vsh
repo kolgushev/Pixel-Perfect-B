@@ -33,6 +33,7 @@ uniform mat4 projectionMatrix;
 out vec3 position;
 out vec2 texcoord;
 out vec3 light;
+out vec3 lightSky;
 out vec4 color;
 out vec3 normal;
 

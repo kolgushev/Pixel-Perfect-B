@@ -35,7 +35,7 @@ void main() {
         vec3 bounceLighting = generic3.rgb;
 
         // for physical lighting
-        diffuseOpaque *= lighting * ambientOcclusion;
+        // diffuseOpaque *= lighting * ambientOcclusion;
     } else {
         diffuseOpaque = sky(diffuseOpaque, worldTime);
     }
