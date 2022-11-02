@@ -31,7 +31,7 @@ const int noiseTextureResolution = 512;
 // use floats since they aren't capped at one (for easier color manipulation)
 /*
 const int colortex0Format = RGBA16F;
-const bool colortex0Clear = true;
+const bool colortex0Clear = false;
 
 const int colortex1Format = RGBA16_SNORM;
 const bool colortex1Clear = true;
@@ -75,8 +75,8 @@ void main() {
     #define READ_NORMAL
     #define WRITE_NORMAL
     
-    #define READ_LIGHTMAP
-    #define OVERRIDE_LIGHTMAP
+    // #define READ_LIGHTMAP
+    // #define OVERRIDE_LIGHTMAP
 
     #define READ_MASKS
     #define OVERRIDE_MASKS
@@ -97,10 +97,10 @@ void main() {
     #include "/program/base/passthrough_1_unalign.fsh"
 
     // transfer transparent masks
-    if(coord.a > 0.5) {
-        masks = vec4(masks.r, coord.gba);
+    if(generic.a > 0.5) {
+        masks = vec4(masks.r, coord.r, normal.a, generic.a);
     }
-    
+
     // albedo = opaque(vec3(texcoordReproject, 0));
     
     /* correct textures */
@@ -123,7 +123,7 @@ void main() {
     
     /* standardize normal space */
     // terrain normals are worldspace while everything else is viewspace
-    vec3 normalWorldSpace = normal;
+    vec3 normalWorldSpace = normal.xyz;
     
     /* reconstruct position for entities */
     if(terrainMask < 0.5 && skyMask < 0.5) {
@@ -216,13 +216,13 @@ void main() {
     #endif
 
     /* transfer the normal map to worldspace */
-    normal = normalWorldSpace;
+    normal = opaque(normalWorldSpace);
 
     /* reproject textures from previous frame */
     
     // remap coord buffer (used to avoid clearing generics)
     float prevDist = generic2.r;
-    vec3 velocity = vec3(coord.ba, lightmap.a);
+    vec3 velocity = coord.gba;
 
     // store 
 
@@ -265,8 +265,9 @@ void main() {
     // albedo = opaque(vec3(approachOne(generic2.a)) * normal);
     // albedo = opaque(normal);
     // albedo = opaque1(depth);
+    // albedo = opaque1(albedo.a);
     // albedo = opaque(fma(vec3(coord.ba, lightmap.a), vec3(0.5), vec3(0.5)));
-    // albedo = opaque(masks.rgb);
+    // albedo = opaque(masks.rgb / 4);
     // albedo = opaque(coord.aaa);
     // albedo = opaque(1 - (1 / (masks.aaa + 1) ) );
     // albedo = opaque(1 - (1 / (lightmap.rgb + 1) ) );

@@ -9,20 +9,21 @@ albedo.rgb = albedoProcessed * RGB_to_ACEScg;
 // it also provides a miniscule performance improvement since we don't have to calculate and apply lightmap
 if(albedo.a < alphaTestRef) discard;
 
-albedo *= color;
+// albedo *= opaque(color.rgb * light);
+albedo *= opaque(color.rgb);
 
 diffuseBuffer = albedo;
-normalBuffer = opaque(normal);
+// diffuseBuffer = vec4(light / 16, 0.1);
+// we can reconstruct the third normal channel from the other two and a sign
+normalBuffer = vec4(normal.xyz, masks.b);
 // if(albedo.a >= 1 - EPSILON) genericBuffer = opaque(position);
-genericBuffer = opaque(position);
+genericBuffer = vec4(position, masks.a);
 
 // use coordbuffer instead of one of the generics since we don't want to clear them
-float depthSpherical = length(position) / far;
-coordBuffer = masks.r > 0.5 ? vec4(0, 0, 0, 0) : vec4(0, 1, velocity.xy);
-lightmapBuffer = vec4(light, velocity.z);
+coordBuffer = masks.r > 0.5 ? vec4(masks.g, 0, 0, 0) : vec4(masks.g, velocity.xyz);
+// lightmapBuffer = vec4(light, fma(albedo.a, 0.25, 0.3));
+lightmapBuffer = vec4(light, albedo.a * fma(dot(albedo.rgb, vec3(SQRT_3)), 0.5, 0.5));
 
 #ifndef transparent
     maskBuffer = vec4(masks);
-#else
-    coordBuffer.gba = masks.gba;
 #endif

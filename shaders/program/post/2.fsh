@@ -84,7 +84,7 @@ void main() {
         /* SSAO */
         float sampleMultiplier = 1;
 
-        vec2 aoFull = ssao(sampleMultiplier, masks.r, normal, generic.xyz, depth, renderable, texelSurfaceArea, colortex3, colortex5);
+        vec2 aoFull = ssao(sampleMultiplier, masks.r, normal.xyz, generic.xyz, depth, renderable, texelSurfaceArea, colortex3, colortex5);
         float ao = aoFull.r;
         float samples = aoFull.g;
 

@@ -26,11 +26,11 @@ if(renderable == 0 || renderable == 1) {
     writeonly vec4 albedo = texture(colortex0, texcoordMod);
 #endif
 #if (defined READ_NORMAL && defined WRITE_NORMAL) || defined OVERRIDE_NORMAL
-    vec3 normal = texture(colortex1, texcoordMod).rgb;
+    vec4 normal = texture(colortex1, texcoordMod);
 #elif defined READ_NORMAL
-    readonly vec3 normal = texture(colortex1, texcoordMod).rgb;
+    readonly vec4 normal = texture(colortex1, texcoordMod);
 #elif defined WRITE_NORMAL
-    writeonly vec3 normal = texture(colortex1, texcoordMod).rgb;
+    writeonly vec4 normal = texture(colortex1, texcoordMod);
 #endif
 #if (defined READ_LIGHTMAP && defined WRITE_LIGHTMAP) || defined OVERRIDE_LIGHTMAP
     vec4 lightmap = texture(colortex2, texcoordMod);

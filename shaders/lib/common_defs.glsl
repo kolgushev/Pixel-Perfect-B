@@ -27,6 +27,7 @@
 
 // utils
 // normal pow (usually) takes 9 GPU cycles to compute, so we can redefine any pow ≤ 9 as multiplication for a speedup
+// this is usually done automatically by the compiler, but this allows it to be enabled manually
 #define OPTIMIZE_POW
 #define OPTIMIZE_POW2
 

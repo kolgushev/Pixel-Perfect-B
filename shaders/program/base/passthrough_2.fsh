@@ -1,5 +1,5 @@
 #ifdef WRITE_NORMAL
-normalBuffer = opaque(normal);
+normalBuffer = normal;
 #endif
 #ifdef WRITE_LIGHTMAP
 lightmapBuffer = lightmap;

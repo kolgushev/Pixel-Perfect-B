@@ -2,7 +2,7 @@
 
 void main() {
    vec4 masks = vec4(0, 0, 0, 1);
-   #if defined NETHER || defined END
+   #if defined DIM_NETHER || defined DIM_END
       maskBuffer.x = 1;
    #endif
    
