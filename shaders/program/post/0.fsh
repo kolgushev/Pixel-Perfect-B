@@ -6,6 +6,7 @@
 
 layout(location = 0) out vec4 buffer0;
 layout(location = 1) out vec4 buffer1;
+layout(location = 4) out vec4 buffer4;
 layout(location = 5) out vec4 buffer5;
 layout(location = 6) out vec4 buffer6;
 layout(location = 7) out vec4 buffer7;
@@ -74,6 +75,7 @@ const bool colortex7Clear = false;
 void main() {
 
     float depth = texture(depthtex0, texcoord).r;
+    float depthO = texture(depthtex1, texcoord).r;
     
     vec4 albedo = texture(colortex0, texcoord);
     vec4 normal = texture(colortex1, texcoord);
@@ -84,10 +86,7 @@ void main() {
     vec4 generic2 = texture(colortex6, texcoord);    
     vec4 generic3 = texture(colortex7, texcoord);
 
-    // transfer transparent masks
-    if(generic.a > 0.5) {
-        masks = vec4(masks.r, coord.r, normal.a, generic.a);
-    }
+    masks.r = depthO == 1.0 ? 1 : 0;
 
     // albedo = opaque(vec3(texcoordReproject, 0));
     
@@ -179,6 +178,7 @@ void main() {
 
     buffer0 = albedo;
     buffer1 = normal;
+    buffer4 = masks;
     buffer5 = generic;
     buffer6 = generic2;
     buffer7 = generic3;

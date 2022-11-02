@@ -1,4 +1,4 @@
-// Combine passes and apply fog
+// Combine passes
 
 #define composite_pass
 
@@ -35,17 +35,7 @@ void main() {
         vec3 bounceLighting = generic3.rgb;
 
         // for physical lighting
-        #ifndef SSGI_ENABLED
-            diffuseOpaque *= lighting * ambientOcclusion;
-        #else
-            #ifdef COLORED_LIGHT_ONLY
-                diffuseOpaque *= normalize(bounceLighting + DIM_LIGHT_DESAT) * lighting * ambientOcclusion;
-            #else
-                diffuseOpaque *= fma(normalize(bounceLighting + DIM_LIGHT_DESAT), lighting, bounceLighting * BOUNCE_MULT) * ambientOcclusion;
-                // diffuseOpaque *= fma(bounceLighting, vec3(BOUNCE_MULT), lighting) * ambientOcclusion;
-                // diffuseOpaque *= bounceLighting;
-            #endif
-        #endif
+        diffuseOpaque *= lighting * ambientOcclusion;
     } else {
         diffuseOpaque = sky(diffuseOpaque, worldTime);
     }
@@ -66,4 +56,5 @@ void main() {
         // albedo = opaque1(ambientOcclusion);
         // albedo = opaque(lightmap.rgb / 10);
     buffer0 = albedo;
+    // buffer0 = masks;
 }

@@ -2,8 +2,8 @@
 position = chunkOffset + vaPosition;
 bool entityMask = masks.g < 0.5 && masks.r < 0.5;
 
-
 gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
+
 texcoord = vaUV0;
 light = vec3((LIGHT_MATRIX * vec4(vaUV2, 1, 1)).xy, 1);
 

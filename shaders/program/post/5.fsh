@@ -1,4 +1,4 @@
-// color grading
+// color grading and fog
 
 #define color_pass
 
@@ -37,7 +37,7 @@ void main() {
     // compute fog
     // float far_rcp = 1 / fogStart;
     float far_rcp = 1 / far;
-    float fog = masks.r < 0.5 ? length(generic.xz) * far_rcp : 0;
+    float fog = (masks.r < 0.5 || masks.g > 0.5) ? length(generic.xz) * far_rcp : 0;
     float maskingFog = masks.r < 0.5 ? abs(generic.y) * far_rcp : 0;
     maskingFog = pow2(clamp(maskingFog * 10 - 9, 0, 1));
     fog = clamp(pow6(fog) + maskingFog, 0, 1);
@@ -129,4 +129,5 @@ void main() {
     #endif
 
     buffer0 = albedo;
+    // buffer0 = masks;
 }
