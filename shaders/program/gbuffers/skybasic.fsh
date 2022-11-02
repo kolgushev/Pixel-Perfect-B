@@ -15,7 +15,7 @@ void main() {
         skyColorProcessed = gammaCorrection(skyColorProcessed, GAMMA);
     #endif
 	// vec3 skyColor = stars.a > 0.5 ? stars.rgb : calcSkyColor(normalize(projectInverse(vec3(position.xy / vec2(viewWidth, viewHeight) * 2 - 1, 1))));
-	vec3 skyColor = stars.a > 0.5 ? stars.rgb : skyColorProcessed * sRGB_to_ACEScg;
+	vec3 skyColor = stars.a > 0.5 ? stars.rgb : skyColorProcessed * RGB_to_ACEScg;
 
 	diffuseBuffer = opaque(skyColor);
 	normalBuffer = opaque(normal);

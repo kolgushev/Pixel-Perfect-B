@@ -11,7 +11,7 @@ vec3 vaColorProcessed = vaColor.rgb;
 #ifdef GAMMA_CORRECT_PRE
     vaColorProcessed = gammaCorrection(vaColor.rgb, GAMMA);
 #endif
-color.rgb = vaColorProcessed * sRGB_to_ACEScg;
+color.rgb = vaColorProcessed * RGB_to_ACEScg;
 
 normal = entityMask ? viewInverse(vaNormal) : vaNormal;
 // normal = vaNormal;

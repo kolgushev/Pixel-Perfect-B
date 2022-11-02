@@ -3,11 +3,21 @@
 // https://learnopengl.com/Advanced-Lighting/HDR
 
 float luminance(in vec3 v) {
-    return dot(v, LUMA_COEFFS);
+    return dot(v, LUMINANCE_COEFFS);
+}
+
+vec3 changeLuminance(in vec3 c_in, in float l_in, in float l_out) {
+    return c_in * (l_out / l_in);
 }
 
 vec3 gammaCorrection(in vec3 x, in float gammaInverse) {
     return pow(x, vec3(gammaInverse));
+}
+
+vec3 reinhard(in vec3 v) {
+    float originalLum = luminance(v);
+    float newLum = originalLum / (1.0 + originalLum);
+    return changeLuminance(v, originalLum, newLum);
 }
 
 vec3 uncharted2_tonemap_partial(in vec3 x)
@@ -47,13 +57,13 @@ vec3 aces_approx(in vec3 v)
     return v * fma(a, v, b) / fma(v, fma(c, v, d), e);
 }
 
-dvec3 rtt_and_odt_fit(in dvec3 v) {
-    dvec3 a = fma(v, v + 0.0245786, vec3(-0.000090537));
-    dvec3 b = fma(v, fma(vec3(0.983729), v, vec3(0.4329510)), vec3(0.238081));
+vec3 rtt_and_odt_fit(in vec3 v) {
+    vec3 a = fma(v, v + 0.0245786, vec3(-0.000090537));
+    vec3 b = fma(v, fma(vec3(0.983729), v, vec3(0.4329510)), vec3(0.238081));
     return a / b;
 }
 
-dvec3 aces_fitted(in dvec3 v)
+vec3 aces_fitted(in vec3 v)
 {
     v = v * ACES_INPUT;
     v = rtt_and_odt_fit(v);

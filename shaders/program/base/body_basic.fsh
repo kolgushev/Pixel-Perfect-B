@@ -4,7 +4,7 @@ vec3 albedoProcessed = albedo.rgb;
 #ifdef GAMMA_CORRECT_PRE
     albedoProcessed = gammaCorrection(albedo.rgb, GAMMA);
 #endif
-albedo.rgb = albedoProcessed * sRGB_to_ACEScg;
+albedo.rgb = albedoProcessed * RGB_to_ACEScg;
 // some layers disable alpha blending (mainly gbuffers_terrain), so we have to process cutouts here
 // it also provides a miniscule performance improvement since we don't have to calculate and apply lightmap
 if(albedo.a < alphaTestRef) discard;

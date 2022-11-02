@@ -154,8 +154,9 @@ screen.COLORS=Colors
                 option.RTT_MODE.comment=Attempts to fit the in-scene brightness values to ones your monitor can display. Basically brightness correction.
                 value.RTT_MODE.0=None
                 value.RTT_MODE.1=Divide by 16
-                value.RTT_MODE.2=Reinhardt
-                value.RTT_MODE.3=Unreal Engine 4
+                value.RTT_MODE.2=Reinhard
+                value.RTT_MODE.3=Hable (Uncharted 2)
+                value.RTT_MODE.4=ACES (Unreal Engine 4)
 
 
 

@@ -109,8 +109,8 @@
 #define smoothScale(x, m) (pow(x, m) * (m))
 #define smoothScale2(x, m) (pow(x, 1/(m)) * (m))
 
-#define LUMA_COEFFS vec3(0.2126, 0.7152, 0.0722)
-#define LUMA_COEFFS_INVERSE vec3(4.7037, 1.3982, 13.8504)
+#define LUMINANCE_COEFFS vec3(0.2126, 0.7152, 0.0722)
+#define LUMINANCE_COEFFS_INVERSE vec3(4.7037, 1.3982, 13.8504)
 #define ACES_INPUT mat3(0.59719, 0.35458, 0.04823, 0.07600, 0.90834, 0.01566, 0.02840, 0.13383, 0.83777)
 #define ACES_OUTPUT mat3(1.60475, -0.53108, -0.07367, -0.10208, 1.10813, -0.00605, -0.00327, -0.07276,  1.07602)
 
@@ -157,8 +157,8 @@
 #define USE_ACES
 // output mapping: 0:sRGB 1:ACEScg(raw) 2:ACES2065-1
 #define OUTPUT_COLORSPACE 0 // [0 1 2]
-// output mapping: 0:none 1:divide by 16 2:reinhardt 3:use normal RTT
-#define RTT_MODE 3 // [0 1 2 3]
+// output mapping: 0:none 1:divide by 16 2:reinhard 3:Hable 4:use normal RTT
+#define RTT_MODE 4 // [0 1 2 3 4]
 #define GAMMA_CORRECT
 #define GAMMA_CORRECT_PRE
 
@@ -277,26 +277,26 @@
     #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.2)
 #endif
 
-#define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * sRGB_to_ACEScg)
-#define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * sRGB_to_ACEScg)
+#define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * RGB_to_ACEScg)
+#define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * RGB_to_ACEScg)
 
 #if defined DIM_NETHER
-    #define AMBIENT_COLOR ((vec3(4.2, 1.5, 0.9) * 2.0) * sRGB_to_ACEScg)
+    #define AMBIENT_COLOR ((vec3(4.2, 1.5, 0.9) * 2.0) * RGB_to_ACEScg)
 #elif defined DIM_END
-    #define AMBIENT_COLOR ((vec3(1.5, 0.9, 2.2) * 0.5) * sRGB_to_ACEScg)
+    #define AMBIENT_COLOR ((vec3(1.5, 0.9, 2.2) * 0.5) * RGB_to_ACEScg)
 #else
-    #define AMBIENT_COLOR ((vec3(1.0, 1.0, 1.0) * 1.0) * sRGB_to_ACEScg)
+    #define AMBIENT_COLOR ((vec3(1.0, 1.0, 1.0) * 1.0) * RGB_to_ACEScg)
 #endif
 
-#define DAY_SKY_COLOR ((vec3(0.5, 0.8, 1.0) * sRGB_to_ACEScg) * SKY_LIGHT_MULT)
-#define NIGHT_SKY_COLOR ((vec3(1, 0.98, 0.95) * sRGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
-#define DAY_SKY_COLOR_VANILLA ((vec3(1) * sRGB_to_ACEScg) * SKY_LIGHT_MULT)
-#define NIGHT_SKY_COLOR_VANILLA ((vec3(1) * sRGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
-#define SUN_COLOR ((kelvinToRGB(SUN_TEMP) * sRGB_to_ACEScg) * SUN_LIGHT_MULT)
-#define MOON_COLOR ((vec3(0.8, 0.87, 1) * sRGB_to_ACEScg) * MOON_LIGHT_MULT)
-// #define MOON_COLOR ((vec3(0.95, 0.99, 1) * sRGB_to_ACEScg) * MOON_LIGHT_MULT)
+#define DAY_SKY_COLOR ((vec3(0.5, 0.8, 1.0) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
+#define NIGHT_SKY_COLOR ((vec3(1, 0.98, 0.95) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
+#define DAY_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
+#define NIGHT_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
+#define SUN_COLOR ((kelvinToRGB(SUN_TEMP) * RGB_to_ACEScg) * SUN_LIGHT_MULT)
+#define MOON_COLOR ((vec3(0.8, 0.87, 1) * RGB_to_ACEScg) * MOON_LIGHT_MULT)
+// #define MOON_COLOR ((vec3(0.95, 0.99, 1) * RGB_to_ACEScg) * MOON_LIGHT_MULT)
 
-#define NIGHT_EFFECT_HUE (vec3(0.2, 0.6, 1.0) * sRGB_to_ACEScg)
+#define NIGHT_EFFECT_HUE (vec3(0.2, 0.6, 1.0) * RGB_to_ACEScg)
 
 #define COLORS_SATURATION_WEIGHTS normalize(vec3(COLORS_SATURATION_WEIGHTS_RED, COLORS_SATURATION_WEIGHTS_GREEN, COLORS_SATURATION_WEIGHTS_BLUE))
 
@@ -313,12 +313,12 @@
 // \[ *(-?\d+\.\d+) *(-?\d+\.\d+) *(-?\d+\.\d+) *\]
 // $1, $2, $3, 
 
-    #define sRGB_to_ACEScg mat3(0.6131178129, 0.3411819959, 0.0457873443, 0.0699340823, 0.9181030375, 0.0119327755, 0.0204629926, 0.1067686634, 0.8727159106)
-    #define ACEScg_to_sRGB mat3(1.7048873310, -0.6241572745, -0.0808867739, -0.1295209353, 1.1383993260, -0.0087792418, -0.0241270599, -0.1246206123, 1.1488221099)
+    #define RGB_to_ACEScg mat3(0.6131178129, 0.3411819959, 0.0457873443, 0.0699340823, 0.9181030375, 0.0119327755, 0.0204629926, 0.1067686634, 0.8727159106)
+    #define ACEScg_to_RGB mat3(1.7048873310, -0.6241572745, -0.0808867739, -0.1295209353, 1.1383993260, -0.0087792418, -0.0241270599, -0.1246206123, 1.1488221099)
     #define ACEScg_to_ACES2065_1 mat3(0.6954522414, 0.1406786965, 0.1638690622, 0.0447945634, 0.8596711184, 0.0955343182, -0.0055258826, 0.0040252103, 1.0015006723)
 #else
-    #define sRGB_to_ACEScg transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
-    #define ACEScg_to_sRGB transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
+    #define RGB_to_ACEScg transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
+    #define ACEScg_to_RGB transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
     #define ACEScg_to_ACES2065_1 transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
 #endif
 

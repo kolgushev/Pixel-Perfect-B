@@ -58,7 +58,7 @@ void main() {
             // linearize albedo
             skyColorProcessed = gammaCorrection(skyColorProcessed, GAMMA);
         #endif
-        albedo.rgb =  mix(albedo.rgb, sky(skyColorProcessed * sRGB_to_ACEScg, worldTime), fog);
+        albedo.rgb =  mix(albedo.rgb, sky(skyColorProcessed * RGB_to_ACEScg, worldTime), fog);
     #endif
 
     #ifdef AUTO_EXPOSE
@@ -78,19 +78,22 @@ void main() {
     // expose image
     vec3 exposedColor = albedo.rgb * EXPOSURE * cameraExposure * actualScreenBrightness * exposureBias;
     
-    dvec3 tonemapped = exposedColor;
+    vec3 tonemapped = exposedColor;
 
+    // tonemap image
     #if RTT_MODE == 1
         tonemapped = tonemapped * RCP_16;
     #elif RTT_MODE == 2
-        tonemapped = 1 - (1 / (1 + tonemapped));
+        tonemapped = reinhard(tonemapped);
     #elif RTT_MODE == 3
-        tonemapped = rtt_and_odt_fit(dvec3(tonemapped) * ACEScg_to_sRGB) * sRGB_to_ACEScg;
+        tonemapped = uncharted2_filmic(tonemapped);
+    #elif RTT_MODE == 4
+        tonemapped = rtt_and_odt_fit(tonemapped * ACEScg_to_RGB) * RGB_to_ACEScg;
     #endif
 
     // Convert back to desired colorspace
     #if OUTPUT_COLORSPACE == 0
-        tonemapped = tonemapped * ACEScg_to_sRGB;
+        tonemapped = tonemapped * ACEScg_to_RGB;
     #elif OUTPUT_COLORSPACE == 2
         tonemapped = tonemapped * ACEScg_to_ACES2065_1;
     #endif
@@ -99,7 +102,7 @@ void main() {
     tonemapped = clamp(fma((tonemapped - 0.5), vec3(actualContrast), vec3(0.5)), 0, 1);
 
     // gamma correction
-    vec3 colorCorrected = vec3(tonemapped);
+    vec3 colorCorrected = tonemapped;
     #ifdef GAMMA_CORRECT
         colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
     #endif
