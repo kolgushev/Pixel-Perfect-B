@@ -1,101 +1,69 @@
-// SSAO
+// Combine passes and apply fog
 
-#define ssao_pass
+#define composite_pass
 
 #include "/lib/common_defs.glsl"
-#include "/program/base/configure_buffers.fsh"
 
-uniform int frameCounter;
-uniform float frameTimeCounter;
+layout(location = 0) out vec4 buffer0;
 
-uniform float near;
-uniform float far;
-
-uniform float aspectRatio; 
+uniform int worldTime;
 
 #include "/program/base/samplers.fsh"
-
-uniform sampler2D noisetex;
-
-uniform mat4 gbufferProjection;
-uniform mat4 gbufferModelViewInverse;
-
-#include "/lib/get_noise.fsh"
-#include "/lib/anti_banding.glsl"
-#include "/lib/get_samples.glsl"
-#include "/lib/depth_influence.glsl"
-
-vec2 ssao(float sampleMultiplier, float skyMask, vec3 normal, vec3 coord, float depth, float renderable, float pixelSize, sampler2D pixeltex, sampler2D coordtex) {
-    if(skyMask < 0.5){
-        vec2 aspectTransform = vec2(1, aspectRatio);
-
-        float averageColor = 0;
-        float totalSamples = 0;
-
-        float samples = sampleMultiplier * AO_SAMPLES;
-
-        // adapting some code from https://learnopengl.com/Advanced-Lighting/SSAO
-        for(int i = 0; i < samples; i++) {
-            vec4 noisetex = getNoise(NOISETEX_RES, i, 2);
-            // create a sample in a hemisphere
-            vec2 sampleCoord = normalize(vec2(noisetex.r - 0.5, noisetex.g - 0.5)) / aspectTransform;
-
-            // scale randomly
-            float scale = pow2(noisetex.b) * AO_RADIUS;
-
-            // apply scale
-            sampleCoord *= scale;
-
-            // apply perspective scaling
-            sampleCoord /= length(coord);
-
-            vec2 combinedCoord = texcoord + sampleCoord;
-            vec3 sampleSpace = texture(coordtex, combinedCoord).xyz;
-
-            if(distance(sampleSpace, coord) <= AO_RADIUS && clamp(combinedCoord, 0, 1) == combinedCoord) {
-                float sampleMod = antiBanding(i, samples);
-                averageColor += calcDepthInfluence(coord, sampleSpace, normal, pixelSize, false, false, true) * sampleMod;
-            }
-        }
-        return vec2(averageColor / samples, floor(samples));
-    }
-    return vec2(0);
-}
+#include "/lib/tonemapping.glsl"
 
 void main() {
-    
-    #define READ_DEPTH
-    
-    #define READ_NORMAL
-    #define OVERRIDE_NORMAL
-    
-    #define READ_MASKS
-    #define OVERRIDE_MASKS
-    
-    #define READ_GENERIC
-    #define OVERRIDE_GENERIC
-    
-    #define READ_GENERIC2
-    #define WRITE_GENERIC2
-    
-    #include "/program/base/passthrough_1.fsh"
+    vec4 albedo = texture(colortex0, texcoord);
+    vec4 lightmap = texture(colortex2, texcoord);
+    vec4 masks = vec4(texture(colortex4, texcoord));
+    vec4 generic2 = texture(colortex6, texcoord);
+    vec4 generic3 = texture(colortex7, texcoord);
 
-    if(renderable != 0) {
-        /* SSAO */
-        float sampleMultiplier = 1;
+    vec3 diffuseOpaque = albedo.rgb;
 
-        vec2 aoFull = ssao(sampleMultiplier, masks.r, normal.xyz, generic.xyz, depth, renderable, texelSurfaceArea, colortex3, colortex5);
-        float ao = aoFull.r;
-        float samples = aoFull.g;
+	if(masks.r < 0.5) {
+        #ifdef SSAO_ENABLED
+            float ambientOcclusion = 1 - clamp(generic2.b * AO_INTENSITY, 0, 1);
+            #ifdef PRETTY_AO
+                ambientOcclusion = sqrt(ambientOcclusion);
+            #endif
+        #else
+            float ambientOcclusion = 1;
+        #endif
 
-        if(TEMPORAL_UPDATE_SPEED_AO < 1) {
-            float mixFactor = generic2.g / (samples + generic2.g);
-            generic2.b = max(mix(generic2.b, ao, clamp((1 - mixFactor) * (1 - TEMPORAL_UPDATE_SPEED_AO), 0, 1)), EPSILON);
-            generic2.g = max((generic2.g + samples) * (1 - TEMPORAL_UPDATE_SPEED_AO), EPSILON);
-        } else {
-            generic2.b = ao;
-        }
+        vec3 lighting = lightmap.rgb;
+
+        vec3 bounceLighting = generic3.rgb;
+
+        // for physical lighting
+        #ifndef SSGI_ENABLED
+            diffuseOpaque *= lighting * ambientOcclusion;
+        #else
+            #ifdef COLORED_LIGHT_ONLY
+                diffuseOpaque *= normalize(bounceLighting + DIM_LIGHT_DESAT) * lighting * ambientOcclusion;
+            #else
+                diffuseOpaque *= fma(normalize(bounceLighting + DIM_LIGHT_DESAT), lighting, bounceLighting * BOUNCE_MULT) * ambientOcclusion;
+                // diffuseOpaque *= fma(bounceLighting, vec3(BOUNCE_MULT), lighting) * ambientOcclusion;
+                // diffuseOpaque *= bounceLighting;
+            #endif
+        #endif
+    } else {
+        diffuseOpaque = sky(diffuseOpaque, worldTime);
     }
 
-	#include "/program/base/passthrough_2.fsh"
+    #if defined USE_NIGHT_EFFECT && !defined NIGHT_EFFECT_AFTER_EXPOSURE
+        // apply things-look-blue-at-night-effect
+        vec3 darkLightFilter = saturateRGB(NIGHT_EFFECT_SATURATION) * (NIGHT_EFFECT_HUE * diffuseOpaque);
+
+        diffuseOpaque = mix(darkLightFilter, diffuseOpaque, clamp(nightEffect(NIGHT_EFFECT_POINT, luminance(diffuseOpaque)), 0, 1));
+    #endif
+
+    #ifndef DEBUG_VIEW
+        albedo = opaque(diffuseOpaque);
+    #endif
+
+        // albedo = opaque(diffuse / 10000);
+        // albedo = opaque(bounceLighting / 1000);
+        // albedo = opaque1(ambientOcclusion);
+        // albedo = opaque(lightmap.rgb / 10);
+    buffer0 = albedo;
 }

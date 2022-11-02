@@ -3,7 +3,12 @@
 #define data_pass
 
 #include "/lib/common_defs.glsl"
-#include "/program/base/configure_buffers.fsh"
+
+layout(location = 0) out vec4 buffer0;
+layout(location = 1) out vec4 buffer1;
+layout(location = 5) out vec4 buffer5;
+layout(location = 6) out vec4 buffer6;
+layout(location = 7) out vec4 buffer7;
 
 #include "/program/base/samplers.fsh"
 
@@ -67,34 +72,17 @@ const bool colortex7Clear = false;
 // coord.ba and lightmap.a combine to form velocity vectors
 
 void main() {
-    #define READ_DEPTH
-    
-    #define READ_ALBEDO
-    #define WRITE_ALBEDO
-    
-    #define READ_NORMAL
-    #define WRITE_NORMAL
-    
-    // #define READ_LIGHTMAP
-    // #define OVERRIDE_LIGHTMAP
 
-    #define READ_MASKS
-    #define OVERRIDE_MASKS
+    float depth = texture(depthtex0, texcoord).r;
     
-    #define READ_GENERIC
-    #define WRITE_GENERIC
-    
-    #define READ_GENERIC2
-    #define WRITE_GENERIC2
-    
-    #define READ_GENERIC3
-    #define WRITE_GENERIC3
-    
-    // these don't do anything, just flags so I know I'm modifying these here
-    #define READ_COORD
-    #define WRITE_COORD
-    
-    #include "/program/base/passthrough_1_unalign.fsh"
+    vec4 albedo = texture(colortex0, texcoord);
+    vec4 normal = texture(colortex1, texcoord);
+    // vec4 lightmap = texture(colortex2, texcoord);
+    vec4 coord = texture(colortex3, texcoord);
+    vec4 masks = vec4(texture(colortex4, texcoord));
+    vec4 generic = texture(colortex5, texcoord);
+    vec4 generic2 = texture(colortex6, texcoord);    
+    vec4 generic3 = texture(colortex7, texcoord);
 
     // transfer transparent masks
     if(generic.a > 0.5) {
@@ -130,90 +118,6 @@ void main() {
         generic.xyz = viewInverse(getViewSpace(gbufferProjectionInverse, texcoord, depth));
     }
     vec3 worldSpace = generic.xyz;
-
-    /* find facing ratio */
-
-    // convert texcoord to worldspace (essentially reconstructing a per-pixel camera view direction)
-    vec4 deprojectedTexcoordRaw = gbufferProjectionInverse * texcoordTransformed;
-    vec3 deprojectedTexcoord = filter3D(deprojectedTexcoordRaw);
-    vec4 worldSpaceTexcoordRaw = gbufferModelViewInverse * deprojectedTexcoordRaw;
-    vec3 worldSpaceTexcoord = filter3D(worldSpaceTexcoordRaw);
-
-    // get facing vector
-    vec3 screenToGeometryVector = normalize(worldSpace - worldSpaceTexcoord);
-    
-    vec3 discreteFacingRatio = abs(normalWorldSpace * screenToGeometryVector);
-    float facingRatio = abs(dot(normalWorldSpace, screenToGeometryVector));
-    discreteFacingRatio = vec3(mix(1f, discreteFacingRatio.x, abs(normalWorldSpace.x)), mix(1f, discreteFacingRatio.y, abs(normalWorldSpace.y)), mix(1f, discreteFacingRatio.z, abs(normalWorldSpace.z)));
-
-    /* find whether the texel in the current pixel is smaller than the pixel */
-
-    // create up and down vectors and affect by directionalFacingRatio 
-    vec3 tangentVector = discreteFacingRatio * viewInverse(vec3(1, 0, 0));
-    vec3 cotangentVector = discreteFacingRatio * viewInverse(vec3(0, 1, 0));
-
-    // sample a position one texel to the side of the current position
-    dvec3 tangentSample = fma(tangentVector, vec3(TEX_RES), worldSpace);
-    dvec3 cotangentSample = fma(cotangentVector, vec3(TEX_RES), worldSpace);
-
-    // map the position to xy coords on the screen
-    dvec4 pixelWidthRaw = viewTransform(tangentSample);
-    dvec4 pixelHeightRaw = viewTransform(cotangentSample);
-    float pixelWidth = float(abs(filter2D(pixelWidthRaw).x - texcoordTransformed.x));
-    float pixelHeight = float(abs(filter2D(pixelHeightRaw).y - texcoordTransformed.y));
-    
-    texelSurfaceArea = pixelWidth * pixelHeight;
-
-    // check if the resulting 2D sample position is further than a pixel away from current pos
-    bool smallerThanPixel = pixelWidth * viewHeight <= 1 && pixelHeight * viewWidth <= 1;
-
-    // albedo = opaque(mix(albedo.xyz, vec3(0), float(smallerThanPixel)));
-    // albedo = opaque1(pixelHeight * 100);
-    // albedo = opaque(tangentVector);
-
-
-    // note: texpix rendering is a term I made up that refers to one pixel being rendered per onscreen texel
-    /* Create the render and position texture maps for texpix rendering */
-    
-    texcoordMod = texcoord;
-    // 0 = don't render, 0<n<1 = render as usual, 1 = render 
-    renderable = 0.5;
-    #if defined TEX_RENDER || defined DEBUG_VIEW
-        if(!smallerThanPixel && terrainMask > 0.5) {
-            // note: pixel refers to pixels on the screen, texel refers to the pixels on a minecraft texture
-
-            // TODO: rotate virtual voxels based on normals (that's why we're taking the modulo here)
-            dvec3 cameraPosTiled = mod(cameraPosition, 1);
-
-            dvec3 currentDistMap = worldSpace + cameraPosTiled;
-
-            // create a distance map with one color per texel
-            dvec3 distanceMapMod = (floor(currentDistMap / TEX_RES) + 0.5) * TEX_RES - cameraPosTiled;
-
-            // filter sides with z-fighting
-            // ceil pixelates partially-rotated faces, floor excludes them
-            distanceMapMod = mix(worldSpace, distanceMapMod, ceil(1 - abs(normalWorldSpace)));
-
-            // convert to clipspace
-            dvec4 distanceMapModClipspace = viewTransform(distanceMapMod);
-            dvec2 texMod = vec2(filter2D(distanceMapModClipspace) * 0.5 + 0.5); 
-            vec2 resolutionScaler = vec2(viewWidth, viewHeight);
-
-            // snap value to nearest pixel
-            vec2 modRes = clamp(vec2(floor(texMod * resolutionScaler)), vec2(0), resolutionScaler);
-            vec2 res = clamp(vec2(floor(texcoord * resolutionScaler)), vec2(0), resolutionScaler);
-            
-            // determine rendered pixel (only the pixel closest to the center of the texel should be rendered)
-            if(modRes == res) renderable = 1;
-            else renderable = 0;
-            
-            texMod = (dvec2(modRes) + 0.5) / resolutionScaler;
-
-            texcoordMod = vec2(texMod);
-
-            // albedo = opaque(vec3(mix(vec2(0), texMod, renderable), 0));
-        }
-    #endif
 
     /* transfer the normal map to worldspace */
     normal = opaque(normalWorldSpace);
@@ -273,10 +177,10 @@ void main() {
     // albedo = opaque(1 - (1 / (lightmap.rgb + 1) ) );
     // albedo = opaque(normal.rgb);
 
-
-    #ifndef TEX_RENDER
-        renderable = 0.5;
-    #endif
-
-    #include "/program/base/passthrough_2.fsh"
+    buffer0 = albedo;
+    buffer1 = normal;
+    buffer5 = generic;
+    buffer6 = generic2;
+    buffer7 = generic3;
+    
 }

@@ -1,24 +1,24 @@
 #ifdef WRITE_NORMAL
-normalBuffer = normal;
+buffer1 = normal;
 #endif
 #ifdef WRITE_LIGHTMAP
-lightmapBuffer = lightmap;
+buffer2 = lightmap;
 #endif
 #ifdef WRITE_MASKS
-maskBuffer = masks;
+buffer4 = masks;
 #endif
 #ifdef WRITE_COORD
-coordBuffer = vec4(texcoordMod, renderable, texelSurfaceArea);
+buffer3 = vec4(texcoordMod, renderable, texelSurfaceArea);
 #endif
 #ifdef WRITE_ALBEDO
-diffuseBuffer = albedo;
+buffer0 = albedo;
 #endif
 #ifdef WRITE_GENERIC
-genericBuffer = generic;
+buffer5 = generic;
 #endif
 #ifdef WRITE_GENERIC2
-generic2Buffer = generic2;
+buffer6 = generic2;
 #endif
 #ifdef WRITE_GENERIC3
-generic3Buffer = generic3;
+buffer7 = generic3;
 #endif

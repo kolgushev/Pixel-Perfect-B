@@ -1,5 +1,5 @@
 // set albedo color, multiply by biome color (for grass, leaves, etc.)
-vec4 albedo = texture(texture, texcoord);
+vec4 albedo = texture2D(texture, texcoord);
 vec3 albedoProcessed = albedo.rgb;
 #ifdef GAMMA_CORRECT_PRE
     albedoProcessed = gammaCorrection(albedo.rgb, GAMMA);
@@ -12,18 +12,18 @@ if(albedo.a < alphaTestRef) discard;
 // albedo *= opaque(color.rgb * light);
 albedo *= opaque(color.rgb);
 
-diffuseBuffer = albedo;
+buffer0 = albedo;
 // diffuseBuffer = vec4(light / 16, 0.1);
 // we can reconstruct the third normal channel from the other two and a sign
-normalBuffer = vec4(normal.xyz, masks.b);
+buffer1 = vec4(normal.xyz, masks.b);
 // if(albedo.a >= 1 - EPSILON) genericBuffer = opaque(position);
-genericBuffer = vec4(position, masks.a);
+buffer5 = vec4(position, masks.a);
 
 // use coordbuffer instead of one of the generics since we don't want to clear them
-coordBuffer = masks.r > 0.5 ? vec4(masks.g, 0, 0, 0) : vec4(masks.g, velocity.xyz);
+buffer3 = masks.r > 0.5 ? vec4(masks.g, 0, 0, 0) : vec4(masks.g, velocity.xyz);
 // lightmapBuffer = vec4(light, fma(albedo.a, 0.25, 0.3));
-lightmapBuffer = vec4(light, albedo.a * fma(dot(albedo.rgb, vec3(SQRT_3)), 0.5, 0.5));
+buffer2 = vec4(light, albedo.a * fma(dot(albedo.rgb, vec3(SQRT_3)), 0.5, 0.5));
 
 #ifndef transparent
-    maskBuffer = vec4(masks);
+    buffer4 = vec4(masks);
 #endif
