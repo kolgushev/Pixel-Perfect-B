@@ -1,12 +1,10 @@
 #include "/lib/common_defs.glsl"
-#include "/program/base/configure_buffers.fsh"
+
+layout(location = 0) out vec4 buffer0;
 
 #include "/program/base/samplers.fsh"
 
 void main() {
-    #define READ_ALBEDO
-    #define WRITE_ALBEDO
-
-    #include "/program/base/passthrough_1.fsh"
-    #include "/program/base/passthrough_2.fsh"
+    vec4 albedo = texture(colortex0, texcoord);
+    buffer0 = albedo;
 }

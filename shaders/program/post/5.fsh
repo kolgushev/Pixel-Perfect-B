@@ -3,7 +3,8 @@
 #define color_pass
 
 #include "/lib/common_defs.glsl"
-#include "/program/base/configure_buffers.fsh"
+
+layout(location = 0) out vec4 buffer0;
 
 uniform float screenBrightness;
 uniform mat4 gbufferModelView;
