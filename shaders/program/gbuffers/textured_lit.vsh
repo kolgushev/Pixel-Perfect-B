@@ -1,7 +1,7 @@
 #include "/program/base/setup.vsh"
 
 void main() {
-   masks = vec4(0, 0, 0, 0);
+   masks = vec4(0, 0, 1, 0);
    
    #include "/program/base/body_basic.vsh"
 }
