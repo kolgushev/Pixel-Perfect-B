@@ -13,10 +13,7 @@ albedo *= opaque(masks.b > 0.5 ? color.rgb : color.rgb * light);
 // albedo *= opaque(color.rgb);
 
 buffer0 = albedo;
-// diffuseBuffer = vec4(light / 16, 0.1);
-// we can reconstruct the third normal channel from the other two and a sign
-buffer1 = vec4(normal.xyz, 1);
-// use coordbuffer instead of one of the generics since we don't want to clear them
+buffer1 = opaque(normal);
 buffer2 = opaque(position);
 buffer3 = masks.r > 0.5 ? vec4(0, 0, 0, 0) : vec4(0, velocity.xyz);
 buffer4 = masks;
