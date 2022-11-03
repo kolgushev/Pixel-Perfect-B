@@ -9,7 +9,7 @@ albedo.rgb = albedoProcessed * RGB_to_ACEScg;
 // it also provides a miniscule performance improvement since we don't have to calculate and apply lightmap
 if(albedo.a < alphaTestRef) discard;
 
-albedo *= opaque(masks.b > 0.5 ? color.rgb : color.rgb * light);
+albedo *= opaque(color.rgb * light);
 // albedo *= opaque(color.rgb);
 
 buffer0 = albedo;
