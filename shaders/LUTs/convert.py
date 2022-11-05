@@ -21,6 +21,21 @@ if len(file_names) >= 1:
     meta_domain_max_list = re.findall(r'^DOMAIN_MAX ([\d\. ]+)$', raw_text, re.M)
     columns = re.findall(r'^ *([\d\. e+-]+) *$', raw_text, re.M)
 
+    # find custom options
+    raw_text_lower = raw_text.lower()
+    viewing_transform = re.findall(r'^# *viewing transform *: *(\d+) *$', raw_text_lower, re.M)
+    output_colorspace = re.findall(r'^# *output colorspace *: *(\d+) *$', raw_text_lower, re.M)
+    gamma_correction = re.findall(r'^# *gamma correction *: *(\w+) *$', raw_text_lower, re.M)
+    if viewing_transform:
+        print('found viewing transform setting')
+        viewing_transform = viewing_transform[0]
+    if output_colorspace:
+        print('found output colorspace setting')
+        output_colorspace = output_colorspace[0]
+    if gamma_correction:
+        print('found gamma correction setting')
+        gamma_correction = gamma_correction[0]
+
     # check for linear mapping (to avoid unnecessary calculations)
     meta_domain_min = re.findall(r'\d+(?:\.\d+)?', meta_domain_min_list[0]) if len(meta_domain_min_list) >= 1 else ['0.0', '0.0', '0.0']
     meta_domain_max = re.findall(r'\d+(?:\.\d+)?', meta_domain_max_list[0]) if len(meta_domain_max_list) >= 1 else ['1.0', '1.0', '1.0']
@@ -61,10 +76,9 @@ if len(file_names) >= 1:
         meta_domain_add_str = ", ".join(meta_domain_min)
         meta_domain_mult_str = ", ".join(meta_domain_mult)
 
-
         # write metadata to file
         lut_meta = open('lut_meta.glsl', 'w')
-        lut_meta.write(f"""\
+        write_str = f"""\
 #define LUT_DIM {meta_dimensions}
 #define LUT_SIZE {meta_size}
 #define LUT_SIZE_RCP {1 / meta_size}
@@ -72,7 +86,18 @@ if len(file_names) >= 1:
 {"" if linear_mapping else "// "}#define LUT_LINEAR_MAPPING
 #define LUT_DOMAIN_ADD vec3({meta_domain_add_str.strip()})
 #define LUT_DOMAIN_MULT vec3({meta_domain_mult_str.strip()})
-#define LUT_RANGE_MULT {1 / meta_max_color}""")
+#define LUT_RANGE_MULT {1 / meta_max_color}
+
+"""
+        
+        if viewing_transform:
+            write_str += f'#define LUT_LMT_MODE {viewing_transform}\n'
+        if output_colorspace:
+            write_str += f'#define LUT_OUTPUT_COLORSPACE {output_colorspace}\n'
+        if gamma_correction:
+            write_str += f'#define LUT_OVERRIDE_GAMMA_CORRECT\n{"" if gamma_correction.lower() == "on" else "// "}#define LUT_GAMMA_CORRECT'
+
+        lut_meta.write(write_str)
 
         # reformat data into 3D array to use as intake for openCV
         img = []

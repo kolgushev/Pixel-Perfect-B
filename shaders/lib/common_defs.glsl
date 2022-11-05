@@ -155,13 +155,46 @@
 #define SKY_SATURATION 1.0 // [0.5 0.75 1.0 1.13 1.69 2.53 3.8 5.7]
 #define SKY_BRIGHTNESS 1.0 // [1.0 1.2 1.4 1.6 1.8 2.0 2.0 2.2 2.4 2.6 2.8 3.0]
 
+#define CONTRAST 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+#define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+#define USE_LUT
+// #define RAW_OUT
+
 #define USE_ACES
 // output mapping: 0:sRGB 1:ACEScg(raw) 2:ACES2065-1
-#define OUTPUT_COLORSPACE 0 // [0 1 2]
-// output mapping: 0:none 1:divide by 16 2:reinhard 3:Hable 4:use normal RTT
-#define RTT_MODE 4 // [0 1 2 3 4]
-#define GAMMA_CORRECT
-#define GAMMA_CORRECT_PRE
+#define USER_OUTPUT_COLORSPACE 0 // [0 1 2]
+// output mapping: 0:none 1:divide by 16 2:reinhard 3:Hable 4:ACES/UE4 (default)
+#define USER_LMT_MODE 4 // [0 1 2 3 4]
+#define USER_GAMMA_CORRECT
+
+#define GAMMA_CORRECT_PRE 
+
+#if defined USE_LUT
+    #if defined LUT_OVERRIDE_GAMMA_CORRECT && defined LUT_GAMMA_CORRECT
+        #define GAMMA_CORRECT
+    #elif !defined LUT_OVERRIDE_GAMMA_CORRECT && defined USER_GAMMA_CORRECT
+        #define GAMMA_CORRECT
+    #endif
+    
+    #ifdef LUT_OUTPUT_COLORSPACE
+        #define OUTPUT_COLORSPACE LUT_OUTPUT_COLORSPACE
+    #else
+        #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACE
+    #endif
+    #ifdef LUT_LMT_MODE
+        #define LMT_MODE LUT_LMT_MODE
+    #else
+        #define LMT_MODE USER_LMT_MODE
+    #endif
+
+#else
+    #ifdef USER_GAMMA_CORRECT
+        #define GAMMA_CORRECT
+    #endif
+    
+    #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACES
+    #define LMT_MODE USER_LMT_MODE
+#endif
 
 // #define USE_NIGHT_EFFECT
 #define NIGHT_EFFECT_SATURATION 0.3 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
@@ -194,11 +227,6 @@
 #define MIN_EXPOSURE 0.26 // [0.01 0.016 0.1 0.26 0.63 1.3 2.0 2.4 4.1 6.6 10.0]
 #define MAX_EXPOSURE 20.0 // [1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 6.0 7.0 8.0 9.0 10.0 11.0 15.0 20.0 23.0 25.0 27.0 30.0 33.0 36.0 39.0 42.0]
 #define EXPOSURE_BOUNDS 0.48 // [0.02 0.052 0.126 0.2 0.26 0.48 0.82 1.32 2.0]
-
-#define CONTRAST 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
-#define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
-#define USE_LUT
-// #define RAW_OUT
 
 #define DIM_LIGHT_DESAT_USER 0.026 // [0.01 0.026 0.063 0.13 0.24 0.41 0.66 1.0]
 #define TEMPORAL_UPDATE_SPEED_USER 0.0026 // [0.0 0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1 0.13 0.24 0.41 0.66 1.0]

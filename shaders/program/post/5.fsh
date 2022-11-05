@@ -72,13 +72,13 @@ void main() {
     vec3 tonemapped = exposedColor;
 
     // tonemap image
-    #if RTT_MODE == 1
+    #if LMT_MODE == 1
         tonemapped = tonemapped * RCP_16;
-    #elif RTT_MODE == 2
+    #elif LMT_MODE == 2
         tonemapped = reinhard(tonemapped);
-    #elif RTT_MODE == 3
+    #elif LMT_MODE == 3
         tonemapped = uncharted2_filmic(tonemapped);
-    #elif RTT_MODE == 4
+    #elif LMT_MODE == 4
         tonemapped = rtt_and_odt_fit(tonemapped * ACEScg_to_RGB) * RGB_to_ACEScg;
     #endif
 
