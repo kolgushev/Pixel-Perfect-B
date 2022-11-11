@@ -11,11 +11,11 @@ albedo.rgb = albedoProcessed * RGB_to_ACEScg;
 // it also provides a miniscule performance improvement since we don't have to calculate and apply lightmap
 if(albedo.a < alphaTestRef) discard;
 
-albedo *= opaque(masks.r > 0.5 ? color.rgb : color.rgb * light);
+albedo *= opaque(masks.r > 0.5 ? color.rgb : color.rgb * light.rgb);
 // albedo *= opaque(color.rgb);
 
 buffer0 = albedo;
 buffer1 = opaque(normal);
 buffer2 = opaque(position);
-buffer3 = vec4(0, velocity.xyz);
+buffer3 = vec4(light.w, velocity.xyz);
 buffer4 = masks;

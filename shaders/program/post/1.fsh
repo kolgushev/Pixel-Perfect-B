@@ -71,24 +71,20 @@ void main() {
     vec4 masks = vec4(texture(colortex4, texcoord));
     vec4 generic = texture(colortex5, texcoord);
     vec4 generic2 = texture(colortex6, texcoord);
-    
-    #include "/program/base/passthrough_1.fsh"
 
-    if(renderable != 0) {
-        /* SSAO */
-        float sampleMultiplier = 1;
+    /* SSAO */
+    float sampleMultiplier = 1;
 
-        vec2 aoFull = ssao(sampleMultiplier, masks.r, normal.xyz, generic.xyz, depth, renderable, texelSurfaceArea, colortex3, colortex5);
-        float ao = aoFull.r;
-        float samples = aoFull.g;
+    vec2 aoFull = ssao(sampleMultiplier, masks.r, normal.xyz, generic.xyz, depth, 1.0, 0.0, colortex3, colortex5);
+    float ao = aoFull.r;
+    float samples = aoFull.g;
 
-        if(TEMPORAL_UPDATE_SPEED_AO < 1) {
-            float mixFactor = generic2.g / (samples + generic2.g);
-            generic2.b = max(mix(generic2.b, ao, clamp((1 - mixFactor) * (1 - TEMPORAL_UPDATE_SPEED_AO), 0, 1)), EPSILON);
-            generic2.g = max((generic2.g + samples) * (1 - TEMPORAL_UPDATE_SPEED_AO), EPSILON);
-        } else {
-            generic2.b = ao;
-        }
+    if(TEMPORAL_UPDATE_SPEED_AO < 1) {
+        float mixFactor = generic2.g / (samples + generic2.g);
+        generic2.b = max(mix(generic2.b, ao, clamp((1 - mixFactor) * (1 - TEMPORAL_UPDATE_SPEED_AO), 0, 1)), EPSILON);
+        generic2.g = max((generic2.g + samples) * (1 - TEMPORAL_UPDATE_SPEED_AO), EPSILON);
+    } else {
+        generic2.b = ao;
     }
 
 	buffer5 = generic;

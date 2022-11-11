@@ -37,17 +37,44 @@ void main() {
     // compute fog
     // float far_rcp = 1 / fogStart;
     float far_rcp = 1 / far;
-    float fog = (masks.r < 0.5 || masks.g > 0.5) ? length(generic.xz) * far_rcp : 0;
-    float maskingFog = masks.r < 0.5 ? abs(generic.y) * far_rcp : 0;
-    maskingFog = pow2(clamp(maskingFog * 10 - 9, 0, 1));
-    fog = clamp(pow6(fog) + maskingFog, 0, 1);
+    float fog = length(generic.xz);
+    float maskingFog = abs(generic.y);
+    // float maskingFog = 0.0;
+        if(masks.r > 0.5 && masks.g < 0.5) {
+            #if defined DIM_OVERWORLD
+                fog = 0.0;
+                maskingFog = 0.0;
+            #else
+                fog = far;
+                maskingFog = far;
+            #endif
+        }
+
+    #if defined DIM_NETHER || defined DIM_END
+        vec3 skyColorProcessed = fogColor;
+    #else
+        vec3 skyColorProcessed = skyColor;
+    #endif
+
+    #ifdef GAMMA_CORRECT_PRE
+        // linearize albedo
+        skyColorProcessed = gammaCorrection(skyColorProcessed, GAMMA);
+    #endif
+
+    #ifdef ATMOSPHERIC_FOG
+        float atmosPhog = (masks.r < 0.5 || masks.g > 0.5) ? length(generic.xyz) * ATOMSPHERIC_FOG_DENSITY : 0;
+        atmosPhog = clamp(atmosPhog / (1.0 + atmosPhog), 0, 1);
+        
+        vec3 atmosPhogColor = ATMOSPHERIC_FOG_COLOR;
+    #endif
+    
+    maskingFog = clamp(sqrt(fma(maskingFog * far_rcp, 7, -6)), 0, 1);
+    fog = clamp(pow7(fog * far_rcp) + maskingFog, 0, 1);
 
     // apply fog
     #ifndef DEBUG_VIEW
-        vec3 skyColorProcessed = skyColor; 
-        #ifdef GAMMA_CORRECT_PRE
-            // linearize albedo
-            skyColorProcessed = gammaCorrection(skyColorProcessed, GAMMA);
+        #ifdef ATMOSPHERIC_FOG
+            albedo.rgb = mix(albedo.rgb, atmosPhogColor, atmosPhog);
         #endif
         albedo.rgb =  mix(albedo.rgb, sky(skyColorProcessed * RGB_to_ACEScg, worldTime), fog);
     #endif
@@ -129,5 +156,4 @@ void main() {
     #endif
 
     buffer0 = albedo;
-    // buffer0 = masks;
 }

@@ -17,6 +17,7 @@
 #define ISQRT_3 0.57735026919
 #define RCP_3 0.33333333333
 #define RCP_7 0.14285714285
+#define RCP_8 0.125
 #define RCP_16 0.0625
 
 #define GAMMA 2.2
@@ -281,9 +282,9 @@
 #ifndef REAL_LIGHTING
     #define SUN_LIGHT_MULT (5.0 * SUN_LIGHT_MULT_USER)
     #define SKY_LIGHT_MULT (3.0 * SKY_LIGHT_MULT_USER)
-    #define SKY_LIGHT_MULT_OVERCAST (0.3 * SKY_LIGHT_MULT_OVERCAST_USER)
-    #define MOON_LIGHT_MULT (0.2 * MOON_LIGHT_MULT_USER)
-    #define NIGHT_SKY_LIGHT_MULT (0.1 * NIGHT_SKY_LIGHT_MULT_USER)
+    #define SKY_LIGHT_MULT_OVERCAST (2.0 * SKY_LIGHT_MULT_OVERCAST_USER)
+    #define MOON_LIGHT_MULT (0.7 * MOON_LIGHT_MULT_USER)
+    #define NIGHT_SKY_LIGHT_MULT (0.2 * NIGHT_SKY_LIGHT_MULT_USER)
     #define BLOCK_LIGHT_MULT (5.0 * BLOCK_LIGHT_MULT_USER)
 #else
     // in lumens per meter² (lux) / 1000
@@ -306,23 +307,41 @@
     #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.2)
 #endif
 
+#define ATMOSPHERIC_FOG_USER
+#define ATOMSPHERIC_FOG_DENSITY 0.001 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
+
 #define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * RGB_to_ACEScg)
 #define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * RGB_to_ACEScg)
 
 #if defined DIM_NETHER
-    #define AMBIENT_COLOR ((vec3(4.2, 1.5, 0.9) * 2.0) * RGB_to_ACEScg)
+    #ifdef ATMOSPHERIC_FOG_USER
+        #define ATMOSPHERIC_FOG
+    #endif
+    #define BASE_COLOR (vec3(4.2, 1.5, 0.9) * RGB_to_ACEScg)
+    #define AMBIENT_COLOR (BASE_COLOR * 2.0)
+    // The color is intentionally unconverted here to get a much more vibrant color than sRGB would allow
+    // (that is the main benefit of an ACES workflow, after all)
+    #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.3, 0.1))
 #elif defined DIM_END
-    #define AMBIENT_COLOR ((vec3(1.5, 0.9, 2.2) * 0.5) * RGB_to_ACEScg)
+    #ifdef ATMOSPHERIC_FOG_USER
+        #define ATMOSPHERIC_FOG
+    #endif
+    #define BASE_COLOR (vec3(1.5, 0.9, 2.2) * RGB_to_ACEScg)
+    #define AMBIENT_COLOR (BASE_COLOR * 0.5)
+    #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 1.0)
 #else
-    #define AMBIENT_COLOR ((vec3(1.0, 1.0, 1.0) * 1.0) * RGB_to_ACEScg)
+    #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
+    #define AMBIENT_COLOR (BASE_COLOR * 1.0)
+    // #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
 #endif
 
 #define DAY_SKY_COLOR ((vec3(0.5, 0.8, 1.0) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
-#define NIGHT_SKY_COLOR ((vec3(1, 0.98, 0.95) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
+#define NIGHT_SKY_COLOR ((vec3(0.5, 0.6, 1.0) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
+// #define NIGHT_SKY_COLOR ((vec3(1, 0.98, 0.95) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
 #define DAY_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
 #define NIGHT_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
 #define SUN_COLOR ((kelvinToRGB(SUN_TEMP) * RGB_to_ACEScg) * SUN_LIGHT_MULT)
-#define MOON_COLOR ((vec3(0.8, 0.87, 1) * RGB_to_ACEScg) * MOON_LIGHT_MULT)
+#define MOON_COLOR ((vec3(0.5, 0.66, 1.0) * RGB_to_ACEScg) * MOON_LIGHT_MULT)
 // #define MOON_COLOR ((vec3(0.95, 0.99, 1) * RGB_to_ACEScg) * MOON_LIGHT_MULT)
 
 #define NIGHT_EFFECT_HUE (vec3(0.2, 0.6, 1.0) * RGB_to_ACEScg)

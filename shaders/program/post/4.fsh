@@ -18,8 +18,6 @@ uniform sampler2D noisetex;
 void main() {
     vec4 generic = texture(colortex5, texcoord);
 
-    #include "/program/base/passthrough_1.fsh"
-
     #if defined AUTO_EXPOSE || defined DEBUG_VIEW
         if(renderable != 0) {
             vec2 pixelSize = 0.5 / vec2(viewWidth, viewHeight);

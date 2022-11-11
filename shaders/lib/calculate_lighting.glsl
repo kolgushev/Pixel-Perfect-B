@@ -3,7 +3,7 @@
 #include "/lib/color_manipulation.glsl"
 
 // Input is not adjusted lightmap coordinates
-vec4 getLightColor(in vec2 lightmap, in float sunShading, in float moonShading, in float moonPhase, in int time, in float rain, in float skyShading, in float ambientLightMult, in float minLightMult) {
+vec4 getLightColor(in vec2 lightmap, in float sunShading, in float moonShading, in int moonPhase, in int time, in float rain, in float skyShading, in float ambientLightMult, in float minLightMult) {
     float skyTransition = skyTime(time);
 
     // TODO: find out why this is failing
@@ -23,7 +23,7 @@ vec4 getLightColor(in vec2 lightmap, in float sunShading, in float moonShading, 
 
     vec3 torchLighting = pow2(lightmap.x) * torchColor * BLOCK_LIGHT_MULT;
 
-    vec3 moonLighting = moonShading * moonPhase * MOON_COLOR;
+    vec3 moonLighting = moonShading * fma(cos(float(moonPhase) * 2 * PI * RCP_8), 0.3, 0.7) * MOON_COLOR;
     vec3 sunLighting = sunShading * SUN_COLOR;
     vec3 skyLighting = pow2(lightmap.y) * fma(inversesqrt(rain + 1), 3.4, -2.4) * mix(moonLighting, sunLighting, skyTransition);
     vec3 actualSkyColor = mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS), mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS), skyTransition);

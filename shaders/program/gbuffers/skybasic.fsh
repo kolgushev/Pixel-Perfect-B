@@ -19,7 +19,7 @@ void main() {
 
 	buffer0 = opaque(skyColor);
 	buffer1 = opaque(normal);
-	buffer2 = vec4(light, 0);
+	buffer2 = light;
 	buffer4 = vec4(1, 0, 0, 0);
 	buffer5.xyz = position;
 

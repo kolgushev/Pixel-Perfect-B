@@ -5,7 +5,7 @@ bool entityMask = masks.g < 0.5 && masks.r < 0.5;
 gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
 
 texcoord = vaUV0;
-light = vec3((LIGHT_MATRIX * vec4(vaUV2, 1, 1)).xy, 1);
+light = vec4((LIGHT_MATRIX * vec4(vaUV2, 1, 1)).xy, 1, 1);
 
 vec3 vaColorProcessed = vaColor.rgb;
 #ifdef GAMMA_CORRECT_PRE
@@ -40,8 +40,8 @@ if(masks.b > 1.5) {
     lightAdjusted = vec2(1.0, lightAdjusted.g - 1);
 }
 
-vec4 lightColor = getLightColor(lightAdjusted, sunShading, moonShading, moonPhase * RCP_7, worldTime, rainStrength, skyAmount, AMBIENT_LIGHT_MULT, MIN_LIGHT_MULT);
+vec4 lightColor = getLightColor(lightAdjusted, sunShading, moonShading, moonPhase, worldTime, rainStrength, skyAmount, AMBIENT_LIGHT_MULT, MIN_LIGHT_MULT);
 lightColor.rgb *= 1 - (1 - pow2(vaColor.a)) * VANILLA_AO_INTENSITY;
 
 // store calculated data in lightmap
-light = lightColor.rgb;
+light = vec4(lightColor.rgb, lightAdjusted.y);

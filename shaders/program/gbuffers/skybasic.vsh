@@ -8,7 +8,7 @@ void main() {
 
 	gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
 	texcoord = vaUV0;
-	light = vec3((LIGHT_MATRIX * vec4(vaUV2, 1, 1)).xy, 1);
+	light = vec4((LIGHT_MATRIX * vec4(vaUV2, 1, 1)).xy, 1, 1);
 	color = vaColor;
 	normal = vaNormal;
 
