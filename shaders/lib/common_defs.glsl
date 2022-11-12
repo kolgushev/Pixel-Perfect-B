@@ -154,7 +154,7 @@
 #define COLORS_SATURATION_WEIGHTS_BLUE 1.0 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
 #define SKY_SATURATION 1.0 // [0.5 0.75 1.0 1.13 1.69 2.53 3.8 5.7]
-#define SKY_BRIGHTNESS 1.0 // [1.0 1.2 1.4 1.6 1.8 2.0 2.0 2.2 2.4 2.6 2.8 3.0]
+#define SKY_BRIGHTNESS_USER 1.0 // [1.0 1.2 1.4 1.6 1.8 2.0 2.0 2.2 2.4 2.6 2.8 3.0]
 
 #define CONTRAST 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 #define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
@@ -193,7 +193,7 @@
         #define GAMMA_CORRECT
     #endif
     
-    #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACES
+    #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACE
     #define LMT_MODE USER_LMT_MODE
 #endif
 
@@ -233,7 +233,7 @@
 #define TEMPORAL_UPDATE_SPEED_USER 0.0026 // [0.0 0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1 0.13 0.24 0.41 0.66 1.0]
 #define MAX_LIGHT_PROPAGATION 16 // [3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24]
 #define LIT_MULTIPLIER 2.0 // [0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.0 2.2 2.4 2.6 2.8 3.0]
-// #define STREAMER_MODE
+#define STREAMER_MODE 1 // [0 1 2 3]
 
 #define SSGI_ENABLED
 #define USE_SECONDARY_BOUNCES
@@ -284,7 +284,7 @@
     #define SKY_LIGHT_MULT (3.0 * SKY_LIGHT_MULT_USER)
     #define SKY_LIGHT_MULT_OVERCAST (2.0 * SKY_LIGHT_MULT_OVERCAST_USER)
     #define MOON_LIGHT_MULT (0.7 * MOON_LIGHT_MULT_USER)
-    #define NIGHT_SKY_LIGHT_MULT (0.2 * NIGHT_SKY_LIGHT_MULT_USER)
+    #define NIGHT_SKY_LIGHT_MULT (0.6 * NIGHT_SKY_LIGHT_MULT_USER)
     #define BLOCK_LIGHT_MULT (5.0 * BLOCK_LIGHT_MULT_USER)
 #else
     // in lumens per meter² (lux) / 1000
@@ -299,12 +299,18 @@
 
 #define MAX_LIGHT_PROPAGATION_INVERSE (1 / MAX_LIGHT_PROPAGATION)
 
-#ifdef STREAMER_MODE
+#if STREAMER_MODE == 0
     #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.7)
     #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.7)
-#else
+#elif STREAMER_MODE == 1
+    #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.4)
+    #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.34)
+#elif STREAMER_MODE == 2
     #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.2)
     #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.2)
+#elif STREAMER_MODE == 3
+    #define MIN_LIGHT_MULT 0.0
+    #define AMBIENT_LIGHT_MULT 0.0
 #endif
 
 #define ATMOSPHERIC_FOG_USER
@@ -317,22 +323,28 @@
     #ifdef ATMOSPHERIC_FOG_USER
         #define ATMOSPHERIC_FOG
     #endif
-    #define BASE_COLOR (vec3(4.2, 1.5, 0.9) * RGB_to_ACEScg)
-    #define AMBIENT_COLOR (BASE_COLOR * 2.0)
+    #define BASE_COLOR (vec3(1.0, 0.55, 0.4) * RGB_to_ACEScg)
+    #define AMBIENT_COLOR (BASE_COLOR * 5.0)
     // The color is intentionally unconverted here to get a much more vibrant color than sRGB would allow
     // (that is the main benefit of an ACES workflow, after all)
-    #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.3, 0.1))
+    #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.1, 0.04))
+
+    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
 #elif defined DIM_END
     #ifdef ATMOSPHERIC_FOG_USER
         #define ATMOSPHERIC_FOG
     #endif
-    #define BASE_COLOR (vec3(1.5, 0.9, 2.2) * RGB_to_ACEScg)
+    #define BASE_COLOR (vec3(0.9, 0.7, 1.2) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 0.5)
-    #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 1.0)
+    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 3.0)
+    #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.05 * SKY_BRIGHTNESS)
+
 #else
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
     // #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
+
+    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
 #endif
 
 #define DAY_SKY_COLOR ((vec3(0.5, 0.8, 1.0) * RGB_to_ACEScg) * SKY_LIGHT_MULT)

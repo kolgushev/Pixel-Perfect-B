@@ -41,7 +41,7 @@ void main() {
     float maskingFog = abs(generic.y);
     // float maskingFog = 0.0;
         if(masks.r > 0.5 && masks.g < 0.5) {
-            #if defined DIM_OVERWORLD
+            #if defined DIM_OVERWORLD || defined DIM_END
                 fog = 0.0;
                 maskingFog = 0.0;
             #else
@@ -50,7 +50,7 @@ void main() {
             #endif
         }
 
-    #if defined DIM_NETHER || defined DIM_END
+    #if defined DIM_NETHER
         vec3 skyColorProcessed = fogColor;
     #else
         vec3 skyColorProcessed = skyColor;
@@ -66,9 +66,12 @@ void main() {
         atmosPhog = clamp(atmosPhog / (1.0 + atmosPhog), 0, 1);
         
         vec3 atmosPhogColor = ATMOSPHERIC_FOG_COLOR;
+        #if defined DIM_NETHER
+            skyColorProcessed = ATMOSPHERIC_FOG_COLOR;
+        #endif
     #endif
     
-    maskingFog = clamp(sqrt(fma(maskingFog * far_rcp, 7, -6)), 0, 1);
+    maskingFog = pow2(clamp(fma(maskingFog * far_rcp, 7, -6), 0, 1));
     fog = clamp(pow7(fog * far_rcp) + maskingFog, 0, 1);
 
     // apply fog
@@ -151,7 +154,6 @@ void main() {
     vec4 finalColor = opaque(colorCorrected);
 
     #ifndef DEBUG_VIEW
-        albedo = opaque(exposedColor);
         albedo = finalColor;
     #endif
 

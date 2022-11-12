@@ -1,21 +1,21 @@
+Use 3D .dat for LUTs
+Organize buffers
+Foveated Rendering
+Terrain fades into sky texture instead of solid color
+Fix clouds
+Underwater effects
+
 Add reveal light cloning
-Separate USE_BUFFER into READ_BUFFER and WRITE_BUFFER
 Improve makeCells() (create more square-ish cells)
 Cool lightning effects
-LUTs
 Optimize cell function
-Fix clouds
-Port GI calculations to compute shader
 Use cubemap for reflections and GI
 Implement gaussian and bilateral blur
 Add texpix support for rotated faces
 Add stereoscopic rendering (3D effect)
-Adjust albedo for more realistic behavior
 Add base files for compute shaders
-GI reverse sampling using 'coherent'
+GI reverse sampling using 'coherent'?
 Add fresnel
-Add GI-based Screen Space Reflections
-Underwater effects
 
 continuous TODO:s
 Use fma wherever possible
