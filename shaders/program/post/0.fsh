@@ -59,6 +59,9 @@ const bool colortex6Clear = false;
 
 const int colortex7Format = RGBA16F;
 const bool colortex7Clear = false;
+
+const int shadowtex0Format = RGBA16F;
+const bool shadowtex0Clear = false;
 */
 
 #include "/lib/to_viewspace.glsl"
@@ -87,7 +90,7 @@ void main() {
 
     masks.r = depthO == 1.0 ? 1 : 0;
 
-    // albedo = opaque(vec3(texcoordReproject, 0));
+    // albedo = opaque(texture(shadowtex0, texcoord).rgb);
     
     /* correct textures */
     float terrainMask = float(masks.g);

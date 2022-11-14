@@ -13,6 +13,7 @@ if(albedo.a < alphaTestRef) discard;
 
 albedo *= opaque(masks.r > 0.5 ? color.rgb : color.rgb * light.rgb);
 // albedo *= opaque(color.rgb);
+// albedo = opaque1(light.a);
 
 buffer0 = albedo;
 buffer1 = opaque(normal);

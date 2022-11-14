@@ -3,17 +3,17 @@
 #include "/lib/color_manipulation.glsl"
 
 // Input is not adjusted lightmap coordinates
-vec4 getLightColor(in vec2 lightmap, in float sunShading, in float moonShading, in int moonPhase, in int time, in float rain, in float skyShading, in float ambientLightMult, in float minLightMult) {
+vec3 getLightColor(in vec2 lightmap, in float sunShading, in float moonShading, in int moonPhase, in int time, in float rain, in float skyShading, in float ambientLightMult, in float minLightMult) {
     float skyTransition = skyTime(time);
 
     // TODO: find out why this is failing
-    // #if VANILLA_COLORS == 0.0
-    //     vec3 torchColor = vec3(TORCH_TINT);
+    // #if VANILLA_COLORS == 0
+    //     vec3 torchColor = TORCH_TINT;
     // #else
     //     vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), VANILLA_COLORS);
     // #endif
 
-    vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), 0);
+    vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), VANILLA_COLORS);
 
     vec3 skyColor = mix(mix(NIGHT_SKY_COLOR, DAY_SKY_COLOR, skyTransition), mix(NIGHT_SKY_COLOR_VANILLA, DAY_SKY_COLOR_VANILLA, skyTransition), VANILLA_COLORS);
 
@@ -39,10 +39,10 @@ vec4 getLightColor(in vec2 lightmap, in float sunShading, in float moonShading, 
 
     // Add the lighting togther to get the total contribution of the lightmap the final color.
     vec3 bounceAffectedLighting = skyLighting;
-    vec3 lightmapLighting = max(minLight, ambientLight + torchLighting + ambientLighting + bounceAffectedLighting);
+    vec3 lightmapLighting = max(minLight, ambientLight * (1 - clamp(lightmap.y * 3, 0, 1)) + torchLighting + ambientLighting + bounceAffectedLighting);
 
     // Return the value
-    return vec4(lightmapLighting, dot(bounceAffectedLighting * LIT_MULTIPLIER_INVERSE, vec3(1)) * RCP_3);
+    return lightmapLighting;
 }
 
 float normalLighting(in vec3 normal, in vec3 lightPos) {

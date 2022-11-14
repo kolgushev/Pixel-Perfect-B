@@ -40,8 +40,8 @@ if(masks.b > 1.5) {
     lightAdjusted = vec2(1.0, lightAdjusted.g - 1);
 }
 
-vec4 lightColor = getLightColor(lightAdjusted, sunShading, moonShading, moonPhase, worldTime, rainStrength, skyAmount, AMBIENT_LIGHT_MULT, MIN_LIGHT_MULT);
-lightColor.rgb *= 1 - (1 - pow2(vaColor.a)) * VANILLA_AO_INTENSITY;
+vec3 lightColor = getLightColor(lightAdjusted, sunShading, moonShading, moonPhase, worldTime, rainStrength, skyAmount, AMBIENT_LIGHT_MULT, MIN_LIGHT_MULT);
+lightColor *= 1 - clamp((1 - pow2(vaColor.a)) * VANILLA_AO_INTENSITY, 0, 1);
 
 // store calculated data in lightmap
-light = vec4(lightColor.rgb, lightAdjusted.y);
+light = vec4(lightColor, lightAdjusted.y);
