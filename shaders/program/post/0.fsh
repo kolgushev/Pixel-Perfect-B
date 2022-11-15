@@ -33,6 +33,7 @@ uniform mat4 gbufferPreviousProjection;
 uniform mat4 projectionMatrix;
 
 const int noiseTextureResolution = 512;
+const float sunPathRotation = 20.0;
 
 // use floats since they aren't capped at one (for easier color manipulation)
 /*

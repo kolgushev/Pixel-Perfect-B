@@ -328,6 +328,7 @@
     // The color is intentionally unconverted here to get a much more vibrant color than sRGB would allow
     // (that is the main benefit of an ACES workflow, after all)
     #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.1, 0.04))
+    // #define ATMOSPHERIC_FOG_COLOR (vec3(0.04, 0.1, 1.0))
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
 #elif defined DIM_END
@@ -347,7 +348,7 @@
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
 #endif
 
-#define DAY_SKY_COLOR ((vec3(0.5, 0.8, 1.0) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
+#define DAY_SKY_COLOR ((vec3(0.67, 0.83, 1.0) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
 #define NIGHT_SKY_COLOR ((vec3(0.5, 0.6, 1.0) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
 // #define NIGHT_SKY_COLOR ((vec3(1, 0.98, 0.95) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
 #define DAY_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
