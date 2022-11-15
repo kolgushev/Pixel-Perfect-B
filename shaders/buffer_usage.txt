@@ -1,0 +1,14 @@
+gbuffers:
+0.rgb - albedo
+0.a - 0 is sky, 1 is anything else - Make sure to set blending to ONE ZERO SRC_ALPHA ZERO
+1.rgba - transparent albedo
+2.rgb - sky
+2.a - 0 is skybasic, 1 is skytextured
+3.rgb - opaque normal
+3.a - 0 is emissive, 1 is opaque
+4.rgb - position in worldspace
+4.a - 
+5.rg - lightmap
+5.ba - 
+
+comp0:
