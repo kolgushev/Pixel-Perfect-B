@@ -15,7 +15,7 @@ uniform float far;
 uniform int worldTime;
 
 #include "/program/base/samplers.fsh"
-uniform sampler2D shadowcolor1;
+uniform sampler3D shadowcolor1;
 
 #include "/lib/calculate_sky.glsl"
 #include "/lib/tonemapping.glsl"
@@ -129,25 +129,12 @@ void main() {
     #endif
 
     #ifdef USE_LUT
-        dvec3 noBorder = removeBorder(colorCorrected);
-        
-        // apply LUT
-        double blueScaled = colorCorrected.b * (LUT_SIZE - 1);
+        vec3 noBorder = removeBorder(colorCorrected);
 
-        int tileIdLow = int(floor(blueScaled));
-        float heightOffsetLow = tileIdLow * LUT_SIZE_RCP;
-        vec2 lutCoordLow = vec2(noBorder.r, noBorder.g * LUT_SIZE_RCP + heightOffsetLow);
-        
-        int tileIdHigh = int(ceil(blueScaled));
-        float heightOffsetHigh = tileIdHigh * LUT_SIZE_RCP;
-        vec2 lutCoordHigh = vec2(noBorder.r, noBorder.g * LUT_SIZE_RCP + heightOffsetHigh);
-        
-        vec3 colorCorrectedLow = texture(shadowcolor1, lutCoordLow).rgb;
-        vec3 colorCorrectedHigh = texture(shadowcolor1, lutCoordHigh).rgb;
-        
-        double mixer = mod(colorCorrected.b, LUT_SIZE_RCP1) * (LUT_SIZE - 1);
-        
-        colorCorrected = vec3(mix(colorCorrectedLow, colorCorrectedHigh, mixer) * LUT_RANGE_MULT); 
+        // vec3 lutApplied = texture(shadowcolor1, removeBorder(vec3(texcoord, 1.0))).rgb;
+        vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
+                
+        colorCorrected = vec3(lutApplied * LUT_RANGE_MULT); 
     #endif
 
     // write the diffuse color

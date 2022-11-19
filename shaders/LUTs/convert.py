@@ -1,6 +1,6 @@
 # Made with the help of Adobe's Cube LUT Specification: https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
 
-import glob, os, re, cv2
+import glob, os, re, cv2, io, copy
 import numpy as np
 
 # find all files with ".cube" extension
@@ -97,10 +97,24 @@ if len(file_names) >= 1:
         if gamma_correction:
             write_str += f'#define LUT_OVERRIDE_GAMMA_CORRECT\n{"" if gamma_correction.lower() == "on" else "// "}#define LUT_GAMMA_CORRECT'
 
+        # write the proper specs in shaders.properties
+        PROPS_FILE_DIR='../shaders.properties'
+        with open(PROPS_FILE_DIR, 'r') as props_file:
+            text = props_file.read()
+
+        text = re.sub(r'texture\.(\w+\.\w+ *)=( *[\w\.\/]+) +TEXTURE_\dD +\w+ \w+ \w+ \w+ \w+ \w+',
+            fr'texture.\g<1>=\g<2> TEXTURE_{meta_dimensions}D RGB16F {meta_size} {meta_size} {meta_size} RGB FLOAT',
+            text)
+        with open(PROPS_FILE_DIR, 'w') as props_file:
+            props_file.write(text)
+
+        # write to lut_meta file
         lut_meta.write(write_str)
 
         # reformat data into 3D array to use as intake for openCV
+        buffer = io.BytesIO()
         img = []
+        dat = []
         tex_size = 0;
         if(meta_dimensions == 1):
             file = open('error.md', 'w')
@@ -132,18 +146,44 @@ if len(file_names) >= 1:
                     column = []
                     for pixel_id in range(tex_size):
                         index = column_id * tex_size + pixel_id
-                        rgba = data[index]
+                        rgba = copy.deepcopy(data[index])
                         rgba.reverse()
                         rgba.append(1.0)
                         column.append(rgba)
                     img.append(column)
+            for z_id in range(meta_size):
+                slice = []
+                for y_id in range(meta_size):
+                    column = []
+                    for x_id in range(meta_size):
+                        index = z_id * pow(tex_size, 2) + y_id * tex_size + x_id
+                        rgb = copy.deepcopy(data[index])
+                        # rgb.append(0.0)
+                        column.append(rgb)
+                    slice.append(column)
+                dat.append(slice)
+
         np_img = np.asarray(img, dtype=np.float32)
 
-        # img_up_res = 1024
-        # up_mult = int(np.floor(img_up_res / tex_size))
-        # img_up = cv2.resize(np_img, None, fx=up_mult, fy=up_mult, interpolation=cv2.INTER_LINEAR)
+        dat_dtype = np.float32
+
+        np_dat = np.asarray(dat, dtype=dat_dtype)
+
+        np_dat = np.transpose(np_dat, (0, 1, 2, 3))
+        np_dat = np_dat.flatten()
+        for data in np_dat:
+            buffer.write(data)
 
         # write image
+        with open("lut.dat", "wb") as outfile:
+            # Copy the BytesIO stream to the output file
+            outfile.write(buffer.getbuffer())
+
+        test = open('lut.dat', 'r')
+        test_np = np.fromfile(test, dtype=dat_dtype)
+
+        print(f"File Size: {os.path.getsize('lut.dat')} bytes")
+
         cv2.imwrite('lut.png', 255 * np_img)
         print('done')
     else:
