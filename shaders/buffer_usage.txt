@@ -4,11 +4,11 @@ gbuffers:
 1.rgba - transparent albedo
 2.rgb - sky
 2.a - 0 is skybasic, 1 is skytextured
-3.rgb - opaque normal
-3.a - 0 is emissive, 1 is opaque
-4.rgb - position in worldspace
-4.a - 
-5.rg - lightmap
-5.ba - 
+3.rg - lightmap
+3.ba - 
+4.rgb - opaque normal
+4.a - 0 is emissive, 1 is opaque
+5.rgb - position in worldspace
+5.a - 
 
 comp0:
