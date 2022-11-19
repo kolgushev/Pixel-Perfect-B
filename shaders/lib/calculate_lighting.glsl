@@ -32,14 +32,11 @@ vec3 getLightColor(in vec2 lightmap, in float sunShading, in float moonShading, 
     // vec3 ambientLighting = fma(ambientColor, vec3(ambientLightMult), fma(mix(ambientColor, skyColor + actualSkyLightColor, 0.7), vec3(ambientLightMult), skyColor * skyShading * SKY_LIGHT_MULT) * lightmap.y);
     vec3 ambientLight = ambientLightMult * AMBIENT_COLOR;
     vec3 minLight = minLightMult * AMBIENT_COLOR;
-    vec3 ambientSkyLight = ambientLightMult * mix(AMBIENT_COLOR, skyColor + actualSkyLightColor, 0.7) * lightmap.y;
     vec3 skyLight = actualSkyColor * skyShading * lightmap.y;
     
-    vec3 ambientLighting = ambientSkyLight + skyLight;
-
     // Add the lighting togther to get the total contribution of the lightmap the final color.
     vec3 bounceAffectedLighting = skyLighting;
-    vec3 lightmapLighting = max(minLight, ambientLight * (1 - clamp(lightmap.y * 3, 0, 1)) + torchLighting + ambientLighting + bounceAffectedLighting);
+    vec3 lightmapLighting = max(vec3(0), ambientLight * (1 - clamp(lightmap.y * 16, 0, 1)) + torchLighting + skyLight + bounceAffectedLighting);
 
     // Return the value
     return lightmapLighting;
