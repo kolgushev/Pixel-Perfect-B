@@ -1,1 +1,2 @@
-#include "basic.fsh"
+#define g_textured_lit
+#include "base.fsh"

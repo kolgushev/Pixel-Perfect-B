@@ -12,7 +12,10 @@ uniform float frameTimeCounter;
 uniform float aspectRatio; 
 uniform int worldTime; 
 
-#include "/program/base/samplers.fsh"
+in vec2 texcoord;
+uniform sampler2D colortex4;
+uniform sampler2D colortex7;
+
 uniform sampler2D noisetex;
 
 #include "/lib/sampling_algorithms.glsl"

@@ -1,1 +1,2 @@
-#include "textured_lit.fsh"
+#define g_entities_glowing
+#include "base.fsh"

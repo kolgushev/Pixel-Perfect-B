@@ -2,7 +2,9 @@
 
 layout(location = 0) out vec4 buffer0;
 
-#include "/program/base/samplers.fsh"
+in vec2 texcoord;
+uniform sampler2D colortex0;
+
 
 void main() {
     vec4 albedo = texture(colortex0, texcoord);

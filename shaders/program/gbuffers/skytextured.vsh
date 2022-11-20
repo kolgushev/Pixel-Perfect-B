@@ -1,1 +1,2 @@
-#include "basic.vsh"
+#define g_skytextured
+#include "base.vsh"

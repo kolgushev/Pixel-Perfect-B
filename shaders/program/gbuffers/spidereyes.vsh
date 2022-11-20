@@ -1,1 +1,2 @@
-#include "textured_lit.vsh"
+#define g_spidereyes
+#include "base.vsh"

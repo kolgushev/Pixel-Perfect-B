@@ -1,1 +1,2 @@
-#include "textured_lit.fsh"
+#define g_armor_glint
+#include "base.fsh"

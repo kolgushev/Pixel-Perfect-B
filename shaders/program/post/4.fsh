@@ -12,7 +12,9 @@ uniform float frameTimeCounter;
 
 uniform float aspectRatio; 
 
-#include "/program/base/samplers.fsh"
+in vec2 texcoord;
+uniform sampler2D colortex5;
+
 uniform sampler2D noisetex; 
 
 void main() {

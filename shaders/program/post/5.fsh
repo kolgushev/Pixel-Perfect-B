@@ -14,15 +14,21 @@ uniform vec3 skyColor;
 uniform float far;
 uniform int worldTime;
 
-#include "/program/base/samplers.fsh"
+in vec2 texcoord;
+uniform sampler2D colortex0;
+uniform sampler2D colortex3;
+uniform sampler2D colortex4;
+uniform sampler2D colortex5;
+uniform sampler2D colortex7;
+
 uniform sampler3D shadowcolor1;
 
 #include "/lib/calculate_sky.glsl"
 #include "/lib/tonemapping.glsl"
 
 void main() {
-    vec4 coord = texture(colortex3, texcoord);
     vec4 albedo = texture(colortex0, texcoord);
+    vec4 coord = texture(colortex3, texcoord);
     vec4 masks = vec4(texture(colortex4, texcoord));
     vec4 generic = texture(colortex5, texcoord);
     vec4 generic3 = texture(colortex7, texcoord);

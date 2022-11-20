@@ -8,7 +8,13 @@ layout(location = 0) out vec4 buffer0;
 
 uniform int worldTime;
 
-#include "/program/base/samplers.fsh"
+in vec2 texcoord;
+uniform sampler2D colortex0;
+uniform sampler2D colortex2;
+uniform sampler2D colortex4;
+uniform sampler2D colortex6;
+uniform sampler2D colortex7;
+
 #include "/lib/tonemapping.glsl"
 
 void main() {

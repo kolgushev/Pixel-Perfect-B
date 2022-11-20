@@ -1,2 +1,2 @@
-#define transparent
-#include "basic.fsh"
+#define g_water
+#include "base.fsh"
