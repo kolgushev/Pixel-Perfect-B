@@ -1,9 +1,9 @@
 gbuffers:
-0.rgb - albedo
-0.a - 0 is sky, 1 is anything else - Make sure to set blending to ONE ZERO SRC_ALPHA ZERO
-1.rgba - transparent albedo
-2.rgb - sky
-2.a - 0 is skybasic, 1 is skytextured
+0.rgb - sky
+0.a - 0 is skybasic, 1 is skytextured
+1.rgb - albedo
+1.a - 0 is sky, 1 is anything else - Make sure to set blending to ONE ZERO SRC_ALPHA ZERO
+2.rgba - transparent albedo
 3.rg - lightmap
 3.ba - 
 4.rgb - opaque normal

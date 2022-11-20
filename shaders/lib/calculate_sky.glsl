@@ -2,8 +2,8 @@ float fogify(float x, float w) {
 	return w / fma(x, x, w);
 }
 
-// TODO: fix
-vec3 calcSkyColor(vec3 pos) {
-	float upDot = dot(pos, gbufferModelView[1].xyz);
-	return mix(skyColor, fogColor, fogify(max(upDot, 0.0), 0.25)) * RGB_to_ACEScg;
+// output is sRGB
+vec3 calcSkyColor(in vec3 pos, in vec3 skyColor, in vec3 fogColor) {
+	float upDot = clamp(pos.y, 0, 1);
+	return mix(skyColor, fogColor, fogify(upDot, 0.25));
 }

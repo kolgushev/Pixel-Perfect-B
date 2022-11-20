@@ -391,3 +391,18 @@
 
 // inverse of TEX_RES
 #define TEXELS_PER_BLOCK (1 / TEX_RES)
+
+
+// defs logic
+#if defined g_skybasic || defined g_skytextured
+    #define gc_sky
+#endif
+#if defined g_water || defined g_hand_water
+    #define gc_transparent
+#endif
+#if defined g_beaconbeam || defined g_entities_glowing || defined g_spidereyes || defined textured_lit
+    #define gc_emissive
+#endif
+#if defined g_armor_glint || defined g_skytextured
+    #define g_additive
+#endif

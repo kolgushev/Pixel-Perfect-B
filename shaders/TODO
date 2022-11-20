@@ -5,6 +5,8 @@ Terrain fades into sky texture instead of solid color
 Fix clouds
 Underwater effects
 
+Idea: seasons?
+
 Foveated Rendering
 Add reveal light cloning
 Improve makeCells() (create more square-ish cells)
