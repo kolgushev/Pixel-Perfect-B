@@ -51,5 +51,5 @@ const bool colortex5Clear = false;
 
 
 void main() {
-    buffer0 = texture(colortex5, texcoord);
+    buffer0 = texture(colortex4, texcoord);
 }

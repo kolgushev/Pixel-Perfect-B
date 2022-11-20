@@ -1,4 +1,6 @@
 #include "/lib/common_defs.glsl"
+#define use_raw_normal (defined gc_terrain || defined gc_textured)
+#define use_raw_position (defined gc_terrain || defined gc_sky)
 
 out vec2 texcoord;
 out vec4 color;
@@ -12,7 +14,7 @@ in vec4 vaColor;
 in vec3 vaNormal;
 in vec3 vaPosition;
 
-#if defined gc_terrain
+#if defined g_terrain
     in vec4 mc_Entity;
 #endif
 
@@ -21,14 +23,18 @@ uniform vec3 chunkOffset;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 
-#if !defined gc_terrain
+#if !use_raw_normal
     uniform mat4 gbufferModelViewInverse;
 #endif
 
 #include "/lib/to_viewspace.glsl"
 
+#if defined g_terrain
+    #include "/lib/get_terrain_mask.glsl"
+#endif
+
 void main() {
-    #if defined gc_terrain || defined gc_sky
+    #if use_raw_position
         position = chunkOffset + vaPosition;
         gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
     #else
@@ -40,8 +46,12 @@ void main() {
     color = vaColor;
     light = (LIGHT_MATRIX * vec4(vaUV2, 1, 1)).xy;
     light = max(vec2(light.rg) - 0.0313, 0);
-    #if defined gc_terrain || defined gc_textured
+    #if use_raw_normal
         normal = vaNormal;
+        #if defined g_terrain
+            float fakeNormal = (getCutoutMask(mc_Entity.x) - 2) * CUTOUT_ALIGN_STRENGTH;
+            normal = mix(normal, vec3(0, sign(fakeNormal), 0), abs(fakeNormal));
+        #endif
     #else
         normal = viewInverse(vaNormal);
     #endif
