@@ -400,9 +400,15 @@
 #if defined g_water || defined g_hand_water
     #define gc_transparent
 #endif
+#if defined g_water || defined g_terrain
+    #define gc_terrain
+#endif
 #if defined g_beaconbeam || defined g_entities_glowing || defined g_spidereyes || defined textured_lit
     #define gc_emissive
 #endif
+#if defined g_textured || defined g_textured_lit
+    #define gc_textured
+#endif
 #if defined g_armor_glint || defined g_skytextured
-    #define g_additive
+    #define gc_additive
 #endif

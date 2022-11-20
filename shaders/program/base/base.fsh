@@ -1,16 +1,21 @@
 #include "/lib/common_defs.glsl"
 
+layout(location = 1) out vec4 b1;
+layout(location = 3) out vec2 b3;
+layout(location = 4) out vec3 b4;
+layout(location = 5) out vec3 b5;
 #if defined gc_sky
-    layout(location = 0) out vec4 b0;
+    layout(location = 0) out vec3 b0;
 #endif
 #if defined gc_sky || defined gc_transparent
     layout(location = 2) out vec4 b2;
 #endif
-layout(location = 1) out vec4 b1;
 
 in vec2 texcoord;
 in vec4 color;
+in vec2 light;
 in vec3 position;
+in vec3 normal;
 
 uniform sampler2D texture;
 
@@ -54,5 +59,11 @@ void main() {
         b2 = albedo;
     #else
         b1 = albedo;
+    #endif
+
+    #if !defined gc_transparent
+        b3 = light;
+        b4 = normal;
+        b5 = position;
     #endif
 }

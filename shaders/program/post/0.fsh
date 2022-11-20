@@ -10,6 +10,9 @@ in vec2 texcoord;
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 uniform sampler2D colortex2;
+uniform sampler2D colortex3;
+uniform sampler2D colortex4;
+uniform sampler2D colortex5;
 
 const int noiseTextureResolution = 512;
 const float sunPathRotation = -20.0;
@@ -34,19 +37,19 @@ const bool colortex2Clear = false;
 
 const int colortex3Format = RG8;
 const bool colortex3Clear = false;
+
+const int colortex4Format = RGB8_SNORM;
+const bool colortex4Clear = false;
+
+const int colortex5Format = RGB16F;
+const bool colortex5Clear = false;
 */
 
 #include "/lib/to_viewspace.glsl"
 #include "/lib/linearize_depth.fsh"
 #include "/lib/tonemapping.glsl"
 
-// masks:
-// r - sky
-// g - terrain / grass normals
-// b - emissiveness
-
-// coord.ba and lightmap.a combine to form velocity vectors
 
 void main() {
-    buffer0 = texture(colortex2, texcoord);
+    buffer0 = texture(colortex5, texcoord);
 }
