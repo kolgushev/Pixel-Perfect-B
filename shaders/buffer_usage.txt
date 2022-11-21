@@ -15,6 +15,10 @@ gbuffers:
 comp0: datafication
 
 comp1: lighting
+REQUIRES albedo.rgb
+REQUIRES normal.rgb
+REQUIRES lightmap.rgb
+REQUIRES AO data (lightmap.b)
 
 comp2: combine passes and fog
 REQUIRES sky.rgb

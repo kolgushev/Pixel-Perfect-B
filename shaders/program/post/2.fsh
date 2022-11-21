@@ -18,6 +18,7 @@ uniform float far;
 uniform vec3 fogColor;
 
 #include "/lib/tonemapping.glsl"
+#include "/lib/fogify.glsl"
 
 void main() {
     vec3 sky = texture(colortex0, texcoord).rgb;
@@ -27,44 +28,29 @@ void main() {
 
     bool isSky = albedo.a == 0;
 
-    // Render fog in a cylinder shape
-    float farRcp = 1 / far;
-    float fogTube = length(position.xz) + 16;
-    float fogFlat = length(position.y);
-
     // the nether doesn't render sky
     #if defined NO_SKY
-        vec3 skyColorProcessed = gammaCorrection(fogColor * 2, GAMMA) * RGB_to_ACEScg;
+        #if defined ATMOSPHERIC_FOG
+            vec3 skyColorProcessed = ATMOSPHERIC_FOG_COLOR;
+        #else
+            vec3 skyColorProcessed = gammaCorrection(fogColor * 2, GAMMA) * RGB_to_ACEScg;
+        #endif
     #else
         vec3 skyColorProcessed = sky.rgb;
     #endif
 
-    // TODO: optimize
-    fogFlat = pow2(clamp(fma(fogFlat * farRcp, 7, -6), 0, 1));
-    fogTube = pow2(clamp(fma(fogTube * farRcp, 7, -6), 0, 1));
-    fogTube = clamp(fogTube + fogFlat, 0, 1);
-
-    vec3 composite = albedo.rgb;
-
-    #if defined ATMOSPHERIC_FOG
-        float atmosPhog = length(position) * ATOMSPHERIC_FOG_DENSITY;
-        atmosPhog = clamp(atmosPhog / (1 + atmosPhog), 0, 1);
-
-        #if defined NO_SKY
-            skyColorProcessed = ATMOSPHERIC_FOG_COLOR;
-        #endif
-
-        composite = mix(composite, ATMOSPHERIC_FOG_COLOR, atmosPhog);
-    #endif
+    vec4 fogged = fogify(position, albedo.rgb, far);
+    vec3 composite = fogged.rgb;
+    float fog = fogged.a;
 
     // fade out around edges of world
-    composite = isSky ? skyColorProcessed : mix(composite, skyColorProcessed, fogTube);
+    composite = isSky ? skyColorProcessed : mix(composite, skyColorProcessed, fog);
 
     // multiply in transparent objects
-    // TODO: shade in gc_transparent, allow mixing
+    // TODO: add option for mixing/multiplication
     // TODO: apply fog as alpha in gc_transparent
-    composite *= mix(vec3(1), transparent.rgb, transparent.a);
-    // composite = mix(composite, transparent.rgb, transparent.a);
+    composite = mix(composite, transparent.rgb, transparent.a);
+    // composite *= mix(vec3(1), transparent.rgb, transparent.a);
 
     #ifdef DEBUG_VIEW
         b0 = albedo;

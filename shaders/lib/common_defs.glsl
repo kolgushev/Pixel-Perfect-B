@@ -143,6 +143,8 @@
 #define VANILLA_COLORS 0.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define CUTOUT_ALIGN_STRENGTH 0.8 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 // #define REAL_LIGHTING
+#ifdef REAL_LIGHTING
+#endif
 #define SUN_TEMP 5777 // [1500 2000 2500 3000 3500 4000 45000 5000 5777 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000]
 #define TORCH_TEMP 4000 // [1500 2000 2500 3000 3500 4000 45000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000]
 // #define REALISTIC_COLORS
@@ -159,14 +161,19 @@
 #define CONTRAST 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 #define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 #define USE_LUT
-// #define RAW_OUT
+#ifdef USE_LUT
+#endif
 
 #define USE_ACES
+#ifdef USE_ACES
+#endif
 // output mapping: 0:sRGB 1:ACEScg(raw) 2:ACES2065-1
 #define USER_OUTPUT_COLORSPACE 0 // [0 1 2]
 // output mapping: 0:none 1:divide by 16 2:reinhard 3:Hable 4:ACES/UE4 (default)
 #define USER_LMT_MODE 4 // [0 1 2 3 4]
 #define USER_GAMMA_CORRECT
+#ifdef USER_GAMMA_CORRECT
+#endif
 
 #if defined USE_LUT
     #if defined LUT_OVERRIDE_GAMMA_CORRECT && defined LUT_GAMMA_CORRECT
@@ -196,9 +203,10 @@
 #endif
 
 // #define USE_NIGHT_EFFECT
+#ifdef USE_NIGHT_EFFECT
+#endif
 #define NIGHT_EFFECT_SATURATION 0.3 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define NIGHT_EFFECT_POINT 0.1 // [0.0625 0.07 0.08 0.09 0.1 0.11 0.12 0.13 0.14 0.15]
-// #define NIGHT_EFFECT_AFTER_EXPOSURE
 
 #define OVEREXPOSE_SKY 1.6 // [0.0 0.5 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
 
@@ -212,43 +220,14 @@
 #define AO_INTENSITY 1.6 // [0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
 #define VANILLA_AO_INTENSITY (AO_INTENSITY * 0.5)
 
-// #ifdef SSAO_ENABLED
-    #define AO_RADIUS 1.2 // [0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6]
-    #define TEMPORAL_UPDATE_SPEED_AO 0.0026 // [0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1]
-    #define AO_SAMPLES 9 // [1 2 4 6 9 12 16 20 25 30 36 42 49 56]
+#define AO_RADIUS 1.2 // [0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6]
+#define TEMPORAL_UPDATE_SPEED_AO 0.0026 // [0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1]
+#define AO_SAMPLES 9 // [1 2 4 6 9 12 16 20 25 30 36 42 49 56]
 
-    #define PRETTY_AO
-// #endif
-
-// #define AUTO_EXPOSE
-#define EXPOSURE_SAMPLES 9 // [1 2 3 4 5 7 9 11 20 25 30 36 42]
-#define EXPOSURE_UPDATE_SPEED 0.024 // [0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1]
-#define MIN_EXPOSURE 0.26 // [0.01 0.016 0.1 0.26 0.63 1.3 2.0 2.4 4.1 6.6 10.0]
-#define MAX_EXPOSURE 20.0 // [1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 6.0 7.0 8.0 9.0 10.0 11.0 15.0 20.0 23.0 25.0 27.0 30.0 33.0 36.0 39.0 42.0]
-#define EXPOSURE_BOUNDS 0.48 // [0.02 0.052 0.126 0.2 0.26 0.48 0.82 1.32 2.0]
-
-#define DIM_LIGHT_DESAT_USER 0.026 // [0.01 0.026 0.063 0.13 0.24 0.41 0.66 1.0]
-#define TEMPORAL_UPDATE_SPEED_USER 0.0026 // [0.0 0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1 0.13 0.24 0.41 0.66 1.0]
-#define MAX_LIGHT_PROPAGATION 16 // [3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24]
-#define LIT_MULTIPLIER 2.0 // [0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.0 2.2 2.4 2.6 2.8 3.0]
 #define STREAMER_MODE 1 // [0 1 2 3]
 
-#define SSGI_ENABLED
-#define USE_SECONDARY_BOUNCES
-#define BOUNCE_MULT 1.0 // [0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.0 2.2 2.4 2.6 2.8 3.0]
-// #define COLORED_LIGHT_ONLY
 #define MIN_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
 #define AMBIENT_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
-#define ADAPTIVE_SAMPLING_SSGI
-#define SELF_ILLUMINATION 0.03 // [-0.01 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1]
-// #define OLD_SAMPLING
-
-#define SCREEN_SAMPLES 1 // [1 2 3 4 6 9 12 16 20 25 30 36]
-#define MIN_SAMPLES 0.2 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define MAX_SAMPLES 25.0 // [4.0 5.0 7.0 9.0 11.0 20.0 25.0]
-#define MAX_NEW_SAMPLES 1.5 //[1.0 1.1 1.3 1.5 1.7 2.0 2.5 3.0 3.5 4.0 5.0 7.0 9.0]
-// #define POWERFUL_SAMPLE
-#define POWERFUL_SAMPLE_AMOUNT 0.3 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
 #define SUN_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 #define SKY_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
@@ -260,7 +239,6 @@
 // #define DEBUG_VIEW
 // #define TEX_RENDER
 #define TEX_RES 0.0625 // [0.25 0.125 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
-
 
 
 
@@ -368,7 +346,7 @@
 #endif
 
 // using cat02
-#ifdef USE_ACES
+#if defined USE_ACES
 // \[ *(-?\d+\.\d+) *(-?\d+\.\d+) *(-?\d+\.\d+) *\]
 // $1, $2, $3, 
 

@@ -33,7 +33,7 @@ const int colortex1Format = RGBA16F;
 
 const int colortex2Format = RGBA16F;
 
-const int colortex3Format = RG8;
+const int colortex3Format = RG8F;
 const bool colortex3Clear = false;
 
 const int colortex4Format = RGB8_SNORM;

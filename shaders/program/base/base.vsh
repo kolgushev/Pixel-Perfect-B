@@ -57,5 +57,4 @@ void main() {
     #else
         normal = viewInverse(vaNormal);
     #endif
-
 }
