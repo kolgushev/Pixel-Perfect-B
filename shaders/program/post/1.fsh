@@ -5,9 +5,14 @@ in vec2 texcoord;
 uniform sampler2D colortex1;
 uniform sampler2D colortex3;
 uniform sampler2D colortex4;
+uniform sampler2D colortex5;
+
+uniform sampler2D shadowtex0;
 
 uniform vec3 sunPosition;
 uniform vec3 moonPosition;
+
+uniform vec3 cameraPosition;
 
 uniform int worldTime;
 uniform int moonPhase;
@@ -15,11 +20,15 @@ uniform float rainStrength;
 
 uniform mat4 gbufferModelView;
 
+uniform mat4 shadowProjection;
+uniform mat4 shadowModelView;
+
 layout(location = 1) out vec4 b1;
 
+// don't need to include to_viewspace since calculate_lighting already includes it
 #include "/lib/calculate_lighting.glsl"
+#include "/lib/get_shadow.glsl"
 
-// 211
 void main() {
     vec4 albedo = texture(colortex1, texcoord);
     
@@ -28,9 +37,14 @@ void main() {
     vec3 normal = texture(colortex4, texcoord).rgb;
     vec3 normalViewspace = view(normal);
 
-    vec3 lightColor = getLightColor(lightmap, normal, normalViewspace, sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
-    
-    albedo.rgb *= lightColor;
+    vec3 position = texture(colortex5, texcoord).rgb;
+    float shadow = getShadow(position, shadowProjection, shadowModelView, shadowtex0);
+
+    vec3 lightColor = getLightColor(shadow, lightmap, normal, normalViewspace, sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
+
+    #if !defined DEBUG_VIEW
+        albedo.rgb *= lightColor;
+    #endif
 
     b1 = albedo;
 }

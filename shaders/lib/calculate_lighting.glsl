@@ -8,9 +8,10 @@ float normalLighting(in vec3 normal, in vec3 lightPos) {
 }
 
 // Input is not adjusted lightmap coordinates
-vec3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 sunPosition, in vec3 moonPosition, in int moonPhase, in int time, in float rain) {
+vec3 getLightColor(in float shadow, in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 sunPosition, in vec3 moonPosition, in int moonPhase, in int time, in float rain) {
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
+
 
     // Compute dot product vertex shading from normals
     float sunShading = normalLighting(normalViewspace, sunPosition);
@@ -19,8 +20,8 @@ vec3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, 
     // Usually this is divided by 2, but we're dividing by more than that to simulate bounce lighting
     float skyShading = fma((normal.y - 1), RCP_3, 1f);
 
-
     float skyTransition = skyTime(time);
+    float shadowDimmed = shadow * abs(fma(skyTransition, 2, -1));
 
     vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), VANILLA_COLORS);
 
@@ -34,7 +35,8 @@ vec3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, 
 
     vec3 moonLighting = moonShading * fma(cos(float(moonPhase) * 2 * PI * RCP_8), 0.3, 0.7) * MOON_COLOR;
     vec3 sunLighting = sunShading * SUN_COLOR;
-    vec3 skyLighting = pow2(lightmap.y) * fma(inversesqrt(rain + 1), 3.4, -2.4) * mix(moonLighting, sunLighting, skyTransition);
+    // vec3 skyLighting = pow2(lightmap.y) * fma(inversesqrt(rain + 1), 3.4, -2.4) * mix(moonLighting, sunLighting, skyTransition);
+    vec3 skyLighting = shadow * fma(inversesqrt(rain + 1), 3.4, -2.4) * mix(moonLighting, sunLighting, skyTransition);
     vec3 actualSkyColor = mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS), mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS), skyTransition);
 
     // unoptimized EQ: AMBIENT_LIGHT_MULT * (ambientColor + mix(ambientColor, skyColor + actualSkyLightColor, 0.7) * lightmap.y) + skyColor * skyShading * skyLightMult * lightmap.y;

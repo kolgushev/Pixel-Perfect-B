@@ -17,6 +17,10 @@ in vec2 light;
 in vec3 position;
 in vec3 normal;
 
+#if defined g_skybasic
+    in vec2 stars;
+#endif
+
 uniform sampler2D texture;
 
 uniform float alphaTestRef;
@@ -25,15 +29,15 @@ uniform float alphaTestRef;
     uniform vec3 sunPosition;
     uniform vec3 moonPosition;
 
-    uniform int worldTime;
     uniform int moonPhase;
     uniform float rainStrength;
 
     uniform float far; 
+    uniform mat4 gbufferModelView;
 #endif
 
-#if defined gc_transparent || defined g_skybasic
-    uniform mat4 gbufferModelView;
+#if defined gc_transparent || defined g_skytextured
+    uniform int worldTime;
 #endif
 
 #if defined g_skybasic
@@ -55,13 +59,17 @@ uniform float alphaTestRef;
 
 void main() {
     #if defined g_skybasic
-        #define skyPosition normalize(position)
-        vec4 albedo = opaque(calcSkyColor(skyPosition, skyColor, fogColor));
+        vec3 customFogColor = mix(fogColor, skyColor, SKY_COLOR_BLEND);
+
+        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(calcSkyColor(normalize(position), skyColor, customFogColor));
         /*  The sky is rendered using a dome shape at the top and a flat shape at the bottom.
             For some reason the vaPosition for the flat shape translates to the same as texcoord when mapped to clipspace, so
             we need to detect that and set it to the fog color instead of evaluating the gradient.
         */
-        if(distance(color.rgb, fogColor) < EPSILON) albedo = color;
+        if(distance(color.rgb, fogColor) < EPSILON) albedo = opaque(customFogColor);
+
+        // anything more than about 100 causes an overflow
+        albedo *= clamp(SKY_LIGHT_MULT_OVERCAST * 0.5, 0, 100);
     #else
         vec4 albedo = texture2D(texture, texcoord);
         albedo.rgb *= color.rgb;
@@ -70,10 +78,15 @@ void main() {
 
     albedo.rgb = gammaCorrection(albedo.rgb, GAMMA) * RGB_to_ACEScg;
 
+    #if defined g_skytextured
+        // since we're using an advanced color pipeline it's safe to pump up the skytextured brightness
+        albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime(worldTime));
+    #endif
+
     vec3 lightmap = vec3(light, color.a);
     #if defined gc_transparent
         // apply lighting here for transparent stuff
-        vec3 lightColor = getLightColor(lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
+        vec3 lightColor = getLightColor(0, lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
         
         albedo.rgb *= lightColor;
 

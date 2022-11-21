@@ -46,11 +46,7 @@ void main() {
     // fade out around edges of world
     composite = isSky ? skyColorProcessed : mix(composite, skyColorProcessed, fog);
 
-    // multiply in transparent objects
-    // TODO: add option for mixing/multiplication
-    // TODO: apply fog as alpha in gc_transparent
     composite = mix(composite, transparent.rgb, transparent.a);
-    // composite *= mix(vec3(1), transparent.rgb, transparent.a);
 
     #ifdef DEBUG_VIEW
         b0 = albedo;

@@ -1,4 +1,4 @@
-gbuffers:
+gbuffers opaque:
 0.rgb - sky
 0.a - 
 1.rgb - albedo
@@ -12,13 +12,13 @@ gbuffers:
 5.rgb - position in worldspace
 5.a - 
 
-comp0: datafication
 
 comp1: lighting
 REQUIRES albedo.rgb
 REQUIRES normal.rgb
 REQUIRES lightmap.rgb
 REQUIRES AO data (lightmap.b)
+REQUIRES position.rgb
 
 comp2: combine passes and fog
 REQUIRES sky.rgb
@@ -29,7 +29,11 @@ REQUIRES position.rgb
 0.rgb - composited albedo
 0.a - 
 
-comp3: apply color
+gbuffers transparent:
+
+comp0: datafication
+
+comp1: apply color
 REQUIRES albedo.rgb
 0.rgb - colorgraded albedo
 0.a -
