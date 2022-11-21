@@ -20,7 +20,7 @@ uniform vec3 fogColor;
 #include "/lib/tonemapping.glsl"
 
 void main() {
-    vec4 sky = texture(colortex0, texcoord);
+    vec3 sky = texture(colortex0, texcoord).rgb;
     vec4 albedo = texture(colortex1, texcoord);
     vec4 transparent = texture(colortex2, texcoord);
     vec3 position = texture(colortex5, texcoord).xyz;
@@ -64,6 +64,11 @@ void main() {
     // TODO: shade in gc_transparent, allow mixing
     // TODO: apply fog as alpha in gc_transparent
     composite *= mix(vec3(1), transparent.rgb, transparent.a);
+    // composite = mix(composite, transparent.rgb, transparent.a);
 
-    b0 = opaque(composite);
+    #ifdef DEBUG_VIEW
+        b0 = albedo;
+    #else
+        b0 = opaque(composite);
+    #endif
 }

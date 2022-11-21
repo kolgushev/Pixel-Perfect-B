@@ -52,6 +52,8 @@ void main() {
     albedo.rgb = gammaCorrection(albedo.rgb, GAMMA) * RGB_to_ACEScg;
 
     #if defined gc_sky
+        // ?Even though the sky texture doesn't have an alpha layer, we use alpha in the gbuffers
+        // ?for proper mixing of g_skytextured
         b0 = albedo;
         b1 = vec4(0, 0, 0, 0);
         b2 = vec4(0, 0, 0, 0);

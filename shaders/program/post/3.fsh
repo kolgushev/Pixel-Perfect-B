@@ -35,11 +35,11 @@ void main() {
 
     // gamma correction
     vec3 colorCorrected = tonemapped;
-    #ifdef GAMMA_CORRECT
+    #if defined GAMMA_CORRECT
         colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
     #endif
 
-    #ifdef USE_LUT
+    #if defined USE_LUT
         vec3 noBorder = removeBorder(colorCorrected);
 
         // vec3 lutApplied = texture(shadowcolor1, removeBorder(vec3(texcoord, 1.0))).rgb;
@@ -51,5 +51,9 @@ void main() {
     // write the diffuse color
     vec4 finalColor = opaque(colorCorrected);
 
-    b0 = finalColor;
+    #ifdef DEBUG_VIEW
+        b0 = albedo;
+    #else
+        b0 = finalColor;
+    #endif
 }

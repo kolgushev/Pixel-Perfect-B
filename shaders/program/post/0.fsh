@@ -4,16 +4,6 @@
 
 #include "/lib/common_defs.glsl"
 
-const int noiseTextureResolution = 512;
-const float sunPathRotation = -20.0;
-
-#if AO_MODE == 1
-    const float ambientOcclusionLevel = 1.0;
-#else
-   const float ambientOcclusionLevel = 0;
-#endif
-
-
 #if defined DIM_NETHER
 /*
 const bool colortex0Clear = true;
@@ -53,11 +43,26 @@ const int colortex5Format = RGB16F;
 const bool colortex5Clear = false;
 */
 
+const int noiseTextureResolution = 512;
+const float sunPathRotation = -20.0;
+
+#if AO_MODE == 1
+    const float ambientOcclusionLevel = 1.0;
+#else
+   const float ambientOcclusionLevel = 0;
+#endif
+
+in vec2 texcoord;
+
+uniform sampler2D colortex1;
+
+layout(location = 1) out vec4 b1;
+
 #include "/lib/to_viewspace.glsl"
 #include "/lib/linearize_depth.fsh"
 #include "/lib/tonemapping.glsl"
 
 
 void main() {
-
+    b1 = texture(colortex1, texcoord);
 }
