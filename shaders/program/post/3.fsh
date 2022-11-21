@@ -1,67 +1,55 @@
-// post-GI filter
-
-#define exposure_pass
-
 #include "/lib/common_defs.glsl"
 
-layout(location = 7) out vec4 buffer7;
-
-uniform int frameCounter;
-uniform float frameTimeCounter;
-
-uniform float aspectRatio; 
-uniform int worldTime; 
+layout(location = 0) out vec4 b0;
 
 in vec2 texcoord;
-uniform sampler2D colortex4;
-uniform sampler2D colortex7;
 
-uniform sampler2D noisetex;
+uniform sampler2D colortex0;
 
-#include "/lib/sampling_algorithms.glsl"
+uniform sampler3D shadowcolor1;
+
 #include "/lib/tonemapping.glsl"
-#include "/lib/get_noise.fsh"
-
-/*
-colortex0MipmapEnabled = true;
-*/
 
 void main() {
-    vec4 masks = vec4(texture(colortex4, texcoord));
-    vec4 generic3 = texture(colortex7, texcoord);
+    vec4 albedo = texture(colortex0, texcoord);
 
-    #if defined AUTO_EXPOSE || defined DEBUG_VIEW
-        /* find exposure */
-        vec2 pixelSize = 1 / vec2(viewWidth, viewHeight);
-        if(texcoord.x <= pixelSize.x && texcoord.y <= pixelSize.y) {
-            float averageExposure = 0;
-            
-            int samples = EXPOSURE_SAMPLES;
+    vec3 tonemapped = albedo.rgb;
 
-            vec3 cells = makeCells(samples);
-
-            for(int i = 0; i < samples; i++) {
-                vec4 noisetex = getNoise(NOISETEX_RES, i, 2);
-                // vec2 sampleCoordRaw = vec2((noisetex.r + noisetex.g) / 2,  noisetex.b);
-                vec2 sampleCoord = jitter(vec2(noisetex.r, noisetex.b), i, cells);
-
-                float mipmapLevel = textureQueryLod(colortex0, sampleCoord).x;
-                // get average color
-                vec3 sampleColor = texture(colortex0, sampleCoord, mipmapLevel).rgb;
-                
-                averageExposure += dot(sampleColor, vec3(RCP_3));
-            }
-
-            averageExposure = samples / max(averageExposure, EPSILON);
-
-            if(generic3.a == 0) {
-                generic3.a = averageExposure;
-            } else {
-                generic3.a = clamp(mix(texture(colortex7, pixelSize).a, averageExposure, EXPOSURE_UPDATE_SPEED), MIN_EXPOSURE, MAX_EXPOSURE);
-            }
-        }
+    // tonemap image
+    #if LMT_MODE == 1
+        tonemapped = tonemapped * RCP_16;
+    #elif LMT_MODE == 2
+        tonemapped = reinhard(tonemapped);
+    #elif LMT_MODE == 3
+        tonemapped = uncharted2_filmic(tonemapped);
+    #elif LMT_MODE == 4
+        tonemapped = rtt_and_odt_fit(tonemapped * ACEScg_to_RGB) * RGB_to_ACEScg;
     #endif
 
+    // Convert back to desired colorspace
+    #if OUTPUT_COLORSPACE == 0
+        tonemapped = tonemapped * ACEScg_to_RGB;
+    #elif OUTPUT_COLORSPACE == 2
+        tonemapped = tonemapped * ACEScg_to_ACES2065_1;
+    #endif
 
-    buffer7 = generic3;
+    // gamma correction
+    vec3 colorCorrected = tonemapped;
+    #ifdef GAMMA_CORRECT
+        colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
+    #endif
+
+    #ifdef USE_LUT
+        vec3 noBorder = removeBorder(colorCorrected);
+
+        // vec3 lutApplied = texture(shadowcolor1, removeBorder(vec3(texcoord, 1.0))).rgb;
+        vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
+                
+        colorCorrected = vec3(lutApplied * LUT_RANGE_MULT); 
+    #endif
+
+    // write the diffuse color
+    vec4 finalColor = opaque(colorCorrected);
+
+    b0 = finalColor;
 }

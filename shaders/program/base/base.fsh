@@ -1,11 +1,11 @@
 #include "/lib/common_defs.glsl"
 
 layout(location = 1) out vec4 b1;
-layout(location = 3) out vec2 b3;
+layout(location = 3) out vec3 b3;
 layout(location = 4) out vec3 b4;
 layout(location = 5) out vec3 b5;
 #if defined gc_sky
-    layout(location = 0) out vec3 b0;
+    layout(location = 0) out vec4 b0;
 #endif
 #if defined gc_sky || defined gc_transparent
     layout(location = 2) out vec4 b2;
@@ -45,7 +45,7 @@ void main() {
         if(distance(color.rgb, fogColor) < EPSILON) albedo = color;
     #else
         vec4 albedo = texture2D(texture, texcoord);
-        albedo *= color;
+        albedo.rgb *= color.rgb;
     #endif
     if(albedo.a < alphaTestRef) discard;
 
@@ -62,7 +62,7 @@ void main() {
     #endif
 
     #if !defined gc_transparent
-        b3 = light;
+        b3 = vec3(light, color.a);
         b4 = normal;
         b5 = position;
     #endif

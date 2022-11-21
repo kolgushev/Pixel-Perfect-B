@@ -1,66 +1,69 @@
-// Combine passes
-
-#define composite_pass
-
 #include "/lib/common_defs.glsl"
 
-layout(location = 0) out vec4 buffer0;
+#if defined DIM_NETHER
+    #define NO_SKY
+#endif
 
-uniform int worldTime;
+layout(location=0) out vec4 b0;
 
 in vec2 texcoord;
+
 uniform sampler2D colortex0;
+uniform sampler2D colortex1;
 uniform sampler2D colortex2;
-uniform sampler2D colortex4;
-uniform sampler2D colortex6;
-uniform sampler2D colortex7;
+uniform sampler2D colortex5;
+
+uniform float far;
+
+uniform vec3 fogColor;
 
 #include "/lib/tonemapping.glsl"
 
 void main() {
-    vec4 albedo = texture(colortex0, texcoord);
-    vec4 lightmap = texture(colortex2, texcoord);
-    vec4 masks = vec4(texture(colortex4, texcoord));
-    vec4 generic2 = texture(colortex6, texcoord);
-    vec4 generic3 = texture(colortex7, texcoord);
+    vec4 sky = texture(colortex0, texcoord);
+    vec4 albedo = texture(colortex1, texcoord);
+    vec4 transparent = texture(colortex2, texcoord);
+    vec3 position = texture(colortex5, texcoord).xyz;
 
-    vec3 diffuseOpaque = albedo.rgb;
+    bool isSky = albedo.a == 0;
 
-	if(masks.r < 0.5) {
-        #ifdef SSAO_ENABLED
-            float ambientOcclusion = 1 - clamp(generic2.b * AO_INTENSITY, 0, 1);
-            #ifdef PRETTY_AO
-                ambientOcclusion = sqrt(ambientOcclusion);
-            #endif
-        #else
-            float ambientOcclusion = 1;
+    // Render fog in a cylinder shape
+    float farRcp = 1 / far;
+    float fogTube = length(position.xz) + 16;
+    float fogFlat = length(position.y);
+
+    // the nether doesn't render sky
+    #if defined NO_SKY
+        vec3 skyColorProcessed = gammaCorrection(fogColor * 2, GAMMA) * RGB_to_ACEScg;
+    #else
+        vec3 skyColorProcessed = sky.rgb;
+    #endif
+
+    // TODO: optimize
+    fogFlat = pow2(clamp(fma(fogFlat * farRcp, 7, -6), 0, 1));
+    fogTube = pow2(clamp(fma(fogTube * farRcp, 7, -6), 0, 1));
+    fogTube = clamp(fogTube + fogFlat, 0, 1);
+
+    vec3 composite = albedo.rgb;
+
+    #if defined ATMOSPHERIC_FOG
+        float atmosPhog = length(position) * ATOMSPHERIC_FOG_DENSITY;
+        atmosPhog = clamp(atmosPhog / (1 + atmosPhog), 0, 1);
+
+        #if defined NO_SKY
+            skyColorProcessed = ATMOSPHERIC_FOG_COLOR;
         #endif
 
-        vec3 lighting = lightmap.rgb;
-
-        vec3 bounceLighting = generic3.rgb;
-
-        // for physical lighting
-        // diffuseOpaque *= lighting * ambientOcclusion;
-    } else {
-        diffuseOpaque = sky(diffuseOpaque, worldTime);
-    }
-
-    #if defined USE_NIGHT_EFFECT && !defined NIGHT_EFFECT_AFTER_EXPOSURE
-        // apply things-look-blue-at-night-effect
-        vec3 darkLightFilter = saturateRGB(NIGHT_EFFECT_SATURATION) * (NIGHT_EFFECT_HUE * diffuseOpaque);
-
-        diffuseOpaque = mix(darkLightFilter, diffuseOpaque, clamp(nightEffect(NIGHT_EFFECT_POINT, luminance(diffuseOpaque)), 0, 1));
+        composite = mix(composite, ATMOSPHERIC_FOG_COLOR, atmosPhog);
     #endif
 
-    #ifndef DEBUG_VIEW
-        albedo = opaque(diffuseOpaque);
-    #endif
+    // fade out around edges of world
+    composite = isSky ? skyColorProcessed : mix(composite, skyColorProcessed, fogTube);
 
-        // albedo = opaque(diffuse / 10000);
-        // albedo = opaque(bounceLighting / 1000);
-        // albedo = opaque1(ambientOcclusion);
-        // albedo = opaque(lightmap.rgb / 10);
-    buffer0 = albedo;
-    // buffer0 = masks;
+    // multiply in transparent objects
+    // TODO: shade in gc_transparent, allow mixing
+    // TODO: apply fog as alpha in gc_transparent
+    composite *= mix(vec3(1), transparent.rgb, transparent.a);
+
+    b0 = opaque(composite);
 }

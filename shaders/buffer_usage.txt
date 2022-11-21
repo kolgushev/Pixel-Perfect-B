@@ -1,14 +1,31 @@
 gbuffers:
 0.rgb - sky
-0.a - 0 is skybasic, 1 is skytextured
+0.a - 
 1.rgb - albedo
 1.a - 0 is sky, 1 is anything else - Make sure to set blending to ONE ZERO SRC_ALPHA ZERO
 2.rgba - transparent albedo
 3.rg - lightmap
-3.ba - 
+3.b - [if vanilla AO] AO
+3.a - 
 4.rgb - opaque normal
 4.a - 
 5.rgb - position in worldspace
 5.a - 
 
-comp0:
+comp0: datafication
+
+comp1: lighting
+
+comp2: combine passes and fog
+REQUIRES sky.rgb
+REQUIRES albedo.rgb
+REQUIRES sky mask (albedo.a)
+REQUIRES transparent.rgba
+REQUIRES position.rgb
+0.rgb - composited albedo
+0.a - 
+
+comp3: apply color
+REQUIRES albedo.rgb
+0.rgb - colorgraded albedo
+0.a -

@@ -4,6 +4,8 @@ Improve sky
 Terrain fades into sky texture instead of solid color
 Fix clouds
 Underwater effects
+Jitter everything in vsh for Temporal Super-Resolution
+Remove moon/sun when underground
 
 Idea: seasons?
 

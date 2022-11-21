@@ -168,8 +168,6 @@
 #define USER_LMT_MODE 4 // [0 1 2 3 4]
 #define USER_GAMMA_CORRECT
 
-#define GAMMA_CORRECT_PRE 
-
 #if defined USE_LUT
     #if defined LUT_OVERRIDE_GAMMA_CORRECT && defined LUT_GAMMA_CORRECT
         #define GAMMA_CORRECT
@@ -394,6 +392,9 @@
 
 
 // defs logic
+
+// g stands for gbuffers
+// gc stands for gbuffers category
 #if defined g_skybasic || defined g_skytextured
     #define gc_sky
 #endif
