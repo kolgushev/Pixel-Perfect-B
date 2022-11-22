@@ -16,7 +16,7 @@ float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelV
     // float shadow = smoothstep(shadowPosition.z - EPSILON, shadowPosition.z, texture(shadowtex, shadowPosition.xy).r);
     float shadow = step(shadowPosition.z - EPSILON, texture(shadowtex, shadowPosition.xy).r);
     
-    shadow = mix(shadow, lightmapLight, shadowCutoff);
+    shadow = mix(shadow, 1, shadowCutoff);
 
     float skyTransition = skyTime(time);
     float shadowDimmed = shadow * abs(fma(skyTransition, 2, -1));

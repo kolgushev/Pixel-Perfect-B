@@ -1,9 +1,8 @@
 #include "/lib/common_defs.glsl"
 
 layout(location = 1) out vec4 b1;
+layout(location = 2) out vec3 b2;
 layout(location = 3) out vec3 b3;
-layout(location = 4) out vec3 b4;
-layout(location = 5) out vec3 b5;
 #if defined gc_sky || defined gc_transparent
     layout(location = 0) out vec4 b0;
 #endif
@@ -114,7 +113,8 @@ void main() {
         b1 = albedo;
     #endif
 
-    b3 = lightmap;
-    b4 = normal;
-    b5 = position;
+    #if !defined gc_transparent
+        b2 = lightmap;
+        b3 = normal;
+    #endif
 }

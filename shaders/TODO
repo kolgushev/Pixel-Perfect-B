@@ -4,7 +4,10 @@ find out if you can sample shadow textures in gbuffers
 
 turn off shadow backface rendering
 
+Transfer all of this to the trello page (and link it here once the repo becomes public)
 
+Stop using mul_m4_v3
+Add in/out to all function declarations
 Shadow leak fix by storing normal data
 Nighttime mask for blue grading
 Fix clouds

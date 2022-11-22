@@ -3,14 +3,11 @@ gbuffers opaque:
     0.a - 
     1.rgb - albedo
     1.a - 0 is sky, 1 is anything else - Make sure to set blending to ONE ZERO SRC_ALPHA ZERO
-    2.rgba - 
-    3.rg - lightmap
-    3.b - [if vanilla AO] AO
+    2.rg - lightmap
+    2.b - [if vanilla AO] AO
+    2.a - 
+    3.rgb - opaque normal
     3.a - 
-    4.rgb - opaque normal
-    4.a - 
-    5.rgb - position in worldspace
-    5.a - 
 
 
 defer0: lighting
@@ -39,16 +36,13 @@ gbuffers transparent:
     0.rgb - composited albedo (+ transparent w/indirect lighting)
     0.a - 
     1.rgba - transparent direct lighting (additive)
-    2.rgba - 
-    3.rg - transparent lightmap
-    3.b - [if vanilla AO] transparent AO
+    2.rg - transparent lightmap
+    2.b - [if vanilla AO] transparent AO
+    2.a - 
+    3.rgb - transparent normal
     3.a - 
-    4.rgb - transparent normal
-    4.a - 
-    5.rgb - transparent position in worldspace
-    5.a - 
 
-defer0: lighting
+comp0: transparency shadows
     REQUIRES composited albedo.rgb
     REQUIRES transparent direct lighting.rgb
     REQUIRES transparent lightmap.g

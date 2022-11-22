@@ -5,7 +5,6 @@ layout(location = 0) out vec4 b0;
 in vec2 texcoord;
 
 uniform sampler2D colortex0;
-uniform sampler2D colortex1;
 
 uniform sampler3D shadowcolor1;
 
@@ -13,7 +12,6 @@ uniform sampler3D shadowcolor1;
 
 void main() {
     vec4 albedo = texture(colortex0, texcoord);
-    vec4 water = texture(colortex1, texcoord);
 
     vec3 tonemapped = albedo.rgb;
 

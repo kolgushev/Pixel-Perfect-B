@@ -6,16 +6,19 @@
 
 layout(location=0) out vec4 b0;
 layout(location=1) out vec4 b1;
+layout(location=2) out vec4 b2;
 layout(location=3) out vec4 b3;
-layout(location=4) out vec4 b4;
-layout(location=5) out vec4 b5;
 
 in vec2 texcoord;
 
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 uniform sampler2D colortex2;
-uniform sampler2D colortex5;
+
+uniform sampler2D depthtex1;
+
+uniform mat4 gbufferProjectionInverse;
+uniform mat4 gbufferModelViewInverse;
 
 uniform float far;
 
@@ -23,11 +26,13 @@ uniform vec3 fogColor;
 
 #include "/lib/tonemapping.glsl"
 #include "/lib/fogify.glsl"
+#include "/lib/to_viewspace.glsl"
 
 void main() {
     vec3 sky = texture(colortex0, texcoord).rgb;
     vec4 albedo = texture(colortex1, texcoord);
-    vec3 position = texture(colortex5, texcoord).xyz;
+
+    float depth = texture(depthtex1, texcoord).r;
 
     bool isSky = albedo.a == 0;
 
@@ -42,6 +47,7 @@ void main() {
         vec3 skyColorProcessed = sky.rgb;
     #endif
 
+    vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
     vec4 fogged = fogify(position, albedo.rgb, far);
     vec3 composite = fogged.rgb;
     float fog = fogged.a;
@@ -51,9 +57,8 @@ void main() {
     
     // manually clear for upcoming transparency pass
     b1 = vec4(0);
+    b2 = vec4(0);
     b3 = vec4(0);
-    b4 = vec4(0);
-    b5 = vec4(0);
 
     #ifdef DEBUG_VIEW
         b0 = albedo;

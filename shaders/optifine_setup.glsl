@@ -3,16 +3,12 @@
 const bool colortex0Clear = true;
 
 const bool colortex1Clear = true;
-
-const bool colortex2Clear = true;
 */
 #else
 /*
 const bool colortex0Clear = false;
 
 const bool colortex1Clear = false;
-
-const bool colortex2Clear = false;
 */
 #endif
 
@@ -22,16 +18,11 @@ const int colortex0Format = RGB16F;
 
 const int colortex1Format = RGBA16F;
 
-const int colortex2Format = RGBA16F;
-
-const int colortex3Format = RG8F;
+const int colortex2Format = RG8F;
 const bool colortex3Clear = false;
 
-const int colortex4Format = RGB8_SNORM;
+const int colortex3Format = RGB8_SNORM;
 const bool colortex4Clear = false;
-
-const int colortex5Format = RGB16F;
-const bool colortex5Clear = false;
 */
 
 const int shadowMapResolution = 1024;

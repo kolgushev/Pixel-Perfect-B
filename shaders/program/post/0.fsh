@@ -6,13 +6,16 @@ in vec2 texcoord;
 
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
-uniform sampler2D colortex3;
-uniform sampler2D colortex5;
+uniform sampler2D colortex2;
 
+uniform sampler2D depthtex0;
 uniform sampler2D shadowtex0;
 
 uniform mat4 shadowProjection;
 uniform mat4 shadowModelView;
+
+uniform mat4 gbufferProjectionInverse;
+uniform mat4 gbufferModelViewInverse;
 
 uniform int worldTime;
 
@@ -24,8 +27,9 @@ void main() {
     vec3 diffuse = texture(colortex0, texcoord).rgb;
     vec3 directLighting = texture(colortex1, texcoord).rgb;
 
-    float skyLightmap = texture(colortex3, texcoord).g;
-    vec3 position = texture(colortex5, texcoord).rgb;
+    float skyLightmap = texture(colortex2, texcoord).g;
+    float depth = texture(depthtex0, texcoord).r;
+    vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
 
     float shadow = getShadow(position, shadowProjection, shadowModelView, shadowtex0, skyLightmap, worldTime);
 

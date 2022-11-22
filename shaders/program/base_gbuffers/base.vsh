@@ -51,7 +51,7 @@ void main() {
     texcoord = vaUV0;
     color = vaColor;
     light = (LIGHT_MATRIX * vec4(vaUV2, 1, 1)).xy;
-    light = max(vec2(light.rg) - 0.0313, 0);
+    light = max(vec2(light.rg) - 0.0313, 0) * 1.067;
     #if defined use_raw_normal
         normal = vaNormal;
 
