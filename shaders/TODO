@@ -6,6 +6,8 @@ turn off shadow backface rendering
 
 Transfer all of this to the trello page (and link it here once the repo becomes public)
 
+Render transparent shadows in gbuffers using texture2D instead of texture
+Use render stage uniform to detect before/after deferred
 Stop using mul_m4_v3
 Add in/out to all function declarations
 Shadow leak fix by storing normal data

@@ -1,6 +1,6 @@
 #include "/lib/distortion.glsl"
 
-float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelView, in sampler2D shadowtex, in float lightmapLight, in int time) {
+float getShadow(in vec3 position, in vec3 normal, in mat4 shadowProjection, in mat4 shadowModelView, in sampler2D shadowtex, in sampler2D shadowtexNormal, in float lightmapLight, in int time) {
     #if defined TEX_RENDER
         vec3 positionMod = position;
     #else
@@ -16,8 +16,7 @@ float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelV
     shadowPosition.xy = distortShadow(shadowPosition.xy);
     shadowPosition = shadowPosition * 0.5 + 0.5;
 
-    // float shadow = smoothstep(shadowPosition.z - EPSILON, shadowPosition.z, texture(shadowtex, shadowPosition.xy).r);
-    float shadow = step(shadowPosition.z - EPSILON, texture(shadowtex, shadowPosition.xy).r);
+    float shadow = smoothstep(shadowPosition.z - EPSILON, shadowPosition.z, texture(shadowtex, shadowPosition.xy).r);
     
     shadow = mix(lightmapLight, shadow, shadowMask);
     

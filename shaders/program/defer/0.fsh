@@ -34,7 +34,8 @@ uniform mat4 gbufferModelView;
     #include "/lib/get_shadow.glsl"
 
     uniform sampler2D depthtex1;
-    uniform sampler2D shadowtex0;
+    uniform sampler2D shadowtex1;
+    uniform sampler2D shadowcolor1;
     uniform mat4 shadowProjection;
     uniform mat4 shadowModelView;
     
@@ -53,7 +54,7 @@ void main() {
     #if defined ENABLE_SHADOWS
         float depth = texture(depthtex1, texcoord).r;
         vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
-        float shadow = getShadow(position, shadowProjection, shadowModelView, shadowtex0, lightmap.g, worldTime);
+        float shadow = getShadow(position, normal, shadowProjection, shadowModelView, shadowtex1, shadowcolor1, lightmap.g, worldTime);
     #else
         float shadow = lightmap.g;
     #endif
@@ -65,4 +66,5 @@ void main() {
     #endif
 
     b1 = albedo;
+    // b1 = opaque(texture(shadowcolor1, texcoord).rgb);
 }

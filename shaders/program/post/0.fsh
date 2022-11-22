@@ -8,9 +8,11 @@ in vec2 texcoord;
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 uniform sampler2D colortex2;
+uniform sampler2D colortex3;
 
 uniform sampler2D depthtex0;
-uniform sampler2D shadowtex0;
+uniform sampler2D shadowtex1;
+uniform sampler2D shadowcolor1;
 
 uniform mat4 shadowProjection;
 uniform mat4 shadowModelView;
@@ -29,10 +31,11 @@ void main() {
     vec3 directLighting = texture(colortex1, texcoord).rgb;
 
     float skyLightmap = texture(colortex2, texcoord).g;
+    vec3 normal = texture(colortex2, texcoord).rgb;
     float depth = texture(depthtex0, texcoord).r;
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
 
-    float shadow = getShadow(position, shadowProjection, shadowModelView, shadowtex0, skyLightmap, worldTime);
+    float shadow = getShadow(position, normal, shadowProjection, shadowModelView, shadowtex1, shadowcolor1, skyLightmap, worldTime);
 
     #if defined DEBUG_VIEW
         b0 = opaque(diffuse);
