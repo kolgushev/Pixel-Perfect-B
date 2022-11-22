@@ -1,11 +1,14 @@
 #include "/lib/common_defs.glsl"
 
+#if defined gc_sky || defined gc_transparent
+    /* DRAWBUFFERS:0123 */
+    layout(location = 0) out vec4 b0;
+#else
+    /* DRAWBUFFERS:123 */
+#endif
 layout(location = 1) out vec4 b1;
 layout(location = 2) out vec3 b2;
 layout(location = 3) out vec3 b3;
-#if defined gc_sky || defined gc_transparent
-    layout(location = 0) out vec4 b0;
-#endif
 
 in vec2 texcoord;
 in vec4 color;
@@ -113,8 +116,8 @@ void main() {
         b1 = albedo;
     #endif
 
-    #if !defined gc_transparent
-        b2 = lightmap;
-        b3 = normal;
-    #endif
+    // Even though they should be, these buffers aren't being written to
+    // after the deferred phase. What the heck, Optifine?
+    b2 = lightmap;
+    b3 = normal;
 }

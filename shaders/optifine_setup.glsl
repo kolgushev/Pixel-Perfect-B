@@ -25,7 +25,7 @@ const int colortex3Format = RGB8_SNORM;
 const bool colortex4Clear = false;
 */
 
-const int shadowMapResolution = 1024;
+const float shadowDistanceRenderMul = 1.0;
 const int noiseTextureResolution = 512;
 const float sunPathRotation = -20.0;
 

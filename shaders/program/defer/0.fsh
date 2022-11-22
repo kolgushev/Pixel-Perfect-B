@@ -1,5 +1,8 @@
 #include "/lib/common_defs.glsl"
 
+/* DRAWBUFFERS:01 */
+layout(location = 1) out vec4 b1;
+
 in vec2 texcoord;
 
 uniform sampler2D colortex1;
@@ -17,9 +20,10 @@ uniform float rainStrength;
 
 uniform mat4 gbufferModelView;
 
+// don't need to include to_viewspace since calculate_lighting already includes it
+#include "/lib/calculate_lighting.glsl"
+
 #if defined ENABLE_SHADOWS
-    // don't need to include to_viewspace since calculate_lighting already includes it
-    #include "/lib/calculate_lighting.glsl"
     #include "/lib/get_shadow.glsl"
 
     uniform sampler2D depthtex1;
@@ -30,8 +34,6 @@ uniform mat4 gbufferModelView;
     uniform mat4 gbufferProjectionInverse;
     uniform mat4 gbufferModelViewInverse;
 #endif
-
-layout(location = 1) out vec4 b1;
 
 void main() {
     vec4 albedo = texture(colortex1, texcoord);
@@ -46,7 +48,7 @@ void main() {
         vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
         float shadow = getShadow(position, shadowProjection, shadowModelView, shadowtex0, lightmap.g, worldTime);
     #else
-        float shadow = 1;
+        float shadow = lightmap.g;
     #endif
 
     mat2x3 lightColor = getLightColor(lightmap, normal, normalViewspace, sunPosition, moonPosition, moonPhase, worldTime, rainStrength);

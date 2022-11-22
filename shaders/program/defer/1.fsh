@@ -4,10 +4,9 @@
     #define NO_SKY
 #endif
 
+/* DRAWBUFFERS:01 */
 layout(location=0) out vec4 b0;
 layout(location=1) out vec4 b1;
-layout(location=2) out vec4 b2;
-layout(location=3) out vec4 b3;
 
 in vec2 texcoord;
 
@@ -56,9 +55,7 @@ void main() {
     composite = isSky ? skyColorProcessed : mix(composite, skyColorProcessed, fog);
     
     // manually clear for upcoming transparency pass
-    b1 = vec4(0);
-    b2 = vec4(0);
-    b3 = vec4(0);
+    b1 = vec4(0.0);
 
     #ifdef DEBUG_VIEW
         b0 = albedo;

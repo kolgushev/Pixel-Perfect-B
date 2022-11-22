@@ -10,12 +10,15 @@ uniform vec3 chunkOffset;
 uniform mat4 shadowProjection;
 uniform mat4 shadowModelView;
 
+uniform mat4 projectionMatrix;
+uniform mat4 modelViewMatrix;
+
 #include "/lib/to_viewspace.glsl"
 #include "/lib/distortion.glsl"
 
 void main() {
     position = chunkOffset + vaPosition;
 
-    gl_Position = toViewspace(shadowProjection, shadowModelView, position);
+    gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
     gl_Position.xy = distortShadow(gl_Position.xy);
 }
