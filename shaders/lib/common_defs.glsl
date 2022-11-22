@@ -252,7 +252,7 @@
 
 const int shadowMapResolution = 1024;
 const float shadowDistance = 160.0;
-#define ENABLE_SHADOWS
+// #define ENABLE_SHADOWS
 #ifdef ENABLE_SHADOWS
 #endif
 #define SHADOW_CUTOFF 0.7
@@ -306,6 +306,8 @@ const float shadowDistance = 160.0;
     #define MIN_LIGHT_MULT 0.0
     #define AMBIENT_LIGHT_MULT 0.0
 #endif
+
+#define EXPOSURE_BIAS 0.5
 
 #define ATMOSPHERIC_FOG_USER
 #define ATOMSPHERIC_FOG_DENSITY 0.001 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]

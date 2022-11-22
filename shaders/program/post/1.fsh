@@ -14,7 +14,7 @@ uniform sampler3D shadowcolor1;
 void main() {
     vec4 albedo = texture(colortex0, texcoord);
 
-    vec3 tonemapped = albedo.rgb;
+    vec3 tonemapped = albedo.rgb * EXPOSURE * EXPOSURE_BIAS;
 
     // apply water
     // tonemapped = mix(tonemapped, water.rgb, water.a);

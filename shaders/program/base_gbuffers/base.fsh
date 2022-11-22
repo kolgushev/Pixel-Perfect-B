@@ -76,7 +76,7 @@ void main() {
         if(distance(color.rgb, fogColor) < EPSILON) albedo = opaque(customFogColor);
 
         // anything more than about 100 causes an overflow
-        albedo *= clamp(SKY_LIGHT_MULT_OVERCAST * 0.5, 0, 100);
+        albedo *= clamp(SKY_LIGHT_MULT_OVERCAST * 0.9, 0, 100);
     #else
         vec4 albedo = texture2D(texture, texcoord);
         albedo.rgb *= color.rgb;

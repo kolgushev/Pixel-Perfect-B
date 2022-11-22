@@ -2,7 +2,8 @@ Light opaque stuff on deferred pass and use composite to get shadows on transpar
 OR
 find out if you can sample shadow textures in gbuffers
 
-turn off shadow backface rendering
+Re-add night effect
+
 
 Transfer all of this to the trello page (and link it here once the repo becomes public)
 
