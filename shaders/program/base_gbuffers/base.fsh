@@ -21,8 +21,10 @@ in vec3 normal;
 #endif
 
 uniform sampler2D texture;
-
 uniform float alphaTestRef;
+
+uniform vec4 entityColor;
+
 
 #if defined gc_transparent
     uniform vec3 sunPosition;
@@ -72,6 +74,8 @@ void main() {
     #else
         vec4 albedo = texture2D(texture, texcoord);
         albedo.rgb *= color.rgb;
+        // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed
+        albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a);
     #endif
     if(albedo.a < alphaTestRef) discard;
 
