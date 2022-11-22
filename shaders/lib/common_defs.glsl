@@ -252,7 +252,7 @@
 
 const int shadowMapResolution = 1024;
 const float shadowDistance = 160.0;
-// #define ENABLE_SHADOWS
+#define ENABLE_SHADOWS
 #ifdef ENABLE_SHADOWS
 #endif
 #define SHADOW_CUTOFF 0.7

@@ -29,6 +29,7 @@ const bool shadowcolor1Clear = true;
 */
 
 const float shadowDistanceRenderMul = 1.0;
+
 const int noiseTextureResolution = 512;
 const float sunPathRotation = -20.0;
 
