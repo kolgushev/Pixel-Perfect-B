@@ -119,7 +119,7 @@
 
 
 #define hand(h) ((h) < 0.557)
-#define skyTime(t) (clamp(fma(sin(2 * PI * float(t + 785) / 24000), 0.8, 0.5), 0, 1))
+#define skyTime(t) (clamp(fma(sin(2 * PI * float(t + 785) / 24000), 2.0, 0.5), 0, 1))
 #define sky(v, t) ((saturateRGB(SKY_SATURATION * skyTime(t)) * (v)) * (SKY_BRIGHTNESS * mix(NIGHT_SKY_LIGHT_MULT, SKY_LIGHT_MULT, skyTime(t))))
 #define removeBorder(n) (((n) - 0.5) * (1 - LUT_SIZE_RCP) + 0.5)
 
