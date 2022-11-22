@@ -23,7 +23,6 @@ uniform float far;
 
 uniform vec3 fogColor;
 
-#include "/lib/tonemapping.glsl"
 #include "/lib/fogify.glsl"
 #include "/lib/to_viewspace.glsl"
 

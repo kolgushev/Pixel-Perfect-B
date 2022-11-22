@@ -33,6 +33,10 @@ uniform vec4 entityColor;
     uniform int moonPhase;
     uniform float rainStrength;
 
+    uniform float nightVision;
+    uniform float darknessFactor;
+    uniform float darknessLightFactor;
+
     uniform float far; 
     uniform mat4 gbufferModelView;
 #endif
@@ -55,6 +59,8 @@ uniform vec4 entityColor;
 #include "/lib/fogify.glsl"
 
 #if defined gc_transparent
+    #include "/lib/color_manipulation.glsl"
+    #include "/lib/to_viewspace.glsl"
     #include "/lib/calculate_lighting.glsl"
 #endif
 
@@ -89,7 +95,7 @@ void main() {
     vec3 lightmap = vec3(light, color.a);
     #if defined gc_transparent
         // apply lighting here for transparent stuff
-        mat2x3 lightColor = getLightColor(lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
+        mat2x3 lightColor = getLightColor(lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength, nightVision, darknessFactor, darknessLightFactor);
         
         #if defined ENABLE_SHADOWS
             vec4 directLighting = opaque(lightColor[1]) * albedo;

@@ -18,9 +18,16 @@ uniform int worldTime;
 uniform int moonPhase;
 uniform float rainStrength;
 
+uniform float nightVision;
+uniform float darknessFactor;
+uniform float darknessLightFactor;
+
 uniform mat4 gbufferModelView;
 
 // don't need to include to_viewspace since calculate_lighting already includes it
+#include "/lib/tonemapping.glsl"
+#include "/lib/color_manipulation.glsl"
+#include "/lib/to_viewspace.glsl"
 #include "/lib/calculate_lighting.glsl"
 
 #if defined ENABLE_SHADOWS
@@ -51,7 +58,7 @@ void main() {
         float shadow = lightmap.g;
     #endif
 
-    mat2x3 lightColor = getLightColor(lightmap, normal, normalViewspace, sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
+    mat2x3 lightColor = getLightColor(lightmap, normal, normalViewspace, sunPosition, moonPosition, moonPhase, worldTime, rainStrength, nightVision, darknessFactor, darknessLightFactor);
 
     #if !defined DEBUG_VIEW
         albedo.rgb *= lightColor[0] + lightColor[1] * shadow;
