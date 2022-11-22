@@ -7,8 +7,6 @@ uniform sampler2D colortex3;
 uniform sampler2D colortex4;
 uniform sampler2D colortex5;
 
-uniform sampler2D shadowtex0;
-
 uniform vec3 sunPosition;
 uniform vec3 moonPosition;
 
@@ -16,12 +14,15 @@ uniform vec3 cameraPosition;
 
 uniform int worldTime;
 uniform int moonPhase;
-uniform float rainStrength; 
+uniform float rainStrength;
 
 uniform mat4 gbufferModelView;
 
-uniform mat4 shadowProjection;
-uniform mat4 shadowModelView;
+#if defined ENABLE_SHADOWS
+    uniform sampler2D shadowtex0;
+    uniform mat4 shadowProjection;
+    uniform mat4 shadowModelView;
+#endif
 
 layout(location = 1) out vec4 b1;
 
@@ -37,8 +38,12 @@ void main() {
     vec3 normal = texture(colortex4, texcoord).rgb;
     vec3 normalViewspace = view(normal);
 
-    vec3 position = texture(colortex5, texcoord).rgb;
-    float shadow = getShadow(position, shadowProjection, shadowModelView, shadowtex0);
+    #if defined ENABLE_SHADOWS
+        vec3 position = texture(colortex5, texcoord).rgb;
+        float shadow = getShadow(position, shadowProjection, shadowModelView, shadowtex0, lightmap.g);
+    #else
+        float shadow = 1;
+    #endif
 
     vec3 lightColor = getLightColor(shadow, lightmap, normal, normalViewspace, sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
 

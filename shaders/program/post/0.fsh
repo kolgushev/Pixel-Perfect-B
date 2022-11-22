@@ -43,6 +43,7 @@ const int colortex5Format = RGB16F;
 const bool colortex5Clear = false;
 */
 
+const int shadowMapResolution = 1024;
 const int noiseTextureResolution = 512;
 const float sunPathRotation = -20.0;
 
@@ -55,6 +56,7 @@ const float sunPathRotation = -20.0;
 in vec2 texcoord;
 
 uniform sampler2D colortex1;
+// uniform sampler2D shadowtex0;
 
 layout(location = 1) out vec4 b1;
 
@@ -65,4 +67,5 @@ layout(location = 1) out vec4 b1;
 
 void main() {
     b1 = texture(colortex1, texcoord);
+    // b1 = texture(shadowtex0, texcoord);
 }

@@ -86,7 +86,7 @@ void main() {
     vec3 lightmap = vec3(light, color.a);
     #if defined gc_transparent
         // apply lighting here for transparent stuff
-        vec3 lightColor = getLightColor(0, lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
+        vec3 lightColor = getLightColor(lightmap.g, lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
         
         albedo.rgb *= lightColor;
 

@@ -248,9 +248,14 @@
 
 // TODO: add options
 #define SKY_COLOR_BLEND 0.35
-
 #define STAR_WEIGHTS 2.0
 
+#define ENABLE_SHADOWS
+#ifdef ENABLE_SHADOWS
+#endif
+#define SHADOWMAP_RESOLUTION 1024
+#define SHADOW_CUTOFF 1.5
+#define SHADOW_DISTORTION 0.7
 
 // "temporary" hardcoding
 
