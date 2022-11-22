@@ -4,11 +4,8 @@ layout(location = 1) out vec4 b1;
 layout(location = 3) out vec3 b3;
 layout(location = 4) out vec3 b4;
 layout(location = 5) out vec3 b5;
-#if defined gc_sky
-    layout(location = 0) out vec4 b0;
-#endif
 #if defined gc_sky || defined gc_transparent
-    layout(location = 2) out vec4 b2;
+    layout(location = 0) out vec4 b0;
 #endif
 
 in vec2 texcoord;
@@ -86,9 +83,14 @@ void main() {
     vec3 lightmap = vec3(light, color.a);
     #if defined gc_transparent
         // apply lighting here for transparent stuff
-        vec3 lightColor = getLightColor(lightmap.g, lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
+        mat2x3 lightColor = getLightColor(lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
         
-        albedo.rgb *= lightColor;
+        #if defined ENABLE_SHADOWS
+            vec4 directLighting = opaque(lightColor[1]) * albedo;
+            albedo.rgb *= lightColor[0];
+        #else
+            albedo.rgb *= lightColor[0] + lightColor[1] * lightmap.g;
+        #endif
 
         // apply fog as well
         #define FOGIFY_ALPHA
@@ -103,16 +105,16 @@ void main() {
         // ?for proper mixing of g_skytextured
         b0 = albedo;
         b1 = vec4(0, 0, 0, 0);
-        b2 = vec4(0, 0, 0, 0);
     #elif defined gc_transparent
-        b2 = albedo;
+        b0 = albedo;
+        #if defined ENABLE_SHADOWS
+            b1 = directLighting;
+        #endif
     #else
         b1 = albedo;
     #endif
 
-    #if !defined gc_transparent
-        b3 = lightmap;
-        b4 = normal;
-        b5 = position;
-    #endif
+    b3 = lightmap;
+    b4 = normal;
+    b5 = position;
 }

@@ -4,6 +4,9 @@ find out if you can sample shadow textures in gbuffers
 
 turn off shadow backface rendering
 
+
+Shadow leak fix by storing normal data
+Nighttime mask for blue grading
 Fix clouds
 Underwater effects
 Jitter everything in vsh for Temporal Super-Resolution
@@ -11,6 +14,7 @@ Remove moon/sun when underground
 Dithering for color transitions, especially sky
 
 Idea: seasons?
+Idea: render at 1/2 resolution and fill in gaps with texpix rendering
 
 Foveated Rendering
 Add reveal light cloning

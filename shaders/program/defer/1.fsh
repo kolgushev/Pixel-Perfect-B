@@ -5,6 +5,10 @@
 #endif
 
 layout(location=0) out vec4 b0;
+layout(location=1) out vec4 b1;
+layout(location=3) out vec4 b3;
+layout(location=4) out vec4 b4;
+layout(location=5) out vec4 b5;
 
 in vec2 texcoord;
 
@@ -44,6 +48,12 @@ void main() {
 
     // fade out around edges of world
     composite = isSky ? skyColorProcessed : mix(composite, skyColorProcessed, fog);
+    
+    // manually clear for upcoming transparency pass
+    b1 = vec4(0);
+    b3 = vec4(0);
+    b4 = vec4(0);
+    b5 = vec4(0);
 
     #ifdef DEBUG_VIEW
         b0 = albedo;

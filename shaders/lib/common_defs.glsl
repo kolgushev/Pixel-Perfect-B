@@ -405,3 +405,7 @@
 #if defined g_armor_glint || defined g_skytextured
     #define gc_additive
 #endif
+
+
+// optifine setup
+#include "/optifine_setup.glsl"

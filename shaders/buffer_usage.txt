@@ -3,7 +3,7 @@ gbuffers opaque:
     0.a - 
     1.rgb - albedo
     1.a - 0 is sky, 1 is anything else - Make sure to set blending to ONE ZERO SRC_ALPHA ZERO
-    2.rgba - transparent albedo
+    2.rgba - 
     3.rg - lightmap
     3.b - [if vanilla AO] AO
     3.a - 
@@ -20,7 +20,7 @@ defer0: lighting
     REQUIRES AO data (lightmap.b)
     REQUIRES position.rgb
 
-defer1: combine passes and fog
+defer1: combine passes and fog, manually clear albedo.rgba
     REQUIRES sky.rgb
     REQUIRES albedo.rgb
     REQUIRES sky mask (albedo.a)
@@ -29,30 +29,35 @@ defer1: combine passes and fog
 
     0.rgb - composited albedo
     0.a - 
+    1.rgba - vec4(0)
+    3.rgba - vec4(0)
+    4.rgba - vec4(0)
+    5.rgba - vec4(0)
 
 
 gbuffers transparent:
-    0.rgb - sky
+    0.rgb - composited albedo (+ transparent w/indirect lighting)
     0.a - 
-    1.rgb - albedo
-    1.a - 0 is sky, 1 is anything else - Make sure to set blending to ONE ZERO SRC_ALPHA ZERO
-    2.rgba - transparent albedo
-    3.rg - lightmap
-    3.b - [if vanilla AO] AO
+    1.rgba - transparent direct lighting (additive)
+    2.rgba - 
+    3.rg - transparent lightmap
+    3.b - [if vanilla AO] transparent AO
     3.a - 
-    4.rgb - opaque normal
+    4.rgb - transparent normal
     4.a - 
-    5.rgb - position in worldspace
+    5.rgb - transparent position in worldspace
     5.a - 
 
 defer0: lighting
-    REQUIRES albedo.rgb
-    REQUIRES normal.rgb
-    REQUIRES lightmap.rgb
-    REQUIRES AO data (lightmap.b)
-    REQUIRES position.rgb
+    REQUIRES composited albedo.rgb
+    REQUIRES transparent direct lighting.rgb
+    REQUIRES transparent lightmap.g
+    REQUIRES transparent position.rgb
 
-comp1: apply color & combine water passes
+    0.rgb - fully composited albedo
+    0.a - 
+
+comp1: apply color
     REQUIRES albedo.rgb
 
     0.rgb - colorgraded albedo

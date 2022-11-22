@@ -1,6 +1,6 @@
 #include "/lib/distortion.glsl"
 
-float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelView, in sampler2D shadowtex, in float lightmapLight) {
+float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelView, in sampler2D shadowtex, in float lightmapLight, in int time) {
     #if defined TEX_RENDER
         vec3 positionMod = position;
     #else
@@ -18,5 +18,8 @@ float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelV
     
     shadow = mix(shadow, lightmapLight, shadowCutoff);
 
-    return shadow;
+    float skyTransition = skyTime(time);
+    float shadowDimmed = shadow * abs(fma(skyTransition, 2, -1));
+
+    return shadowDimmed;
 }

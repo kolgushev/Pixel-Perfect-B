@@ -40,15 +40,15 @@ void main() {
 
     #if defined ENABLE_SHADOWS
         vec3 position = texture(colortex5, texcoord).rgb;
-        float shadow = getShadow(position, shadowProjection, shadowModelView, shadowtex0, lightmap.g);
+        float shadow = getShadow(position, shadowProjection, shadowModelView, shadowtex0, lightmap.g, worldTime);
     #else
         float shadow = 1;
     #endif
 
-    vec3 lightColor = getLightColor(shadow, lightmap, normal, normalViewspace, sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
+    mat2x3 lightColor = getLightColor(lightmap, normal, normalViewspace, sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
 
     #if !defined DEBUG_VIEW
-        albedo.rgb *= lightColor;
+        albedo.rgb *= lightColor[0] + lightColor[1] * shadow;
     #endif
 
     b1 = albedo;
