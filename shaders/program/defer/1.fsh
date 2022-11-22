@@ -23,7 +23,6 @@ uniform vec3 fogColor;
 void main() {
     vec3 sky = texture(colortex0, texcoord).rgb;
     vec4 albedo = texture(colortex1, texcoord);
-    vec4 transparent = texture(colortex2, texcoord);
     vec3 position = texture(colortex5, texcoord).xyz;
 
     bool isSky = albedo.a == 0;
@@ -45,8 +44,6 @@ void main() {
 
     // fade out around edges of world
     composite = isSky ? skyColorProcessed : mix(composite, skyColorProcessed, fog);
-
-    composite = mix(composite, transparent.rgb, transparent.a);
 
     #ifdef DEBUG_VIEW
         b0 = albedo;

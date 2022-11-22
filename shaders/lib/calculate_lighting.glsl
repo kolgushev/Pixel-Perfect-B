@@ -47,7 +47,7 @@ vec3 getLightColor(in float shadow, in vec3 lightAndAO, in vec3 normal, in vec3 
     
     // Add the lighting togther to get the total contribution of the lightmap the final color.
     vec3 bounceAffectedLighting = skyLighting;
-    vec3 lightmapLighting = max(vec3(0), ambientLight * (1 - clamp(lightmap.y * 8, 0, 1)) + torchLighting + skyLight + bounceAffectedLighting);
+    vec3 lightmapLighting = max(vec3(0), ambientLight * (1 - clamp(lightmap.y * 1.5, 0, 1)) + torchLighting + skyLight + bounceAffectedLighting);
 
     lightmapLighting *= 1 - clamp((1 - pow2(ambientOcclusion)) * VANILLA_AO_INTENSITY, 0, 1);
 

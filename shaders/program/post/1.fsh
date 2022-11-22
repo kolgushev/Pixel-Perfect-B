@@ -1,55 +1,59 @@
 #include "/lib/common_defs.glsl"
 
+layout(location = 0) out vec4 b0;
+
 in vec2 texcoord;
 
-uniform sampler2D colortex1;
-uniform sampler2D colortex3;
-uniform sampler2D colortex4;
-uniform sampler2D colortex5;
+uniform sampler2D colortex0;
 
-uniform vec3 sunPosition;
-uniform vec3 moonPosition;
+uniform sampler3D shadowcolor1;
 
-uniform vec3 cameraPosition;
-
-uniform int worldTime;
-uniform int moonPhase;
-uniform float rainStrength;
-
-uniform mat4 gbufferModelView;
-
-#if defined ENABLE_SHADOWS
-    uniform sampler2D shadowtex0;
-    uniform mat4 shadowProjection;
-    uniform mat4 shadowModelView;
-#endif
-
-layout(location = 1) out vec4 b1;
-
-// don't need to include to_viewspace since calculate_lighting already includes it
-#include "/lib/calculate_lighting.glsl"
-#include "/lib/get_shadow.glsl"
+#include "/lib/tonemapping.glsl"
 
 void main() {
-    vec4 albedo = texture(colortex1, texcoord);
-    
-    vec3 lightmap = texture(colortex3, texcoord).rgb;
-    
-    vec3 normal = texture(colortex4, texcoord).rgb;
-    vec3 normalViewspace = view(normal);
+    vec4 albedo = texture(colortex0, texcoord);
 
-    #if defined ENABLE_SHADOWS
-        vec3 position = texture(colortex5, texcoord).rgb;
-        float shadow = getShadow(position, shadowProjection, shadowModelView, shadowtex0, lightmap.g);
+    vec3 tonemapped = albedo.rgb;
+
+    // tonemap image
+    #if LMT_MODE == 1
+        tonemapped = tonemapped * RCP_16;
+    #elif LMT_MODE == 2
+        tonemapped = reinhard(tonemapped);
+    #elif LMT_MODE == 3
+        tonemapped = uncharted2_filmic(tonemapped);
+    #elif LMT_MODE == 4
+        tonemapped = rtt_and_odt_fit(tonemapped * ACEScg_to_RGB) * RGB_to_ACEScg;
+    #endif
+
+    // Convert back to desired colorspace
+    #if OUTPUT_COLORSPACE == 0
+        tonemapped = tonemapped * ACEScg_to_RGB;
+    #elif OUTPUT_COLORSPACE == 2
+        tonemapped = tonemapped * ACEScg_to_ACES2065_1;
+    #endif
+
+    // gamma correction
+    vec3 colorCorrected = tonemapped;
+    #if defined GAMMA_CORRECT
+        colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
+    #endif
+
+    #if defined USE_LUT
+        vec3 noBorder = removeBorder(colorCorrected);
+
+        // vec3 lutApplied = texture(shadowcolor1, removeBorder(vec3(texcoord, 1.0))).rgb;
+        vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
+                
+        colorCorrected = vec3(lutApplied * LUT_RANGE_MULT); 
+    #endif
+
+    // write the diffuse color
+    vec4 finalColor = opaque(colorCorrected);
+
+    #ifdef DEBUG_VIEW
+        b0 = albedo;
     #else
-        float shadow = 1;
+        b0 = finalColor;
     #endif
-
-    vec3 lightColor = getLightColor(shadow, lightmap, normal, normalViewspace, sunPosition, moonPosition, moonPhase, worldTime, rainStrength);
-
-    #if !defined DEBUG_VIEW
-        albedo.rgb *= lightColor;
-    #endif
-
-    b1 = albedo;
 }

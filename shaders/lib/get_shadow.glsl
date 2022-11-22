@@ -13,7 +13,8 @@ float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelV
     shadowPosition.xy = distortShadow(shadowPosition.xy);
     shadowPosition = shadowPosition * 0.5 + 0.5;
 
-    float shadow = smoothstep(shadowPosition.z - EPSILON, shadowPosition.z, texture(shadowtex, shadowPosition.xy).r);
+    // float shadow = smoothstep(shadowPosition.z - EPSILON, shadowPosition.z, texture(shadowtex, shadowPosition.xy).r);
+    float shadow = step(shadowPosition.z - EPSILON, texture(shadowtex, shadowPosition.xy).r);
     
     shadow = mix(shadow, lightmapLight, shadowCutoff);
 

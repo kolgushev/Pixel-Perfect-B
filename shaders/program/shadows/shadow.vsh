@@ -16,7 +16,6 @@ uniform mat4 shadowModelView;
 void main() {
     position = chunkOffset + vaPosition;
 
-
     gl_Position = toViewspace(shadowProjection, shadowModelView, position);
     gl_Position.xy = distortShadow(gl_Position.xy);
 }
