@@ -1,4 +1,4 @@
-#include "/lib/common_defs.glsl"
+#include "/common_defs.glsl"
 
 /* DRAWBUFFERS:01 */
 layout(location = 1) out vec4 b1;

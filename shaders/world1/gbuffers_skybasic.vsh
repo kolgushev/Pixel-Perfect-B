@@ -1,4 +1,4 @@
-#version 450 compatibility
+#version 460 compatibility
 #define DIM_END
 
 #include "/program/gbuffers/skybasic.vsh"

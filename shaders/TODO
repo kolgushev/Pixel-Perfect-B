@@ -1,3 +1,5 @@
+No backface rendering, use normals to determine shadow validity
+
 Light opaque stuff on deferred pass and use composite to get shadows on transparent objects
 OR
 find out if you can sample shadow textures in gbuffers
@@ -7,11 +9,14 @@ Re-add night effect
 
 Transfer all of this to the trello page (and link it here once the repo becomes public)
 
+iris compatibility
 Render transparent shadows in gbuffers using texture2D instead of texture
 Use render stage uniform to detect before/after deferred
 Stop using mul_m4_v3
 Add in/out to all function declarations
-Shadow leak fix by storing normal data
+Shadow leak fix by sampling adjacent pixels
+Transluscent stuff less affected by shadows?
+Fix nametags
 Nighttime mask for blue grading
 Fix clouds
 Underwater effects

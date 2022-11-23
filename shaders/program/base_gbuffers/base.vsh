@@ -1,4 +1,4 @@
-#include "/lib/common_defs.glsl"
+#include "/common_defs.glsl"
 #if defined gc_terrain || defined gc_textured
     #define use_raw_normal
 #endif

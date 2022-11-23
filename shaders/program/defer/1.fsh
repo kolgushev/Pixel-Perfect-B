@@ -1,4 +1,4 @@
-#include "/lib/common_defs.glsl"
+#include "/common_defs.glsl"
 
 #if defined DIM_NETHER
     #define NO_SKY

@@ -1,4 +1,4 @@
-#include "/lib/common_defs.glsl"
+#include "/common_defs.glsl"
 
 #if defined gc_sky || defined gc_transparent
     /* DRAWBUFFERS:0123 */

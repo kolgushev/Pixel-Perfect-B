@@ -252,13 +252,20 @@
 
 const int shadowMapResolution = 1024;
 const float shadowDistance = 160.0;
+const bool shadowtex1Nearest = true;
 #define ENABLE_SHADOWS
 #ifdef ENABLE_SHADOWS
 #endif
 #define SHADOW_CUTOFF 0.7
 #define SHADOW_DISTORTION 0.9
+#define FILTER_SHADOWS 2
+#define SHADOW_FILTER_OFFSET 1.0
 
-
+#if FILTER_SHADOWS == 1
+    #define SHADOW_FILTER_SAMPLES 9
+#else
+    #define SHADOW_FILTER_SAMPLES 5
+#endif
 
 
 // "temporary" hardcoding
@@ -295,7 +302,7 @@ const float shadowDistance = 160.0;
 
 #if STREAMER_MODE == 0
     #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.1)
-    #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.47)
+    #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.55)
 #elif STREAMER_MODE == 1
     #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.05)
     #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.17)
