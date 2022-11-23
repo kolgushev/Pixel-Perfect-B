@@ -41,6 +41,8 @@ uniform mat4 gbufferModelView;
     
     uniform mat4 gbufferProjectionInverse;
     uniform mat4 gbufferModelViewInverse;
+
+    uniform int frameCounter;
 #endif
 
 void main() {
@@ -62,7 +64,8 @@ void main() {
             shadowtex1,
             shadowcolor1,
             lightmap.g,
-            worldTime);
+            worldTime,
+            frameCounter);
     #else
         float shadow = lightmap.g;
     #endif

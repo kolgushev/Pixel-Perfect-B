@@ -21,6 +21,7 @@ uniform mat4 gbufferProjectionInverse;
 uniform mat4 gbufferModelViewInverse;
 
 uniform int worldTime;
+uniform int frameCounter;
 
 // don't need to include to_viewspace since calculate_lighting already includes it
 #include "/lib/to_viewspace.glsl"
@@ -43,7 +44,8 @@ void main() {
         shadowtex1,
         shadowcolor1,
         skyLightmap,
-        worldTime);
+        worldTime,
+        frameCounter);
 
     #if defined DEBUG_VIEW
         b0 = opaque(diffuse);

@@ -252,20 +252,13 @@
 
 const int shadowMapResolution = 1024;
 const float shadowDistance = 160.0;
-const bool shadowcolor1Nearest = true;
+const bool shadowtex1Nearest = true;
 #define ENABLE_SHADOWS
 #ifdef ENABLE_SHADOWS
 #endif
 #define SHADOW_CUTOFF 0.7
 #define SHADOW_DISTORTION 0.9
-#define FILTER_SHADOWS 2
-#define SHADOW_FILTER_OFFSET 1.0
-
-#if FILTER_SHADOWS == 1
-    #define SHADOW_FILTER_SAMPLES 9
-#else
-    #define SHADOW_FILTER_SAMPLES 5
-#endif
+#define SHADOW_SUPERSAMPLE 2
 
 
 // "temporary" hardcoding

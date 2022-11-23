@@ -30,5 +30,5 @@ void main() {
     normal = vaNormal;
 
     gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
-    gl_Position.xy = distortShadow(gl_Position.xy);
+    gl_Position.xy = distortShadow(gl_Position.xy, frameCounter);
 }

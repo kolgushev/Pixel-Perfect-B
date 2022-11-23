@@ -1,6 +1,6 @@
 #include "/lib/distortion.glsl"
 
-float getShadow(in vec3 position, in vec3 normal, in mat4 shadowProjection, in mat4 shadowModelView, in sampler2D shadowtex, in sampler2D shadowtexNormal, in float lightmapLight, in int time) {
+float getShadow(in vec3 position, in vec3 normal, in mat4 shadowProjection, in mat4 shadowModelView, in sampler2D shadowtex, in sampler2D shadowtexNormal, in float lightmapLight, in int time, in int frameCounter) {
     // check difference between backface and non-backface rendered
     
     #if defined TEX_RENDER
@@ -17,7 +17,7 @@ float getShadow(in vec3 position, in vec3 normal, in mat4 shadowProjection, in m
 
     vec3 shadowPosition = toViewspace(shadowProjection, shadowModelView, positionMod).xyz;
 
-    shadowPosition.xy = distortShadow(shadowPosition.xy);
+    shadowPosition.xy = distortShadow(shadowPosition.xy, frameCounter);
     shadowPosition = shadowPosition * 0.5 + 0.5;
 
 
