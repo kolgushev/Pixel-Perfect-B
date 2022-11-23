@@ -39,15 +39,6 @@ uniform mat4 gbufferModelViewInverse;
 #endif
 
 void main() {
-    #if defined use_raw_position
-        position = chunkOffset + vaPosition;
-        vec4 glPos = toViewspace(projectionMatrix, modelViewMatrix, position);
-    #else
-        position = viewInverse(vaPosition);
-        vec4 glPos = toViewspace(projectionMatrix, modelViewMatrix, vaPosition);
-    #endif
-    gl_Position = glPos;
-
     texcoord = vaUV0;
     
     color = vaColor;
@@ -65,6 +56,15 @@ void main() {
     #else
         normal = viewInverse(vaNormal);
     #endif
+
+    #if defined use_raw_position
+        position = chunkOffset + vaPosition;
+        vec4 glPos = toViewspace(projectionMatrix, modelViewMatrix, position);
+    #else
+        position = viewInverse(vaPosition);
+        vec4 glPos = toViewspace(projectionMatrix, modelViewMatrix, vaPosition);
+    #endif
+    gl_Position = glPos;
 
     #if defined g_skybasic
         stars = vec2(color.r, color.r == color.g && color.g == color.b && color.r > 0.0);

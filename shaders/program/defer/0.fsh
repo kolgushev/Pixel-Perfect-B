@@ -54,7 +54,15 @@ void main() {
     #if defined ENABLE_SHADOWS
         float depth = texture(depthtex1, texcoord).r;
         vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
-        float shadow = getShadow(position, normal, shadowProjection, shadowModelView, shadowtex1, shadowcolor1, lightmap.g, worldTime);
+        float shadow = getShadow(
+            position,
+            normal,
+            shadowProjection,
+            shadowModelView,
+            shadowtex1,
+            shadowcolor1,
+            lightmap.g,
+            worldTime);
     #else
         float shadow = lightmap.g;
     #endif

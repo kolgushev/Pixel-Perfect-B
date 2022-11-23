@@ -35,11 +35,21 @@ void main() {
     float depth = texture(depthtex0, texcoord).r;
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
 
-    float shadow = getShadow(position, normal, shadowProjection, shadowModelView, shadowtex1, shadowcolor1, skyLightmap, worldTime);
+    float shadow = getShadow(
+        position,
+        normal,
+        shadowProjection,
+        shadowModelView,
+        shadowtex1,
+        shadowcolor1,
+        skyLightmap,
+        worldTime);
 
     #if defined DEBUG_VIEW
         b0 = opaque(diffuse);
     #else
         b0 = opaque(diffuse + directLighting * shadow);
     #endif
+
+    // b0 = texture(shadowtex1, texcoord);
 }

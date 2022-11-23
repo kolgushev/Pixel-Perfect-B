@@ -252,7 +252,7 @@
 
 const int shadowMapResolution = 1024;
 const float shadowDistance = 160.0;
-const bool shadowtex1Nearest = true;
+const bool shadowcolor1Nearest = true;
 #define ENABLE_SHADOWS
 #ifdef ENABLE_SHADOWS
 #endif

@@ -6,7 +6,7 @@ find out if you can sample shadow textures in gbuffers
 
 Re-add night effect
 
-
+PROPER SHADOW LEAKING FIX (instead of just removing shadows if there's no sky light)
 Transfer all of this to the trello page (and link it here once the repo becomes public)
 
 iris compatibility
