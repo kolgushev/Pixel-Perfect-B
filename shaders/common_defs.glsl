@@ -18,8 +18,13 @@
 #define ISQRT_3 0.57735026919
 #define RCP_3 0.33333333333
 #define RCP_7 0.14285714285
-#define RCP_8 0.125
+#define RCP_8 -0.75
 #define RCP_16 0.0625
+
+// multiply glsl log by these to change the logarithm's base
+// found with [1 / ln(<base>)] for [CHANGE_BASE_<base>]
+#define CHANGE_BASE_10 0.434294481903
+#define CHANGE_BASE_2 1.44269504089
 
 #define GAMMA 2.2
 #define RCP_GAMMA 0.45454545455
@@ -87,6 +92,7 @@
 
 #define opaque(a) vec4(a, 1)
 #define opaque1(a) vec4(a, a, a, 1)
+#define opaque2(a) vec4(a, 0, 1)
 #define opaque3(a, b, c) vec4(a, b, c, 1)
 
 // credit to https://beesbuzz.biz/code/16-hsv-color-transforms for the next few hsv-related defs
@@ -244,15 +250,21 @@
 // #define TEX_RENDER
 #ifdef TEX_RENDER
 #endif
-#define TEX_RES 0.0625 // [0.25 0.125 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
+#define TEX_RES 0.0625 // [0.25 -0.75 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
 
 // TODO: add options
 #define SKY_COLOR_BLEND 0.35
 #define STAR_WEIGHTS 2.0
 
-const int shadowMapResolution = 1024;
+const float shadowDistanceRenderMul = 1.0;
+
+const int noiseTextureResolution = 512;
+const float sunPathRotation = -20.0;
+
+const int shadowMapResolution = 4096;
 const float shadowDistance = 160.0;
 const bool shadowtex1Nearest = true;
+const bool shadowcolor1Nearest = true;
 #define ENABLE_SHADOWS
 #ifdef ENABLE_SHADOWS
 #endif
@@ -260,6 +272,37 @@ const bool shadowtex1Nearest = true;
 #define SHADOW_DISTORTION 0.9
 #define SHADOW_SUPERSAMPLE 2
 
+#if SHADOW_SUPERSAMPLE == 1
+    #define SHADOW_RES_MULT 2.0
+    #define SHADOW_RES_MULT_RCP 0.5
+    vec2 superSampleOffsets[4] = vec2[4](
+        vec2(-0.5, -0.5),
+        vec2(-0.5, 0.5),
+        vec2(0.5, -0.5),
+        vec2(0.5, 0.5)
+    );
+#elif SHADOW_SUPERSAMPLE == 2
+    #define SHADOW_RES_MULT 4.0
+    #define SHADOW_RES_MULT_RCP 0.25
+    vec2 superSampleOffsets[16] = vec2[16](
+        vec2(-0.25, -0.25),
+        vec2(0.75, 0.75),
+        vec2(-0.75, 0.75),
+        vec2(0.75, -0.75),
+        vec2(-0.75, -0.75),
+        vec2(0.75, -0.25),
+        vec2(-0.25, 0.25),
+        vec2(0.25, -0.75),
+        vec2(-0.25, 0.75),
+        vec2(0.25, 0.25),
+        vec2(-0.75, -0.25),
+        vec2(0.75, 0.25),
+        vec2(-0.25, -0.75),
+        vec2(0.25, 0.75),
+        vec2(-0.75, 0.25),
+        vec2(0.25, -0.25)
+    );
+#endif
 
 // "temporary" hardcoding
 

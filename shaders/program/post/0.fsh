@@ -21,7 +21,6 @@ uniform mat4 gbufferProjectionInverse;
 uniform mat4 gbufferModelViewInverse;
 
 uniform int worldTime;
-uniform int frameCounter;
 
 // don't need to include to_viewspace since calculate_lighting already includes it
 #include "/lib/to_viewspace.glsl"
@@ -32,20 +31,16 @@ void main() {
     vec3 directLighting = texture(colortex1, texcoord).rgb;
 
     float skyLightmap = texture(colortex2, texcoord).g;
-    vec3 normal = texture(colortex2, texcoord).rgb;
     float depth = texture(depthtex0, texcoord).r;
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
 
     float shadow = getShadow(
         position,
-        normal,
         shadowProjection,
         shadowModelView,
-        shadowtex1,
         shadowcolor1,
         skyLightmap,
-        worldTime,
-        frameCounter);
+        worldTime);
 
     #if defined DEBUG_VIEW
         b0 = opaque(diffuse);
@@ -53,5 +48,8 @@ void main() {
         b0 = opaque(diffuse + directLighting * shadow);
     #endif
 
-    // b0 = texture(shadowtex1, texcoord);
+    vec2 texcoordMod = supersampleSampleShift(texcoord);
+    // b0 = opaque1(texture(shadowcolor1, texcoordMod).r);
+    // b0 = opaque1(texture(shadowcolor1, texcoordMod).r);
+    // b0 = opaque2(texcoordMod);
 }

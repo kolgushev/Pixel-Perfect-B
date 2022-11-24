@@ -24,14 +24,9 @@ const bool colortex3Clear = false;
 const int colortex3Format = RGB8_SNORM;
 const bool colortex4Clear = false;
 
-const int shadowcolor1Format = RGB16F;
-const bool shadowcolor1Clear = true;
+const int shadowcolor1Format = R16F;
+const bool shadowcolor1Clear = false;
 */
-
-const float shadowDistanceRenderMul = 1.0;
-
-const int noiseTextureResolution = 512;
-const float sunPathRotation = -20.0;
 
 #if AO_MODE == 1
     const float ambientOcclusionLevel = 1.0;
