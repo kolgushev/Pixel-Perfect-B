@@ -30,7 +30,7 @@ uniform mat4 gbufferModelView;
 #include "/lib/to_viewspace.glsl"
 #include "/lib/calculate_lighting.glsl"
 
-#if defined ENABLE_SHADOWS
+#if defined SHADOWS_ENABLED
     #include "/lib/get_shadow.glsl"
 
     uniform sampler2D depthtex1;
@@ -50,7 +50,7 @@ void main() {
     vec3 normal = texture(colortex3, texcoord).rgb;
     vec3 normalViewspace = view(normal);
 
-    #if defined ENABLE_SHADOWS
+    #if defined SHADOWS_ENABLED
         float depth = texture(depthtex1, texcoord).r;
         vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
         float shadow = getShadow(

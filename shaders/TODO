@@ -9,6 +9,7 @@ Re-add night effect
 PROPER SHADOW LEAKING FIX (instead of just removing shadows if there's no sky light)
 Transfer all of this to the trello page (and link it here once the repo becomes public)
 
+Geometry shaders to scale up block faces to fix shadow leak
 iris compatibility
 Render transparent shadows in gbuffers using texture2D instead of texture
 Use render stage uniform to detect before/after deferred

@@ -97,7 +97,7 @@ void main() {
         // apply lighting here for transparent stuff
         mat2x3 lightColor = getLightColor(lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength, nightVision, darknessFactor, darknessLightFactor);
         
-        #if defined ENABLE_SHADOWS
+        #if defined SHADOWS_ENABLED
             vec4 directLighting = opaque(lightColor[1]) * albedo;
             albedo.rgb *= lightColor[0];
         #else
@@ -119,7 +119,7 @@ void main() {
         b1 = vec4(0, 0, 0, 0);
     #elif defined gc_transparent
         b0 = albedo;
-        #if defined ENABLE_SHADOWS
+        #if defined SHADOWS_ENABLED
             b1 = directLighting;
         #endif
     #else

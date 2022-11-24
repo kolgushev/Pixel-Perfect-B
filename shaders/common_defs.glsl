@@ -154,15 +154,11 @@
 #endif
 #define SUN_TEMP 5777 // [1500 2000 2500 3000 3500 4000 45000 5000 5777 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000]
 #define TORCH_TEMP 4000 // [1500 2000 2500 3000 3500 4000 45000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000]
-// #define REALISTIC_COLORS
-#define COLORS_SATURATION 1.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
-#define COLORS_CONTRAST 1.0 // [0.7 0.8 0.85 0.9 0.95 0.97 1.0 1.03 1.05 1.1 1.15 1.2 1.3]
-#define COLORS_CONTRAST_BRIGHT_BIAS 0.6 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define COLORS_SATURATION_WEIGHTS_RED 1.0 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
-#define COLORS_SATURATION_WEIGHTS_GREEN 1.0 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
-#define COLORS_SATURATION_WEIGHTS_BLUE 1.0 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
-#define SKY_SATURATION 1.0 // [0.5 0.75 1.0 1.13 1.69 2.53 3.8 5.7]
+#define SKY_COLOR_BLEND 0.4 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define STAR_WEIGHTS 1.75 // [0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00]
+
+#define SKY_SATURATION 1.0 // [0.50 0.75 1.00 1.13 1.69 2.53 3.80 5.70]
 #define SKY_BRIGHTNESS_USER 1.0 // [1.0 1.2 1.4 1.6 1.8 2.0 2.0 2.2 2.4 2.6 2.8 3.0]
 
 #define CONTRAST 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
@@ -252,29 +248,35 @@
 #endif
 #define TEX_RES 0.0625 // [0.25 -0.75 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
 
-// TODO: add options
-#define SKY_COLOR_BLEND 0.35
-#define STAR_WEIGHTS 2.0
+
+
+const int shadowMapResolution = 4096; // [512 1024 2048 4096 8192]
+const float shadowDistance = 175.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.0 275.0 300.0]
+#define SHADOWS_ENABLED_USER
+#ifdef SHADOWS_ENABLED_USER
+#endif
+
+#define SHADOW_DISTORTION 0.9 // [0.0 0.5 0.8 0.9 0.95 0.98]
+#define SHADOW_SUPERSAMPLE 1 // [0 1 2]
+
+
+
+
+// "temporary" hardcoding
 
 const float shadowDistanceRenderMul = 1.0;
-
 const int noiseTextureResolution = 512;
 const float sunPathRotation = -20.0;
+const float shadowIntervalSize = 8.0;
 
-const int shadowMapResolution = 4096;
-const float shadowDistance = 160.0;
 const bool shadowtex1Nearest = true;
 const bool shadowcolor1Nearest = true;
-#define ENABLE_SHADOWS_USER
-#ifdef ENABLE_SHADOWS_USER
-#endif
 
-#if defined ENABLE_SHADOWS_USER && defined DIM_OVERWORLD
-    #define ENABLE_SHADOWS
+#define SHADOW_CUTOFF 0.9
+
+#if defined SHADOWS_ENABLED_USER && defined DIM_OVERWORLD
+    #define SHADOWS_ENABLED
 #endif
-#define SHADOW_CUTOFF 0.7
-#define SHADOW_DISTORTION 0.9
-#define SHADOW_SUPERSAMPLE 2
 
 #if SHADOW_SUPERSAMPLE == 1
     #define SHADOW_RES_MULT 2.0
@@ -307,8 +309,6 @@ const bool shadowcolor1Nearest = true;
         vec2(0.25, -0.25)
     );
 #endif
-
-// "temporary" hardcoding
 
 #ifdef COLORED_LIGHT_ONLY
     #define DIM_LIGHT_DESAT_WEIGHT 1.5
