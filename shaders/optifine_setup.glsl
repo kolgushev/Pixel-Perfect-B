@@ -6,7 +6,7 @@ const bool colortex1Clear = true;
 */
 #else
 /*
-const bool colortex0Clear = false;
+const bool colortex0Clear = true;
 
 const bool colortex1Clear = false;
 */
