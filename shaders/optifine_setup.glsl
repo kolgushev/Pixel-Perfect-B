@@ -6,6 +6,7 @@ const bool colortex1Clear = true;
 */
 #else
 /*
+TODO: fix the "NaN" pixels that occur when this is off
 const bool colortex0Clear = true;
 
 const bool colortex1Clear = false;
