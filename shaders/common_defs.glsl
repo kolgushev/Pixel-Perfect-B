@@ -227,7 +227,7 @@
 #define TEMPORAL_UPDATE_SPEED_AO 0.0026 // [0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1]
 #define AO_SAMPLES 9 // [1 2 4 6 9 12 16 20 25 30 36 42 49 56]
 
-#define STREAMER_MODE 1 // [0 1 2 3]
+#define STREAMER_MODE 1 // [3 2 1 0]
 
 #define MIN_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
 #define AMBIENT_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
@@ -340,8 +340,9 @@ const bool shadowcolor1Nearest = true;
 
 #define MAX_LIGHT_PROPAGATION_INVERSE (1 / MAX_LIGHT_PROPAGATION)
 
-#if STREAMER_MODE == 0
-    #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.1)
+
+#if STREAMER_MODE == 0 || STREAMER_MODE == -1
+    #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.4)
     #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.55)
 #elif STREAMER_MODE == 1
     #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.05)
@@ -368,6 +369,7 @@ const bool shadowcolor1Nearest = true;
     #endif
     #define BASE_COLOR (vec3(1.0, 0.55, 0.4) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 5.0)
+    #define MIN_LIGHT_COLOR AMBIENT_COLOR
     // The color is intentionally unconverted here to get a much more vibrant color than sRGB would allow
     // (that is the main benefit of an ACES workflow, after all)
     #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.1, 0.04))
@@ -380,12 +382,14 @@ const bool shadowcolor1Nearest = true;
     #endif
     #define BASE_COLOR (vec3(0.9, 0.7, 1.2) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 0.5)
+    #define MIN_LIGHT_COLOR AMBIENT_COLOR
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 3.0)
     #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.05 * SKY_BRIGHTNESS)
 
 #else
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
+    #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_ACEScg)
     // #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)

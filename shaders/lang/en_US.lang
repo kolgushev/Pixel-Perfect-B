@@ -195,11 +195,12 @@ screen.RESOURCEPACK=Resourcepack Settings
 
 screen.MISC=Misc
     option.STREAMER_MODE=Darkness
-        option.STREAMER_MODE.comment=Streamer Mode: For content creators - plays nice with compression but won't look as good. Normal: For normal people - the definitive experience. Midnight: For people with fancy monitors - darkness has never been darker. Hardcore Darkness: For hardcore players - feel the void.
-        value.STREAMER_MODE.0=Streamer Mode
-        value.STREAMER_MODE.1=Normal
-        value.STREAMER_MODE.2=Midnight
+        option.STREAMER_MODE.comment=Streamer Mode: For content creators - plays nice with compression but won't look as good. Normal: For normal people - the definitive experience. Midnight: For people with fancy monitors - darkness has never been darker. Hardcore Darkness: feel the void.
         value.STREAMER_MODE.3=Hardcore Darkness
+        value.STREAMER_MODE.2=Midnight
+        value.STREAMER_MODE.1=Normal
+        value.STREAMER_MODE.0=Streamer Mode
+        value.STREAMER_MODE.-1=Fullbright
 
 screen.ADVANCED=Advanced
     option.DEBUG_VIEW=Debug View

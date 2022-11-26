@@ -37,14 +37,16 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
     vec3 directSkyLighting = max(vec3(0), fma(inversesqrt(rain + 1), 3.4, -2.4) * mix(moonLighting, sunLighting, skyTransition));
     vec3 actualSkyColor = mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS), mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS), skyTransition);
 
-    // unoptimized EQ: AMBIENT_LIGHT_MULT * (ambientColor + mix(ambientColor, skyColor + actualSkyLightColor, 0.7) * lightmap.y) + skyColor * skyShading * skyLightMult * lightmap.y;
-    // vec3 ambientLighting = fma(ambientColor, vec3(AMBIENT_LIGHT_MULT), fma(mix(ambientColor, skyColor + actualSkyLightColor, 0.7), vec3(AMBIENT_LIGHT_MULT), skyColor * skyShading * SKY_LIGHT_MULT) * lightmap.y);
     float hardcoreMult = inversesqrt(fma(darknessEffect, 0.75, 0.25)) - 1;
     vec3 ambientLight = hardcoreMult * AMBIENT_LIGHT_MULT * AMBIENT_COLOR;
     ambientLight *= (1 - clamp(lightmap.y * 1.5, 0, 1));
-    ambientLight += nightVisionEffect * NIGHT_VISION_COLOR;
+    #if STREAMER_MODE == -1
+        ambientLight += vec3(0.8, 0.9, 1.0) * 2.0;
+    #else
+        ambientLight += nightVisionEffect * NIGHT_VISION_COLOR;
+    #endif
 
-    vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * AMBIENT_COLOR;
+    vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR;
     vec3 ambientSkyLighting = actualSkyColor * skyShading * lightmap.y;
     
     // Add the lighting togther to get the total contribution of the lightmap the final color.
