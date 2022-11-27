@@ -10,7 +10,6 @@ float normalLighting(in vec3 normal, in vec3 lightPos) {
 
 // Input is not adjusted lightmap coordinates
 mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 sunPosition, in vec3 moonPosition, in int moonPhase, in int time, in float rain, in float nightVisionEffect, in float darknessEffect, in float darknessPulseEffect, in sampler2D vanillaLightTex) {
-    float lightBoost = 1 + darknessEffect * 0.9 + darknessPulseEffect * 4 - nightVisionEffect * 0.5;
 
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
@@ -18,7 +17,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
     float skyTransition = skyTime(time);
     
     #if defined VANILLA_LIGHTING
-        float oldLighting = max(1.0 + (abs(normal.z) * 2 + (normal.y) * 4), 0.4);
+        float oldLighting = max(0.75 + (abs(normal.z) * 1.5 + (normal.y) * 3), 0.3);
 
         // using texture2D instead of texture since the Optifine-provided varying block atlas is also called texture
         vec3 indirectLighting = gammaCorrection(texture2D(vanillaLightTex, vec2(lightmap.r, mix(0.0313, lightmap.g, VANILLA_LIGHTING_SKY_BLEED))).rgb, GAMMA) * RGB_to_ACEScg;
@@ -29,13 +28,17 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         */
         directSkyLighting -= indirectLighting;
 
-        float sunShading = normalLighting(normalViewspace, sunPosition);
-        float moonShading = normalLighting(normalViewspace, moonPosition);
+        #if defined SHADOWS_ENABLED
+            float sunShading = normalLighting(normalViewspace, sunPosition);
+            float moonShading = normalLighting(normalViewspace, moonPosition);
 
-        float skyShading = mix(moonShading, sunShading, skyTransition);
+            float skyShading = mix(moonShading, sunShading, skyTransition);
 
-        directSkyLighting *= skyShading;
+            directSkyLighting *= skyShading;
+        #endif
     #else
+        float lightBoost = 1 + darknessEffect * 0.9 + darknessPulseEffect * 4 - nightVisionEffect * 0.5;
+        
         // Compute dot product vertex shading from normals
         float sunShading = normalLighting(normalViewspace, sunPosition);
         float moonShading = normalLighting(normalViewspace, moonPosition);
@@ -73,14 +76,14 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         
         // Add the lighting togther to get the total contribution of the lightmap the final color.
         vec3 indirectLighting = max(vec3(minLight), ambientLight + torchLighting + ambientSkyLighting);
-
-        indirectLighting *= 1 - clamp((1 - pow2(ambientOcclusion)) * VANILLA_AO_INTENSITY, 0, 1);
     #endif
 
-    // Return the value
+    float adjustedAo = 1 - clamp((1 - pow2(ambientOcclusion)) * VANILLA_AO_INTENSITY, 0, 1);
+
+    indirectLighting *= adjustedAo;
     #if defined VANILLA_LIGHTING
-        return mat2x3(indirectLighting, directSkyLighting) * ambientOcclusion;
-    #else
-        return mat2x3(indirectLighting, directSkyLighting);
+        directSkyLighting *= adjustedAo;
     #endif
+
+    return mat2x3(indirectLighting, directSkyLighting);
 }

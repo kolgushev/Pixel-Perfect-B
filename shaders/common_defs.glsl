@@ -149,7 +149,7 @@
 #define VANILLA_COLORS 0.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define CUTOUT_ALIGN_STRENGTH 0.8 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
-#define VANILLA_LIGHTING
+// #define VANILLA_LIGHTING
 #ifdef VANILLA_LIGHTING
 #endif
 
@@ -160,10 +160,10 @@
 #define TORCH_TEMP 4000 // [1500 2000 2500 3000 3500 4000 45000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000]
 
 #define SKY_COLOR_BLEND 0.4 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define STAR_WEIGHTS 1.75 // [0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00]
+#define STAR_WEIGHTS 1.5 // [0.75 1.0 1.25 1.5 1.75 2.0 2.25 2.5 2.75 3.0]
 
-#define SKY_SATURATION 1.0 // [0.50 0.75 1.00 1.13 1.69 2.53 3.80 5.70]
-#define SKY_BRIGHTNESS_USER 1.0 // [1.0 1.2 1.4 1.6 1.8 2.0 2.0 2.2 2.4 2.6 2.8 3.0]
+#define SKY_SATURATION 1.0 // [0.5 0.75 1.0 1.13 1.69 2.53 3.8 5.7]
+#define SKY_BRIGHTNESS_USER 1.0 // [1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
 
 #define CONTRAST 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 #define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
@@ -183,40 +183,11 @@
 #ifdef USER_GAMMA_CORRECT
 #endif
 
-#if defined USE_LUT
-    #if defined LUT_OVERRIDE_GAMMA_CORRECT && defined LUT_GAMMA_CORRECT
-        #define GAMMA_CORRECT
-    #elif !defined LUT_OVERRIDE_GAMMA_CORRECT && defined USER_GAMMA_CORRECT
-        #define GAMMA_CORRECT
-    #endif
-    
-    #ifdef LUT_OUTPUT_COLORSPACE
-        #define OUTPUT_COLORSPACE LUT_OUTPUT_COLORSPACE
-    #else
-        #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACE
-    #endif
-    #ifdef LUT_LMT_MODE
-        #define LMT_MODE LUT_LMT_MODE
-    #else
-        #define LMT_MODE USER_LMT_MODE
-    #endif
-
-#else
-    #ifdef USER_GAMMA_CORRECT
-        #define GAMMA_CORRECT
-    #endif
-    
-    #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACE
-    #define LMT_MODE USER_LMT_MODE
-#endif
-
-// #define USE_NIGHT_EFFECT
+#define USE_NIGHT_EFFECT
 #ifdef USE_NIGHT_EFFECT
 #endif
 #define NIGHT_EFFECT_SATURATION 0.3 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define NIGHT_EFFECT_POINT 0.1 // [0.0625 0.07 0.08 0.09 0.1 0.11 0.12 0.13 0.14 0.15]
-
-#define OVEREXPOSE_SKY 1.6 // [0.0 0.5 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
 
 // output mapping: 0:none 1:vanilla 2:SSAO
 #define AO_MODE 1 // [0 1 2]
@@ -234,9 +205,6 @@
 
 #define STREAMER_MODE 1 // [3 2 1 0]
 
-#define MIN_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
-#define AMBIENT_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
-
 #define SUN_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 #define SKY_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 #define SKY_LIGHT_MULT_OVERCAST_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
@@ -244,6 +212,18 @@
 #define NIGHT_SKY_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 #define BLOCK_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
+#define ATMOSPHERIC_FOG_USER
+#define ATOMSPHERIC_FOG_DENSITY 0.001 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
+
+// #define SHADOWS_ENABLED_USER
+#ifdef SHADOWS_ENABLED_USER
+#endif
+
+const int shadowMapResolution = 4096; // [512 1024 2048 4096 8192]
+const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.0 275.0 300.0]
+
+#define SHADOW_DISTORTION 0.9 // [0.0 0.5 0.8 0.9 0.95 0.98]
+#define SHADOW_SUPERSAMPLE 1 // [0 1 2]
 
 // #define DEBUG_VIEW
 #ifdef DEBUG_VIEW
@@ -252,17 +232,6 @@
 #ifdef TEX_RENDER
 #endif
 #define TEX_RES 0.0625 // [0.25 -0.75 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
-
-
-
-const int shadowMapResolution = 4096; // [512 1024 2048 4096 8192]
-const float shadowDistance = 175.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.0 275.0 300.0]
-#define SHADOWS_ENABLED_USER
-#ifdef SHADOWS_ENABLED_USER
-#endif
-
-#define SHADOW_DISTORTION 0.9 // [0.0 0.5 0.8 0.9 0.95 0.98]
-#define SHADOW_SUPERSAMPLE 1 // [0 1 2]
 
 
 
@@ -347,6 +316,9 @@ const bool shadowcolor1Nearest = true;
 
 #define MAX_LIGHT_PROPAGATION_INVERSE (1 / MAX_LIGHT_PROPAGATION)
 
+// Removed from options intentionally, this is controlled through streamer mode option now
+#define MIN_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
+#define AMBIENT_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
 
 #if STREAMER_MODE == 0 || STREAMER_MODE == -1
     #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.4)
@@ -364,8 +336,32 @@ const bool shadowcolor1Nearest = true;
 
 #define EXPOSURE_BIAS 0.5
 
-#define ATMOSPHERIC_FOG_USER
-#define ATOMSPHERIC_FOG_DENSITY 0.001 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
+#if defined USE_LUT
+    #if defined LUT_OVERRIDE_GAMMA_CORRECT && defined LUT_GAMMA_CORRECT
+        #define GAMMA_CORRECT
+    #elif !defined LUT_OVERRIDE_GAMMA_CORRECT && defined USER_GAMMA_CORRECT
+        #define GAMMA_CORRECT
+    #endif
+    
+    #ifdef LUT_OUTPUT_COLORSPACE
+        #define OUTPUT_COLORSPACE LUT_OUTPUT_COLORSPACE
+    #else
+        #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACE
+    #endif
+    #ifdef LUT_LMT_MODE
+        #define LMT_MODE LUT_LMT_MODE
+    #else
+        #define LMT_MODE USER_LMT_MODE
+    #endif
+
+#else
+    #ifdef USER_GAMMA_CORRECT
+        #define GAMMA_CORRECT
+    #endif
+    
+    #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACE
+    #define LMT_MODE USER_LMT_MODE
+#endif
 
 #define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * RGB_to_ACEScg)
 #define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * RGB_to_ACEScg)

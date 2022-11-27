@@ -1,3 +1,8 @@
+Atmospheric fog changes based on biome
+Custom nether fog falloff
+
+Make vanilla shading compatible with streamer mode
+
 No backface rendering, use normals to determine shadow validity
 
 Light opaque stuff on deferred pass and use composite to get shadows on transparent objects
@@ -8,6 +13,9 @@ Re-add night effect
 
 PROPER SHADOW LEAKING FIX (instead of just removing shadows if there's no sky light)
 Transfer all of this to the trello page (and link it here once the repo becomes public)
+
+lower LUT temperature
+Different LUTs per dimension
 
 Geometry shaders to scale up block faces to fix shadow leak
 iris compatibility
