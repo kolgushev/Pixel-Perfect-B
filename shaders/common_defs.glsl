@@ -323,20 +323,6 @@ const bool shadowcolor1Nearest = true;
 #define MIN_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
 #define AMBIENT_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
 
-#if STREAMER_MODE == 0 || STREAMER_MODE == -1
-    #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.4)
-    #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.55)
-#elif STREAMER_MODE == 1
-    #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.05)
-    #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.17)
-#elif STREAMER_MODE == 2
-    #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.01)
-    #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.10)
-#elif STREAMER_MODE == 3
-    #define MIN_LIGHT_MULT 0.0
-    #define AMBIENT_LIGHT_MULT 0.0
-#endif
-
 #define EXPOSURE_BIAS 0.5
 
 #if defined USE_LUT
@@ -364,6 +350,37 @@ const bool shadowcolor1Nearest = true;
     
     #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACE
     #define LMT_MODE USER_LMT_MODE
+#endif
+
+// measuring face of stone block
+#if LMT_MODE == 4
+    #if STREAMER_MODE == 0 || STREAMER_MODE == -1
+        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.4)
+        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.55)
+    #elif STREAMER_MODE == 1
+        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.05)
+        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.17)
+    #elif STREAMER_MODE == 2
+        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.01)
+        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.10)
+    #elif STREAMER_MODE == 3
+        #define MIN_LIGHT_MULT 0.0
+        #define AMBIENT_LIGHT_MULT 0.0
+    #endif
+#else
+    #if STREAMER_MODE == 0 || STREAMER_MODE == -1
+        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.16)
+        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.22)
+    #elif STREAMER_MODE == 1
+        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.02)
+        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.068)
+    #elif STREAMER_MODE == 2
+        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.003)
+        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.03)
+    #elif STREAMER_MODE == 3
+        #define MIN_LIGHT_MULT 0.0
+        #define AMBIENT_LIGHT_MULT 0.0
+    #endif
 #endif
 
 #define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * RGB_to_ACEScg)
