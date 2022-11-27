@@ -17,11 +17,20 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
     float skyTransition = skyTime(time);
     
     #if defined VANILLA_LIGHTING
-        float oldLighting = max(0.75 + (abs(normal.z) * 1.5 + (normal.y) * 3), 0.3);
+        float oldLighting = max(1.0 + (abs(normal.z) * 1.25 + (normal.y) * 2.75), 0.3);
 
         // using texture2D instead of texture since the Optifine-provided varying block atlas is also called texture
-        vec3 indirectLighting = gammaCorrection(texture2D(vanillaLightTex, vec2(lightmap.r, mix(0.0313, lightmap.g, VANILLA_LIGHTING_SKY_BLEED))).rgb, GAMMA) * RGB_to_ACEScg;
-        vec3 directSkyLighting = oldLighting * gammaCorrection(texture2D(vanillaLightTex, lightmap).rgb, GAMMA) * RGB_to_ACEScg;
+        vec3 indirectLighting = texture2D(vanillaLightTex, vec2(lightmap.r, mix(0.0313, lightmap.g, VANILLA_LIGHTING_SKY_BLEED))).rgb - VANILLA_NATURAL_AMBIENT_LIGHT;
+        vec3 directSkyLighting = texture2D(vanillaLightTex, lightmap).rgb - VANILLA_NATURAL_AMBIENT_LIGHT;
+
+        indirectLighting = max(indirectLighting, 0.0);
+        directSkyLighting = max(directSkyLighting, 0.0);
+
+        directSkyLighting = gammaCorrection(directSkyLighting, GAMMA) * RGB_to_ACEScg;
+        indirectLighting = gammaCorrection(indirectLighting, GAMMA) * RGB_to_ACEScg;
+
+        directSkyLighting *= oldLighting;
+
         /*
         Make sure to have accurate lighting - since indirectLighting
         and directSkyLighting are added together when not in shadow.
@@ -36,9 +45,20 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
             directSkyLighting *= skyShading;
         #endif
+
+        vec3 ambientLight = AMBIENT_LIGHT_MULT * AMBIENT_COLOR;
+
+        #if STREAMER_MODE == -1
+            ambientLight += vec3(0.8, 0.9, 1.0) * 2.0;
+        #else
+            ambientLight += nightVisionEffect * NIGHT_VISION_COLOR;
+        #endif
+
+        indirectLighting += ambientLight;
+
     #else
         float lightBoost = 1 + darknessEffect * 0.9 + darknessPulseEffect * 4 - nightVisionEffect * 0.5;
-        
+
         // Compute dot product vertex shading from normals
         float sunShading = normalLighting(normalViewspace, sunPosition);
         float moonShading = normalLighting(normalViewspace, moonPosition);

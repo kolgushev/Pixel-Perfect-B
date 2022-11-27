@@ -1,6 +1,6 @@
-profile.ONE=Vanilla §b+
-profile.TWO=Vanilla §b++
-profile.THREE=Vanilla §b+++
+profile.ONE=§fVanilla §b+
+profile.TWO=§fVanilla §b++
+profile.THREE=§fVanilla §b+++
 
 screen.POST_PROCESSING=Post Processing
     screen.POST_PROCESSING.comment=Any effects that are applied after the image has been rendered.

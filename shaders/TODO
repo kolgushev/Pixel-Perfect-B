@@ -1,6 +1,8 @@
 Atmospheric fog changes based on biome
 Custom nether fog falloff
 
+Change min/ambient light depending on LMT
+
 Make vanilla shading compatible with streamer mode
 
 No backface rendering, use normals to determine shadow validity

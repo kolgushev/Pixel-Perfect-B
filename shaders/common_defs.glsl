@@ -183,7 +183,7 @@
 #ifdef USER_GAMMA_CORRECT
 #endif
 
-#define USE_NIGHT_EFFECT
+// #define USE_NIGHT_EFFECT
 #ifdef USE_NIGHT_EFFECT
 #endif
 #define NIGHT_EFFECT_SATURATION 0.3 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
@@ -203,6 +203,7 @@
 #define TEMPORAL_UPDATE_SPEED_AO 0.0026 // [0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1]
 #define AO_SAMPLES 9 // [1 2 4 6 9 12 16 20 25 30 36 42 49 56]
 
+// Lower number = higher brightness
 #define STREAMER_MODE 1 // [3 2 1 0]
 
 #define SUN_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
@@ -315,6 +316,8 @@ const bool shadowcolor1Nearest = true;
 #define VANILLA_LIGHTING_SKY_BLEED (SKY_LIGHT_MULT / SUN_LIGHT_MULT)
 
 #define MAX_LIGHT_PROPAGATION_INVERSE (1 / MAX_LIGHT_PROPAGATION)
+
+#define VANILLA_NATURAL_AMBIENT_LIGHT 0.141
 
 // Removed from options intentionally, this is controlled through streamer mode option now
 #define MIN_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
