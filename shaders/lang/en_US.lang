@@ -23,8 +23,18 @@ screen.POST_PROCESSING=Post Processing
             option.EXPOSURE_BOUNDS.comment=Decreases flickering by limiting individual samples. Setting this too low may limit responsiveness, even with adjustment speed set high. Setting this too high may cause extreme flickering!. No performance impact.
 
 screen.LIGHTING=Lighting
+    option.VANILLA_LIGHTING=Lighting Mode
+        value.VANILLA_LIGHTING.true=Vanilla
+        value.VANILLA_LIGHTING.false=Custom
+
     option.CUTOUT_ALIGN_STRENGTH=Grass Transluscency
         option.CUTOUT_ALIGN_STRENGTH.comment=Makes grass shading less harsh and more like vanilla. No performance impact.
+
+    option.ATMOSPHERIC_FOG_USER=Atmospheric Fog
+        value.ATMOSPHERIC_FOG_USER.true=Yes
+        value.ATMOSPHERIC_FOG_USER.false=No
+
+    option.ATMOSPHERIC_FOG_DENSITY=Atmospheric Fog Density
 
     screen.LIGHT_STRENGTH=Light Brightness
         screen.LIGHT_STRENGTH.comment=Control the brightness of individual lights.

@@ -13,7 +13,7 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far) {
     vec3 composite = diffuse.rgb;
 
     #if defined ATMOSPHERIC_FOG
-        float atmosPhog = length(position) * ATOMSPHERIC_FOG_DENSITY;
+        float atmosPhog = length(position) * ATMOSPHERIC_FOG_DENSITY;
         atmosPhog = clamp(atmosPhog / (1 + atmosPhog), 0, 1);
 
         composite = mix(composite, ATMOSPHERIC_FOG_COLOR, atmosPhog);
