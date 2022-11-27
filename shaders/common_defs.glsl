@@ -6,9 +6,6 @@
 // constants
 
 #define EPSILON 0.001
-#define EPSILON_SMALLER 0.000488281251
-#define EPSILON_SMALLEST 0.000244140625
-#define SMALLEST_16BIT 0.000000059604644775390625
 #define E 2.7182818284
 #define PI 3.1415926538
 
@@ -16,9 +13,11 @@
 #define ISQRT_2 0.7071067812
 #define SQRT_3 1.73205080757
 #define ISQRT_3 0.57735026919
+#define SQRT_5 2.2360679775
+#define ISQRT_5 0.4472135955
 #define RCP_3 0.33333333333
 #define RCP_7 0.14285714285
-#define RCP_8 -0.75
+#define RCP_8 0.75
 #define RCP_16 0.0625
 
 // multiply glsl log by these to change the logarithm's base
@@ -149,6 +148,11 @@
 
 #define VANILLA_COLORS 0.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define CUTOUT_ALIGN_STRENGTH 0.8 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+
+#define VANILLA_LIGHTING
+#ifdef VANILLA_LIGHTING
+#endif
+
 // #define REAL_LIGHTING
 #ifdef REAL_LIGHTING
 #endif
@@ -170,6 +174,7 @@
 #define USE_ACES
 #ifdef USE_ACES
 #endif
+
 // output mapping: 0:sRGB 1:ACEScg(raw) 2:ACES2065-1
 #define USER_OUTPUT_COLORSPACE 0 // [0 1 2]
 // output mapping: 0:none 1:divide by 16 2:reinhard 3:Hable 4:ACES/UE4 (default)
@@ -337,6 +342,8 @@ const bool shadowcolor1Nearest = true;
     #define NIGHT_SKY_LIGHT_MULT 0.00001
     #define BLOCK_LIGHT_MULT 16
 #endif
+
+#define VANILLA_LIGHTING_SKY_BLEED (SKY_LIGHT_MULT / SUN_LIGHT_MULT)
 
 #define MAX_LIGHT_PROPAGATION_INVERSE (1 / MAX_LIGHT_PROPAGATION)
 

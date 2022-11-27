@@ -21,6 +21,9 @@ in vec3 normal;
 #endif
 
 uniform sampler2D texture;
+
+uniform sampler2D shadowcolor0;
+
 uniform float alphaTestRef;
 
 uniform vec4 entityColor;
@@ -52,6 +55,8 @@ uniform vec4 entityColor;
 
     uniform vec3 skyColor;
     uniform vec3 fogColor;
+
+    uniform int renderStage;
 #endif
 
 #include "/lib/tonemapping.glsl"
@@ -66,6 +71,9 @@ uniform vec4 entityColor;
 
 void main() {
     #if defined g_skybasic
+        // TODO: make a proper sunset
+        if(renderStage == MC_RENDER_STAGE_SUNSET) discard;
+
         vec3 customFogColor = mix(fogColor, skyColor, SKY_COLOR_BLEND);
 
         vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(calcSkyColor(normalize(position), skyColor, customFogColor));
@@ -95,7 +103,7 @@ void main() {
     vec3 lightmap = vec3(light, color.a);
     #if defined gc_transparent
         // apply lighting here for transparent stuff
-        mat2x3 lightColor = getLightColor(lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength, nightVision, darknessFactor, darknessLightFactor);
+        mat2x3 lightColor = getLightColor(lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength, nightVision, darknessFactor, darknessLightFactor, shadowcolor0);
         
         #if defined SHADOWS_ENABLED
             vec4 directLighting = opaque(lightColor[1]) * albedo;

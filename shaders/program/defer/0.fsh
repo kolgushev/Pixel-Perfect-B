@@ -9,6 +9,8 @@ uniform sampler2D colortex1;
 uniform sampler2D colortex2;
 uniform sampler2D colortex3;
 
+uniform sampler2D shadowcolor0;
+
 uniform vec3 sunPosition;
 uniform vec3 moonPosition;
 
@@ -23,6 +25,7 @@ uniform float darknessFactor;
 uniform float darknessLightFactor;
 
 uniform mat4 gbufferModelView;
+
 
 // don't need to include to_viewspace since calculate_lighting already includes it
 #include "/lib/tonemapping.glsl"
@@ -64,12 +67,25 @@ void main() {
         float shadow = lightmap.g;
     #endif
 
-    mat2x3 lightColor = getLightColor(lightmap, normal, normalViewspace, sunPosition, moonPosition, moonPhase, worldTime, rainStrength, nightVision, darknessFactor, darknessLightFactor);
+    mat2x3 lightColor = getLightColor(lightmap,
+    normal,normalViewspace,
+    sunPosition,
+    moonPosition,
+    moonPhase,
+    worldTime,
+    rainStrength,
+    nightVision, darknessFactor,
+    darknessLightFactor,
+    shadowcolor0);
 
     #if !defined DEBUG_VIEW
         albedo.rgb *= lightColor[0] + lightColor[1] * shadow;
     #endif
 
     b1 = albedo;
-    // b1 = opaque(texture(shadowcolor1, texcoord).rgb);
+
+    // vec2 texcoordMod = supersampleSampleShift(texcoord);
+    // b1 = opaque1(texture(shadowcolor1, texcoordMod).r);
+    // b1 = opaque(texture(shadowcolor0, texcoord).rgb);
+    // b1 = opaque2(texcoordMod);
 }

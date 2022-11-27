@@ -11,7 +11,7 @@ uniform sampler2D colortex2;
 uniform sampler2D colortex3;
 
 uniform sampler2D depthtex0;
-uniform sampler2D shadowtex1;
+// uniform sampler2D shadowcolor0;
 uniform sampler2D shadowcolor1;
 
 uniform mat4 shadowProjection;
@@ -47,9 +47,4 @@ void main() {
     #else
         b0 = opaque(diffuse + directLighting * shadow);
     #endif
-
-    vec2 texcoordMod = supersampleSampleShift(texcoord);
-    // b0 = opaque1(texture(shadowcolor1, texcoordMod).r);
-    // b0 = opaque1(texture(shadowcolor1, texcoordMod).r);
-    // b0 = opaque2(texcoordMod);
 }

@@ -32,6 +32,8 @@ uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 gbufferModelViewInverse;
 
+uniform int renderStage;
+
 #include "/lib/to_viewspace.glsl"
 
 #if defined g_terrain
@@ -39,12 +41,19 @@ uniform mat4 gbufferModelViewInverse;
 #endif
 
 void main() {
+
     texcoord = vaUV0;
     
     color = vaColor;
 
     light = (LIGHT_MATRIX * vec4(vaUV2, 1, 1)).xy;
-    light = max(vec2(light.rg) - 0.0313, 0) * 1.067;
+    /*
+    The Optifine-provided lightmap is actually used to sample the
+    vanilla lighting texture, so it isn't in a 0-1 range by default.
+    */
+    #if !defined VANILLA_LIGHTING
+        light = max(light - 0.0313, 0) * 1.067;
+    #endif
 
     #if defined use_raw_normal
         normal = vaNormal;
