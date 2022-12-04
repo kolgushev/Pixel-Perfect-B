@@ -26,8 +26,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         indirectLighting = max(indirectLighting, 0.0);
         directSkyLighting = max(directSkyLighting, 0.0);
 
-        directSkyLighting = gammaCorrection(directSkyLighting, GAMMA) * RGB_to_ACEScg;
-        indirectLighting = gammaCorrection(indirectLighting, GAMMA) * RGB_to_ACEScg;
+        directSkyLighting = gammaCorrection(directSkyLighting, GAMMA) * RGB_to_ACEScg * SKY_LIGHT_MULT;
+        indirectLighting = gammaCorrection(indirectLighting, GAMMA) * RGB_to_ACEScg * BLOCK_LIGHT_MULT;
 
         directSkyLighting *= oldLighting;
 
@@ -46,7 +46,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
             directSkyLighting *= skyShading;
         #endif
 
-        vec3 ambientLight = AMBIENT_LIGHT_MULT * AMBIENT_COLOR;
+        vec3 ambientLight = AMBIENT_LIGHT_MULT * (1 - darknessEffect * 0.8) * max(1 - darknessPulseEffect * 3.0, 0.0) * AMBIENT_COLOR;
 
         #if STREAMER_MODE == -1
             ambientLight += vec3(0.8, 0.9, 1.0) * 2.0;

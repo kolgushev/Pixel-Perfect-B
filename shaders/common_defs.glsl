@@ -238,10 +238,14 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 
 
 // "temporary" hardcoding
+#if defined VANILLA_LIGHTING
+    const float sunPathRotation = 0.0;
+#else
+    const float sunPathRotation = -20.0;
+#endif
 
 const float shadowDistanceRenderMul = 1.0;
 const int noiseTextureResolution = 512;
-const float sunPathRotation = -20.0;
 const float shadowIntervalSize = 8.0;
 
 const bool shadowtex1Nearest = true;
@@ -295,22 +299,32 @@ const bool shadowcolor1Nearest = true;
 #define DIM_LIGHT_DESAT (DIM_LIGHT_DESAT_WEIGHT * DIM_LIGHT_DESAT_USER)
 #define TEMPORAL_UPDATE_SPEED (TEMPORAL_UPDATE_SPEED_WEIGHT * TEMPORAL_UPDATE_SPEED_USER)
 
-#ifndef REAL_LIGHTING
+#ifndef VANILLA_LIGHTING
+    #ifndef REAL_LIGHTING
+        #define SUN_LIGHT_MULT (5.0 * SUN_LIGHT_MULT_USER)
+        #define SKY_LIGHT_MULT (3.0 * SKY_LIGHT_MULT_USER)
+        #define SKY_LIGHT_MULT_OVERCAST (2.0 * SKY_LIGHT_MULT_OVERCAST_USER)
+        #define MOON_LIGHT_MULT (0.7 * MOON_LIGHT_MULT_USER)
+        #define NIGHT_SKY_LIGHT_MULT (0.6 * NIGHT_SKY_LIGHT_MULT_USER)
+        #define BLOCK_LIGHT_MULT (5.0 * BLOCK_LIGHT_MULT_USER)
+    #else
+        // in lumens per meter² (lux) / 1000
+        #define SUN_LIGHT_MULT 1110.0
+        #define SKY_LIGHT_MULT 195.0
+        #define SKY_LIGHT_MULT_OVERCAST 10.0
+        #define MOON_LIGHT_MULT 0.00075
+        // TODO: measure night sky
+        #define NIGHT_SKY_LIGHT_MULT 0.00001
+        #define BLOCK_LIGHT_MULT 16
+    #endif
+#else
+    #define SKY_LIGHT_MULT (2.0 * SKY_LIGHT_MULT_USER)
+    #define BLOCK_LIGHT_MULT (4.0 * BLOCK_LIGHT_MULT_USER)
+
     #define SUN_LIGHT_MULT (5.0 * SUN_LIGHT_MULT_USER)
-    #define SKY_LIGHT_MULT (3.0 * SKY_LIGHT_MULT_USER)
     #define SKY_LIGHT_MULT_OVERCAST (2.0 * SKY_LIGHT_MULT_OVERCAST_USER)
     #define MOON_LIGHT_MULT (0.7 * MOON_LIGHT_MULT_USER)
     #define NIGHT_SKY_LIGHT_MULT (0.6 * NIGHT_SKY_LIGHT_MULT_USER)
-    #define BLOCK_LIGHT_MULT (5.0 * BLOCK_LIGHT_MULT_USER)
-#else
-    // in lumens per meter² (lux) / 1000
-    #define SUN_LIGHT_MULT 1110.0
-    #define SKY_LIGHT_MULT 195.0
-    #define SKY_LIGHT_MULT_OVERCAST 10.0
-    #define MOON_LIGHT_MULT 0.00075
-    // TODO: measure night sky
-    #define NIGHT_SKY_LIGHT_MULT 0.00001
-    #define BLOCK_LIGHT_MULT 16
 #endif
 
 #define VANILLA_LIGHTING_SKY_BLEED (SKY_LIGHT_MULT / SUN_LIGHT_MULT)
