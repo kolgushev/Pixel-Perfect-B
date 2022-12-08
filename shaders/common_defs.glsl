@@ -1,5 +1,10 @@
 #define defs
 
+/*
+NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_ACEScg)
+    are expected to be in the ACEScg colorspace.
+*/
+
 // include defs from other files
 #include "/LUTs/lut_meta.glsl"
 
@@ -224,7 +229,7 @@ const int shadowMapResolution = 4096; // [512 1024 2048 4096 8192]
 const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.0 275.0 300.0]
 
 #define SHADOW_DISTORTION 0.9 // [0.0 0.5 0.8 0.9 0.95 0.98]
-#define SHADOW_SUPERSAMPLE 1 // [0 1 2]
+#define SHADOW_SUPERSAMPLE 0 // [0 1 2]
 
 // #define DEBUG_VIEW
 #ifdef DEBUG_VIEW
@@ -302,7 +307,7 @@ const bool shadowcolor1Nearest = true;
 #ifndef VANILLA_LIGHTING
     #ifndef REAL_LIGHTING
         #define SUN_LIGHT_MULT (5.0 * SUN_LIGHT_MULT_USER)
-        #define SKY_LIGHT_MULT (3.0 * SKY_LIGHT_MULT_USER)
+        #define SKY_LIGHT_MULT (4.0 * SKY_LIGHT_MULT_USER)
         #define SKY_LIGHT_MULT_OVERCAST (2.0 * SKY_LIGHT_MULT_OVERCAST_USER)
         #define MOON_LIGHT_MULT (0.7 * MOON_LIGHT_MULT_USER)
         #define NIGHT_SKY_LIGHT_MULT (0.6 * NIGHT_SKY_LIGHT_MULT_USER)
@@ -318,10 +323,11 @@ const bool shadowcolor1Nearest = true;
         #define BLOCK_LIGHT_MULT 16
     #endif
 #else
-    #define SKY_LIGHT_MULT (2.0 * SKY_LIGHT_MULT_USER)
-    #define BLOCK_LIGHT_MULT (4.0 * BLOCK_LIGHT_MULT_USER)
+    #define SKY_LIGHT_MULT (3.0 * SKY_LIGHT_MULT_USER)
+    #define BLOCK_LIGHT_MULT (3.0 * BLOCK_LIGHT_MULT_USER)
 
-    #define SUN_LIGHT_MULT (5.0 * SUN_LIGHT_MULT_USER)
+    #define SUN_LIGHT_MULT (4.0 * SUN_LIGHT_MULT_USER)
+
     #define SKY_LIGHT_MULT_OVERCAST (2.0 * SKY_LIGHT_MULT_OVERCAST_USER)
     #define MOON_LIGHT_MULT (0.7 * MOON_LIGHT_MULT_USER)
     #define NIGHT_SKY_LIGHT_MULT (0.6 * NIGHT_SKY_LIGHT_MULT_USER)
@@ -422,7 +428,6 @@ const bool shadowcolor1Nearest = true;
     #define MIN_LIGHT_COLOR AMBIENT_COLOR
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 3.0)
     #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.05 * SKY_BRIGHTNESS)
-
 #else
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
@@ -431,6 +436,17 @@ const bool shadowcolor1Nearest = true;
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
 #endif
+
+#define ATMOSPHERIC_FOG_DENSITY_WATER 0.02
+#define ATMOSPHERIC_FOG_COLOR_WATER (vec3(0.03, 0.2, 0.7))
+#define OVERLAY_COLOR_WATER (vec3(0.7, 0.8, 1.0))
+
+#define ATMOSPHERIC_FOG_DENSITY_LAVA 15.0
+#define ATMOSPHERIC_FOG_COLOR_LAVA (vec3(1.0, 0.3, 0.04))
+
+#define ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW 3.0
+#define ATMOSPHERIC_FOG_COLOR_POWDER_SNOW (vec3(0.9, 1.0, 1.2))
+
 
 #define DAY_SKY_COLOR ((vec3(0.67, 0.83, 1.0) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
 #define NIGHT_SKY_COLOR ((vec3(0.5, 0.6, 1.0) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)

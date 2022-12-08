@@ -17,7 +17,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
     float skyTransition = skyTime(time);
     
     #if defined VANILLA_LIGHTING
-        float oldLighting = max(1.0 + (abs(normal.z) * 1.25 + (normal.y) * 2.75), 0.3);
+        float oldLighting = max((abs(normal.z) * 1.25 + (normal.y) * 2.75), -0.7) * ISQRT_5 + ISQRT_5;
 
         // using texture2D instead of texture since the Optifine-provided varying block atlas is also called texture
         vec3 indirectLighting = texture2D(vanillaLightTex, vec2(lightmap.r, mix(0.0313, lightmap.g, VANILLA_LIGHTING_SKY_BLEED))).rgb - VANILLA_NATURAL_AMBIENT_LIGHT;

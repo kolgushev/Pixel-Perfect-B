@@ -27,6 +27,7 @@ uniform sampler2D shadowcolor0;
 uniform float alphaTestRef;
 
 uniform vec4 entityColor;
+uniform int isEyeInWater;
 
 
 #if defined gc_transparent
@@ -116,8 +117,7 @@ void main() {
         #endif
 
         // apply fog as well
-        #define FOGIFY_ALPHA
-        vec4 fogged = fogify(position, albedo.rgb, far);
+        vec4 fogged = fogify(position, albedo.rgb, far, isEyeInWater);
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;

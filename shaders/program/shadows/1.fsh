@@ -1,5 +1,6 @@
 #include "/common_defs.glsl"
 
+/* DRAWBUFFERS:1 */
 layout(location = 1) out float b1;
 
 in vec2 texcoord;

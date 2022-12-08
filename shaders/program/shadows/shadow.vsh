@@ -23,15 +23,19 @@ uniform int frameCounter;
 #include "/lib/distortion.glsl"
 
 void main() {
-    // check against position texture instead of depth
-    texcoord = vaUV0;
+    #if defined SHADOWS_ENABLED
+        // check against position texture instead of depth
+        texcoord = vaUV0;
 
-    position = chunkOffset + vaPosition;
-    normal = vaNormal;
+        position = chunkOffset + vaPosition;
+        normal = vaNormal;
 
-    gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
-    
-    gl_Position.xy = distortShadow(gl_Position.xy);
-    gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);
-    gl_Position.xy = supersampleSubpixelShift(gl_Position.xy, frameCounter);
+        gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
+        
+        gl_Position.xy = distortShadow(gl_Position.xy);
+        gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);
+        gl_Position.xy = supersampleSubpixelShift(gl_Position.xy, frameCounter);
+    #else
+        gl_Position = vec4(0);
+    #endif
 }

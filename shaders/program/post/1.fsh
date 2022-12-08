@@ -9,6 +9,8 @@ uniform sampler2D colortex0;
 
 uniform sampler3D shadowcolor1;
 
+uniform int isEyeInWater;
+
 #include "/lib/tonemapping.glsl"
 
 void main() {
@@ -16,8 +18,9 @@ void main() {
 
     vec3 tonemapped = albedo.rgb * EXPOSURE * EXPOSURE_BIAS;
 
-    // apply water
-    // tonemapped = mix(tonemapped, water.rgb, water.a);
+    if(isEyeInWater == 1) {
+        tonemapped *= OVERLAY_COLOR_WATER;
+    }
 
     // tonemap image
     #if LMT_MODE == 1

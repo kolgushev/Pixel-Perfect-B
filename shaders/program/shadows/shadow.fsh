@@ -1,5 +1,6 @@
 #include "/common_defs.glsl"
 
+/* DRAWBUFFERS: */
 in vec2 texcoord;
 
 in vec3 normal;
@@ -13,9 +14,11 @@ uniform float alphaTestRef;
 uniform mat4 gbufferModelViewInverse;
 
 void main() {
-    // sign of dot product determines sign of epsilon
-    vec4 albedo = texture2D(texture, texcoord);
-    // throw out transparent stuff
-    if(albedo.a < alphaTestRef) discard;
-    // if(dot(viewInverse(shadowLightPosition), normal) > 0.0 || albedo.a < alphaTestRef) discard;
+    #if defined SHADOWS_ENABLED
+        // sign of dot product determines sign of epsilon
+        vec4 albedo = texture2D(texture, texcoord);
+        // throw out transparent stuff
+        if(albedo.a < alphaTestRef) discard;
+        // if(dot(viewInverse(shadowLightPosition), normal) > 0.0 || albedo.a < alphaTestRef) discard;
+    #endif
 }
