@@ -1,4 +1,4 @@
-vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater) {
+vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect) {
     vec3 composite = diffuse.rgb;
 
     // Render fog in a cylinder shape
@@ -13,6 +13,7 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater
 
     float atmosPhog = 0;
     vec3 atmosPhogColor = vec3(0);
+    float nigthVisionVisibility = 0;
     if(isEyeInWater == 0) {
         #if defined ATMOSPHERIC_FOG
             atmosPhog = length(position) * ATMOSPHERIC_FOG_DENSITY;
@@ -20,23 +21,26 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater
             atmosPhog = clamp(atmosPhog / (1 + atmosPhog), 0, 1);
         #endif
     } else {
+        // hijack atmospheric fog calculations for underwater
         switch(isEyeInWater) {
             case 1:
                 atmosPhog = ATMOSPHERIC_FOG_DENSITY_WATER;
                 atmosPhogColor = ATMOSPHERIC_FOG_COLOR_WATER;
+                nigthVisionVisibility = NIGHT_VISION_AFFECTS_FOG_WATER;
                 break;
             case 2:
                 atmosPhog = ATMOSPHERIC_FOG_DENSITY_LAVA;
                 atmosPhogColor = ATMOSPHERIC_FOG_COLOR_LAVA;
+                nigthVisionVisibility = NIGHT_VISION_AFFECTS_FOG_LAVA;
                 break;
             case 3:
                 atmosPhog = ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW;
                 atmosPhogColor = ATMOSPHERIC_FOG_COLOR_POWDER_SNOW;
+                nigthVisionVisibility = NIGHT_VISION_AFFECTS_FOG_POWDER_SNOW;
                 break;
         }
 
-        // hijack atmospheric fog calculations for underwater
-        atmosPhog = length(position) * atmosPhog;
+        atmosPhog = length(position) * atmosPhog * (1 - nightVisionEffect * nigthVisionVisibility);
 
 
         atmosPhog = clamp(atmosPhog / (1 + atmosPhog), 0, 1);

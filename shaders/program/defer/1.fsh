@@ -23,6 +23,7 @@ uniform float far;
 
 uniform vec3 fogColor;
 uniform int isEyeInWater;
+uniform float nightVision;
 
 #include "/lib/fogify.glsl"
 #include "/lib/to_viewspace.glsl"
@@ -47,7 +48,7 @@ void main() {
     #endif
 
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
-    vec4 fogged = fogify(position, albedo.rgb, far, isEyeInWater);
+    vec4 fogged = fogify(position, albedo.rgb, far, isEyeInWater, nightVision);
     vec3 composite = fogged.rgb;
     float fog = fogged.a;
 

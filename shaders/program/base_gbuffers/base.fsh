@@ -28,6 +28,7 @@ uniform float alphaTestRef;
 
 uniform vec4 entityColor;
 uniform int isEyeInWater;
+uniform float nightVision;
 
 
 #if defined gc_transparent
@@ -37,7 +38,6 @@ uniform int isEyeInWater;
     uniform int moonPhase;
     uniform float rainStrength;
 
-    uniform float nightVision;
     uniform float darknessFactor;
     uniform float darknessLightFactor;
 
@@ -117,7 +117,7 @@ void main() {
         #endif
 
         // apply fog as well
-        vec4 fogged = fogify(position, albedo.rgb, far, isEyeInWater);
+        vec4 fogged = fogify(position, albedo.rgb, far, isEyeInWater, nightVision);
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;

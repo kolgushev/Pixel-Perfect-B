@@ -441,7 +441,7 @@ const bool shadowcolor1Nearest = true;
 #define ATMOSPHERIC_FOG_COLOR_WATER (vec3(0.03, 0.2, 0.7))
 #define OVERLAY_COLOR_WATER (vec3(0.7, 0.8, 1.0))
 
-#define ATMOSPHERIC_FOG_DENSITY_LAVA 15.0
+#define ATMOSPHERIC_FOG_DENSITY_LAVA 10.0
 #define ATMOSPHERIC_FOG_COLOR_LAVA (vec3(1.0, 0.3, 0.04))
 
 #define ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW 3.0
@@ -458,6 +458,9 @@ const bool shadowcolor1Nearest = true;
 // #define MOON_COLOR ((vec3(0.95, 0.99, 1) * RGB_to_ACEScg) * MOON_LIGHT_MULT)
 
 #define NIGHT_VISION_COLOR ((vec3(0.7, 0.8, 1.0) * RGB_to_ACEScg))
+#define NIGHT_VISION_AFFECTS_FOG_WATER 0.2
+#define NIGHT_VISION_AFFECTS_FOG_LAVA 0.93
+#define NIGHT_VISION_AFFECTS_FOG_POWDER_SNOW 0.0
 
 #define NIGHT_EFFECT_HUE (vec3(0.2, 0.6, 1.0) * RGB_to_ACEScg)
 
