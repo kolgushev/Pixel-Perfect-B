@@ -83,9 +83,6 @@ void main() {
         */
         if(distance(color.rgb, fogColor) < EPSILON) albedo = opaque(customFogColor);
 
-        // saturate
-        albedo.rgb *= saturateRGB(SKY_SATURATION);
-
         // anything more than about 100 causes an overflow
         albedo *= clamp(SKY_LIGHT_MULT * 0.45, 0, 100) * SKY_BRIGHTNESS;
     #else
@@ -96,7 +93,14 @@ void main() {
     #endif
     if(albedo.a < alphaTestRef) discard;
 
-    albedo.rgb = gammaCorrection(albedo.rgb, GAMMA) * RGB_to_ACEScg;
+    albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
+
+    #if defined g_skybasic
+        // saturate
+        albedo.rgb = max(vec3(0), saturateRGB(SKY_SATURATION) * albedo.rgb);
+    #endif
+
+    albedo.rgb *= RGB_to_ACEScg;
 
     #if defined g_skytextured
         // since we're using an advanced color pipeline it's safe to pump up the skytextured brightness

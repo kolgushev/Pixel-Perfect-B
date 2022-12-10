@@ -16,11 +16,13 @@ uniform int isEyeInWater;
 void main() {
     vec4 albedo = texture(colortex0, texcoord);
 
-    vec3 tonemapped = albedo.rgb * EXPOSURE * EXPOSURE_BIAS;
-
+    vec3 tonemapped = albedo.rgb;
+    
     if(isEyeInWater == 1) {
         tonemapped *= OVERLAY_COLOR_WATER;
     }
+
+    tonemapped *= EXPOSURE * EXPOSURE_BIAS;
 
     // tonemap image
     #if LMT_MODE == 1
@@ -54,6 +56,15 @@ void main() {
                 
         colorCorrected = vec3(lutApplied * LUT_RANGE_MULT); 
     #endif
+
+    // apply contrast
+    if(CONTRAST != 0.0) {
+        // equation for contrast is x+(1-|2x-1|)(2x-1)a
+        // where "x" is the color channel and "a" is the contrast
+        vec3 b = 2 * colorCorrected - 1;
+
+        colorCorrected = colorCorrected + (1 - abs(b)) * b * CONTRAST;
+    }
 
     // write the diffuse color
     vec4 finalColor = opaque(colorCorrected);
