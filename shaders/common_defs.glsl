@@ -253,13 +253,15 @@ const float shadowDistanceRenderMul = 1.0;
 const int noiseTextureResolution = 512;
 const float shadowIntervalSize = 8.0;
 
-const bool shadowtex1Nearest = true;
-const bool shadowcolor1Nearest = true;
-
 #define SHADOW_CUTOFF 0.9
 
 #if defined SHADOWS_ENABLED_USER && defined DIM_OVERWORLD
     #define SHADOWS_ENABLED
+#endif
+
+#if SHADOW_SUPERSAMPLE != 0
+    const bool shadowtex1Nearest = true;
+    const bool shadowcolor1Nearest = true;
 #endif
 
 #if SHADOW_SUPERSAMPLE == 1
@@ -444,7 +446,7 @@ const bool shadowcolor1Nearest = true;
 #define ATMOSPHERIC_FOG_DENSITY_LAVA 10.0
 #define ATMOSPHERIC_FOG_COLOR_LAVA (vec3(1.0, 0.3, 0.04))
 
-#define ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW 3.0
+#define ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW 6.0
 #define ATMOSPHERIC_FOG_COLOR_POWDER_SNOW (vec3(0.9, 1.0, 1.2))
 
 
