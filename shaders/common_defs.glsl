@@ -153,9 +153,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define VANILLA_COLORS 0.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define CUTOUT_ALIGN_STRENGTH 0.8 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
-// #define VANILLA_LIGHTING
-#ifdef VANILLA_LIGHTING
-#endif
+// 0 is old lighting off, 1 is standard vanilla, 2 is custom shading
+#define VANILLA_LIGHTING 2 // [0 1 2]
 
 // #define REAL_LIGHTING
 #ifdef REAL_LIGHTING
@@ -248,7 +247,7 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 
 
 // "temporary" hardcoding
-#if defined VANILLA_LIGHTING
+#if VANILLA_LIGHTING != 2
     const float sunPathRotation = 0.0;
 #else
     const float sunPathRotation = -20.0;
@@ -301,7 +300,7 @@ const float shadowIntervalSize = 8.0;
     );
 #endif
 
-#ifndef VANILLA_LIGHTING
+#if VANILLA_LIGHTING == 2
     #ifndef REAL_LIGHTING
         #define SUN_LIGHT_MULT (5.0 * SUN_LIGHT_MULT_USER)
         #define SKY_LIGHT_MULT (4.0 * SKY_LIGHT_MULT_USER)

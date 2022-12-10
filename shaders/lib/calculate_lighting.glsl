@@ -1,7 +1,7 @@
 #define lighting_pass
 
 float normalLighting(in vec3 normal, in vec3 lightPos) {
-    #if defined VANILLA_LIGHTING && defined SHADOWS_ENABLED
+    #if VANILLA_LIGHTING != 2 && defined SHADOWS_ENABLED
         return clamp(dot(normal, normalize(lightPos)) * 6, 0, 1);
     #else
         return max(dot(normal, normalize(lightPos)), 0);
@@ -16,8 +16,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
     float skyTransition = skyTime(time);
     
-    #if defined VANILLA_LIGHTING
-        float oldLighting = max((abs(normal.z) * 1.25 + (normal.y) * 2.75), -0.7) * ISQRT_5 + ISQRT_5;
+    #if VANILLA_LIGHTING != 2
 
         // using texture2D instead of texture since the Optifine-provided varying block atlas is also called texture
         vec3 indirectLighting = texture2D(vanillaLightTex, vec2(lightmap.r, mix(0.0313, lightmap.g, VANILLA_LIGHTING_SKY_BLEED))).rgb - VANILLA_NATURAL_AMBIENT_LIGHT;
@@ -29,7 +28,10 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         directSkyLighting = gammaCorrection(directSkyLighting, GAMMA) * RGB_to_ACEScg * SKY_LIGHT_MULT;
         indirectLighting = gammaCorrection(indirectLighting, GAMMA) * RGB_to_ACEScg * BLOCK_LIGHT_MULT;
 
-        directSkyLighting *= oldLighting;
+        #if VANILLA_LIGHTING == 1
+            float oldLighting = max((abs(normal.z) * 1.25 + (normal.y) * 2.75), -0.7) * ISQRT_5 + ISQRT_5;
+            directSkyLighting *= oldLighting;
+        #endif
 
         /*
         Make sure to have accurate lighting - since indirectLighting
@@ -101,7 +103,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
     float adjustedAo = 1 - clamp((1 - pow2(ambientOcclusion)) * VANILLA_AO_INTENSITY, 0, 1);
 
     indirectLighting *= adjustedAo;
-    #if defined VANILLA_LIGHTING
+    #if VANILLA_LIGHTING != 2
         directSkyLighting *= adjustedAo;
     #endif
 

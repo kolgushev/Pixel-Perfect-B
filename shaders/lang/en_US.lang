@@ -11,8 +11,9 @@ screen.POST_PROCESSING=Post Processing
 
 screen.LIGHTING=Lighting
     option.VANILLA_LIGHTING=Lighting Mode
-        value.VANILLA_LIGHTING.true=Vanilla
-        value.VANILLA_LIGHTING.false=Custom
+        value.VANILLA_LIGHTING.0=Optifine
+        value.VANILLA_LIGHTING.1=Vanilla
+        value.VANILLA_LIGHTING.2=Custom
 
     option.CUTOUT_ALIGN_STRENGTH=Grass Transluscency
         option.CUTOUT_ALIGN_STRENGTH.comment=Makes grass shading less harsh and more like vanilla. No performance impact.

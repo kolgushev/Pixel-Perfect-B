@@ -1,7 +1,6 @@
 Atmospheric fog changes based on biome
 Custom nether fog falloff
 
-Change min/ambient light depending on LMT
 Add option to change between Custom / vanilla / vanilla without old lighting
 
 No backface rendering, use normals to determine shadow validity

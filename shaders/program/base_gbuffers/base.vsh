@@ -51,7 +51,7 @@ void main() {
     The Optifine-provided lightmap is actually used to sample the
     vanilla lighting texture, so it isn't in a 0-1 range by default.
     */
-    #if !defined VANILLA_LIGHTING
+    #if VANILLA_LIGHTING == 2
         light = max(light - 0.0313, 0) * 1.067;
     #endif
 
