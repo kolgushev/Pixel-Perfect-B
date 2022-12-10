@@ -21,7 +21,6 @@ in vec3 normal;
 #endif
 
 uniform sampler2D texture;
-
 uniform sampler2D shadowcolor0;
 
 uniform float alphaTestRef;

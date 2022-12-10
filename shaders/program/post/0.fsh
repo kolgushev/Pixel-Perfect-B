@@ -13,6 +13,7 @@ uniform sampler2D colortex3;
 uniform sampler2D depthtex0;
 // uniform sampler2D shadowcolor0;
 uniform sampler2D shadowcolor1;
+uniform sampler2D noisetex;
 
 uniform mat4 shadowProjection;
 uniform mat4 shadowModelView;
@@ -21,6 +22,12 @@ uniform mat4 gbufferProjectionInverse;
 uniform mat4 gbufferModelViewInverse;
 
 uniform int worldTime;
+
+uniform int frameCounter;
+uniform float viewWidth;
+uniform float viewHeight;
+
+#include "/lib/sample_noisetex.glsl"
 
 // don't need to include to_viewspace since calculate_lighting already includes it
 #include "/lib/to_viewspace.glsl"
@@ -35,12 +42,14 @@ void main() {
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
 
     float shadow = getShadow(
-        position,
-        shadowProjection,
-        shadowModelView,
-        shadowcolor1,
-        skyLightmap,
-        worldTime);
+            position,
+            shadowProjection,
+            shadowModelView,
+            texcoord,
+            shadowcolor1,
+            noisetex,
+            skyLightmap,
+            worldTime);
 
     #if defined DEBUG_VIEW
         b0 = opaque(diffuse);

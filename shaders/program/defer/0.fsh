@@ -34,15 +34,21 @@ uniform mat4 gbufferModelView;
 #include "/lib/calculate_lighting.glsl"
 
 #if defined SHADOWS_ENABLED
-    #include "/lib/get_shadow.glsl"
-
     uniform sampler2D depthtex1;
     uniform sampler2D shadowcolor1;
+    uniform sampler2D noisetex;
     uniform mat4 shadowProjection;
     uniform mat4 shadowModelView;
     
     uniform mat4 gbufferProjectionInverse;
     uniform mat4 gbufferModelViewInverse;
+
+    uniform int frameCounter;
+    uniform float viewWidth;
+    uniform float viewHeight;
+
+    #include "/lib/sample_noisetex.glsl"
+    #include "/lib/get_shadow.glsl"
 #endif
 
 void main() {
@@ -60,7 +66,9 @@ void main() {
             position,
             shadowProjection,
             shadowModelView,
+            texcoord,
             shadowcolor1,
+            noisetex,
             lightmap.g,
             worldTime);
     #else
