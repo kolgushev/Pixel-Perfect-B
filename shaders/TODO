@@ -1,8 +1,6 @@
 Atmospheric fog changes based on biome
 Custom nether fog falloff
 
-Add option to change between Custom / vanilla / vanilla without old lighting
-
 No backface rendering, use normals to determine shadow validity
 
 Light opaque stuff on deferred pass and use composite to get shadows on transparent objects
