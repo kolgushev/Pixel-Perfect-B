@@ -8,6 +8,10 @@ float normalLighting(in vec3 normal, in vec3 lightPos) {
     #endif
 }
 
+float basicDirectShading(in float skyLight) {
+    return pow2(clamp((skyLight - 1 + RCP_3) * 3, 0, 1));
+}
+
 // Input is not adjusted lightmap coordinates
 mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 sunPosition, in vec3 moonPosition, in int moonPhase, in int time, in float rain, in float nightVisionEffect, in float darknessEffect, in float darknessPulseEffect, in sampler2D vanillaLightTex) {
 
@@ -66,7 +70,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         float moonShading = normalLighting(normalViewspace, moonPosition);
 
         // Usually this is divided by 2, but we're dividing by more than that to simulate bounce lighting
-        float skyShading = fma((normal.y - 1), RCP_3, 1f);
+        float skyShading = fma((normal.y - 1), RCP_3, 1.0);
 
         vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), VANILLA_COLORS);
 
@@ -80,7 +84,6 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         vec3 moonLighting = moonShading * fma(cos(float(moonPhase) * 2 * PI * RCP_8), 0.3, 0.7) * MOON_COLOR;
         vec3 sunLighting = sunShading * SUN_COLOR;
-        // vec3 skyLighting = pow2(lightmap.y) * fma(inversesqrt(rain + 1), 3.4, -2.4) * mix(moonLighting, sunLighting, skyTransition);
         vec3 directSkyLighting = max(vec3(0), fma(inversesqrt(rain + 1), 3.4, -2.4) * mix(moonLighting, sunLighting, skyTransition));
         vec3 actualSkyColor = mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS), mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS), skyTransition);
 
@@ -94,7 +97,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         #endif
 
         vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR;
-        vec3 ambientSkyLighting = actualSkyColor * skyShading * lightmap.y;
+        // technically the pow2 here isn't accurate, but it makes the falloff near the edges of the light look better
+        vec3 ambientSkyLighting = actualSkyColor * skyShading * pow2(lightmap.y);
         
         // Add the lighting togther to get the total contribution of the lightmap the final color.
         vec3 indirectLighting = max(vec3(minLight), ambientLight + torchLighting + ambientSkyLighting);

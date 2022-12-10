@@ -72,7 +72,7 @@ void main() {
             lightmap.g,
             worldTime);
     #else
-        float shadow = lightmap.g;
+        float shadow = basicDirectShading(lightmap.g);
     #endif
 
     mat2x3 lightColor = getLightColor(lightmap,

@@ -116,7 +116,7 @@ void main() {
             vec4 directLighting = opaque(lightColor[1]) * albedo;
             albedo.rgb *= lightColor[0];
         #else
-            albedo.rgb *= lightColor[0] + lightColor[1] * lightmap.g;
+            albedo.rgb *= lightColor[0] + lightColor[1] * basicDirectShading(lightmap.g);
         #endif
 
         // apply fog as well
