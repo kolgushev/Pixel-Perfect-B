@@ -27,6 +27,7 @@ uniform float nightVision;
 
 #include "/lib/fogify.glsl"
 #include "/lib/to_viewspace.glsl"
+#include "/lib/tonemapping.glsl"
 
 void main() {
     vec3 sky = texture(colortex0, texcoord).rgb;
