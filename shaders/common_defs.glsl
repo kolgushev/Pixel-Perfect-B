@@ -168,7 +168,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define STAR_WEIGHTS 1.5 // [0.75 1.0 1.25 1.5 1.75 2.0 2.25 2.5 2.75 3.0]
 
 #define SKY_SATURATION 1.0 // [0.5 0.75 1.0 1.13 1.69 2.53 3.8 5.7]
-#define SKY_BRIGHTNESS_USER 1.0 // [1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
+#define SKY_BRIGHTNESS_USER 1.0 // [0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
 
 #define CONTRAST 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 #define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
@@ -231,8 +231,11 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 #define SHADOW_DISTORTION 0.9 // [0.0 0.5 0.8 0.9 0.95 0.98]
 // 0:off 1:2× 2:4×
 #define SHADOW_SUPERSAMPLE 0 // [0 1 2]
+
 // 0:off 1:Percentage Closer 2:Variable-Penumbra Offbrand 3:Variable-Penumbra
 #define SHADOW_FILTERING 1 // [0 1 2 3]
+#define SHADOW_FILTERING_SAMPLES 5 // [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
+#define SHADOW_FILTERING_RADIUS 0.1 // [0.025 0.05 0.075 0.1 0.125 0.15 0.175 0.2]
 
 // #define DEBUG_VIEW
 #ifdef DEBUG_VIEW
@@ -299,16 +302,6 @@ const float shadowIntervalSize = 8.0;
     );
 #endif
 
-#ifdef COLORED_LIGHT_ONLY
-    #define DIM_LIGHT_DESAT_WEIGHT 1.5
-    #define TEMPORAL_UPDATE_SPEED_WEIGHT 0.4
-#else
-    #define DIM_LIGHT_DESAT_WEIGHT 1f
-    #define TEMPORAL_UPDATE_SPEED_WEIGHT 1f
-#endif
-#define DIM_LIGHT_DESAT (DIM_LIGHT_DESAT_WEIGHT * DIM_LIGHT_DESAT_USER)
-#define TEMPORAL_UPDATE_SPEED (TEMPORAL_UPDATE_SPEED_WEIGHT * TEMPORAL_UPDATE_SPEED_USER)
-
 #ifndef VANILLA_LIGHTING
     #ifndef REAL_LIGHTING
         #define SUN_LIGHT_MULT (5.0 * SUN_LIGHT_MULT_USER)
@@ -339,8 +332,6 @@ const float shadowIntervalSize = 8.0;
 #endif
 
 #define VANILLA_LIGHTING_SKY_BLEED (SKY_LIGHT_MULT / SUN_LIGHT_MULT)
-
-#define MAX_LIGHT_PROPAGATION_INVERSE (1 / MAX_LIGHT_PROPAGATION)
 
 #define VANILLA_NATURAL_AMBIENT_LIGHT 0.141
 
@@ -471,14 +462,6 @@ const float shadowIntervalSize = 8.0;
 
 #define COLORS_SATURATION_WEIGHTS normalize(vec3(COLORS_SATURATION_WEIGHTS_RED, COLORS_SATURATION_WEIGHTS_GREEN, COLORS_SATURATION_WEIGHTS_BLUE))
 
-#define LIT_MULTIPLIER_INVERSE (1 / LIT_MULTIPLIER)
-
-#ifdef COLORED_LIGHT_ONLY
-    #define LIT_MIN 0f
-#else
-    #define LIT_MIN 0.01
-#endif
-
 // using cat02
 #if defined USE_ACES
 // \[ *(-?\d+\.\d+) *(-?\d+\.\d+) *(-?\d+\.\d+) *\]
@@ -510,7 +493,7 @@ const float shadowIntervalSize = 8.0;
 #if defined g_skybasic || defined g_skytextured
     #define gc_sky
 #endif
-#if defined g_water || defined g_hand_water
+#if defined g_water || defined g_hand_water || defined g_weather
     #define gc_transparent
 #endif
 #if defined g_water || defined g_terrain
