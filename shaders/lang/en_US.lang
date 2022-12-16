@@ -82,6 +82,10 @@ screen.SHADOWS=Shadows
         option.SHADOW_FILTERING_RADIUS.comment=How much the shadow is blurred (if filtering is enabled).
     option.SHADOW_FILTERING_SAMPLES=Number of Samples
         option.SHADOW_FILTERING_SAMPLES.comment=More samples make the shadow blur less grainy (if filtering is enabled). Increased ➤ Large performance hit.
+    option.SHADOW_AFFECTED_BY_LIGHTMAP=Vanilla Lighting Affects Shadows
+        option.SHADOW_AFFECTED_BY_LIGHTMAP.comment=To avoid "shadow leaking" and to simulate light being absorbed by stuff like water or tinted glass, increase shadows based on the vanilla sky light level. No performance impact.
+        value.SHADOW_AFFECTED_BY_LIGHTMAP.true=Yes
+        value.SHADOW_AFFECTED_BY_LIGHTMAP.false=No
 
 screen.COLORS=Colors
     option.VANILLA_COLORS=Vanilla Colors

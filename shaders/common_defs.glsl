@@ -229,6 +229,9 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 #define SHADOW_DISTORTION 0.9 // [0.0 0.5 0.8 0.9 0.95 0.98]
 // 0:off 1:2× 2:4×
 #define SHADOW_SUPERSAMPLE 0 // [0 1 2]
+#define SHADOW_AFFECTED_BY_LIGHTMAP
+#ifdef SHADOW_AFFECTED_BY_LIGHTMAP
+#endif
 
 // 0:off 1:Percentage Closer 2:Variable-Penumbra Offbrand 3:Variable-Penumbra
 #define SHADOW_FILTERING 1 // [0 1 2 3]
