@@ -18,7 +18,7 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater
         #if defined ATMOSPHERIC_FOG
             atmosPhog = length(position) * ATMOSPHERIC_FOG_DENSITY;
             atmosPhogColor = ATMOSPHERIC_FOG_COLOR;
-            atmosPhog = clamp(atmosPhog / (1 + atmosPhog), 0, 1);
+            atmosPhog = clamp(exp(-atmosPhog), 0, 1);
         #endif
     } else {
         // hijack atmospheric fog calculations for underwater
@@ -42,11 +42,10 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater
 
         atmosPhog = length(position) * atmosPhog * (1 - nightVisionEffect * nigthVisionVisibility);
 
-
-        atmosPhog = clamp(atmosPhog / (1 + atmosPhog), 0, 1);
+        atmosPhog = clamp(exp(-atmosPhog), 0, 1);
     }
 
-    composite = mix(composite, atmosPhogColor, atmosPhog);
+    composite = mix(atmosPhogColor, composite, atmosPhog);
 
     return vec4(composite, fogTube);
 }

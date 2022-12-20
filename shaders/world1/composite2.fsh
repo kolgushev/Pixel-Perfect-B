@@ -1,4 +1,4 @@
 #version 460 compatibility
-#define DIM_OVERWORLD
+#define DIM_END
 
 #include "/program/post/2.fsh"
