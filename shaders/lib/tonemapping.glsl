@@ -57,7 +57,7 @@ vec3 aces_approx(in vec3 v)
     return v * fma(a, v, b) / fma(v, fma(c, v, d), e);
 }
 
-vec3 rtt_and_odt_fit(in vec3 v) {
+vec3 rrt_and_odt_fit(in vec3 v) {
     vec3 a = fma(v, v + 0.0245786, vec3(-0.000090537));
     vec3 b = fma(v, fma(vec3(0.983729), v, vec3(0.4329510)), vec3(0.238081));
     return a / b;
@@ -66,6 +66,6 @@ vec3 rtt_and_odt_fit(in vec3 v) {
 vec3 aces_fitted(in vec3 v)
 {
     v = v * ACES_INPUT;
-    v = rtt_and_odt_fit(v);
+    v = rrt_and_odt_fit(v);
     return v * ACES_OUTPUT;
 }

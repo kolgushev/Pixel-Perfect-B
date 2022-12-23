@@ -32,7 +32,7 @@ void main() {
     #elif LMT_MODE == 3
         tonemapped = uncharted2_filmic(tonemapped);
     #elif LMT_MODE == 4
-        tonemapped = rtt_and_odt_fit(tonemapped * ACEScg_to_RGB) * RGB_to_ACEScg;
+        tonemapped = rrt_and_odt_fit(tonemapped * ACEScg_to_RGB) * RGB_to_ACEScg;
     #endif
 
     // Convert back to desired colorspace
