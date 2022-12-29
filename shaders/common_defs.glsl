@@ -221,7 +221,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define BLOCK_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
 #define ATMOSPHERIC_FOG_USER
-#define ATMOSPHERIC_FOG_DENSITY 0.0015 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
+#define ATMOSPHERIC_FOG_DENSITY 0.0035 // [0.001 0.0015 0.002 0.0035 0.005 0.0075 0.01 0.0125]
 
 // 0: none 1:TAA
 #define ANTIALIASING_MODE 0 // [0 1]

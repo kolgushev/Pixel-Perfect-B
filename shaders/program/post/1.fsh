@@ -14,8 +14,8 @@ void main() {
     vec3 currentFrame = texture(colortex0, texcoord).rgb;
 
 
-    vec3 newAntialiased = mix(previousAntialiased, currentFrame, 0.25);
-    // vec3 newAntialiased = currentFrame;
+    // vec3 newAntialiased = mix(previousAntialiased, currentFrame, 0.5);
+    vec3 newAntialiased = currentFrame;
     b0 = opaque(newAntialiased);
     b4 = opaque(newAntialiased);
 }
