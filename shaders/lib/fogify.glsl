@@ -13,7 +13,7 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater
 
     float atmosPhog = 1.0;
     vec3 atmosPhogColor = vec3(0);
-    float nigthVisionVisibility = 0;
+    float nightVisionVisibility = 0;
     if(isEyeInWater == 0) {
         #if defined ATMOSPHERIC_FOG
             atmosPhog = length(position) * ATMOSPHERIC_FOG_DENSITY;
@@ -26,21 +26,21 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater
             case 1:
                 atmosPhog = ATMOSPHERIC_FOG_DENSITY_WATER;
                 atmosPhogColor = ATMOSPHERIC_FOG_COLOR_WATER;
-                nigthVisionVisibility = NIGHT_VISION_AFFECTS_FOG_WATER;
+                nightVisionVisibility = NIGHT_VISION_AFFECTS_FOG_WATER;
                 break;
             case 2:
                 atmosPhog = ATMOSPHERIC_FOG_DENSITY_LAVA;
                 atmosPhogColor = ATMOSPHERIC_FOG_COLOR_LAVA;
-                nigthVisionVisibility = NIGHT_VISION_AFFECTS_FOG_LAVA;
+                nightVisionVisibility = NIGHT_VISION_AFFECTS_FOG_LAVA;
                 break;
             case 3:
                 atmosPhog = ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW;
                 atmosPhogColor = ATMOSPHERIC_FOG_COLOR_POWDER_SNOW;
-                nigthVisionVisibility = NIGHT_VISION_AFFECTS_FOG_POWDER_SNOW;
+                nightVisionVisibility = NIGHT_VISION_AFFECTS_FOG_POWDER_SNOW;
                 break;
         }
 
-        atmosPhog = length(position) * atmosPhog * (1 - nightVisionEffect * nigthVisionVisibility);
+        atmosPhog = length(position) * atmosPhog * (1 - nightVisionEffect * nightVisionVisibility);
 
 
         atmosPhog = exp(-atmosPhog);

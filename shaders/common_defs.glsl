@@ -438,12 +438,18 @@ const float shadowIntervalSize = 8.0;
 #define ATMOSPHERIC_FOG_COLOR_WATER (vec3(0.03, 0.2, 0.7))
 #define OVERLAY_COLOR_WATER (vec3(0.7, 0.8, 1.0))
 
-#define ATMOSPHERIC_FOG_DENSITY_LAVA 10.0
+#define ATMOSPHERIC_FOG_DENSITY_LAVA 7.0
 #define ATMOSPHERIC_FOG_COLOR_LAVA (vec3(1.0, 0.3, 0.04))
 
-#define ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW 6.0
+#define ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW 2.0
 #define ATMOSPHERIC_FOG_COLOR_POWDER_SNOW (vec3(0.9, 1.0, 1.2))
 
+#define NIGHT_VISION_AFFECTS_FOG_WATER 0.2
+// TODO: feature request for fire resistance uniform (since lava fog is affected by that, not night vision in vanilla)
+#define NIGHT_VISION_AFFECTS_FOG_LAVA 0.7
+#define NIGHT_VISION_AFFECTS_FOG_POWDER_SNOW 0.0
+
+#define NIGHT_VISION_COLOR ((vec3(0.7, 0.8, 1.0) * RGB_to_ACEScg))
 
 #define DAY_SKY_COLOR ((vec3(0.67, 0.83, 1.0) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
 #define NIGHT_SKY_COLOR ((vec3(0.5, 0.6, 1.0) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
@@ -453,11 +459,6 @@ const float shadowIntervalSize = 8.0;
 #define SUN_COLOR ((kelvinToRGB(SUN_TEMP) * RGB_to_ACEScg) * SUN_LIGHT_MULT)
 #define MOON_COLOR ((vec3(0.5, 0.66, 1.0) * RGB_to_ACEScg) * MOON_LIGHT_MULT)
 // #define MOON_COLOR ((vec3(0.95, 0.99, 1) * RGB_to_ACEScg) * MOON_LIGHT_MULT)
-
-#define NIGHT_VISION_COLOR ((vec3(0.7, 0.8, 1.0) * RGB_to_ACEScg))
-#define NIGHT_VISION_AFFECTS_FOG_WATER 0.2
-#define NIGHT_VISION_AFFECTS_FOG_LAVA 0.93
-#define NIGHT_VISION_AFFECTS_FOG_POWDER_SNOW 0.0
 
 #define NIGHT_EFFECT_HUE (vec3(0.2, 0.6, 1.0) * RGB_to_ACEScg)
 
