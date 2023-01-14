@@ -241,6 +241,9 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 // #define DEBUG_VIEW
 #ifdef DEBUG_VIEW
 #endif
+#define SHADOW_DEBUG
+#ifdef SHADOW_DEBUG
+#endif
 // #define TEX_RENDER
 #ifdef TEX_RENDER
 #endif

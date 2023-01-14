@@ -92,8 +92,10 @@ void main() {
 
     b1 = albedo;
 
-    // vec2 texcoordMod = supersampleSampleShift(texcoord);
-    // b1 = opaque1(texture(shadowcolor1, texcoordMod).r);
+    #if defined SHADOWS_ENABLED
+        // vec2 texcoordMod = supersampleSampleShift(texcoord);
+        // b1 = opaque1(texture(shadowcolor1, texcoordMod).r);
     // b1 = opaque(texture(shadowcolor0, texcoord).rgb);
     // b1 = opaque2(texcoordMod);
+    #endif
 }
