@@ -127,8 +127,6 @@ screen.COLORS=Colors
                 value.USE_LUT.false=No
         option.USER_GAMMA_CORRECT=Gamma correction
             option.USER_GAMMA_CORRECT.comment=If you don't know what this is, you shouldn't disable it.
-            value.USER_GAMMA_CORRECT.true=On
-            value.USER_GAMMA_CORRECT.false=Off
         screen.ACES=ACES
             screen.ACES.comment=Academy Color Encoding System.
             option.USER_OUTPUT_COLORSPACE=Output Colorspace
@@ -174,7 +172,9 @@ screen.MISC=Misc
 
 screen.ADVANCED=Advanced
     option.DEBUG_VIEW=Debug View
-        option.DEBUG_VIEW.comment=Disables all existing albedo writes to allow the developer (and you, within license restrictions) to create their own for debugging purposes
+        option.DEBUG_VIEW.comment=Disables all existing albedo writes to allow the developer (and you, within license restrictions) to create their own for debugging purposes.
+    option.SHADOW_DEBUG=Debug Shadows
+        option.DEBUG_VIEW.comment=Overrides the albedo with the shadow texture in the final pass.
 
     screen.AUTO_ADDED=Automatic Settings
         screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work.

@@ -26,7 +26,7 @@ const int colortex3Format = RGB8_SNORM;
 const bool colortex4Clear = false;
 
 const int shadowcolor1Format = R16F;
-const bool shadowcolor1Clear = true;
+const bool shadowcolor1Clear = false;
 */
 
 #if AO_MODE == 1
