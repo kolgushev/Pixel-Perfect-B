@@ -132,10 +132,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define skyTime(t) (clamp(sin(2 * PI * float(t + 785) / 24000) + 0.5, 0, 1))
 #define removeBorder(n) (((n) - 0.5) * (1 - LUT_SIZE_RCP) + 0.5)
 
-// antialiasing jitter coordinates
-#define JITTER_2X vec2[4](vec2(-0.5, -0.5), vec2(-0.5, 0.5), vec2(0.5, -0.5), vec2(0.5, 0.5))
-#define JITTER_4X vec2[16](vec2(-0.25, -0.25), vec2(0.75, 0.75), vec2(-0.75, 0.75), vec2(0.75, -0.75), vec2(-0.75, -0.75), vec2(0.75, -0.25), vec2(-0.25, 0.25), vec2(0.25, -0.75), vec2(-0.25, 0.75), vec2(0.25, 0.25), vec2(-0.75, -0.25), vec2(0.75, 0.25), vec2(-0.25, -0.75), vec2(0.25, 0.75), vec2(-0.75, 0.25), vec2(0.25, -0.25))
-
 // block mappings
 
 #define CUTOUTS 1
@@ -223,9 +219,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define ATMOSPHERIC_FOG_USER
 #define ATMOSPHERIC_FOG_DENSITY 0.001 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
 
-// 0: none 1:TAA
-#define ANTIALIASING_MODE 0 // [0 1]
-
 // #define SHADOWS_ENABLED_USER
 #ifdef SHADOWS_ENABLED_USER
 #endif
@@ -278,15 +271,36 @@ const float shadowIntervalSize = 8.0;
     const bool shadowcolor1Nearest = true;
 #endif
 
-
 #if SHADOW_SUPERSAMPLE == 1
     #define SHADOW_RES_MULT 2.0
     #define SHADOW_RES_MULT_RCP 0.5
-    vec2 superSampleOffsets[4] = JITTER_2X;
+    vec2 superSampleOffsets[4] = vec2[4](
+        vec2(-0.5, -0.5),
+        vec2(-0.5, 0.5),
+        vec2(0.5, -0.5),
+        vec2(0.5, 0.5)
+    );
 #elif SHADOW_SUPERSAMPLE == 2
     #define SHADOW_RES_MULT 4.0
     #define SHADOW_RES_MULT_RCP 0.25
-    vec2 superSampleOffsets[16] = JITTER_4X;
+    vec2 superSampleOffsets[16] = vec2[16](
+        vec2(-0.25, -0.25),
+        vec2(0.75, 0.75),
+        vec2(-0.75, 0.75),
+        vec2(0.75, -0.75),
+        vec2(-0.75, -0.75),
+        vec2(0.75, -0.25),
+        vec2(-0.25, 0.25),
+        vec2(0.25, -0.75),
+        vec2(-0.25, 0.75),
+        vec2(0.25, 0.25),
+        vec2(-0.75, -0.25),
+        vec2(0.75, 0.25),
+        vec2(-0.25, -0.75),
+        vec2(0.25, 0.75),
+        vec2(-0.75, 0.25),
+        vec2(0.25, -0.25)
+    );
 #endif
 
 #if VANILLA_LIGHTING == 2

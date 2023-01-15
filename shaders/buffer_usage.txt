@@ -8,8 +8,6 @@ gbuffers opaque:
     2.a - 
     3.rgb - opaque normal
     3.a - 
-    4.rgb - temporal antialiased
-    4.a - 
 
 
 defer0: lighting
@@ -53,16 +51,7 @@ comp0: transparency shadows
     0.rgb - fully composited albedo
     0.a - 
 
-comp1: TAA
-    REQUIRES composited albedo.rgb
-    REQUIRES prev frame antialiased
-
-    0.rgb - new antialiased
-    0.a - 
-    4.rgb - new antialiased
-    4.a - 
-
-comp2: apply color
+comp1: apply color
     REQUIRES albedo.rgb
 
     0.rgb - colorgraded albedo
