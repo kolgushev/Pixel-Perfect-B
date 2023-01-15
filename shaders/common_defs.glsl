@@ -24,6 +24,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define RCP_7 0.14285714285
 #define RCP_8 0.75
 #define RCP_16 0.0625
+#define RCP_256 0.00390625
 
 // multiply glsl log by these to change the logarithm's base
 // found with [1 / ln(<base>)] for [CHANGE_BASE_<base>]
@@ -191,6 +192,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #endif
 #define NIGHT_EFFECT_SATURATION 0.3 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define NIGHT_EFFECT_POINT 0.1 // [0.0625 0.07 0.08 0.09 0.1 0.11 0.12 0.13 0.14 0.15]
+
+// output mapping: 0:none 1:8bit
+#define DITHERING_MODE 1 // [0 1]
 
 // output mapping: 0:none 1:vanilla 2:SSAO
 #define AO_MODE 1 // [0 1 2]

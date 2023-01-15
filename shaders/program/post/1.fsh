@@ -6,12 +6,22 @@ layout(location = 0) out vec4 b0;
 in vec2 texcoord;
 
 uniform sampler2D colortex0;
+#if DITHERING_MODE != 0
+    uniform sampler2D noisetex;
+
+    uniform float viewWidth;
+    uniform float viewHeight;
+#endif
 
 uniform sampler3D shadowcolor1;
 
 uniform int isEyeInWater;
 
 #include "/lib/tonemapping.glsl"
+
+#if DITHERING_MODE != 0
+    #include "/lib/sample_noisetex.glsl"
+#endif
 
 void main() {
     vec4 albedo = texture(colortex0, texcoord);
@@ -54,7 +64,7 @@ void main() {
         // vec3 lutApplied = texture(shadowcolor1, removeBorder(vec3(texcoord, 1.0))).rgb;
         vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
                 
-        colorCorrected = vec3(lutApplied * LUT_RANGE_MULT); 
+        colorCorrected = vec3(lutApplied * LUT_RANGE_MULT);
     #endif
 
     // apply contrast
@@ -65,6 +75,37 @@ void main() {
 
         colorCorrected = colorCorrected + (1 - abs(b)) * b * CONTRAST;
     }
+
+    // dithering
+    #if DITHERING_MODE != 0
+        // TODO: rework to fix light loss bug
+        // const float mult = 2;
+        // const float inverseMult = 0.5;
+        const float mult = 256;
+        const float inverseMult = RCP_256;
+
+        /*
+            This dithering is unique, since it doesn't sample adjacent pixels.
+            Instead, it uses the current color and a noise texture to randomly
+            increase the color by one bit based on its proximity to either
+            the original or increased color.
+            This happens per every color channel individually.
+        */
+
+        vec3 noiseToSurpass = sampleNoise(texcoord, 0).rgb;
+        vec3 interPrecisionGradient = mod(colorCorrected * mult, 1);
+
+        /*
+            Do a custom half-float -> 8bit sRGB conversion
+            to avoid dealing with the complicated one done by openGL
+        */
+        colorCorrected = floor(colorCorrected * mult) * inverseMult;
+
+        vec3 factor = ceil(interPrecisionGradient - noiseToSurpass);
+
+        colorCorrected = mix(colorCorrected - vec3(inverseMult), colorCorrected, factor);
+    #endif
+
 
     // write the diffuse color
     vec4 finalColor = opaque(colorCorrected);

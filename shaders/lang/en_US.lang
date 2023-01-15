@@ -4,10 +4,17 @@ profile.THREE=§fVanilla §b+++
 
 screen.POST_PROCESSING=Post Processing
     screen.POST_PROCESSING.comment=Any effects that are applied after the image has been rendered.
+
     option.CONTRAST=Contrast
         option.CONTRAST.comment=Higher contrast intensifies colors, white and black levels, while lower contrast decreases them. Too much contrast may cause color clipping, while too little may make everything look grayed out. No performance impact.
+
     option.EXPOSURE=Exposure
         option.EXPOSURE.comment=Increases the brightness of the image while preserving dark areas. You can also control this setting through the vanilla "Brightness" slider. No performance impact.
+
+    option.DITHERING_MODE=Dithering
+        option.DITHERING_MODE.comment=Slightly randomizes pixel colors to get rid of ugly bands of color (for instance, ones visible in the sky) that form because your monitor can't display color precisely enough. On ➤ Minimal performance hit.
+        value.DITHERING_MODE.0=No
+        value.DITHERING_MODE.1=Yes
 
 screen.LIGHTING=Lighting
     option.VANILLA_LIGHTING=Lighting Mode
@@ -25,63 +32,84 @@ screen.LIGHTING=Lighting
     option.ATMOSPHERIC_FOG_DENSITY=Atmospheric Fog Density
 
     screen.SSAO_BETA=Ambient Occlusion
+    
     screen.SSAO=Ambient Occlusion §c(Experimental)§r
         option.AO_MODE=Mode
             option.AO_MODE.comment=Screen-Space ➤ Medium performance hit.
             value.AO_MODE.0=Off
             value.AO_MODE.1=Vanilla
             value.AO_MODE.2=Screen-Space §c(Experimental)
+
         option.AO_INTENSITY=Intensity
             option.AO_INTENSITY.comment=How noticeable the ambient occlution is (i.e.§r how much it darkens crevices). No performance impact.
 
     screen.LIGHT_STRENGTH=Light Brightness
         screen.LIGHT_STRENGTH.comment=Control the brightness of individual lights.
+
         option.MIN_LIGHT_MULT=Minimum Light
             option.MIN_LIGHT_MULT.comment=Sets the minimum light level that must be maintained. For instance, a minimum light strength of 0 will result in completely black caves.
+
         option.AMBIENT_LIGHT_MULT=Ambient Light
             option.AMBIENT_LIGHT_MULT.comment=Sets the ambient light level. This is similar to minimum light, but affects all areas of the game, not just the darkest ones.
+
         option.REAL_LIGHTING=Realistic Light Strengths
             option.REAL_LIGHTING.comment=BETA!. This feature is in beta and won't look good. Sets light levels to their real-life values. No performance impact.
+            value.REAL_LIGHTING.true=Yes
+            value.REAL_LIGHTING.false=No
+
         option.SUN_LIGHT_MULT_USER=Sunlight
             option.SUN_LIGHT_MULT_USER.comment=Strength of direct sunlight during the day.
+
         option.SKY_LIGHT_MULT_USER=Sky Light
             option.SKY_LIGHT_MULT_USER.comment=Strength of indirect skylight during the day.
+
         option.SKY_LIGHT_MULT_OVERCAST_USER=Sky Light (Cloudy)
             option.SKY_LIGHT_MULT_OVERCAST_USER.comment=Strength of indirect skylight during a very cloudy/rainy day.
+
         option.NIGHT_SKY_LIGHT_MULT_USER=Sky Light (Nighttime)
             option.NIGHT_SKY_LIGHT_MULT_USER.comment=Strength of indirect skylight during the night.
+
         option.MOON_LIGHT_MULT_USER=Moon Light
             option.MOON_LIGHT_MULT_USER.comment=Strength of direct moonlight during the night.
+
         option.BLOCK_LIGHT_MULT_USER=Block Light
             option.BLOCK_LIGHT_MULT_USER.comment=Strength of block light (torch, sea lantern, glowstone, etc.)
 
 screen.SHADOWS=Shadows
     screen.SHADOWS.comment=Control realtime shadowmapped shadows.
-        option.SSGI_ENABLED.comment=Enabled ➤ Huge performance hit.
-        value.SSGI_ENABLED.true=Yes
-        value.SSGI_ENABLED.false=No
+
     option.SHADOWS_ENABLED_USER=Enabled
+        value.SHADOWS_ENABLED_USER.true=Yes
+        value.SHADOWS_ENABLED_USER.false=No
+
     option.shadowDistance=Shadow Distance
         option.shadowDistance.comment=How far away the shadows can be, in blocks. Since setting higher distances means the same shadow image is spread over more blocks, shadows become less detailed when the distance is increased. Increased ➤ No performance impact.
+
     option.shadowMapResolution=Shadow Resolution
-        option.shadowMapResolution.comment=Controls the resolution of the shadowmap (the shadow image). A higher-resolution shadowmap will increase the detail in shadows and make them look sharper. However, a higher resolution takes longer to calculate, decreasing performance. Increased ➤ High performance hit.
+        option.shadowMapResolution.comment=Controls the resolution of the shadowmap (the shadow image). A higher-resolution shadowmap will increase the detail in shadows and make them look sharper. However, a higher resolution takes longer to calculate, decreasing performance. Increased ➤ Large performance hit.
+
     option.SHADOW_SUPERSAMPLE=Shadow TSR
         option.SHADOW_SUPERSAMPLE.comment=Shadow Temporal Super-Resolution improves performance by updating shadows over several frames. Some shadows might not update instantly when this setting is increased. Shadow update speed depends on framerate, so 60+ fps is recommended for the 4× setting. Increased ➤ Large performance boost.
         value.SHADOW_SUPERSAMPLE.0=Off
         value.SHADOW_SUPERSAMPLE.1=2×
         value.SHADOW_SUPERSAMPLE.2=4×
+
     option.SHADOW_DISTORTION=Shadow Distortion
         option.SHADOW_DISTORTION.comment=Because things that are farther away appear smaller, the shadowmap (shadow image) is warped to have a higher resolution closer to the player. Lower distortion makes the resolution seem lower, but higher resolution might look weird. Increased ➤ No performance impact.
+
     option.SHADOW_FILTERING=Filtering
         option.SHADOW_FILTERING.comment=Makes shadows look nicer by blurring them. Enabled ➤ Large performance hit (based on number of samples).
         value.SHADOW_FILTERING.0=Off
         value.SHADOW_FILTERING.1=PCF
         value.SHADOW_FILTERING.2=VP Lite §c(Experimental)
         value.SHADOW_FILTERING.3=VP §c(Experimental)
+
     option.SHADOW_FILTERING_RADIUS=Filtering Radius
         option.SHADOW_FILTERING_RADIUS.comment=How much the shadow is blurred (if filtering is enabled).
+
     option.SHADOW_FILTERING_SAMPLES=Number of Samples
         option.SHADOW_FILTERING_SAMPLES.comment=More samples make the shadow blur less grainy (if filtering is enabled). Increased ➤ Large performance hit.
+        
     option.SHADOW_AFFECTED_BY_LIGHTMAP=Vanilla Lighting Affects Shadows
         option.SHADOW_AFFECTED_BY_LIGHTMAP.comment=To avoid "shadow leaking" and to simulate light being absorbed by stuff like water or tinted glass, increase shadows based on the vanilla sky light level. No performance impact.
         value.SHADOW_AFFECTED_BY_LIGHTMAP.true=Yes
@@ -91,48 +119,66 @@ screen.COLORS=Colors
     option.VANILLA_COLORS=Vanilla Colors
         value.VANILLA_COLORS.0.0=Vibrant
         value.VANILLA_COLORS.1.0=Vanilla-ish
+
     option.SUN_TEMP=Sunlight Temperature
         option.SUN_TEMP.comment=Sunlight temperature in Kelvin. The default value is the most physically-accurate. Lower temperatures are redder, while higher temps are more white-ish.
         suffix.SUN_TEMP=k
+
     option.TORCH_TEMP=Block Light Temperature
         option.TORCH_TEMP.comment=Block light temperature in Kelvin. The default value is the most physically-accurate. Lower temperatures are redder, while higher temps are more white-ish.
         suffix.TORCH_TEMP=k
+
     option.SKY_SATURATION=Sky Vibrance
+
     option.SKY_COLOR_BLEND=Sky Fog Blending
         option.SKY_COLOR_BLEND.comment=Controls how desaturated the sky gets on the horizon compared to looking straight up.
+
     option.SKY_BRIGHTNESS_USER=Brighten Sky
         option.SKY_BRIGHTNESS_USER.comment=Controls how bright the sky appears compared to everything else. Does not affect the lighting of blocks (go to the "Light Brightness" screen to control that).
+
     option.STAR_WEIGHTS=Brighten Stars
         option.STAR_WEIGHTS.comment=Controls how bright stars in the night sky appear compared to everything else.
 
     screen.REALISTIC_COLORS_PREFS=Realistic Colors
         screen.REALISTIC_COLORS_PREFS.comment=Minecraft's default graphics aren't always the most realistic. This subset of options allows the Minecraft textures to be toned down to physically-accurate levels. Feel free to turn this off if you don't like how it looks or if you're using a realistic resource pack.
+
         option.REALISTIC_COLORS=Enabled
             option.REALISTIC_COLORS.comment=Feel free to turn this off if you don't like how it looks or if you're using a realistic resource pack.
             value.REALISTIC_COLORS.true=Yes
             value.REALISTIC_COLORS.false=No
+
         option.COLORS_SATURATION=Saturation
+
         option.COLORS_CONTRAST=Contrast
+
         option.COLORS_CONTRAST_BRIGHT_BIAS=Contrast Lightness Bias
         
         screen.COLORS_SATURATION_WEIGHTS_PREFS=Color Control
             option.COLORS_SATURATION_WEIGHTS_RED=Crimson
+
             option.COLORS_SATURATION_WEIGHTS_GREEN=Lush
+
             option.COLORS_SATURATION_WEIGHTS_BLUE=Aqua
     
     screen.TONEMAPPING=Color Management
         option.USE_LUT=Use LUT
             option.USE_LUT.comment=To use your own colorgrading, unzip this shader's folder, go to '[unzipped folder]/shaders/LUTs' and put a .cube file there. Run the python script in the same folder to use your file as the default LUT.
-                value.USE_LUT.true=Yes
-                value.USE_LUT.false=No
+            value.USE_LUT.true=Yes
+            value.USE_LUT.false=No
+
         option.USER_GAMMA_CORRECT=Gamma correction
             option.USER_GAMMA_CORRECT.comment=If you don't know what this is, you shouldn't disable it.
+            value.USER_GAMMA_CORRECT.true=Yes
+            value.USER_GAMMA_CORRECT.false=No
+
         screen.ACES=ACES
             screen.ACES.comment=Academy Color Encoding System.
+            
             option.USER_OUTPUT_COLORSPACE=Output Colorspace
                 value.USER_OUTPUT_COLORSPACE.0=sRGB
                 value.USER_OUTPUT_COLORSPACE.1=ACEScg (raw)
                 value.USER_OUTPUT_COLORSPACE.2=ACES2065-1
+            
             option.USER_LMT_MODE=LMT
                 option.USER_LMT_MODE.comment=Compresses the game's "realistic" light values into ones your monitor can display. (and does so in a way that looks nice).
                 value.USER_LMT_MODE.0=§cNone (not recommended)
@@ -145,8 +191,12 @@ screen.COLORS=Colors
 
 screen.RESOURCEPACK=Resourcepack Settings
     screen.RESOURCEPACK.comment=Make sure to look at these settings if you have a resourcepack enabled.
+    
     option.TEX_RENDER=Pixel Perfect
         option.TEX_RENDER.comment=Enables the authentic Pixel Perfect look by using a single color per Minecraft texture pixel. Off ➤ performance hit varies.
+        value.TEX_RENDER.true=Yes
+        value.TEX_RENDER.false=No
+    
     option.TEX_RES=Resource Pack Resolution
         option.TEX_RES.comment=Anything above 1024×1024 is near-identical to just turning off the Pixel Perfect setting
         value.TEX_RES.0.25=4×4
@@ -173,8 +223,13 @@ screen.MISC=Misc
 screen.ADVANCED=Advanced
     option.DEBUG_VIEW=Debug View
         option.DEBUG_VIEW.comment=Disables all existing albedo writes to allow the developer (and you, within license restrictions) to create their own for debugging purposes.
+        value.DEBUG_VIEW.true=Yes
+        value.DEBUG_VIEW.false=No
+
     option.SHADOW_DEBUG=Debug Shadows
-        option.DEBUG_VIEW.comment=Overrides the albedo with the shadow texture in the final pass.
+        option.SHADOW_DEBUG.comment=Overrides the albedo with the shadow texture in the final pass.
+        value.SHADOW_DEBUG.true=Yes
+        value.SHADOW_DEBUG.false=No
 
     screen.AUTO_ADDED=Automatic Settings
         screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work.
