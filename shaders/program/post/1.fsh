@@ -106,7 +106,6 @@ void main() {
         colorCorrected = mix(colorCorrected - vec3(inverseMult), colorCorrected, factor);
     #endif
 
-
     // write the diffuse color
     vec4 finalColor = opaque(colorCorrected);
 
