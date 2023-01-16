@@ -231,5 +231,10 @@ screen.ADVANCED=Advanced
         value.SHADOW_DEBUG.true=Yes
         value.SHADOW_DEBUG.false=No
 
+    option.SHADOW_TRANSITION_MIXING=Sunset Shadow Mixing
+        option.SHADOW_TRANSITION_MIXING.comment=To increase performance, shadows are only calculated for the sun §oor§r moon, never both. To prevent an awkward "pop-in" effect as the shadows are switched from sun to moon and vice versa, the lighting is briefly switched to its shadowless version during sunset. This setting controls whether the terrain looks like it's in shadow (Shadowed) during this period.
+        value.SHADOW_TRANSITION_MIXING.1=Unshadowed
+        value.SHADOW_TRANSITION_MIXING.0=Shadowed
+
     screen.AUTO_ADDED=Automatic Settings
         screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work.

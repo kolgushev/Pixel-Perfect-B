@@ -242,6 +242,9 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 #define SHADOW_FILTERING_SAMPLES 5 // [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
 #define SHADOW_FILTERING_RADIUS 0.1 // [0.025 0.05 0.075 0.1 0.125 0.15 0.175 0.2]
 
+// 0:off 1:on
+#define SHADOW_TRANSITION_MIXING 0 // [0 1]
+
 // #define DEBUG_VIEW
 #ifdef DEBUG_VIEW
 #endif
