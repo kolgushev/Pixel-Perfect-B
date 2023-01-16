@@ -25,6 +25,10 @@ uniform vec3 fogColor;
 uniform int isEyeInWater;
 uniform float nightVision;
 
+#if defined DIM_END
+    uniform int bossBattle;
+#endif
+
 #include "/lib/fogify.glsl"
 #include "/lib/to_viewspace.glsl"
 #include "/lib/tonemapping.glsl"

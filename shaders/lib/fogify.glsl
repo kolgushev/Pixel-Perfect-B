@@ -16,8 +16,13 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater
     float nightVisionVisibility = 0;
     if(isEyeInWater == 0) {
         #if defined ATMOSPHERIC_FOG
-            atmosPhog = length(position) * ATMOSPHERIC_FOG_DENSITY;
+            atmosPhog = length(position) * ATMOSPHERIC_FOG_DENSITY * ATMOSPHERIC_FOG_MULTIPLIER;
             atmosPhogColor = ATMOSPHERIC_FOG_COLOR;
+            #if defined DIM_END
+                if(bossBattle == 2) {
+                    atmosPhogColor = BOSS_BATTLE_ATMOSPHERIC_FOG_COLOR;
+                }
+            #endif
             atmosPhog = exp(-atmosPhog);
         #endif
     } else {

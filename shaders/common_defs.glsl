@@ -422,16 +422,27 @@ const float shadowIntervalSize = 8.0;
     #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.1, 0.04))
     // #define ATMOSPHERIC_FOG_COLOR (vec3(0.04, 0.1, 1.0))
 
+    #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
+
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
 #elif defined DIM_END
     #ifdef ATMOSPHERIC_FOG_USER
         #define ATMOSPHERIC_FOG
     #endif
     #define BASE_COLOR (vec3(0.9, 0.7, 1.2) * RGB_to_ACEScg)
-    #define AMBIENT_COLOR (BASE_COLOR * 0.5)
+    #define AMBIENT_COLOR (vec3(0.9, 0.85, 1.1) * RGB_to_ACEScg * 10.0)
     #define MIN_LIGHT_COLOR AMBIENT_COLOR
-    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 3.0)
-    #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.05 * SKY_BRIGHTNESS)
+
+    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
+    #define SKY_ADDITIVE (BASE_COLOR * 0.02)
+
+    #define ATMOSPHERIC_FOG_COLOR ((vec3(0.7, 0.5, 1.2)) * 0.3 * SKY_BRIGHTNESS)
+    #define ATMOSPHERIC_FOG_MULTIPLIER 5.0
+
+
+
+    #define BOSS_BATTLE_SKY_MULT 0.5
+    #define BOSS_BATTLE_ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
 #else
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
