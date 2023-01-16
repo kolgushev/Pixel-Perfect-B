@@ -105,7 +105,7 @@ screen.SHADOWS=Shadows
         value.SHADOW_FILTERING.3=VP §c(Experimental)
 
     option.SHADOW_FILTERING_RADIUS=Filtering Radius
-        option.SHADOW_FILTERING_RADIUS.comment=How much the shadow is blurred (if filtering is enabled).
+        option.SHADOW_FILTERING_RADIUS.comment=How much the shadow is blurred (if filtering is enabled). Increased ➤ No performance impact.
 
     option.SHADOW_FILTERING_SAMPLES=Number of Samples
         option.SHADOW_FILTERING_SAMPLES.comment=More samples make the shadow blur less grainy (if filtering is enabled). Increased ➤ Large performance hit.
