@@ -139,6 +139,11 @@ screen.COLORS=Colors
     option.STAR_WEIGHTS=Brighten Stars
         option.STAR_WEIGHTS.comment=Controls how bright stars in the night sky appear compared to everything else.
 
+    option.BOSS_BATTLE_COLORS=Boss Battle Colors
+        option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact.
+        value.BOSS_BATTLE_COLORS.true=Yes
+        value.BOSS_BATTLE_COLORS.false=No
+
     screen.REALISTIC_COLORS_PREFS=Realistic Colors
         screen.REALISTIC_COLORS_PREFS.comment=Minecraft's default graphics aren't always the most realistic. This subset of options allows the Minecraft textures to be toned down to physically-accurate levels. Feel free to turn this off if you don't like how it looks or if you're using a realistic resource pack.
 

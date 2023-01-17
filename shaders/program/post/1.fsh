@@ -16,6 +16,7 @@ uniform sampler2D colortex0;
 uniform sampler3D shadowcolor1;
 
 uniform int isEyeInWater;
+uniform int bossBattle;
 
 #include "/lib/tonemapping.glsl"
 
@@ -31,6 +32,30 @@ void main() {
     if(isEyeInWater == 1) {
         tonemapped *= OVERLAY_COLOR_WATER;
     }
+
+    #if defined BOSS_BATTLE_COLORS
+        // color effects for boss battles
+        switch(bossBattle) {
+            // ender dragon
+            case 2:
+                // TODO: write a satureateACES function
+                tonemapped = saturateRGB(OVERLAY_SATURATION_ENDER_DRAGON) * tonemapped;
+                tonemapped *= OVERLAY_COLOR_ENDER_DRAGON;
+                break;
+            // wither
+            case 3:
+                tonemapped = saturateRGB(OVERLAY_SATURATION_WITHER) * tonemapped;
+                tonemapped *= OVERLAY_COLOR_WITHER;
+                break;
+            // raid
+            case 4:
+                tonemapped = saturateRGB(OVERLAY_SATURATION_RAID) * tonemapped;
+                tonemapped *= OVERLAY_COLOR_RAID;
+                break;
+            default:
+                break;
+        }
+    #endif
 
     tonemapped *= EXPOSURE * EXPOSURE_BIAS;
 
@@ -87,8 +112,8 @@ void main() {
         /*
             This dithering is unique, since it doesn't sample adjacent pixels.
             Instead, it uses the current color and a noise texture to randomly
-            increase the color by one bit based on its proximity to either
-            the original or increased color.
+            decrease the color by one bit based on its proximity to either
+            the original or decreased color.
             This happens per every color channel individually.
         */
 
