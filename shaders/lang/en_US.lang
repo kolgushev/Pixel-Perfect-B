@@ -82,6 +82,18 @@ screen.SHADOWS=Shadows
         value.SHADOWS_ENABLED_USER.true=Yes
         value.SHADOWS_ENABLED_USER.false=No
 
+    option.PIXELATED_SHADOWS=Pixelated Shadows
+        option.PIXELATED_SHADOWS.comment=Pixelates shadows so they match with the pixels on a block. Inspired from complementary's pixelated shadows, though the implementation is my own. Enabled ➤ Minimal performance hit.
+        value.PIXELATED_SHADOWS.0=Off
+        value.PIXELATED_SHADOWS.8=8×8
+        value.PIXELATED_SHADOWS.16=16×16
+        value.PIXELATED_SHADOWS.32=32×32
+        value.PIXELATED_SHADOWS.64=64×64
+        value.PIXELATED_SHADOWS.128=128×128
+        value.PIXELATED_SHADOWS.256=256×256
+        value.PIXELATED_SHADOWS.512=512×512
+        value.PIXELATED_SHADOWS.1024=1024×1024
+
     option.shadowDistance=Shadow Distance
         option.shadowDistance.comment=How far away the shadows can be, in blocks. Since setting higher distances means the same shadow image is spread over more blocks, shadows become less detailed when the distance is increased. Increased ➤ No performance impact.
 

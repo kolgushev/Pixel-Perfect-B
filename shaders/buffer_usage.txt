@@ -15,14 +15,13 @@ defer0: lighting
     REQUIRES normal.rgb
     REQUIRES lightmap.rgb
     REQUIRES AO data (lightmap.b)
-    REQUIRES position.rgb
+    [if pixelated shadows] REQUIRES normal
 
 defer1: combine passes and fog, manually clear albedo.rgba
     REQUIRES sky.rgb
     REQUIRES albedo.rgb
     REQUIRES sky mask (albedo.a)
     REQUIRES transparent.rgba
-    REQUIRES position.rgb
 
     0.rgb - composited albedo
     0.a - 
@@ -46,7 +45,7 @@ comp0: transparency shadows
     REQUIRES composited albedo.rgb
     REQUIRES transparent direct lighting.rgb
     REQUIRES transparent lightmap.g
-    REQUIRES transparent position.rgb
+    [if pixelated shadows] REQUIRES transparent normal
 
     0.rgb - fully composited albedo
     0.a - 
