@@ -40,7 +40,7 @@ float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelV
         for(int i = 0; i < SHADOW_FILTERING_SAMPLES; i++) {
             noise = sampleNoise(texcoord, i).rg * 2 - 1;
 
-            shadowOffset = vec3(noise, 0) / shadowDistance * 0.05;
+            shadowOffset = vec3(noise, 0) / shadowDistance * 0.5 * SHADOW_FILTERING_RADIUS;
 
             shadowAverage += step(shadowSample(shadowPosition + shadowOffset, shadowtex), EPSILON);
         }
@@ -48,8 +48,8 @@ float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelV
         float shadow = shadowAverage / SHADOW_FILTERING_SAMPLES;
     #endif
 
-
-    shadow = mix(1, shadow, shadowMask);
+    shadow = mix(shadow, 1, shadowCutoff);
+    shadow = mix(SHADOW_TRANSITION_MIXING, shadow, skyTransition);
 
     #if defined SHADOW_AFFECTED_BY_LIGHTMAP
         shadow *= lightmapLight;

@@ -59,9 +59,15 @@ uniform float nightVision;
     uniform int renderStage;
 #endif
 
+#if (defined gc_sky || defined gc_transparent) && defined DIM_END
+    uniform int bossBattle;
+#endif
+
 #include "/lib/tonemapping.glsl"
 #include "/lib/calculate_sky.glsl"
-#include "/lib/fogify.glsl"
+#if defined gc_transparent
+    #include "/lib/fogify.glsl"
+#endif
 
 #if defined gc_transparent
     #include "/lib/color_manipulation.glsl"
@@ -77,20 +83,19 @@ void main() {
         vec3 customFogColor = mix(fogColor, skyColor, SKY_COLOR_BLEND);
 
         vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(calcSkyColor(normalize(position), skyColor, customFogColor));
-        /*  The sky is rendered using a dome shape at the top and a flat shape at the bottom.
-            For some reason the vaPosition for the flat shape translates to the same as texcoord when mapped to clipspace, so
-            we need to detect that and set it to the fog color instead of evaluating the gradient.
+        /*  The sky is rendered using a cylinder-like shape at the top and a flat shape at the bottom.
+            For some reason the vaPosition for the flat shape translates to the same as texcoord when
+            mapped to clipspace, so we need to detect that and set it to the fog color
+            instead of evaluating the gradient.
         */
         if(distance(color.rgb, fogColor) < EPSILON) albedo = opaque(customFogColor);
-
-        // anything more than about 100 causes an overflow
-        albedo *= clamp(SKY_LIGHT_MULT * 0.45, 0, 100) * SKY_BRIGHTNESS;
     #else
         vec4 albedo = texture2D(texture, texcoord);
         albedo.rgb *= color.rgb;
         // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed
         albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a);
     #endif
+    
     if(albedo.a < alphaTestRef) discard;
 
     albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
@@ -105,6 +110,28 @@ void main() {
     #if defined g_skytextured
         // since we're using an advanced color pipeline it's safe to pump up the skytextured brightness
         albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime(worldTime));
+    #endif
+
+    #if defined gc_sky
+        #if defined SKY_ADDITIVE
+            #if defined DIM_END
+                if(bossBattle != 2) {
+            #endif
+                    albedo.rgb += SKY_ADDITIVE;
+            #if defined DIM_END
+                }
+            #endif
+        #endif
+
+
+        // anything more than about 100 causes an overflow
+        albedo.rgb *= clamp(SKY_LIGHT_MULT * 0.45, 0, 100) * SKY_BRIGHTNESS;
+
+        #if defined DIM_END
+            if(bossBattle == 2) {
+                albedo.rgb *= BOSS_BATTLE_SKY_MULT;
+            }
+        #endif
     #endif
 
     vec3 lightmap = vec3(light, color.a);

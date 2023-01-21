@@ -24,6 +24,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define RCP_7 0.14285714285
 #define RCP_8 0.75
 #define RCP_16 0.0625
+#define RCP_255 0.00392156862
+#define RCP_256 0.00390625
 
 // multiply glsl log by these to change the logarithm's base
 // found with [1 / ln(<base>)] for [CHANGE_BASE_<base>]
@@ -192,6 +194,13 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define NIGHT_EFFECT_SATURATION 0.3 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define NIGHT_EFFECT_POINT 0.1 // [0.0625 0.07 0.08 0.09 0.1 0.11 0.12 0.13 0.14 0.15]
 
+#define BOSS_BATTLE_COLORS
+#ifdef BOSS_BATTLE_COLORS
+#endif
+
+// output mapping: 0:none 1:8bit
+#define DITHERING_MODE 1 // [0 1]
+
 // output mapping: 0:none 1:vanilla 2:SSAO
 #define AO_MODE 1 // [0 1 2]
 
@@ -237,6 +246,13 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 #define SHADOW_FILTERING 1 // [0 1 2 3]
 #define SHADOW_FILTERING_SAMPLES 5 // [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
 #define SHADOW_FILTERING_RADIUS 0.1 // [0.025 0.05 0.075 0.1 0.125 0.15 0.175 0.2]
+
+#define PIXELATED_SHADOWS 0 // [0 8 16 32 64 128]
+#ifdef PIXELATED_SHADOWS
+#endif
+
+// 0:off 1:on
+#define SHADOW_TRANSITION_MIXING 0 // [0 1]
 
 // #define DEBUG_VIEW
 #ifdef DEBUG_VIEW
@@ -418,16 +434,27 @@ const float shadowIntervalSize = 8.0;
     #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.1, 0.04))
     // #define ATMOSPHERIC_FOG_COLOR (vec3(0.04, 0.1, 1.0))
 
+    #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
+
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
 #elif defined DIM_END
     #ifdef ATMOSPHERIC_FOG_USER
         #define ATMOSPHERIC_FOG
     #endif
     #define BASE_COLOR (vec3(0.9, 0.7, 1.2) * RGB_to_ACEScg)
-    #define AMBIENT_COLOR (BASE_COLOR * 0.5)
+    #define AMBIENT_COLOR (vec3(0.9, 0.85, 1.1) * RGB_to_ACEScg * 10.0)
     #define MIN_LIGHT_COLOR AMBIENT_COLOR
-    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 3.0)
-    #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.05 * SKY_BRIGHTNESS)
+
+    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
+    #define SKY_ADDITIVE (BASE_COLOR * 0.02)
+
+    #define ATMOSPHERIC_FOG_COLOR ((vec3(0.7, 0.5, 1.2)) * 0.3 * SKY_BRIGHTNESS)
+    #define ATMOSPHERIC_FOG_MULTIPLIER 5.0
+
+
+
+    #define BOSS_BATTLE_SKY_MULT 0.7
+    #define BOSS_BATTLE_ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
 #else
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
@@ -441,7 +468,7 @@ const float shadowIntervalSize = 8.0;
 #define ATMOSPHERIC_FOG_COLOR_WATER (vec3(0.03, 0.2, 0.7))
 #define OVERLAY_COLOR_WATER (vec3(0.7, 0.8, 1.0))
 
-#define ATMOSPHERIC_FOG_DENSITY_LAVA 7.0
+#define ATMOSPHERIC_FOG_DENSITY_LAVA 4.0
 #define ATMOSPHERIC_FOG_COLOR_LAVA (vec3(1.0, 0.3, 0.04))
 
 #define ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW 2.0
@@ -449,8 +476,16 @@ const float shadowIntervalSize = 8.0;
 
 #define NIGHT_VISION_AFFECTS_FOG_WATER 0.2
 // TODO: feature request for fire resistance uniform (since lava fog is affected by that, not night vision in vanilla)
-#define NIGHT_VISION_AFFECTS_FOG_LAVA 0.7
+#define NIGHT_VISION_AFFECTS_FOG_LAVA 0.67
 #define NIGHT_VISION_AFFECTS_FOG_POWDER_SNOW 0.0
+
+// boss battle colors
+#define OVERLAY_COLOR_ENDER_DRAGON (vec3(0.82, 0.8, 0.85) * RGB_to_ACEScg)
+#define OVERLAY_SATURATION_ENDER_DRAGON 1.0
+#define OVERLAY_COLOR_WITHER (vec3(0.9, 0.7, 0.56) * RGB_to_ACEScg)
+#define OVERLAY_SATURATION_WITHER 0.7
+#define OVERLAY_COLOR_RAID (vec3(0.8, 1.0, 0.87) * RGB_to_ACEScg)
+#define OVERLAY_SATURATION_RAID 0.8
 
 #define NIGHT_VISION_COLOR ((vec3(0.7, 0.8, 1.0) * RGB_to_ACEScg))
 
