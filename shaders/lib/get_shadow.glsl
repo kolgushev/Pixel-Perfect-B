@@ -48,7 +48,8 @@ float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelV
         float shadow = shadowAverage / SHADOW_FILTERING_SAMPLES;
     #endif
 
-    shadow = mix(SHADOW_TRANSITION_MIXING, shadow, shadowMask);
+    shadow = mix(shadow, 1, shadowCutoff);
+    shadow = mix(SHADOW_TRANSITION_MIXING, shadow, skyTransition);
 
     #if defined SHADOW_AFFECTED_BY_LIGHTMAP
         shadow *= lightmapLight;
