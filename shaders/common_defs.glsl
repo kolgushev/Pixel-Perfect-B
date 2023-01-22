@@ -279,7 +279,7 @@ const float shadowDistanceRenderMul = 1.0;
 const int noiseTextureResolution = 512;
 const float shadowIntervalSize = 8.0;
 
-#define SHADOW_CUTOFF 0.9
+#define SHADOW_CUTOFF 0.76
 
 #if defined SHADOWS_ENABLED_USER && defined DIM_OVERWORLD
     #define SHADOWS_ENABLED
