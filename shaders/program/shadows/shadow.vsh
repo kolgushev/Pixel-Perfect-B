@@ -1,8 +1,8 @@
 #include "/common_defs.glsl"
 
-out vec2 texcoord;
-out vec3 position;
-out vec3 normal;
+out vec2 texcoordV;
+out vec3 positionV;
+out vec3 normalV;
 
 in vec2 vaUV0;
 in vec3 vaPosition;
@@ -25,10 +25,10 @@ uniform int frameCounter;
 void main() {
     #if defined SHADOWS_ENABLED
         // check against position texture instead of depth
-        texcoord = vaUV0;
+        texcoordV = vaUV0;
 
-        position = chunkOffset + vaPosition;
-        normal = vaNormal;
+        positionV = chunkOffset + vaPosition;
+        normalV = vaNormal;
 
         // if within range
         // xz / range
@@ -38,9 +38,9 @@ void main() {
 
         // xz += start
 
-        gl_Position = vec4(position, 1.0);
+        gl_Position = vec4(positionV, 1.0);
 
-        // gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
+        // gl_Position = toViewspace(projectionMatrix, modelViewMatrix, positionV);
         
         // gl_Position.xy = distortShadow(gl_Position.xy);
         // gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);
