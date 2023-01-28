@@ -21,7 +21,7 @@ void main() {
 
 	center *= RCP_3;
 
-	float range = 10;
+	float range = 256;
 	float sqrtNumLayers = 16;
 
 	vec2 startPos = vec2(0);
@@ -34,10 +34,9 @@ void main() {
 		normal = normalV[i];
 
 		// position.xz = distance(position.xz, vec2(0)) < range ? position.xz / range : vec2(0);
-		position.xz = position.xz / range;
-		position.xz /= sqrtNumLayers;
+		position.xz /= range * sqrtNumLayers * 2;
 
-		position.xz += startPos / range;
+		position.xz += startPos / sqrtNumLayers;
 
 		position.xyz = position.xzy;
 
