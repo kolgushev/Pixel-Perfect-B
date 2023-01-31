@@ -18,7 +18,7 @@ void main() {
         // sign of dot product determines sign of epsilon
         vec4 albedo = texture2D(texture, texcoord);
         // throw out transparent stuff
-        if(albedo.a < alphaTestRef) discard;
+        // if(albedo.a < alphaTestRef) discard;
         // if(dot(viewInverse(shadowLightPosition), normal) > 0.0 || albedo.a < alphaTestRef) discard;
     #endif
 }

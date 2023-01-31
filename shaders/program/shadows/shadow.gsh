@@ -13,34 +13,41 @@ out vec3 normal;
 
 
 void main() {
-	vec3 center = vec3(0);
+	float center = 0;
 
 	for(int i = 0; i < 3; i++) {
-		center += positionV[i];
+		center += positionV[i].y;
 	}
+
+	const float range = 256;
+	const float sqrtNumLayers = 16;
 
 	center *= RCP_3;
 
-	float range = 256;
-	float sqrtNumLayers = 16;
+	// map from -range/2|+range/2 to 0|range
+	center += range * 0.5;
 
 	vec2 startPos = vec2(0);
-	startPos.x = int(center.y) % int(sqrtNumLayers);
-	startPos.y = floor(center.y / sqrtNumLayers);
+	// 0|sqrtNumLayers-1
+	startPos.x = int(center) % int(sqrtNumLayers);
+	// 0|range/sqrtNumLayers
+	startPos.y = floor(center / sqrtNumLayers);
 
 	for(int i = 0; i < 3; i++) {
 		texcoord = texcoordV[i];
 		position = positionV[i];
 		normal = normalV[i];
 
-		// position.xz = distance(position.xz, vec2(0)) < range ? position.xz / range : vec2(0);
-		position.xz /= range * sqrtNumLayers * 2;
+		// map to 0|1
+		position.xz /= range;
+		position.xz += 0.5;
 
-		position.xz += startPos / sqrtNumLayers;
+		// position.xz += startPos;
 
-		position.xyz = position.xzy;
+		// map from 0|sqrtNumLayers to 0|1
+		position.xz /= sqrtNumLayers;
 
-		gl_Position = vec4(position.xy, 0.5, 1.0);
+		gl_Position = vec4(position.xz, 0.0, 1.0);
 		// gl_Position = vec4(position, 1.0);
 
 		EmitVertex();
