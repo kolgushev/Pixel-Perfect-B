@@ -28,7 +28,8 @@ void main() {
         texcoordV = vaUV0;
 
         normalV = vaNormal;
-        positionV = floor(chunkOffset) + vaPosition - normalV * 0.5;
+        // subtract normals to move full block face centers away from block edge and towards block center
+        positionV = floor(chunkOffset) + vaPosition - normalV * 0.1;
 
         // if within range
         // xz / range
