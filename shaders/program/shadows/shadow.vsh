@@ -27,8 +27,8 @@ void main() {
         // check against position texture instead of depth
         texcoordV = vaUV0;
 
-        positionV = chunkOffset + vaPosition;
         normalV = vaNormal;
+        positionV = floor(chunkOffset) + vaPosition - normalV * 0.5;
 
         // if within range
         // xz / range

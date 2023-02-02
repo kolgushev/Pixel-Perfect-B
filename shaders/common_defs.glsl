@@ -233,7 +233,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #endif
 
 const int shadowMapResolution = 4096; // [4096 8192]
-const float shadowDistance = 1000.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.0 275.0 300.0]
+const float shadowDistance = 128.0;
 
 #define SHADOW_DISTORTION 0.9 // [0.0 0.5 0.8 0.9 0.95 0.98]
 // 0:off 1:2× 2:4×
@@ -277,7 +277,7 @@ const float shadowDistance = 1000.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250
 
 const float shadowDistanceRenderMul = 1.0;
 const int noiseTextureResolution = 512;
-const float shadowIntervalSize = 8.0;
+const float shadowIntervalSize = 1.0;
 
 #define SHADOW_CUTOFF 0.9
 
