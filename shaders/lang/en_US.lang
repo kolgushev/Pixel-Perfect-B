@@ -13,7 +13,7 @@ screen.POST_PROCESSING=Post Processing
 
     option.DITHERING_MODE=Dithering
         option.DITHERING_MODE.comment=Slightly randomizes pixel colors to get rid of ugly bands of color (for instance, ones visible in the sky) that form because your monitor can't display color precisely enough. Does not work with Render Quality > 1x.  On ➤ Minimal performance hit.
-        value.DITHERING_MODE.0=No
+        value.DITHERING_MODE.0=§cNo
         value.DITHERING_MODE.1=Yes
 
 screen.LIGHTING=Lighting
