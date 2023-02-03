@@ -13,7 +13,7 @@ screen.POST_PROCESSING=Post Processing
 
     option.DITHERING_MODE=Dithering
         option.DITHERING_MODE.comment=Slightly randomizes pixel colors to get rid of ugly bands of color (for instance, ones visible in the sky) that form because your monitor can't display color precisely enough. Does not work with Render Quality > 1x.  On ➤ Minimal performance hit.
-        value.DITHERING_MODE.0=No
+        value.DITHERING_MODE.0=§cNo
         value.DITHERING_MODE.1=Yes
 
 screen.LIGHTING=Lighting
@@ -128,9 +128,10 @@ screen.SHADOWS=Shadows
         value.SHADOW_AFFECTED_BY_LIGHTMAP.false=No
 
 screen.COLORS=Colors
-    option.VANILLA_COLORS=Vanilla Colors
-        value.VANILLA_COLORS.0.0=Vibrant
-        value.VANILLA_COLORS.1.0=Vanilla-ish
+    option.BOSS_BATTLE_COLORS=Boss Battle Colors
+        option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact.
+        value.BOSS_BATTLE_COLORS.true=Yes
+        value.BOSS_BATTLE_COLORS.false=No
 
     option.SUN_TEMP=Sunlight Temperature
         option.SUN_TEMP.comment=Sunlight temperature in Kelvin. The default value is the most physically-accurate. Lower temperatures are redder, while higher temps are more white-ish.
@@ -151,10 +152,14 @@ screen.COLORS=Colors
     option.STAR_WEIGHTS=Brighten Stars
         option.STAR_WEIGHTS.comment=Controls how bright stars in the night sky appear compared to everything else.
 
-    option.BOSS_BATTLE_COLORS=Boss Battle Colors
-        option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact.
-        value.BOSS_BATTLE_COLORS.true=Yes
-        value.BOSS_BATTLE_COLORS.false=No
+    option.POST_TEMP=Color Temperature
+        option.POST_TEMP.comment=Also known as White Balance. Higher values make the image cooler, while lower values make it warmer. Measured in Kelvin using a blackbody emission estimate.
+        suffix.POST_TEMP=k
+
+    option.VANILLA_COLORS=Vanilla Colors
+        option.VANILLA_COLORS.comment=§cOnly works if §oLighting Mode§r§c is §oCustom§r. Affects the color of block light sources (like sea lanterns).
+        value.VANILLA_COLORS.0.0=Vibrant
+        value.VANILLA_COLORS.1.0=Vanilla-ish
 
     screen.REALISTIC_COLORS_PREFS=Realistic Colors
         screen.REALISTIC_COLORS_PREFS.comment=Minecraft's default graphics aren't always the most realistic. This subset of options allows the Minecraft textures to be toned down to physically-accurate levels. Feel free to turn this off if you don't like how it looks or if you're using a realistic resource pack.

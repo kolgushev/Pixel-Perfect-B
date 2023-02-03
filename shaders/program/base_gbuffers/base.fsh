@@ -67,12 +67,13 @@ uniform float nightVision;
 #include "/lib/calculate_sky.glsl"
 #if defined gc_transparent
     #include "/lib/fogify.glsl"
-#endif
-
-#if defined gc_transparent
     #include "/lib/color_manipulation.glsl"
     #include "/lib/to_viewspace.glsl"
     #include "/lib/calculate_lighting.glsl"
+#endif
+
+#if defined gc_sky
+    #include "/lib/switch_fog_color.glsl"
 #endif
 
 void main() {
@@ -132,6 +133,8 @@ void main() {
                 albedo.rgb *= BOSS_BATTLE_SKY_MULT;
             }
         #endif
+
+        albedo.rgb = getFogColor(isEyeInWater, albedo.rgb);
     #endif
 
     vec3 lightmap = vec3(light, color.a);

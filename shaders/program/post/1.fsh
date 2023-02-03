@@ -20,6 +20,10 @@ uniform int bossBattle;
 
 #include "/lib/tonemapping.glsl"
 
+#if POST_TEMP != 6550
+    #include "/lib/color_manipulation.glsl"
+#endif
+
 #if DITHERING_MODE != 0
     #include "/lib/sample_noisetex.glsl"
 #endif
@@ -55,6 +59,11 @@ void main() {
             default:
                 break;
         }
+    #endif
+
+    // white balance
+    #if POST_TEMP != 6550
+        tonemapped *= kelvinToRGB(POST_TEMP);
     #endif
 
     tonemapped *= EXPOSURE * EXPOSURE_BIAS;
