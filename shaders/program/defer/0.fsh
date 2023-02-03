@@ -48,6 +48,8 @@ uniform mat4 gbufferModelView;
     uniform float viewHeight;
 
     #include "/lib/sample_noisetex.glsl"
+    #include "/lib/distortion.glsl"
+    #include "/lib/voxelize.glsl"
     #include "/lib/get_shadow.glsl"
 #endif
 
@@ -63,13 +65,10 @@ void main() {
         float depth = texture(depthtex1, texcoord).r;
         vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
 
-        #if PIXELATED_SHADOWS != 0
-            vec3 pixelatedPosition = floor((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
-            position = mix(pixelatedPosition, position, ceil(abs(normal)));
-        #endif
-
         float shadow = getShadow(
             position,
+            cameraPosition,
+            normal,
             shadowProjection,
             shadowModelView,
             texcoord,

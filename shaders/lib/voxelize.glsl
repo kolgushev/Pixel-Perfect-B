@@ -1,5 +1,8 @@
 // returns block positions mapped onto 2D plane
 vec2 flatten(in vec3 center) {
+	// map from -range/2|+range/2 to 0|range
+	center += SHADOW_MAP_RANGE * 0.5;
+	
 	vec2 blockPos = vec2(0);
 	blockPos.x = int(center.y) % int(SHADOW_MAP_SQRT_NUM_LAYERS);
 	blockPos.y = floor(center.y / SHADOW_MAP_SQRT_NUM_LAYERS);

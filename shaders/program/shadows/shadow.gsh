@@ -21,10 +21,6 @@ void main() {
 	}
 
 	center *= RCP_3;
-
-	// map from -range/2|+range/2 to 0|range
-	center += SHADOW_MAP_RANGE * 0.5;
-
 	vec2 startPos = flatten(center);
 
 	const vec2 offsets[3] = vec2[3](

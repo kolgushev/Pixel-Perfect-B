@@ -35,6 +35,8 @@ uniform float viewHeight;
 
 // don't need to include to_viewspace since calculate_lighting already includes it
 #include "/lib/to_viewspace.glsl"
+#include "/lib/distortion.glsl"
+#include "/lib/voxelize.glsl"
 #include "/lib/get_shadow.glsl"
 
 void main() {
@@ -45,15 +47,12 @@ void main() {
     float depth = texture(depthtex0, texcoord).r;
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
     
-    #if PIXELATED_SHADOWS != 0
-        vec3 normal = texture(colortex3, texcoord).rgb;
-
-        vec3 pixelatedPosition = floor((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
-        position = mix(pixelatedPosition, position, ceil(normal));
-    #endif
+    vec3 normal = texture(colortex3, texcoord).rgb;
 
     float shadow = getShadow(
             position,
+            cameraPosition,
+            normal,
             shadowProjection,
             shadowModelView,
             texcoord,
