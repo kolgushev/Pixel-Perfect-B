@@ -288,10 +288,8 @@ const float shadowIntervalSize = 1.0;
     #define SHADOWS_ENABLED
 #endif
 
-#if SHADOW_SUPERSAMPLE != 0
-    const bool shadowtex1Nearest = true;
-    const bool shadowcolor1Nearest = true;
-#endif
+const bool shadowtex1Nearest = true;
+const bool shadowcolor1Nearest = true;
 
 #if SHADOW_SUPERSAMPLE == 1
     #define SHADOW_RES_MULT 2.0

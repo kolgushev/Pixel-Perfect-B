@@ -14,7 +14,7 @@ vec2 flatten(in vec3 center) {
 vec2 voxelize(in vec3 center) {
 	vec2 blockPos = flatten(center) / (SHADOW_MAP_RANGE * SHADOW_MAP_SQRT_NUM_LAYERS);
 
-	blockPos = removeBorder(blockPos, 1 / shadowMapResolution);
+	// blockPos = removeBorder(blockPos, 1 / shadowMapResolution);
 
 	return blockPos;
 }
