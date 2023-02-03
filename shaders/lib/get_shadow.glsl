@@ -13,6 +13,7 @@ float getShadow(in vec3 position, in vec3 cameraPosition, in vec3 normal, in mat
     for(int i = 0; i < SHADOW_MAP_RANGE; i++) {
         if(texture(shadowtex, voxelize(posNew)).r < 1) {
             shadow = 0;
+            break;
         }
         posNew.y ++;
     }
