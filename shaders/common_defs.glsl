@@ -241,7 +241,7 @@ const float shadowDistance = 128.0;
 #define SHADOW_DISTORTION 0.9 // [0.0 0.5 0.8 0.9 0.95 0.98]
 // 0:off 1:2× 2:4×
 #define SHADOW_SUPERSAMPLE 0 // [0 1 2]
-#define SHADOW_AFFECTED_BY_LIGHTMAP
+// #define SHADOW_AFFECTED_BY_LIGHTMAP
 #ifdef SHADOW_AFFECTED_BY_LIGHTMAP
 #endif
 
