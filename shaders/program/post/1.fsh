@@ -84,7 +84,7 @@ void main() {
     #endif
 
     #if defined USE_LUT
-        vec3 noBorder = removeBorder(colorCorrected);
+        vec3 noBorder = removeBorder(colorCorrected, LUT_SIZE_RCP);
 
         // vec3 lutApplied = texture(shadowcolor1, removeBorder(vec3(texcoord, 1.0))).rgb;
         vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;

@@ -132,7 +132,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define hand(h) ((h) < 0.557)
 #define skyTime(t) (clamp(sin(2 * PI * float(t + 785) / 24000) + 0.5, 0, 1))
-#define removeBorder(n) (((n) - 0.5) * (1 - LUT_SIZE_RCP) + 0.5)
+#define removeBorder(n, r) (((n) - 0.5) * (1 - (r)) + 0.5)
 
 // block mappings
 
@@ -231,6 +231,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // #define SHADOWS_ENABLED_USER
 #ifdef SHADOWS_ENABLED_USER
 #endif
+
+#define SHADOW_MAP_RANGE 256
+#define SHADOW_MAP_SQRT_NUM_LAYERS 16
 
 const int shadowMapResolution = 4096; // [4096 8192]
 const float shadowDistance = 128.0;

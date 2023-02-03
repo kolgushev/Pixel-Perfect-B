@@ -11,6 +11,7 @@ out vec2 texcoord;
 out vec3 position;
 out vec3 normal;
 
+#include "/lib/voxelize.glsl"
 
 void main() {
 	vec3 center = vec3(0);
@@ -21,17 +22,10 @@ void main() {
 
 	center *= RCP_3;
 
-	const float range = 256;
-	const float sqrtNumLayers = 16;
-
 	// map from -range/2|+range/2 to 0|range
-	center += range * 0.5;
+	center += SHADOW_MAP_RANGE * 0.5;
 
-	vec2 startPos = vec2(0);
-	// 0|sqrtNumLayers-1
-	startPos.x = int(center.y) % int(sqrtNumLayers);
-	// 0|range/sqrtNumLayers
-	startPos.y = floor(center.y / sqrtNumLayers);
+	vec2 startPos = flatten(center);
 
 	const vec2 offsets[3] = vec2[3](
 		vec2(0, 0),
@@ -42,21 +36,15 @@ void main() {
 	for(int i = 0; i < 3; i++) {
 		texcoord = texcoordV[i];
 		normal = normalV[i];
+		position = positionV[i];
 
 		// turn all positions into "perfect" triangles
-		vec2 position = floor(center.xz) + offsets[i];
+		vec2 pos2D = startPos + offsets[i];
 
 		// map to 0|1
-		position /= range;
-		// position.xz += 0.5;
+		pos2D /= SHADOW_MAP_RANGE * SHADOW_MAP_SQRT_NUM_LAYERS;
 
-		position += startPos;
-
-		// map from 0|sqrtNumLayers to 0|1
-		position /= sqrtNumLayers;
-		// position -= 0.5;
-
-		gl_Position = vec4(position * 2 - 1, 0.0, 1.0);
+		gl_Position = vec4(pos2D * 2 - 1, 0.0, 1.0);
 
 		EmitVertex();
 	}
