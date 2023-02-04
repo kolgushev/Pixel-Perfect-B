@@ -154,6 +154,8 @@ void main() {
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;
+
+        // TODO: find out why water lighting is being inherited from opaque geometry
     #endif
 
     #if defined gc_sky
