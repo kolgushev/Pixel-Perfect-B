@@ -535,7 +535,7 @@ const float shadowIntervalSize = 8.0;
 #if defined g_skybasic || defined g_skytextured
     #define gc_sky
 #endif
-#if defined g_water || defined g_hand_water || defined g_weather
+#if defined g_water || defined g_hand_water || defined g_weather || defined g_clouds
     #define gc_transparent
 #endif
 #if defined g_water || defined g_terrain
