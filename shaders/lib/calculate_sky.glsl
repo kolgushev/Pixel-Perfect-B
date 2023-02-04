@@ -1,5 +1,5 @@
 float skyGradient(float x, float w) {
-	return w / fma(x, x, w);
+	return w / (x * x + w);
 }
 
 // output is sRGB

@@ -1,4 +1,4 @@
-#version 460 compatibility
+#version 330 compatibility
 #define DIM_END
 
 #include "/program/gbuffers/hand.fsh"

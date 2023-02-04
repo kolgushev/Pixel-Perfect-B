@@ -48,7 +48,6 @@ GI reverse sampling using 'coherent'?
 Add fresnel
 
 continuous TODO:s
-Use fma wherever possible
 use in/out for functions
 add cycle counts to functions
 reduce branching

@@ -6,8 +6,8 @@ vec3 kelvinToRGB(in float actualTemp) {
     // original equations have been converted to use a range of 0-1 rather than 0-255
     vec3 color = temp < 66 ? vec3(
             1,
-            fma(0.3900815787690196, log(max(temp, EPSILON)), -0.6318414437886275),
-            fma(0.5432067891102, log(max(temp - 10, EPSILON)), -1.19625408914)) : vec3(
+            0.3900815787690196 * log(max(temp, EPSILON)) - 0.6318414437886275,
+            (0.5432067891102 * log(max(temp - 10, EPSILON)) - 1.19625408914)) : vec3(
             1.292936186062745 * pow(temp - 60, -0.1332047592),
             1.292936186062745 * pow(temp - 60, -0.1332047592),
             1);

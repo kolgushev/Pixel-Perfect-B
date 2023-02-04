@@ -74,8 +74,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // doing this may be faster on older hardware, but make sure to test before enabling
 #define OPTIMIZE_MUL 0
 #if OPTIMIZE_MUL == 1
-    #define mul_m4_v3(m, v) fma((v).xxxx, (m)[0], fma((v).yyyy, (m)[1], fma((v).zzzz, (m)[2], (m)[3])))
-    // #define mul_m4_v3(m, v) fma(vec4(v.x), (m)[0], fma(vec4(v.y), (m)[1], fma(vec4(v.z), (m)[2], (m)[3])))
+    #define mul_m4_v3(m, v) ((v).xxxx * (m)[0] + ((v).yyyy * (m)[1] + ((v).zzzz * (m)[2] + (m)[3])))
 #else
     #define mul_m4_v3(m, v) ((m) * vec4(v, 1))
 #endif

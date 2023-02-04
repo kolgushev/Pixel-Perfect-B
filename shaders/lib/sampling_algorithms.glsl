@@ -12,7 +12,7 @@ vec2 grid(in float i, in vec2 cells) {
 vec2 jitter(in vec2 noise, in float i, in vec3 cells) {
     if(i <= cells.z) {
         vec2 node = grid(i, cells.xy);
-        return fma(cells.xy, noise, node);
+        return cells.xy * noise + node;
     } else {
         return noise;
     }

@@ -7,8 +7,8 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater
     float fogTube = length(position.xz) + 16;
     
     // TODO: optimize
-    fogFlat = pow2(clamp(fma(fogFlat * farRcp, 7, -6), 0, 1));
-    fogTube = pow2(clamp(fma(fogTube * farRcp, 7, -6), 0, 1));
+    fogFlat = pow2(clamp((fogFlat * farRcp * 7 - 6), 0, 1));
+    fogTube = pow2(clamp((fogTube * farRcp * 7 - 6), 0, 1));
     fogTube = clamp(fogTube + fogFlat, 0, 1);
 
     float atmosPhog = 1.0;

@@ -70,7 +70,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         float moonShading = normalLighting(normalViewspace, moonPosition);
 
         // Usually this is divided by 2, but we're dividing by more than that to simulate bounce lighting
-        float skyShading = fma((normal.y - 1), RCP_3, 1.0);
+        float skyShading = (normal.y - 1) * RCP_3 + 1.0;
 
         vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), VANILLA_COLORS);
 
@@ -82,12 +82,12 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         vec3 torchLighting = gammaCorrection(pow2(lightmap.x) * torchColor, lightBoost) * BLOCK_LIGHT_MULT;
 
-        vec3 moonLighting = moonShading * fma(cos(float(moonPhase) * 2 * PI * RCP_8), 0.3, 0.7) * MOON_COLOR;
+        vec3 moonLighting = moonShading * (cos(float(moonPhase) * 2 * PI * RCP_8) * 0.3 + 0.7) * MOON_COLOR;
         vec3 sunLighting = sunShading * SUN_COLOR;
-        vec3 directSkyLighting = max(vec3(0), fma(inversesqrt(rain + 1), 3.4, -2.4) * mix(moonLighting, sunLighting, skyTransition));
+        vec3 directSkyLighting = max(vec3(0), (inversesqrt(rain + 1) * 3.4 - 2.4) * mix(moonLighting, sunLighting, skyTransition));
         vec3 actualSkyColor = mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS), mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS), skyTransition);
 
-        float hardcoreMult = inversesqrt(fma(darknessEffect, 0.75, 0.25)) - 1;
+        float hardcoreMult = inversesqrt(darknessEffect * 0.75 + 0.25) - 1;
         vec3 ambientLight = hardcoreMult * AMBIENT_LIGHT_MULT * AMBIENT_COLOR;
         ambientLight *= (1 - clamp(lightmap.y * 1.5, 0, 1));
         #if STREAMER_MODE == -1
