@@ -112,7 +112,7 @@ void main() {
     }
 
     if(POST_SATURATION != 1.0) {
-        colorCorrected = saturateRGB(POST_SATURATION) * colorCorrected;
+        colorCorrected = saturateRGB(POST_SATURATION) * max(colorCorrected, vec3(0));
     }
 
     // dithering

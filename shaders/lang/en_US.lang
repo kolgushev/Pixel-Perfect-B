@@ -2,6 +2,9 @@ profile.ONE=§fVanilla §b+
 profile.TWO=§fVanilla §b++
 profile.THREE=§fVanilla §b+++
 
+profile.CONTENT_TWO=§fContent Creator §b++
+profile.CONTENT_THREE=§fContent Creator §b+++
+
 screen.POST_PROCESSING=Post Processing
     screen.POST_PROCESSING.comment=Any effects that are applied after the image has been rendered.
 
