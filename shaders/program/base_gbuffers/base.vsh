@@ -87,9 +87,13 @@ void main() {
     #endif
 
     #if defined use_raw_position
-        vec4 glPos = toForcedViewspace(projectionMatrix, modelViewMatrix, position, frameTimeCounter);
+        #if !defined gc_sky
+            vec4 glPos = toForcedViewspace(projectionMatrix, modelViewMatrix, position);
+        #else
+            vec4 glPos = toViewspace(projectionMatrix, modelViewMatrix, position);
+        #endif
     #else
-        vec4 glPos = toForcedViewspace(projectionMatrix, modelViewMatrix, vaPosition, frameTimeCounter);
+        vec4 glPos = toForcedViewspace(projectionMatrix, modelViewMatrix, vaPosition);
     #endif
     gl_Position = glPos;
 

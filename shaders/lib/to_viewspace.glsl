@@ -2,7 +2,7 @@ vec4 toViewspace(in mat4 projectionMatrix, in mat4 modelViewMatrix, in vec3 posi
     return projectionMatrix * mul_m4_v3(modelViewMatrix, position);
 }
 
-vec4 toForcedViewspace(in mat4 projectionMatrix, in mat4 modelViewMatrix, in vec3 position, in float frameTimeCounter) {
+vec4 toForcedViewspace(in mat4 projectionMatrix, in mat4 modelViewMatrix, in vec3 position) {
     vec4 modelView = mul_m4_v3(modelViewMatrix, position);
 
     // modelView.zw *= pow(mix(length(position), abs(modelView.z), cos(frameTimeCounter) * 0.5 + 0.5), sin(frameTimeCounter) * 0.1);

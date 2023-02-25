@@ -246,6 +246,15 @@ screen.MISC=Misc
         value.STREAMER_MODE.0=Streamer Mode
         value.STREAMER_MODE.-1=Fullbright
 
+    screen.FORCED_PERSPECTIVE=Forced Perpective
+        option.FORCED_PERSPECTIVE_POWER=Power
+        
+        option.FORCED_PERSPECTIVE_BIAS=Bias
+
+        option.FORCED_PERSPECTIVE_SHAPE=Shape
+            value.FORCED_PERSPECTIVE_SHAPE.0.0=Spherical
+            value.FORCED_PERSPECTIVE_SHAPE.1.0=Flat
+
     screen.EXPERIMENTAL=Experimental
 
 screen.ADVANCED=Advanced
