@@ -27,6 +27,7 @@ in vec3 vaPosition;
 #endif
 
 uniform vec3 chunkOffset;
+uniform float frameTimeCounter;
 
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
@@ -34,9 +35,18 @@ uniform mat4 gbufferModelViewInverse;
 
 uniform int renderStage;
 
+
 #include "/lib/to_viewspace.glsl"
 
 #if defined g_terrain
+    #if defined WAVING_ENABLED
+        uniform sampler2D noisetex;
+        uniform vec3 cameraPosition;
+        // uniform float frameTimeCounter;
+
+        #include "/lib/sample_noisetex.glsl"
+    #endif
+
     #include "/lib/get_terrain_mask.glsl"
 #endif
 
@@ -68,10 +78,18 @@ void main() {
 
     #if defined use_raw_position
         position = chunkOffset + vaPosition;
-        vec4 glPos = toViewspace(projectionMatrix, modelViewMatrix, position);
     #else
         position = viewInverse(vaPosition);
-        vec4 glPos = toViewspace(projectionMatrix, modelViewMatrix, vaPosition);
+    #endif
+
+    #if defined g_terrain && defined WAVING_ENABLED
+        position += (tile((position.xz + cameraPosition.xz) * 1 + 40 * (frameTimeCounter * NOISETEX_TILES_WIDTH * NOISETEX_TILES_RES / 3600), vec2(1,0)).rgb - 0.5) * vec3(2, 0.1, 2);
+    #endif
+
+    #if defined use_raw_position
+        vec4 glPos = toForcedViewspace(projectionMatrix, modelViewMatrix, position, frameTimeCounter);
+    #else
+        vec4 glPos = toForcedViewspace(projectionMatrix, modelViewMatrix, vaPosition, frameTimeCounter);
     #endif
     gl_Position = glPos;
 

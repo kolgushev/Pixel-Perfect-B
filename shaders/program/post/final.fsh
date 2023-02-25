@@ -14,7 +14,7 @@ uniform sampler2D colortex0;
     uniform sampler2D noisetex;
 
     #include "/lib/to_viewspace.glsl"
-    #include "/lib/sample_noisetex.glsl"
+    #include "/lib/sample_noise.glsl"
     #include "/lib/get_shadow.glsl"
 #endif
 
@@ -25,5 +25,7 @@ void main() {
     #if defined SHADOW_DEBUG
         vec2 texcoordMod = supersampleSampleShift(texcoord);
         buffer0 = opaque1(texture(shadowcolor1, texcoordMod).r);
+        // buffer0 = opaque(tile(texcoord * 256, vec2(1,0)).rgb);
+        // buffer0 = opaque(texture(noisetex, texcoord).rgb);
     #endif
 }

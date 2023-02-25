@@ -4,9 +4,9 @@ vec2 grid2(in float i, in vec2 cells) {
 }
 
 vec4 getNoise(in int noiseTextureResolution, in float i, in int level) {
-	vec2 noiseRes = vec2(NOISETEX_RES);
+	vec2 noiseRes = vec2(NOISETEX_TILES_RES);
 	vec2 noiseResInverse = 1 / noiseRes;
-	float noiseArea = pow2(NOISETEX_RES);
+	float noiseArea = pow2(NOISETEX_TILES_RES);
 	vec2 screenRes = vec2(viewWidth, viewHeight);
 	// 0, 1 screen range to noise range
 	vec2 res = screenRes * noiseResInverse;

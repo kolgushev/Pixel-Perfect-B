@@ -39,7 +39,7 @@ vec4 squareBlur(in vec2 texcoord, in sampler2D colortex, in sampler2D pixeltex, 
 //     float averageColor = color;
 
 //     for(int i = 0; i < samples; i++) {
-//         vec3 noise = getNoise(NOISETEX_RES, i)[1];
+//         vec3 noise = getNoise(NOISETEX_TILES_RES, i)[1];
 //         vec2 samplePos = normalize(vec2(noise.r, noise.g)) * radius;
 
 //         float sampleColor = texture(colortex, texcoord + samplePos).a;

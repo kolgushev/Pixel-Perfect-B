@@ -63,7 +63,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         indirectLighting += ambientLight;
 
     #else
-        float lightBoost = 1 + darknessEffect * 0.9 + darknessPulseEffect * 4 - nightVisionEffect * 0.5;
+        float lightBoost = BLOCK_LIGHT_POWER + darknessEffect * 0.9 + darknessPulseEffect * 4 - nightVisionEffect * 0.5;
 
         // Compute dot product vertex shading from normals
         float sunShading = normalLighting(normalViewspace, sunPosition);

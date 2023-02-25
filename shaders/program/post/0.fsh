@@ -32,6 +32,7 @@ uniform float viewWidth;
 uniform float viewHeight;
 
 #include "/lib/sample_noisetex.glsl"
+#include "/lib/sample_noise.glsl"
 
 // don't need to include to_viewspace since calculate_lighting already includes it
 #include "/lib/to_viewspace.glsl"

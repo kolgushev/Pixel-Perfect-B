@@ -36,7 +36,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define RCP_GAMMA 0.45454545455
 
 #define LIGHT_MATRIX mat4(vec4(0.00390625, 0.0, 0.0, 0.0), vec4(0.0, 0.00390625, 0.0, 0.0), vec4(0.0, 0.0, 0.00390625, 0.0), vec4(0.03125, 0.03125, 0.03125, 1.0))
-#define NOISETEX_RES 512
+#define NOISETEX_TILES_RES 512
+#define NOISETEX_TILES_WIDTH 2
 
 // utils
 // normal pow (usually) takes 9 GPU cycles to compute, so we can redefine any pow ≤ 9 as multiplication for a speedup
@@ -131,7 +132,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define hand(h) ((h) < 0.557)
 #define skyTime(t) (clamp(sin(2 * PI * float(t + 785) / 24000) + 0.5, 0, 1))
-#define removeBorder(n) (((n) - 0.5) * (1 - LUT_SIZE_RCP) + 0.5)
+#define removeBorder(n, r) (((n) - 0.5) * (1 - (r)) + 0.5)
 
 // block mappings
 
@@ -150,6 +151,13 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 
 // Settings
+// #define WAVING_ENABLED
+#ifdef WAVING_ENABLED
+#endif
+
+#define FORCED_PERSPECTIVE_POWER 0.0 // [-0.5 -0.3 -0.2 -0.15 -0.1 -0.05 0.0 0.05 0.1 0.15 0.2 0.3 0.5]
+#define FORCED_PERSPECTIVE_BIAS 1.0  // [0.35 0.46 0.59 0.77 1.0 1.3 1.69 2.2 2.86]
+#define FORCED_PERSPECTIVE_SHAPE 1.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
 #define VANILLA_COLORS 0.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define CUTOUT_ALIGN_STRENGTH 0.8 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
@@ -169,8 +177,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define SKY_SATURATION 1.0 // [0.5 0.75 1.0 1.13 1.69 2.53 3.8 5.7]
 #define SKY_BRIGHTNESS_USER 1.0 // [0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
 
-#define CONTRAST 0.0 //[-0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6]
+#define CONTRAST 0.0 //[-0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6]
 #define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+#define POST_SATURATION 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+
 #define USE_LUT
 #ifdef USE_LUT
 #endif
@@ -226,6 +236,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define NIGHT_SKY_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 #define BLOCK_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
+#define BLOCK_LIGHT_POWER 1
+
 #define ATMOSPHERIC_FOG_USER
 #define ATMOSPHERIC_FOG_DENSITY 0.001 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
 
@@ -264,12 +276,14 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 // #define TEX_RENDER
 #ifdef TEX_RENDER
 #endif
-#define TEX_RES 0.0625 // [0.25 -0.75 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
+#define TEX_RES 0.0625 // [0.25 0.125 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
 
 
 
 
 // "temporary" hardcoding
+const bool noisetexNearest = false;
+
 #if VANILLA_LIGHTING != 2
     const float sunPathRotation = 0.0;
 #else

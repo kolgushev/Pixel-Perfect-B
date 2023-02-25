@@ -11,6 +11,9 @@ screen.POST_PROCESSING=Post Processing
     option.EXPOSURE=Exposure
         option.EXPOSURE.comment=Increases the brightness of the image while preserving dark areas. You can also control this setting through the vanilla "Brightness" slider. No performance impact.
 
+    option.POST_SATURATION=Vibrance
+        option.POST_SATURATION.comment=Also known as saturation. Increases the strength of colors in your world.
+
     option.DITHERING_MODE=Dithering
         option.DITHERING_MODE.comment=Slightly randomizes pixel colors to get rid of ugly bands of color (for instance, ones visible in the sky) that form because your monitor can't display color precisely enough. Does not work with Render Quality > 1x.  On ➤ Minimal performance hit.
         value.DITHERING_MODE.0=§cNo

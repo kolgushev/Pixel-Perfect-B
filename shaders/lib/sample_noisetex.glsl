@@ -1,11 +1,6 @@
-vec4 sampleNoise(in vec2 texcoord, in int id) {
-	// pseudorandom number generator such that an input id of 0 yields an offset of 0
-	float offsetX = sin(8 * id);
-	float offsetY = sin(7 * offsetX * pow2(id));
-	vec2 offset = vec2(offsetX, offsetY);
+vec4 tile(in vec2 texcoord, in vec2 id) {
+	// map texcoord to a 0-tilewidth range
+	vec2 texcoordInRange = (mod(texcoord, NOISETEX_TILES_RES) + id * NOISETEX_TILES_RES) / (NOISETEX_TILES_RES * NOISETEX_TILES_WIDTH);
 
-	vec2 originalCoords = (texcoord * vec2(viewWidth, viewHeight) / noiseTextureResolution);
-	// vec2 offset = vec2(0);
-
-	return texture(noisetex, mod(originalCoords + offset, 1));
+	return texture(noisetex, removeBorder(texcoordInRange, 1 / (NOISETEX_TILES_RES * NOISETEX_TILES_WIDTH)));
 }
