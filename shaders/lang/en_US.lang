@@ -250,6 +250,10 @@ screen.MISC=Misc
         value.BRIGHT_NETHER.true=Yes
         value.BRIGHT_NETHER.false=No
 
+    option.INVISIBILITY_DISTORTION=Distort Screen When Invisible
+        value.INVISIBILITY_DISTORTION.true=Yes
+        value.INVISIBILITY_DISTORTION.false=No
+
     screen.FORCED_PERSPECTIVE=Forced Perpective
         option.FORCED_PERSPECTIVE_POWER=Power
         

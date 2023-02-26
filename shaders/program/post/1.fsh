@@ -36,38 +36,48 @@ uniform bool isInvisible;
 void main() {
     vec4 albedo = texture(colortex0, texcoord);
 
-    const vec2 colorOffsets[2] = vec2[2](
-        vec2(-1, 0),
-        vec2(1, 0)
-    );
-    vec3 magentaSample;
-    vec3 cyanSample;
-    if(isInvisible) {
-        float depth = linearizeDepth(texture(depthtex1, texcoord).r, near, far);
-        float distortion = INVISIBILITY_DISTORT_STRENGTH * (0.1 + 0.9 / (depth));
-        magentaSample = texture(colortex0, texcoord + colorOffsets[0] * distortion).rgb;
-        cyanSample = texture(colortex0, texcoord + colorOffsets[1] * distortion).rgb;
-    }
+    #if defined INVISIBILITY_DISTORTION
+        const vec2 colorOffsets[3] = vec2[3](
+            vec2(0, 1) * 1.4,
+            vec2(0.866, -0.5) * 0.2,
+            vec2(-0.866, 0.5)
+        );
+        vec3 magentaSample;
+        vec3 cyanSample;
+        vec3 yellowSample;
+        if(isInvisible) {
+            float depth = linearizeDepth(texture(depthtex1, texcoord).r, near, far);
+            float distortion = INVISIBILITY_DISTORT_STRENGTH * (0.1 + 0.9 / (depth));
+            magentaSample = texture(colortex0, texcoord + colorOffsets[0] * distortion).rgb;
+            cyanSample = texture(colortex0, texcoord + colorOffsets[1] * distortion).rgb;
+            yellowSample = texture(colortex0, texcoord + colorOffsets[2] * distortion).rgb;
+        }
+    #endif
 
     vec3 tonemapped = albedo.rgb;
     
     if(isEyeInWater == 1) {
         tonemapped *= OVERLAY_COLOR_WATER;
+        #if defined INVISIBILITY_DISTORTION
+            if(isInvisible) {
+                magentaSample *= OVERLAY_COLOR_WATER;
+                cyanSample *= OVERLAY_COLOR_WATER;
+            }
+        #endif
+    }
+
+    #if defined INVISIBILITY_DISTORTION
         if(isInvisible) {
-            magentaSample *= OVERLAY_COLOR_WATER;
-            cyanSample *= OVERLAY_COLOR_WATER;
+            float k = RGBToCMYK(tonemapped).w;
+            float c = RGBToCMYK(cyanSample).x;
+            float m = RGBToCMYK(magentaSample).y;
+            float y = RGBToCMYK(yellowSample).z;
+
+            tonemapped = CMYKToRGB(vec4(c + 0.04, m, y, k - 0.01));
+
+            tonemapped = saturateRGB(0.9) * tonemapped;
         }
-    }
-
-    if(isInvisible) {
-        vec2 yk = RGBToCMYK(tonemapped).zw;
-        float c = RGBToCMYK(cyanSample).x;
-        float m = RGBToCMYK(magentaSample).y;
-
-        tonemapped = CMYKToRGB(vec4(c + 0.1, m, yk.x * 0.95, yk.y + 0.02));
-
-        tonemapped = saturateRGB(0.9) * tonemapped;
-    }
+    #endif
 
     #if defined BOSS_BATTLE_COLORS
         // color effects for boss battles
