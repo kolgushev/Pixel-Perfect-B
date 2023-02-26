@@ -1,7 +1,7 @@
 gbuffers opaque:
-    0.rgb - sky
+    0.rgb - sky + near plane
     0.a - 
-    1.rgb - albedo
+    1.rgb - far plane
     1.a - 0 is sky, 1 is anything else - Make sure to set blending to ONE ZERO SRC_ALPHA ZERO
     2.rg - lightmap
     2.b - [if vanilla AO] AO

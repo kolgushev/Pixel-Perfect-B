@@ -246,6 +246,10 @@ screen.MISC=Misc
         value.STREAMER_MODE.0=Streamer Mode
         value.STREAMER_MODE.-1=Fullbright
 
+    option.BRIGHT_NETHER=Brighter Nether
+        value.BRIGHT_NETHER.true=Yes
+        value.BRIGHT_NETHER.false=No
+
     screen.FORCED_PERSPECTIVE=Forced Perpective
         option.FORCED_PERSPECTIVE_POWER=Power
         

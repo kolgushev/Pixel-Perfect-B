@@ -131,7 +131,7 @@ void main() {
             This happens per every color channel individually.
         */
 
-        vec3 noiseToSurpass = sampleNoise(texcoord, 0).rgb;
+        vec3 noiseToSurpass = sampleNoise(texcoord, 0, vec2(0,1)).rgb;
         vec3 interPrecisionGradient = mod(colorCorrected * mult, 1);
 
         /*

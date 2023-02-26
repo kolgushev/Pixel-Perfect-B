@@ -239,7 +239,11 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define BLOCK_LIGHT_POWER 1
 
 #define ATMOSPHERIC_FOG_USER
-#define ATMOSPHERIC_FOG_DENSITY 0.001 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
+#define ATMOSPHERIC_FOG_DENSITY 0.0015 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
+
+// #define BRIGHT_NETHER
+#ifdef BRIGHT_NETHER
+#endif
 
 // #define SHADOWS_ENABLED_USER
 #ifdef SHADOWS_ENABLED_USER
@@ -441,12 +445,16 @@ const float shadowIntervalSize = 8.0;
     #ifdef ATMOSPHERIC_FOG_USER
         #define ATMOSPHERIC_FOG
     #endif
-    #define BASE_COLOR (vec3(1.0, 0.55, 0.4) * RGB_to_ACEScg)
+    #if defined BRIGHT_NETHER
+        #define BASE_COLOR (vec3(2.0, 1.8, 1.6))
+    #else
+        #define BASE_COLOR (vec3(1.0, 0.55, 0.4) * RGB_to_ACEScg)
+    #endif
     #define AMBIENT_COLOR (BASE_COLOR * 5.0)
     #define MIN_LIGHT_COLOR AMBIENT_COLOR
     // The color is intentionally unconverted here to get a much more vibrant color than sRGB would allow
     // (that is the main benefit of an ACES workflow, after all)
-    #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.1, 0.04))
+    #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.09, 0.03))
     // #define ATMOSPHERIC_FOG_COLOR (vec3(0.04, 0.1, 1.0))
 
     #define ATMOSPHERIC_FOG_MULTIPLIER 1.0

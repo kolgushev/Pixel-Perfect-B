@@ -36,7 +36,7 @@ float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelV
         vec2 noise;
 
         for(int i = 0; i < SHADOW_FILTERING_SAMPLES; i++) {
-            noise = sampleNoise(texcoord, i).rg * 2 - 1;
+            noise = sampleNoise(texcoord, i, vec2(1,1)).rg * 2 - 1;
 
             shadowOffset = vec3(noise, 0) / shadowDistance * 0.5 * SHADOW_FILTERING_RADIUS;
 
