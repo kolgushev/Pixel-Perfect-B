@@ -14,3 +14,22 @@ vec3 kelvinToRGB(in float actualTemp) {
 
     return clamp(color, 0, 1);
 }
+
+// thanks to https://www.rapidtables.com/convert/color/rgb-to-cmyk.html for CMYK calculations
+vec4 RGBToCMYK(in vec3 rgb) {
+    float black = 1 - max(max(rgb.r, rgb.g), rgb.b);
+    float cyan = (1 - black - rgb.r) / (1 - black);
+    float magenta = (1 - black - rgb.g) / (1 - black);
+    float yellow = (1 - black - rgb.b) / (1 - black);
+
+    return vec4(cyan, magenta, yellow, black);
+}
+
+vec3 CMYKToRGB(in vec4 cmyk) {
+    float white = 1 - cmyk.w;
+    float red = (1 - cmyk.x) * white;
+    float green = (1 - cmyk.y) * white;
+    float blue = (1 - cmyk.z) * white;
+
+    return vec3(red, green, blue);
+}

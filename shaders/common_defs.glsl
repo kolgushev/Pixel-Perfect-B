@@ -241,6 +241,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define ATMOSPHERIC_FOG_USER
 #define ATMOSPHERIC_FOG_DENSITY 0.0015 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
 
+#define INVISIBILITY_DISTORT_STRENGTH 0.01
+
 // #define BRIGHT_NETHER
 #ifdef BRIGHT_NETHER
 #endif

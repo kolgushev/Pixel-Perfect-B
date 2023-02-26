@@ -6,6 +6,7 @@ layout(location = 0) out vec4 b0;
 in vec2 texcoord;
 
 uniform sampler2D colortex0;
+uniform sampler2D depthtex1;
 #if DITHERING_MODE != 0
     uniform sampler2D noisetex;
 
@@ -13,16 +14,19 @@ uniform sampler2D colortex0;
     uniform float viewHeight;
 #endif
 
+uniform float near;
+uniform float far;
+
 uniform sampler3D shadowcolor1;
 
 uniform int isEyeInWater;
 uniform int bossBattle;
+uniform bool isInvisible;
 
+#include "/lib/linearize_depth.fsh"
 #include "/lib/tonemapping.glsl"
+#include "/lib/color_manipulation.glsl"
 
-#if POST_TEMP != 6550
-    #include "/lib/color_manipulation.glsl"
-#endif
 
 #if DITHERING_MODE != 0
     #include "/lib/sample_noisetex.glsl"
@@ -32,10 +36,37 @@ uniform int bossBattle;
 void main() {
     vec4 albedo = texture(colortex0, texcoord);
 
+    const vec2 colorOffsets[2] = vec2[2](
+        vec2(-1, 0),
+        vec2(1, 0)
+    );
+    vec3 magentaSample;
+    vec3 cyanSample;
+    if(isInvisible) {
+        float depth = linearizeDepth(texture(depthtex1, texcoord).r, near, far);
+        float distortion = INVISIBILITY_DISTORT_STRENGTH * (0.1 + 0.9 / (depth));
+        magentaSample = texture(colortex0, texcoord + colorOffsets[0] * distortion).rgb;
+        cyanSample = texture(colortex0, texcoord + colorOffsets[1] * distortion).rgb;
+    }
+
     vec3 tonemapped = albedo.rgb;
     
     if(isEyeInWater == 1) {
         tonemapped *= OVERLAY_COLOR_WATER;
+        if(isInvisible) {
+            magentaSample *= OVERLAY_COLOR_WATER;
+            cyanSample *= OVERLAY_COLOR_WATER;
+        }
+    }
+
+    if(isInvisible) {
+        vec2 yk = RGBToCMYK(tonemapped).zw;
+        float c = RGBToCMYK(cyanSample).x;
+        float m = RGBToCMYK(magentaSample).y;
+
+        tonemapped = CMYKToRGB(vec4(c + 0.1, m, yk.x * 0.95, yk.y + 0.02));
+
+        tonemapped = saturateRGB(0.9) * tonemapped;
     }
 
     #if defined BOSS_BATTLE_COLORS
