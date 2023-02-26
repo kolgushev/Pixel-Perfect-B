@@ -38,9 +38,9 @@ void main() {
 
     #if defined INVISIBILITY_DISTORTION
         const vec2 colorOffsets[3] = vec2[3](
-            vec2(0, 1) * 1.4,
-            vec2(0.866, -0.5) * 0.2,
-            vec2(-0.866, 0.5)
+            vec2(0.565, 0.825),
+            vec2(0.432, -0.902),
+            vec2(-0.997, 0.076)
         );
         vec3 magentaSample;
         vec3 cyanSample;
