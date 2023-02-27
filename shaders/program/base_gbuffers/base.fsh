@@ -96,6 +96,10 @@ void main() {
         // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed
         albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a);
     #endif
+
+    #if defined g_weather
+        albedo.a *= 0.5 * rainStrength;
+    #endif
     
     if(albedo.a < alphaTestRef) discard;
 

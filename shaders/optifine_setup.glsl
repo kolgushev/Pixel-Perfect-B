@@ -14,6 +14,9 @@ const int shadowcolor1Format = R16F;
 const bool shadowcolor1Clear = false;
 */
 
+const bool generateShadowMipmap = false;
+const bool generateShadowColorMipmap = false;
+
 #if AO_MODE == 1
     const float ambientOcclusionLevel = 1.0;
 #else
@@ -23,7 +26,7 @@ const bool shadowcolor1Clear = false;
 const float centerDepthHalflife = 1.0;
 
 /* WETNESSHL:600.0 */
-const float wetnessHalflife = 200.0;
+const float wetnessHalflife = 40.0;
 /* DRYNESSHL:200.0 */
 const float drynessHalflife = 100.0;
 

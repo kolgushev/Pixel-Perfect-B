@@ -462,6 +462,14 @@ const float shadowIntervalSize = 8.0;
 #define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * RGB_to_ACEScg)
 #define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * RGB_to_ACEScg)
 
+#if defined DIM_NETHER || defined DIM_END
+    #define DIM_NO_RAIN
+#endif
+
+#if defined DIM_END
+    #define DIM_NO_WIND
+#endif
+
 #define WIND_PERIOD_CONSTANT 0.3
 #define WIND_STRENGTH_CONSTANT (0.3 * WIND_STRENGTH_CONSTANT_USER)
 #define WIND_SPEED_CONSTANT (9000.0 * WIND_SPEED_CONSTANT_USER * WIND_STRENGTH_CONSTANT)
