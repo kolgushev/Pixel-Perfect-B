@@ -215,8 +215,6 @@ screen.COLORS=Colors
                 value.USER_LMT_MODE.3=Hable (Uncharted 2)
                 value.USER_LMT_MODE.4=ACES (Unreal Engine 4)
 
-
-
 screen.RESOURCEPACK=Resourcepack Settings
     screen.RESOURCEPACK.comment=Make sure to look at these settings if you have a resourcepack enabled.
     
@@ -254,16 +252,11 @@ screen.MISC=Misc
         value.INVISIBILITY_DISTORTION.true=Yes
         value.INVISIBILITY_DISTORTION.false=No
 
-    screen.FORCED_PERSPECTIVE=Forced Perpective
-        option.FORCED_PERSPECTIVE_POWER=Power
-        
-        option.FORCED_PERSPECTIVE_BIAS=Bias
-
-        option.FORCED_PERSPECTIVE_SHAPE=Shape
-            value.FORCED_PERSPECTIVE_SHAPE.0.0=Spherical
-            value.FORCED_PERSPECTIVE_SHAPE.1.0=Flat
-
-    screen.EXPERIMENTAL=Experimental
+    option.WAVING_ENABLED=Waving Objects
+        value.WAVING_ENABLED.true=Yes
+        value.WAVING_ENABLED.false=No
+    
+    option.WIND_STRENGTH_CONSTANT_USER=Wind Strength
 
 screen.ADVANCED=Advanced
     option.DEBUG_VIEW=Debug View
@@ -283,3 +276,13 @@ screen.ADVANCED=Advanced
 
     screen.AUTO_ADDED=Automatic Settings
         screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work.
+
+    screen.EXPERIMENTAL=Experimental
+        screen.FORCED_PERSPECTIVE=Forced Perpective
+            option.FORCED_PERSPECTIVE_POWER=Power
+            
+            option.FORCED_PERSPECTIVE_BIAS=Bias
+
+            option.FORCED_PERSPECTIVE_SHAPE=Shape
+                value.FORCED_PERSPECTIVE_SHAPE.0.0=Spherical
+                value.FORCED_PERSPECTIVE_SHAPE.1.0=Flat

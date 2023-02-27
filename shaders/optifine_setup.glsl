@@ -1,18 +1,3 @@
-#if defined DIM_NETHER
-/*
-const bool colortex0Clear = true;
-
-const bool colortex1Clear = true;
-*/
-#else
-/*
-TODO: fix the "NaN" pixels that occur when this is off
-const bool colortex0Clear = true;
-
-const bool colortex1Clear = false;
-*/
-#endif
-
 // use floats since they aren't capped at one (for easier color manipulation)
 /*
 const int colortex0Format = RGB16F;
@@ -34,6 +19,13 @@ const bool shadowcolor1Clear = false;
 #else
    const float ambientOcclusionLevel = 0;
 #endif
+
+const float centerDepthHalflife = 1.0;
+
+/* WETNESSHL:600.0 */
+const float wetnessHalflife = 200.0;
+/* DRYNESSHL:200.0 */
+const float drynessHalflife = 100.0;
 
 #define MC_RENDER_STAGE_NONE 0                      // Undefined
 #define MC_RENDER_STAGE_SKY 1                       // Sky

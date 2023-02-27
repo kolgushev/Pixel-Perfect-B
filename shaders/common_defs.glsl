@@ -82,6 +82,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define average2(a, b) (((a) + (b)) / 2)
 #define rot(t) mat2(cos(t), -sin(t), sin(t), cos(t))
+#define signedPow(n, e) (sign(n) * pow(abs(n), e))
 
 #define view(a) vec4(mul_m4_v3(gbufferModelView, a)).xyz
 #define viewInverse(a) vec4(mul_m4_v3(gbufferModelViewInverse, a)).xyz
@@ -145,15 +146,24 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define LIT_PARTIAL_CUTOUTS 7
 #define LIT_PARTIAL_CUTOUTS_UPSIDE_DOWN 8
 #define LIT_PROBLEMATIC 9
+#define WAVING_CUTOUTS_BOTTOM 10
+#define WAVING_CUTOUTS_TOP 11
+#define WAVING_CUTOUTS_BOTTOM_STIFF 12
+#define WAVING_CUTOUTS_TOP_STIFF 13
+#define WAVING 14
+#define WAVING_STIFF 15
 
 
 
 
 
 // Settings
-// #define WAVING_ENABLED
+#define WAVING_ENABLED
 #ifdef WAVING_ENABLED
 #endif
+
+#define WIND_STRENGTH_CONSTANT_USER 0.5 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+#define WIND_SPEED_CONSTANT_USER (-5.0)
 
 #define FORCED_PERSPECTIVE_POWER 0.0 // [-0.5 -0.3 -0.2 -0.15 -0.1 -0.05 0.0 0.05 0.1 0.15 0.2 0.3 0.5]
 #define FORCED_PERSPECTIVE_BIAS 1.0  // [0.35 0.46 0.59 0.77 1.0 1.3 1.69 2.2 2.86]
@@ -275,6 +285,12 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 
 // 0:off 1:on
 #define SHADOW_TRANSITION_MIXING 0 // [0 1]
+
+
+#define USE_DOF
+#ifdef USE_DOF
+#endif
+
 
 // #define DEBUG_VIEW
 #ifdef DEBUG_VIEW
@@ -446,6 +462,10 @@ const float shadowIntervalSize = 8.0;
 #define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * RGB_to_ACEScg)
 #define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * RGB_to_ACEScg)
 
+#define WIND_PERIOD_CONSTANT 0.3
+#define WIND_STRENGTH_CONSTANT (0.3 * WIND_STRENGTH_CONSTANT_USER)
+#define WIND_SPEED_CONSTANT (9000.0 * WIND_SPEED_CONSTANT_USER * WIND_STRENGTH_CONSTANT)
+
 #if defined DIM_NETHER
     #ifdef ATMOSPHERIC_FOG_USER
         #define ATMOSPHERIC_FOG
@@ -567,7 +587,7 @@ const float shadowIntervalSize = 8.0;
 #if defined g_water || defined g_terrain
     #define gc_terrain
 #endif
-#if defined g_beaconbeam || defined g_entities_glowing || defined g_spidereyes || defined textured_lit
+#if defined g_beaconbeam || defined g_entities_glowing || defined g_spidereyes || defined g_textured_lit
     #define gc_emissive
 #endif
 #if defined g_textured || defined g_textured_lit

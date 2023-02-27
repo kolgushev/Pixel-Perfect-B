@@ -1,5 +1,6 @@
 vec2 getCoords(in int id) {
 	// pseudorandom number generator such that an input id of 0 yields an offset of 0
+	// noise() doesn't work for whatever reason
 	float offsetX = sin(8 * id);
 	float offsetY = sin(7 * offsetX * pow2(id));
 	vec2 offset = vec2(offsetX, offsetY);

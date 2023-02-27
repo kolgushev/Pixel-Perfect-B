@@ -23,7 +23,8 @@ in vec3 vaNormal;
 in vec3 vaPosition;
 
 #if defined g_terrain
-    in vec4 mc_Entity;
+    in vec2 mc_Entity;
+    in vec3 at_midBlock;
 #endif
 
 uniform vec3 chunkOffset;
@@ -41,10 +42,14 @@ uniform int renderStage;
 #if defined g_terrain
     #if defined WAVING_ENABLED
         uniform sampler2D noisetex;
+        
         uniform vec3 cameraPosition;
+
+        uniform float wetness;
         // uniform float frameTimeCounter;
 
         #include "/lib/sample_noisetex.glsl"
+        #include "/lib/generate_wind.glsl"
     #endif
 
     #include "/lib/get_terrain_mask.glsl"
@@ -82,8 +87,55 @@ void main() {
         position = viewInverse(vaPosition);
     #endif
 
-    #if defined g_terrain && defined WAVING_ENABLED
-        position += (tile((position.xz + cameraPosition.xz) * 1 + 40 * (frameTimeCounter * NOISETEX_TILES_WIDTH * NOISETEX_TILES_RES / 3600), vec2(1,0)).rgb - 0.5) * vec3(2, 0.1, 2);
+    #if defined g_terrain && defined WAVING_ENABLED && !defined DIM_END
+        bool isTopPart = at_midBlock.y < 0;
+        bool isFullWaving = mc_Entity.x == WAVING || mc_Entity.x == WAVING_STIFF;
+        if(
+            (
+                (mc_Entity.x == WAVING_CUTOUTS_BOTTOM || mc_Entity.x == WAVING_CUTOUTS_BOTTOM_STIFF)
+                &&
+                isTopPart
+            )
+            ||
+            (mc_Entity.x == WAVING_CUTOUTS_TOP || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF || isFullWaving)) {
+            
+            bool isUpper = (mc_Entity.x == WAVING_CUTOUTS_TOP || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF) && isTopPart;
+            bool isStiff = mc_Entity.x == WAVING_CUTOUTS_BOTTOM_STIFF || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF || mc_Entity.x == WAVING_STIFF;
+
+            vec3 absolutePosition = position + cameraPosition;
+            float time = frameTimeCounter / 3600;
+            if((isUpper && !isStiff) || isFullWaving) {
+                time += absolutePosition.y * 0.004 / abs(WIND_SPEED_CONSTANT);
+            }
+            // simulates wind gusts from several directions at several frequencies
+            // requires a lot of computation but results in very good looking wind
+            // TODO: add a custom wind configuration for nether and end
+            vec2 offset =
+                windImpulse(2.35, 0.63 * 0.25, 0.903, 0.15, 0.8, absolutePosition.xz, time) +
+                windImpulse(1.45, 0.17 * 0.25, 0.606, 0.48, 1.0, absolutePosition.xz, time) +
+                windImpulse(1.03, 0.85 * 0.25, 0.624, 0.06, 1.0, absolutePosition.xz, time) +
+                windImpulse(1.29, 0.19 * 0.25, 0.697, 0.62, 1.0, absolutePosition.xz, time) +
+                windImpulse(1.14, 0.41 * 0.25, 0.741, 0.19, 1.0, absolutePosition.xz, time) +
+                windImpulse(0.82, 0.67 * 0.25, 0.714, 0.93, 2.0, absolutePosition.xz, time) +
+                windImpulse(0.50, 0.30 * 0.25, 0.113, 0.59, 2.0, absolutePosition.xz, time) +
+                windImpulse(0.40, 0.85 * 0.25, 0.212, 0.43, 2.0, absolutePosition.xz, time)
+            ;
+            // there is no rain in the nether (rain in deserts is a windstorm)
+            #if !defined DIM_NETHER
+                offset *= (1 + wetness * 3);
+            #endif
+            if(isUpper) {
+                offset *= 1.3;
+            }
+            offset = sign(offset) * (0.5 - 0.5 / (abs(2 * offset) + 1));
+            if(isStiff) {
+                offset *= 0.3;
+            }
+            if(isUpper) {
+                offset *= 1.8;
+            }
+            position.xz += offset;
+        }
     #endif
 
     #if defined use_raw_position
