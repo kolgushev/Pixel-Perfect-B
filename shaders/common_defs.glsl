@@ -254,7 +254,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define INVISIBILITY_DISTORTION
 #ifdef INVISIBILITY_DISTORTION
 #endif
-#define INVISIBILITY_DISTORT_STRENGTH 0.01
+#define INVISIBILITY_DISTORT_STRENGTH 0.005
 
 // #define BRIGHT_NETHER
 #ifdef BRIGHT_NETHER

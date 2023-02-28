@@ -6,7 +6,6 @@ layout(location = 0) out vec4 b0;
 in vec2 texcoord;
 
 uniform sampler2D colortex0;
-uniform sampler2D depthtex1;
 #if DITHERING_MODE != 0
     uniform sampler2D noisetex;
 
@@ -46,8 +45,8 @@ void main() {
         vec3 cyanSample;
         vec3 yellowSample;
         if(isInvisible) {
-            float depth = linearizeDepth(texture(depthtex1, texcoord).r, near, far);
-            float distortion = INVISIBILITY_DISTORT_STRENGTH * (0.1 + 0.9 / (depth));
+            vec2 texcoordNormalized = texcoord * 2 - 1;
+            float distortion = INVISIBILITY_DISTORT_STRENGTH * (pow2(texcoordNormalized.x) + pow2(texcoordNormalized.y));
             magentaSample = texture(colortex0, texcoord + colorOffsets[0] * distortion).rgb;
             cyanSample = texture(colortex0, texcoord + colorOffsets[1] * distortion).rgb;
             yellowSample = texture(colortex0, texcoord + colorOffsets[2] * distortion).rgb;
@@ -73,9 +72,7 @@ void main() {
             float m = RGBToCMYK(magentaSample).y;
             float y = RGBToCMYK(yellowSample).z;
 
-            tonemapped = CMYKToRGB(vec4(c + 0.04, m, y, k - 0.01));
-
-            tonemapped = saturateRGB(0.9) * tonemapped;
+            tonemapped = CMYKToRGB(vec4(c, m, y, k));
         }
     #endif
 
