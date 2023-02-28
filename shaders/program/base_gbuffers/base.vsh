@@ -128,30 +128,12 @@ void main() {
             
             // normal wind
             if(wetness <= rainUpper) {
-                offset =
-                    windImpulse(2.35, 0.63 * 0.25, 0.903, 0.15, 1.0, absolutePosition.xz, time) +
-                    windImpulse(1.45, 0.17 * 0.25, 0.606, 0.48, 1.0, absolutePosition.xz, time) +
-                    windImpulse(1.03, 0.85 * 0.25, 0.624, 0.06, 1.0, absolutePosition.xz, time) +
-                    windImpulse(1.29, 0.19 * 0.25, 0.697, 0.62, 1.0, absolutePosition.xz, time) +
-                    windImpulse(1.14, 0.41 * 0.25, 0.741, 0.19, 1.0, absolutePosition.xz, time) +
-                    windImpulse(0.82, 0.67 * 0.25, 0.714, 0.93, 1.0, absolutePosition.xz, time) +
-                    windImpulse(0.50, 0.30 * 0.25, 0.113, 0.59, 1.0, absolutePosition.xz, time) +
-                    windImpulse(0.40, 0.85 * 0.25, 0.212, 0.43, 1.0, absolutePosition.xz, time)
-                ;
+                offset = getCalmWindProfile(absolutePosition.xz, time);
             }
 
             // custom faster wind for bad weather
             if(wetness >= rainLower) {
-                rainOffset =
-                    windImpulse(2.35 * 2.0, 0.63 * 0.25 + 0.5, 0.903, 0.15, 4.0, absolutePosition.xz, time) +
-                    windImpulse(2.05 * 2.0, 0.17 * 0.25 + 0.5, 0.606, 0.48, 4.0, absolutePosition.xz, time) +
-                    windImpulse(1.03 * 2.0, 0.85 * 0.25 + 0.5, 0.624, 0.06, 4.0, absolutePosition.xz, time) +
-                    windImpulse(1.39 * 2.0, 0.19 * 0.25 + 0.5, 0.697, 0.62, 4.0, absolutePosition.xz, time) +
-                    windImpulse(0.95 * 1.4, 0.41 * 0.25 + 0.5, 0.541, 0.84, 6.0, absolutePosition.xz, time) +
-                    windImpulse(0.82 * 1.4, 0.67 * 0.25 + 0.5, 0.214, 0.93, 6.0, absolutePosition.xz, time) +
-                    windImpulse(0.50 * 1.4, 0.30 * 0.25 + 0.5, 0.113, 0.59, 6.0, absolutePosition.xz, time) +
-                    windImpulse(0.40 * 1.4, 0.85 * 0.25 + 0.5, 0.212, 0.43, 6.0, absolutePosition.xz, time)
-                ;
+                rainOffset = getStormyWindProfile(absolutePosition.xz, time);
             }
             
             // mix the two winds depending on weather
@@ -177,16 +159,16 @@ void main() {
                 }
             #else
                 if(isUpper) {
-                    offset *= 3.0;
-                } else {
                     offset *= 1.4;
+                } else {
+                    offset *= 3.0;
                 }
             #endif
             
             if(isStiff) {
                 offset *= 0.3;
             }
-            #if !defined g_weather
+            #if !defined g_weather && !defined DIM_NO_SKY
                 // multiply by sky light to make sure grass doesn't wave in caves and indoors
                 offset *= light.y;
             #endif

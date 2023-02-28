@@ -464,6 +464,7 @@ const float shadowIntervalSize = 8.0;
 
 #if defined DIM_NETHER || defined DIM_END
     #define DIM_NO_RAIN
+    #define DIM_NO_SKY
 #endif
 
 #if defined DIM_END
