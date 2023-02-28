@@ -158,6 +158,11 @@ void main() {
                 }
             #endif
             
+            #if !defined g_weather && !defined DIM_NO_SKY
+                // multiply by sky light to make sure grass doesn't wave in caves and indoors
+                offset *= pow2(light.y);
+            #endif
+
             offset = sign(offset) * (0.5 - 0.5 / (abs(2 * offset) + 1));
             
             #if !defined g_weather
@@ -175,10 +180,6 @@ void main() {
             if(isStiff) {
                 offset *= 0.3;
             }
-            #if !defined g_weather && !defined DIM_NO_SKY
-                // multiply by sky light to make sure grass doesn't wave in caves and indoors
-                offset *= light.y;
-            #endif
 
             position.xz += offset;
             // prevent z-fighting for full blocks
