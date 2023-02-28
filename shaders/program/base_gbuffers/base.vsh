@@ -58,7 +58,7 @@ void main() {
 
     light = (LIGHT_MATRIX * vec4(vaUV2, 1, 1)).xy;
     /*
-    The Optifine-provided lightmap is actually used to sample the
+    The Optifine-provided lightmap is actually what is used to sample the
     vanilla lighting texture, so it isn't in a 0-1 range by default.
     */
     #if VANILLA_LIGHTING == 2
@@ -186,7 +186,11 @@ void main() {
             if(isStiff) {
                 offset *= 0.3;
             }
-            
+            #if !defined g_weather
+                // multiply by sky light to make sure grass doesn't wave in caves and indoors
+                offset *= light.y;
+            #endif
+
             position.xz += offset;
         }
     #endif
