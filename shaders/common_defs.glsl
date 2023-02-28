@@ -135,24 +135,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define skyTime(t) (clamp(sin(2 * PI * float(t + 785) / 24000) + 0.5, 0, 1))
 #define removeBorder(n, r) (((n) - 0.5) * (1 - (r)) + 0.5)
 
-// block mappings
-
-#define CUTOUTS 1
-#define CUTOUTS_UPSIDE_DOWN 2
-#define LIT 3
-#define LIT_CUTOUTS 4
-#define LIT_CUTOUTS_UPSIDE_DOWN 5
-#define LIT_PARTIAL 6
-#define LIT_PARTIAL_CUTOUTS 7
-#define LIT_PARTIAL_CUTOUTS_UPSIDE_DOWN 8
-#define LIT_PROBLEMATIC 9
-#define WAVING_CUTOUTS_BOTTOM 10
-#define WAVING_CUTOUTS_TOP 11
-#define WAVING_CUTOUTS_BOTTOM_STIFF 12
-#define WAVING_CUTOUTS_TOP_STIFF 13
-#define WAVING 14
-#define WAVING_STIFF 15
-
 
 
 
@@ -160,6 +142,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // Settings
 #define WAVING_ENABLED
 #ifdef WAVING_ENABLED
+#endif
+
+#define NO_WAVING_FULL_BLOCKS
+#ifdef NO_WAVING_FULL_BLOCKS
 #endif
 
 #define WIND_STRENGTH_CONSTANT_USER 0.5 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]
@@ -584,6 +570,29 @@ const float shadowIntervalSize = 8.0;
 
 
 // defs logic
+
+// block mappings
+
+#define CUTOUTS 1
+#define CUTOUTS_UPSIDE_DOWN 2
+#define LIT 3
+#define LIT_CUTOUTS 4
+#define LIT_CUTOUTS_UPSIDE_DOWN 5
+#define LIT_PARTIAL 6
+#define LIT_PARTIAL_CUTOUTS 7
+#define LIT_PARTIAL_CUTOUTS_UPSIDE_DOWN 8
+#define LIT_PROBLEMATIC 9
+#define WAVING_CUTOUTS_BOTTOM 10
+#define WAVING_CUTOUTS_TOP 11
+#define WAVING_CUTOUTS_BOTTOM_STIFF 12
+#define WAVING_CUTOUTS_TOP_STIFF 13
+#if !defined NO_WAVING_FULL_BLOCKS
+    #define WAVING 14
+    #define WAVING_STIFF 15
+#else
+    #define WAVING (-2)
+    #define WAVING_STIFF (-2)
+#endif
 
 // g stands for gbuffers
 // gc stands for gbuffers category
