@@ -192,6 +192,10 @@ void main() {
             #endif
 
             position.xz += offset;
+            // prevent z-fighting for full blocks
+            if(isFullWaving) {
+                position.y += EPSILON;
+            }
         }
     #endif
 
