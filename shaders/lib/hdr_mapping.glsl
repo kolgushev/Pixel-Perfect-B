@@ -1,4 +1,4 @@
-float SDRToHDR(in float sdr) {
+float SDRToHDR(in float x) {
 	const float a = 10;
 	const float b = 0.99;
 	// converts from a 0-1 range to about a 0-10 range

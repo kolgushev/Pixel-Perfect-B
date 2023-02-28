@@ -20,6 +20,10 @@ in vec3 normal;
     in vec2 stars;
 #endif
 
+#if defined g_terrain
+    in vec2 entity;
+#endif
+
 uniform sampler2D texture;
 uniform sampler2D shadowcolor0;
 
@@ -28,7 +32,6 @@ uniform float alphaTestRef;
 uniform vec4 entityColor;
 uniform int isEyeInWater;
 uniform float nightVision;
-
 
 #if defined gc_transparent
     uniform vec3 sunPosition;
@@ -65,6 +68,11 @@ uniform float nightVision;
 
 #include "/lib/tonemapping.glsl"
 #include "/lib/calculate_sky.glsl"
+
+#if defined g_terrain
+    #include "/lib/hdr_mapping.glsl"
+#endif
+
 #if defined gc_transparent
     #include "/lib/fogify.glsl"
     #include "/lib/color_manipulation.glsl"
@@ -77,6 +85,8 @@ uniform float nightVision;
 #endif
 
 void main() {
+    vec3 lightmap = vec3(light, color.a);
+
     #if defined g_skybasic
         // TODO: make a proper sunset
         if(renderStage == MC_RENDER_STAGE_SUNSET) discard;
@@ -141,7 +151,15 @@ void main() {
         albedo.rgb = getFogColor(isEyeInWater, albedo.rgb);
     #endif
 
-    vec3 lightmap = vec3(light, color.a);
+    // TODO: fix
+    // #if defined g_terrain
+    //     if(entity.x == LIT || entity.x == LIT_CUTOUTS || entity.x == LIT_CUTOUTS_UPSIDE_DOWN || entity.x == LIT_PROBLEMATIC) {
+    //         float lum = luminance(albedo.rgb);
+    //         float newLum = SDRToHDR(lum);
+    //         albedo.rgb = changeLuminance(albedo.rgb, lum, newLum);
+    //     }
+    // #endif
+
     #if defined gc_transparent
         // apply lighting here for transparent stuff
         mat2x3 lightColor = getLightColor(lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength, nightVision, darknessFactor, darknessLightFactor, shadowcolor0);

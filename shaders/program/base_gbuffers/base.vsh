@@ -21,6 +21,7 @@ in vec3 vaPosition;
 
 #if defined g_terrain
     in vec2 mc_Entity;
+    out vec2 entity;
     in vec3 at_midBlock;
 #endif
 
@@ -51,6 +52,9 @@ uniform int renderStage;
 #endif
 
 void main() {
+    #if defined g_terrain
+        entity = mc_Entity;
+    #endif
 
     texcoord = vaUV0;
     
