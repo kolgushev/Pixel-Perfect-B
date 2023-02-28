@@ -234,6 +234,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define BLOCK_LIGHT_POWER 1
 
+#define HDR_TEX_LIGHT_BRIGHTNESS
+#ifdef HDR_TEX_LIGHT_BRIGHTNESS
+#endif
+
 #define ATMOSPHERIC_FOG_USER
 #define ATMOSPHERIC_FOG_DENSITY 0.0015 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
 

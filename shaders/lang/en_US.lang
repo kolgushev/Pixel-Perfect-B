@@ -195,7 +195,7 @@ screen.COLORS=Colors
             value.USE_LUT.false=No
 
         option.USER_GAMMA_CORRECT=Gamma correction
-            option.USER_GAMMA_CORRECT.comment=If you don't know what this is, you shouldn't disable it.
+            option.USER_GAMMA_CORRECT.comment=If you don't know what this is, you shouldn't disable it. May not work when "Use LUT" is enabled!
             value.USER_GAMMA_CORRECT.true=Yes
             value.USER_GAMMA_CORRECT.false=No
 
@@ -203,12 +203,13 @@ screen.COLORS=Colors
             screen.ACES.comment=Academy Color Encoding System.
             
             option.USER_OUTPUT_COLORSPACE=Output Colorspace
+                option.USER_OUTPUT_COLORSPACE.comment=May not work when "Use LUT" is enabled!
                 value.USER_OUTPUT_COLORSPACE.0=sRGB
                 value.USER_OUTPUT_COLORSPACE.1=ACEScg (raw)
                 value.USER_OUTPUT_COLORSPACE.2=ACES2065-1
-            
+
             option.USER_LMT_MODE=LMT
-                option.USER_LMT_MODE.comment=Compresses the game's "realistic" light values into ones your monitor can display. (and does so in a way that looks nice).
+                option.USER_LMT_MODE.comment=Compresses the game's "realistic" light values into ones your monitor can display. (and does so in a way that looks nice). May not work when "Use LUT" is enabled!
                 value.USER_LMT_MODE.0=§cNone (not recommended)
                 value.USER_LMT_MODE.1=§cDivide by 16 (not recommended)
                 value.USER_LMT_MODE.2=Reinhard

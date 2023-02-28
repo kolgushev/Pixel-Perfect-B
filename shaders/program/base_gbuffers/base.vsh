@@ -18,10 +18,10 @@ in ivec2 vaUV2;
 in vec4 vaColor;
 in vec3 vaNormal;
 in vec3 vaPosition;
+flat out int isLit;
 
 #if defined g_terrain
     in vec2 mc_Entity;
-    out vec2 entity;
     in vec3 at_midBlock;
 #endif
 
@@ -53,7 +53,10 @@ uniform int renderStage;
 
 void main() {
     #if defined g_terrain
-        entity = mc_Entity;
+        isLit = 0;
+        if(mc_Entity.x == LIT || mc_Entity.x == LIT_CUTOUTS || mc_Entity.x == LIT_CUTOUTS_UPSIDE_DOWN || mc_Entity.x == LIT_PROBLEMATIC) {
+            isLit = 1;
+        }
     #endif
 
     texcoord = vaUV0;

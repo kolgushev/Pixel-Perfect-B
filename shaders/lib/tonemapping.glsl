@@ -2,6 +2,7 @@
 // https://64.github.io/tonemapping/
 // https://learnopengl.com/Advanced-Lighting/HDR
 
+// operates on RGB
 float luminance(in vec3 v) {
     return dot(v, LUMINANCE_COEFFS);
 }

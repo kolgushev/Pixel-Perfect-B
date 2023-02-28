@@ -15,13 +15,10 @@ in vec4 color;
 in vec2 light;
 in vec3 position;
 in vec3 normal;
+flat in int isLit;
 
 #if defined g_skybasic
     in vec2 stars;
-#endif
-
-#if defined g_terrain
-    in vec2 entity;
 #endif
 
 uniform sampler2D texture;
@@ -68,10 +65,7 @@ uniform float nightVision;
 
 #include "/lib/tonemapping.glsl"
 #include "/lib/calculate_sky.glsl"
-
-#if defined g_terrain
-    #include "/lib/hdr_mapping.glsl"
-#endif
+#include "/lib/hdr_mapping.glsl"
 
 #if defined gc_transparent
     #include "/lib/fogify.glsl"
@@ -152,13 +146,15 @@ void main() {
     #endif
 
     // TODO: fix
-    // #if defined g_terrain
-    //     if(entity.x == LIT || entity.x == LIT_CUTOUTS || entity.x == LIT_CUTOUTS_UPSIDE_DOWN || entity.x == LIT_PROBLEMATIC) {
-    //         float lum = luminance(albedo.rgb);
-    //         float newLum = SDRToHDR(lum);
-    //         albedo.rgb = changeLuminance(albedo.rgb, lum, newLum);
-    //     }
-    // #endif
+    #if defined HDR_TEX_LIGHT_BRIGHTNESS
+        if(isLit == 1) {
+            // this luminance function technically uses the RGB luminance coefficients, but it's close enough to where we don't care
+            // TODO: calculate luminance coeffs for AP1 primaries
+            float lum = luminance(albedo.rgb);
+            float newLum = SDRToHDR(lum);
+            albedo.rgb = changeLuminance(albedo.rgb, lum, newLum);
+        }
+    #endif
 
     #if defined gc_transparent
         // apply lighting here for transparent stuff
