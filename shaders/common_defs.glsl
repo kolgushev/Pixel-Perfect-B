@@ -162,7 +162,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef WAVING_ENABLED
 #endif
 
-#define WIND_STRENGTH_CONSTANT_USER 0.5 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+#define WIND_STRENGTH_CONSTANT_USER 0.5 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]
 #define WIND_SPEED_CONSTANT_USER (-5.0)
 
 #define FORCED_PERSPECTIVE_POWER 0.0 // [-0.5 -0.3 -0.2 -0.15 -0.1 -0.05 0.0 0.05 0.1 0.15 0.2 0.3 0.5]
@@ -251,7 +251,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define ATMOSPHERIC_FOG_USER
 #define ATMOSPHERIC_FOG_DENSITY 0.0015 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
 
-#define INVISIBILITY_DISTORTION
+// #define INVISIBILITY_DISTORTION
 #ifdef INVISIBILITY_DISTORTION
 #endif
 #define INVISIBILITY_DISTORT_STRENGTH 0.005
@@ -287,7 +287,7 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 #define SHADOW_TRANSITION_MIXING 0 // [0 1]
 
 
-#define USE_DOF
+// #define USE_DOF
 #ifdef USE_DOF
 #endif
 
