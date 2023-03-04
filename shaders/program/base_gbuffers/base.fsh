@@ -145,7 +145,6 @@ void main() {
         albedo.rgb = getFogColor(isEyeInWater, albedo.rgb);
     #endif
 
-    // TODO: fix
     #if defined HDR_TEX_LIGHT_BRIGHTNESS        
         if(isLit == 1) {
             albedo.rgb = SDRToHDRColor(albedo.rgb);
