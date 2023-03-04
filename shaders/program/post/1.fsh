@@ -20,7 +20,7 @@ uniform sampler3D shadowcolor1;
 
 uniform int isEyeInWater;
 uniform int bossBattle;
-uniform float isInvisible;
+uniform float invisibility;
 
 #include "/lib/linearize_depth.fsh"
 #include "/lib/tonemapping.glsl"
@@ -44,9 +44,9 @@ void main() {
         vec3 magentaSample;
         vec3 cyanSample;
         vec3 yellowSample;
-        if(isInvisible > 0) {
+        if(invisibility > 0) {
             vec2 texcoordNormalized = texcoord * 2 - 1;
-            float distortion = isInvisible * INVISIBILITY_DISTORT_STRENGTH * (pow2(texcoordNormalized.x) + pow2(texcoordNormalized.y));
+            float distortion = invisibility * INVISIBILITY_DISTORT_STRENGTH * (pow2(texcoordNormalized.x) + pow2(texcoordNormalized.y));
             magentaSample = texture(colortex0, texcoord + colorOffsets[0] * distortion).rgb;
             cyanSample = texture(colortex0, texcoord + colorOffsets[1] * distortion).rgb;
             yellowSample = texture(colortex0, texcoord + colorOffsets[2] * distortion).rgb;
@@ -58,7 +58,7 @@ void main() {
     if(isEyeInWater == 1) {
         tonemapped *= OVERLAY_COLOR_WATER;
         #if defined INVISIBILITY_DISTORTION
-            if(isInvisible > 0) {
+            if(invisibility > 0) {
                 magentaSample *= OVERLAY_COLOR_WATER;
                 cyanSample *= OVERLAY_COLOR_WATER;
             }
@@ -66,7 +66,7 @@ void main() {
     }
 
     #if defined INVISIBILITY_DISTORTION
-        if(isInvisible > 0) {
+        if(invisibility > 0) {
             float k = RGBToCMYK(tonemapped).w;
             float c = RGBToCMYK(cyanSample).x;
             float m = RGBToCMYK(magentaSample).y;
