@@ -113,6 +113,12 @@ void main() {
                 bool isStiff = false;
             #endif
 
+            float fine = 1;
+
+            if(isUpper) {
+                fine = 1.5;
+            }
+
             vec3 absolutePosition = position + cameraPosition;
             float time = frameTimeCounter / 3600;
             if((isUpper && !isStiff) || isFullWaving) {
@@ -135,12 +141,12 @@ void main() {
             
             // normal wind
             if(wetness <= rainUpper) {
-                offset = getCalmWindProfile(absolutePosition.xz, time);
+                offset = getCalmWindProfile(absolutePosition.xz, time, fine);
             }
 
             // custom faster wind for bad weather
             if(wetness >= rainLower) {
-                rainOffset = getStormyWindProfile(absolutePosition.xz, time);
+                rainOffset = getStormyWindProfile(absolutePosition.xz, time, fine);
             }
             
             // mix the two winds depending on weather
