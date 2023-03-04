@@ -12,7 +12,7 @@ vec3 kelvinToRGB(in float actualTemp) {
             1.292936186062745 * pow(temp - 60, -0.1332047592),
             1);
 
-    return clamp(color, 0, 1);
+    return gammaCorrection(clamp(color, 0, 1), GAMMA) * RGB_to_ACEScg;
 }
 
 // thanks to https://www.rapidtables.com/convert/color/rgb-to-cmyk.html for CMYK calculations

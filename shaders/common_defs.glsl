@@ -158,13 +158,13 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // 0 is old lighting off, 1 is standard vanilla, 2 is custom shading
 #define VANILLA_LIGHTING 2 // [0 1 2]
 
-// #define REAL_LIGHTING
-#ifdef REAL_LIGHTING
+// #define DYNAMIC_EXPOSURE_LIGHTING
+#ifdef DYNAMIC_EXPOSURE_LIGHTING
 #endif
 #define SUN_TEMP 5777 // [1500 2000 2500 3000 3500 4000 4500 5000 5777 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000]
-#define TORCH_TEMP 4000 // [1500 2000 2500 3000 3500 4000 4500 5000 5500 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000]
+#define TORCH_TEMP 5000 // [1500 2000 2500 3000 3500 4000 4500 5000 5500 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000]
 
-#define SKY_COLOR_BLEND 0.4 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define SKY_COLOR_BLEND 0.6 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define STAR_WEIGHTS 1.5 // [0.75 1.0 1.25 1.5 1.75 2.0 2.25 2.5 2.75 3.0]
 
 #define SKY_SATURATION 1.0 // [0.5 0.75 1.0 1.13 1.69 2.53 3.8 5.7]
@@ -351,7 +351,7 @@ const float shadowIntervalSize = 8.0;
 #endif
 
 #if VANILLA_LIGHTING == 2
-    #ifndef REAL_LIGHTING
+    #ifndef DYNAMIC_EXPOSURE_LIGHTING
         #define SUN_LIGHT_MULT (5.0 * SUN_LIGHT_MULT_USER)
         #define SKY_LIGHT_MULT (4.0 * SKY_LIGHT_MULT_USER)
         #define SKY_LIGHT_MULT_OVERCAST (2.0 * SKY_LIGHT_MULT_OVERCAST_USER)
@@ -359,14 +359,12 @@ const float shadowIntervalSize = 8.0;
         #define NIGHT_SKY_LIGHT_MULT (0.6 * NIGHT_SKY_LIGHT_MULT_USER)
         #define BLOCK_LIGHT_MULT (5.0 * BLOCK_LIGHT_MULT_USER)
     #else
-        // in lumens per meter² (lux) / 1000
-        #define SUN_LIGHT_MULT 1110.0
-        #define SKY_LIGHT_MULT 195.0
-        #define SKY_LIGHT_MULT_OVERCAST 10.0
-        #define MOON_LIGHT_MULT 0.00075
-        // TODO: measure night sky
-        #define NIGHT_SKY_LIGHT_MULT 0.00001
-        #define BLOCK_LIGHT_MULT 16
+        #define SUN_LIGHT_MULT 11.100
+        #define SKY_LIGHT_MULT 19.5
+        #define SKY_LIGHT_MULT_OVERCAST 1.0
+        #define MOON_LIGHT_MULT 0.0075
+        #define NIGHT_SKY_LIGHT_MULT 0.001
+        #define BLOCK_LIGHT_MULT 0.64
     #endif
 #else
     #define SKY_LIGHT_MULT (3.0 * SKY_LIGHT_MULT_USER)
@@ -418,36 +416,46 @@ const float shadowIntervalSize = 8.0;
 
 // measuring face of stone block
 #if LMT_MODE == 4
-    #if STREAMER_MODE == 0 || STREAMER_MODE == -1
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.4)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.55)
-    #elif STREAMER_MODE == 1
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.05)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.17)
-    #elif STREAMER_MODE == 2
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.01)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.10)
-    #elif STREAMER_MODE == 3
-        #define MIN_LIGHT_MULT 0.0
-        #define AMBIENT_LIGHT_MULT 0.0
+    #if !defined DYNAMIC_EXPOSURE_LIGHTING
+        #if STREAMER_MODE == 0 || STREAMER_MODE == -1
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.4)
+            #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.55)
+        #elif STREAMER_MODE == 1
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.05)
+            #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.17)
+        #elif STREAMER_MODE == 2
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.01)
+            #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.10)
+        #elif STREAMER_MODE == 3
+            #define MIN_LIGHT_MULT 0.0
+            #define AMBIENT_LIGHT_MULT 0.0
+        #endif
+    #else
+        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.0001)
+        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.001)
     #endif
 #else
-    #if STREAMER_MODE == 0 || STREAMER_MODE == -1
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.16)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.22)
-    #elif STREAMER_MODE == 1
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.02)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.068)
-    #elif STREAMER_MODE == 2
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.003)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.03)
-    #elif STREAMER_MODE == 3
-        #define MIN_LIGHT_MULT 0.0
-        #define AMBIENT_LIGHT_MULT 0.0
+    #if !defined DYNAMIC_EXPOSURE_LIGHTING
+        #if STREAMER_MODE == 0 || STREAMER_MODE == -1
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.16)
+            #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.22)
+        #elif STREAMER_MODE == 1
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.02)
+            #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.068)
+        #elif STREAMER_MODE == 2
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.003)
+            #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.03)
+        #elif STREAMER_MODE == 3
+            #define MIN_LIGHT_MULT 0.0
+            #define AMBIENT_LIGHT_MULT 0.0
+        #endif
+    #else
+        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.00003)
+        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.0003)
     #endif
 #endif
 
-#define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * RGB_to_ACEScg)
+#define TORCH_TINT (kelvinToRGB(TORCH_TEMP))
 #define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * RGB_to_ACEScg)
 
 #if defined DIM_NETHER || defined DIM_END
@@ -506,7 +514,7 @@ const float shadowIntervalSize = 8.0;
     #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_ACEScg)
     // #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
 
-    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
+    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
 #endif
 
 #define ATMOSPHERIC_FOG_DENSITY_WATER 0.02
@@ -539,7 +547,7 @@ const float shadowIntervalSize = 8.0;
 // #define NIGHT_SKY_COLOR ((vec3(1, 0.98, 0.95) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
 #define DAY_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
 #define NIGHT_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
-#define SUN_COLOR ((kelvinToRGB(SUN_TEMP) * RGB_to_ACEScg) * SUN_LIGHT_MULT)
+#define SUN_COLOR ((kelvinToRGB(SUN_TEMP)) * SUN_LIGHT_MULT)
 #define MOON_COLOR ((vec3(0.5, 0.66, 1.0) * RGB_to_ACEScg) * MOON_LIGHT_MULT)
 // #define MOON_COLOR ((vec3(0.95, 0.99, 1) * RGB_to_ACEScg) * MOON_LIGHT_MULT)
 

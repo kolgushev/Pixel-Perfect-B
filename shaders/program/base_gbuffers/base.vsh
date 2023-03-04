@@ -3,6 +3,11 @@
     #define use_raw_normal
 #endif
 
+#if defined gc_terrain && defined USE_DOF
+    const int countInstances = 2;
+    uniform int instanceId;
+#endif
+
 out vec2 texcoord;
 out vec4 color;
 out vec2 light;
@@ -60,7 +65,7 @@ void main() {
         if(mc_Entity.x == LIT || mc_Entity.x == LIT_CUTOUTS || mc_Entity.x == LIT_CUTOUTS_UPSIDE_DOWN) {
             isLit = 1;
         }
-    #elif defined g_entities_glowing
+    #elif defined gc_emissive
         isLit = 1;
     #endif
 

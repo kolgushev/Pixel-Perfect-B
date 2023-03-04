@@ -102,7 +102,8 @@ void main() {
 
     // white balance
     #if POST_TEMP != 6550
-        tonemapped *= kelvinToRGB(POST_TEMP);
+        vec3 tempColor = kelvinToRGB(POST_TEMP);
+        tonemapped *= changeLuminance(tempColor, luminance(tempColor), 1.0);
     #endif
 
     tonemapped *= EXPOSURE * EXPOSURE_BIAS;
