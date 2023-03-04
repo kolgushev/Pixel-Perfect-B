@@ -114,6 +114,8 @@ void main() {
         albedo.rgb = max(vec3(0), saturateRGB(SKY_SATURATION) * albedo.rgb);
     #endif
 
+    // albedo.rgb = rtt_and_odt_fit_inverse(albedo.rgb * 0.619115);
+
     albedo.rgb *= RGB_to_ACEScg;
 
     #if defined g_skytextured
@@ -146,7 +148,7 @@ void main() {
     #endif
 
     // TODO: fix
-    #if defined HDR_TEX_LIGHT_BRIGHTNESS
+    #if defined HDR_TEX_LIGHT_BRIGHTNESS        
         if(isLit == 1) {
             // this luminance function technically uses the RGB luminance coefficients, but it's close enough to where we don't care
             // TODO: calculate luminance coeffs for AP1 primaries

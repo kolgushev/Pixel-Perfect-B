@@ -59,6 +59,16 @@ vec3 rtt_and_odt_fit(in vec3 v) {
     return a / b;
 }
 
+// found courtesy of wolfram|alpha
+vec3 rtt_and_odt_fit_inverse(in vec3 v) {
+    vec3 a = v - 1.01654;
+    vec3 b = -0.220056 * (v - 0.0567699);
+    vec3 c = 3.21458e-8 * sqrt(-1.87346e14 * pow2(v) + 2.32671e14 * v + 2.41564e11);
+
+    // technically (b ± c) / a but we don't need negative values
+    return (b - c) / a;
+}
+
 vec3 aces_fitted(in vec3 v)
 {
     v = v * ACES_INPUT;

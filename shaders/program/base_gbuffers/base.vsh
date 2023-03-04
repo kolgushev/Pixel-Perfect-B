@@ -54,7 +54,7 @@ uniform int renderStage;
 void main() {
     #if defined g_terrain
         isLit = 0;
-        if(mc_Entity.x == LIT || mc_Entity.x == LIT_CUTOUTS || mc_Entity.x == LIT_CUTOUTS_UPSIDE_DOWN || mc_Entity.x == LIT_PROBLEMATIC) {
+        if(mc_Entity.x == LIT || mc_Entity.x == LIT_CUTOUTS || mc_Entity.x == LIT_CUTOUTS_UPSIDE_DOWN) {
             isLit = 1;
         }
     #endif
