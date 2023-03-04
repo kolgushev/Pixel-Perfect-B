@@ -152,9 +152,11 @@ void main() {
         if(isLit == 1) {
             // this luminance function technically uses the RGB luminance coefficients, but it's close enough to where we don't care
             // TODO: calculate luminance coeffs for AP1 primaries
-            float lum = luminance(albedo.rgb);
-            float newLum = SDRToHDR(lum);
-            albedo.rgb = changeLuminance(albedo.rgb, lum, newLum);
+            albedo.rgb = SDRToHDRColor(albedo.rgb);
+
+            // float lum = luminance(albedo.rgb);
+            // float newLum = SDRToHDR(lum);
+            // albedo.rgb = changeLuminance(albedo.rgb, lum, newLum);
         }
     #endif
 

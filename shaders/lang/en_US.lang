@@ -212,7 +212,7 @@ screen.COLORS=Colors
                 option.USER_LMT_MODE.comment=Compresses the game's "realistic" light values into ones your monitor can display. (and does so in a way that looks nice). May not work when "Use LUT" is enabled!
                 value.USER_LMT_MODE.0=§cNone (not recommended)
                 value.USER_LMT_MODE.1=§cDivide by 16 (not recommended)
-                value.USER_LMT_MODE.2=Reinhard
+                value.USER_LMT_MODE.2=§6Reinhard
                 value.USER_LMT_MODE.3=Hable (Uncharted 2)
                 value.USER_LMT_MODE.4=ACES (Unreal Engine 4)
 
