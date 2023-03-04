@@ -285,6 +285,7 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 // #define SHADOW_DEBUG
 #ifdef SHADOW_DEBUG
 #endif
+#define ISOLATE_RENDER_STAGE -1 // [-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23]
 // #define TEX_RENDER
 #ifdef TEX_RENDER
 #endif

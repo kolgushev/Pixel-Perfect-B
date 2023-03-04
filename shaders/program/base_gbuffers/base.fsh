@@ -30,6 +30,9 @@ uniform vec4 entityColor;
 uniform int isEyeInWater;
 uniform float nightVision;
 
+uniform int renderStage;
+
+
 #if defined gc_transparent
     uniform vec3 sunPosition;
     uniform vec3 moonPosition;
@@ -55,8 +58,6 @@ uniform float nightVision;
 
     uniform vec3 skyColor;
     uniform vec3 fogColor;
-
-    uniform int renderStage;
 #endif
 
 #if (defined gc_sky || defined gc_transparent) && defined DIM_END

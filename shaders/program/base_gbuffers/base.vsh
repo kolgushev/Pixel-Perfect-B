@@ -8,6 +8,7 @@ out vec4 color;
 out vec2 light;
 out vec3 position;
 out vec3 normal;
+out float gl_ClipDistance[3];
 
 #if defined g_skybasic
     out vec2 stars;
@@ -32,7 +33,9 @@ uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 gbufferModelViewInverse;
 
-uniform int renderStage;
+#if ISOLATE_RENDER_STAGE != -1
+    uniform int renderStage;
+#endif
 
 #if (defined g_terrain || defined g_weather) && defined WAVING_ENABLED
     uniform vec3 cameraPosition;
@@ -57,6 +60,8 @@ void main() {
         if(mc_Entity.x == LIT || mc_Entity.x == LIT_CUTOUTS || mc_Entity.x == LIT_CUTOUTS_UPSIDE_DOWN) {
             isLit = 1;
         }
+    #elif defined g_entities_glowing
+        isLit = 1;
     #endif
 
     texcoord = vaUV0;
@@ -204,5 +209,11 @@ void main() {
 
     #if defined g_skybasic
         stars = vec2(color.r, color.r == color.g && color.g == color.b && color.r > 0.0);
+    #endif
+
+    #if ISOLATE_RENDER_STAGE != -1
+        if(renderStage != ISOLATE_RENDER_STAGE) {
+            gl_Position = vec4(0);
+        }
     #endif
 }
