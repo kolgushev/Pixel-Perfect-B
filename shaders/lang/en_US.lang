@@ -214,7 +214,7 @@ screen.COLORS=Colors
                 value.USER_LMT_MODE.1=§cDivide by 16 (not recommended)
                 value.USER_LMT_MODE.2=§6Reinhard
                 value.USER_LMT_MODE.3=Hable (Uncharted 2)
-                value.USER_LMT_MODE.4=ACES (Unreal Engine 4)
+                value.USER_LMT_MODE.4=Hill ACES (Unreal Engine)
 
 screen.RESOURCEPACK=Resourcepack Settings
     screen.RESOURCEPACK.comment=Make sure to look at these settings if you have a resourcepack enabled.

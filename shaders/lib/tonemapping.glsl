@@ -58,10 +58,33 @@ vec3 aces_approx(in vec3 v)
     return (v*(a*v+b))/(v*(c*v+d)+e);
 }
 
+// adapted for GLSL from https://github.com/TheRealMJP/BakingLab/blob/master/BakingLab/ACES.hlsl
+
+//=================================================================================================
+//
+//  Baking Lab
+//  by MJP and David Neubelt
+//  http://mynameismjp.wordpress.com/
+//
+//  All code licensed under the MIT license
+//
+//=================================================================================================
+
+// The code in this file was originally written by Stephen Hill (@self_shadow), who deserves all
+// credit for coming up with this fit and implementing it. Buy him a beer next time you see him. :)
+
 vec3 rtt_and_odt_fit(in vec3 v) {
     vec3 a = v * (v + 0.0245786) - 0.000090537;
     vec3 b = v * (0.983729 * v + 0.4329510) + 0.238081;
     return a / b;
+}
+
+// Inputs and outputs have been transformed to operate on the CAT02 ACEScg colorspace
+vec3 aces_fitted(in vec3 v)
+{
+    v = v * ACEScg_to_RRT_SAT;
+    v = rtt_and_odt_fit(v);
+    return v * RRT_SAT_to_ACEScg;
 }
 
 // found courtesy of wolfram|alpha
@@ -72,11 +95,4 @@ vec3 rtt_and_odt_fit_inverse(in vec3 v) {
 
     // technically (b ± c) / a but we don't need negative values
     return (b - c) / a;
-}
-
-vec3 aces_fitted(in vec3 v)
-{
-    v = v * ACES_INPUT;
-    v = rtt_and_odt_fit(v);
-    return v * ACES_OUTPUT;
 }
