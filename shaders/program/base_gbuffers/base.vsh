@@ -3,6 +3,12 @@
     #define use_raw_normal
 #endif
 
+#if defined g_skytextured
+    #define use_viewinverse_pos
+
+    uniform mat4 gbufferProjectionInverse;
+#endif
+
 #if defined gc_terrain && defined USE_DOF
     const int countInstances = 2;
     uniform int instanceId;
@@ -220,5 +226,9 @@ void main() {
         if(renderStage != ISOLATE_RENDER_STAGE) {
             gl_Position = vec4(0);
         }
+    #endif
+
+    #if defined use_viewinverse_pos
+        position = viewInverse(vaPosition);
     #endif
 }

@@ -102,6 +102,11 @@ void main() {
         albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a);
     #endif
 
+    // prevent underground sun/moon, add virtual horizon
+    #if defined g_skytextured
+        albedo.a = smoothstep(-0.05, 0.01, normalize(position).y);
+    #endif
+
     #if defined g_weather
         albedo.a *= 0.5 * rainStrength;
     #endif
