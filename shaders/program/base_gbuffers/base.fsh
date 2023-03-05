@@ -15,7 +15,7 @@ in vec4 color;
 in vec2 light;
 in vec3 position;
 in vec3 normal;
-flat in int isLit;
+flat in int mcEntity;
 
 #if defined g_skybasic
     in vec2 stars;
@@ -48,6 +48,16 @@ uniform int renderStage;
 
     uniform float far; 
     uniform mat4 gbufferModelView;
+
+
+    uniform float viewWidth;
+    uniform float viewHeight;
+
+    uniform mat4 gbufferProjectionInverse;
+    uniform mat4 gbufferModelViewInverse;
+
+    uniform sampler2D colortex0;
+    uniform sampler2D depthtex1;
 #endif
 
 #if defined gc_transparent || defined g_skytextured
@@ -122,6 +132,12 @@ void main() {
 
     albedo.rgb *= RGB_to_ACEScg;
 
+    #if defined g_skybasic
+        if(isEyeInWater == 1) {
+            albedo.rgb = ATMOSPHERIC_FOG_COLOR_WATER;
+        }
+    #endif
+
     #if defined g_skytextured
         // since we're using an advanced color pipeline it's safe to pump up the skytextured brightness
         albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime(worldTime));
@@ -152,7 +168,7 @@ void main() {
     #endif
 
     #if defined HDR_TEX_LIGHT_BRIGHTNESS        
-        if(isLit == 1) {
+        if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN) {
             albedo.rgb = SDRToHDRColor(albedo.rgb);
         }
     #endif
@@ -168,8 +184,18 @@ void main() {
             albedo.rgb *= lightColor[0] + lightColor[1] * basicDirectShading(lightmap.g);
         #endif
 
+        vec3 positionOpaque = position;
+        vec3 diffuse = albedo.rgb;
+        if(mcEntity == WATER) {
+            vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
+
+            float depth = texture2D(depthtex1, texcoordScreenspace).r;
+            vec3 diffuse = texture2D(colortex0, texcoordScreenspace).rgb;
+            positionOpaque = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoordScreenspace, depth).xyz;
+        }
+
         // apply fog as well
-        vec4 fogged = fogify(position, albedo.rgb, far, isEyeInWater, nightVision, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg);
+        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg);
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;

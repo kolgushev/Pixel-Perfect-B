@@ -1,4 +1,4 @@
-vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in vec3 fogColor) {
+vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in vec3 fogColor) {
     vec3 composite = diffuse.rgb;
 
     // Render fog in a cylinder shape
@@ -12,6 +12,7 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater
     fogTube = clamp(fogTube + fogFlat, 0, 1);
 
     float atmosPhog = 1.0;
+    float atmosPhogWater = 1.0;
     vec3 atmosPhogColor = vec3(0);
     float nightVisionVisibility = 0;
     if(isEyeInWater == 0) {
@@ -25,6 +26,9 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater
             #endif
             atmosPhog = exp(-atmosPhog);
         #endif
+
+        atmosPhogWater = distance(position, positionOpaque) * ATMOSPHERIC_FOG_DENSITY_WATER;
+        atmosPhogWater = exp(-atmosPhogWater);
     } else {
         // hijack atmospheric fog calculations for underwater
         switch(isEyeInWater) {
@@ -52,6 +56,13 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater
     }
 
     composite = mix(atmosPhogColor, composite, atmosPhog);
+
+    // wolfram|alpha -> solve g(g(b,a,c),d,f)=g(a,x,f) for x where g(m,n,o)=m*(o-1)+n*o ->
+    // x = ((a + b) * (c - 1) * (f - 1) + d * f) / f and f!=0
+    // for: a=composite, b=ATMOSPHERIC_FOG_COLOR_WATER, c=atmosPhogWater, d=transparency.rgb, f=transparency.a
+    if(position != positionOpaque) {
+        composite = ((composite + ATMOSPHERIC_FOG_COLOR_WATER) * (atmosPhogWater - 1) * (transparency.a - 1) + transparency.rgb * transparency.a) / transparency.a;
+    }
 
     return vec4(composite, fogTube);
 }

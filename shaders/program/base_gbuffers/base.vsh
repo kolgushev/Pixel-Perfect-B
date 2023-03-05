@@ -15,6 +15,7 @@
 #endif
 
 out vec2 texcoord;
+out vec2 texcoordScreenspace;
 out vec4 color;
 out vec2 light;
 out vec3 position;
@@ -26,13 +27,14 @@ out float gl_ClipDistance[3];
 #endif
 
 in vec2 vaUV0;
+in ivec2 vaUV1;
 in ivec2 vaUV2;
 in vec4 vaColor;
 in vec3 vaNormal;
 in vec3 vaPosition;
-flat out int isLit;
+flat out int mcEntity;
 
-#if defined g_terrain
+#if defined gc_terrain
     in vec2 mc_Entity;
     in vec3 at_midBlock;
 #endif
@@ -66,13 +68,10 @@ uniform mat4 gbufferModelViewInverse;
 #endif
 
 void main() {
-    #if defined g_terrain
-        isLit = 0;
-        if(mc_Entity.x == LIT || mc_Entity.x == LIT_CUTOUTS || mc_Entity.x == LIT_CUTOUTS_UPSIDE_DOWN) {
-            isLit = 1;
-        }
+    #if defined gc_terrain
+        mcEntity = int(mc_Entity.x);
     #elif defined gc_emissive
-        isLit = 1;
+        mcEntity = 1;
     #endif
 
     texcoord = vaUV0;
