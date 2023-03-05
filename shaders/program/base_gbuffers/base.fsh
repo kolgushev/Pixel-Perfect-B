@@ -122,7 +122,7 @@ void main() {
     #endif
     
     if(albedo.a < alphaTestRef) discard;
-
+    
     albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
 
     #if defined g_skybasic

@@ -100,3 +100,6 @@ const float drynessHalflife = 100.0;
 #if defined g_armor_glint || defined g_skytextured
     #define gc_additive
 #endif
+#if defined g_entities || defined g_entities_glowing
+    #define gc_entities
+#endif
