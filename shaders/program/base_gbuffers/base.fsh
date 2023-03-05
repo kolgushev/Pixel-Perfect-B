@@ -186,13 +186,15 @@ void main() {
 
         vec3 positionOpaque = position;
         vec3 diffuse = albedo.rgb;
-        if(mcEntity == WATER) {
-            vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
+        #if defined WATER_FOG_FROM_OUTSIDE
+            if(mcEntity == WATER) {
+                vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
 
-            float depth = texture2D(depthtex1, texcoordScreenspace).r;
-            vec3 diffuse = texture2D(colortex0, texcoordScreenspace).rgb;
-            positionOpaque = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoordScreenspace, depth).xyz;
-        }
+                float depth = texture2D(depthtex1, texcoordScreenspace).r;
+                vec3 diffuse = texture2D(colortex0, texcoordScreenspace).rgb;
+                positionOpaque = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoordScreenspace, depth).xyz;
+            }
+        #endif
 
         // apply fog as well
         vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg);

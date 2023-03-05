@@ -238,6 +238,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define ATMOSPHERIC_FOG_USER
 #define ATMOSPHERIC_FOG_DENSITY 0.0015 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
 
+#define WATER_FOG_FROM_OUTSIDE
+#ifdef WATER_FOG_FROM_OUTSIDE
+#endif
+
 // #define INVISIBILITY_DISTORTION
 #ifdef INVISIBILITY_DISTORTION
 #endif

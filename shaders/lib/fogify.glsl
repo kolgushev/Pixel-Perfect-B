@@ -12,7 +12,9 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
     fogTube = clamp(fogTube + fogFlat, 0, 1);
 
     float atmosPhog = 1.0;
-    float atmosPhogWater = 1.0;
+    #if defined WATER_FOG_FROM_OUTSIDE
+        float atmosPhogWater = 1.0;
+    #endif
     vec3 atmosPhogColor = vec3(0);
     float nightVisionVisibility = 0;
     if(isEyeInWater == 0) {
@@ -27,8 +29,10 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
             atmosPhog = exp(-atmosPhog);
         #endif
 
-        atmosPhogWater = distance(position, positionOpaque) * ATMOSPHERIC_FOG_DENSITY_WATER;
-        atmosPhogWater = exp(-atmosPhogWater);
+        #if defined WATER_FOG_FROM_OUTSIDE
+            atmosPhogWater = distance(position, positionOpaque) * ATMOSPHERIC_FOG_DENSITY_WATER;
+            atmosPhogWater = exp(-atmosPhogWater);
+        #endif
     } else {
         // hijack atmospheric fog calculations for underwater
         switch(isEyeInWater) {
@@ -57,12 +61,14 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
 
     composite = mix(atmosPhogColor, composite, atmosPhog);
 
-    // wolfram|alpha -> solve g(g(b,a,c),d,f)=g(a,x,f) for x where g(m,n,o)=m*(o-1)+n*o ->
-    // x = ((a + b) * (c - 1) * (f - 1) + d * f) / f and f!=0
-    // for: a=composite, b=ATMOSPHERIC_FOG_COLOR_WATER, c=atmosPhogWater, d=transparency.rgb, f=transparency.a
-    if(position != positionOpaque) {
-        composite = ((composite + ATMOSPHERIC_FOG_COLOR_WATER) * (atmosPhogWater - 1) * (transparency.a - 1) + transparency.rgb * transparency.a) / transparency.a;
-    }
+    #if defined WATER_FOG_FROM_OUTSIDE
+        // wolfram|alpha -> solve g(g(b,a,c),d,f)=g(a,x,f) for x where g(m,n,o)=m*(o-1)+n*o ->
+        // x = ((a + b) * (c - 1) * (f - 1) + d * f) / f and f!=0
+        // for: a=composite, b=ATMOSPHERIC_FOG_COLOR_WATER, c=atmosPhogWater, d=transparency.rgb, f=transparency.a
+        if(position != positionOpaque) {
+            composite = ((composite + ATMOSPHERIC_FOG_COLOR_WATER) * (atmosPhogWater - 1) * (transparency.a - 1) + transparency.rgb * transparency.a) / transparency.a;
+        }
+    #endif
 
     return vec4(composite, fogTube);
 }
