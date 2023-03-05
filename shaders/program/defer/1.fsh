@@ -57,7 +57,7 @@ void main() {
     #endif
 
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
-    vec4 fogged = fogify(position, albedo.rgb, far, isEyeInWater, nightVision);
+    vec4 fogged = fogify(position, albedo.rgb, far, isEyeInWater, nightVision, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg);
     vec3 composite = fogged.rgb;
     float fog = fogged.a;
 

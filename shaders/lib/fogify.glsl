@@ -1,4 +1,4 @@
-vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect) {
+vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in vec3 fogColor) {
     vec3 composite = diffuse.rgb;
 
     // Render fog in a cylinder shape
@@ -7,8 +7,8 @@ vec4 fogify(in vec3 position, in vec3 diffuse, in float far, in int isEyeInWater
     float fogTube = length(position.xz) + 16;
     
     // TODO: optimize
-    fogFlat = pow2(clamp((fogFlat * farRcp * 7 - 6), 0, 1));
-    fogTube = pow2(clamp((fogTube * farRcp * 7 - 6), 0, 1));
+    fogFlat = pow2(clamp((fogFlat * farRcp * 3 - 2), 0, 1));
+    fogTube = pow2(clamp((fogTube * farRcp * 3 - 2), 0, 1));
     fogTube = clamp(fogTube + fogFlat, 0, 1);
 
     float atmosPhog = 1.0;

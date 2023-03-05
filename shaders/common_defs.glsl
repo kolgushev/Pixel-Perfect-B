@@ -472,9 +472,8 @@ const float shadowIntervalSize = 8.0;
 #define WIND_SPEED_CONSTANT (9000.0 * WIND_SPEED_CONSTANT_USER * WIND_STRENGTH_CONSTANT)
 
 #if defined DIM_NETHER
-    #ifdef ATMOSPHERIC_FOG_USER
-        #define ATMOSPHERIC_FOG
-    #endif
+    #define HAS_ATMOSPHERIC_FOG
+
     #if defined BRIGHT_NETHER
         #define BASE_COLOR (vec3(2.0, 1.8, 1.6))
     #else
@@ -491,9 +490,8 @@ const float shadowIntervalSize = 8.0;
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
 #elif defined DIM_END
-    #ifdef ATMOSPHERIC_FOG_USER
-        #define ATMOSPHERIC_FOG
-    #endif
+    #define HAS_ATMOSPHERIC_FOG
+
     #define BASE_COLOR (vec3(0.9, 0.7, 1.2) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (vec3(0.9, 0.85, 1.1) * RGB_to_ACEScg * 10.0)
     #define MIN_LIGHT_COLOR AMBIENT_COLOR
@@ -509,13 +507,21 @@ const float shadowIntervalSize = 8.0;
     #define BOSS_BATTLE_SKY_MULT 0.7
     #define BOSS_BATTLE_ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
 #else
+    // #define HAS_ATMOSPHERIC_FOG
+
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
     #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_ACEScg)
-    // #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
+    
+    #define ATMOSPHERIC_FOG_COLOR (fogColor)
+    #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
 #endif
+#if defined ATMOSPHERIC_FOG_USER && defined HAS_ATMOSPHERIC_FOG
+    #define ATMOSPHERIC_FOG
+#endif
+
 
 #define ATMOSPHERIC_FOG_DENSITY_WATER 0.02
 #define ATMOSPHERIC_FOG_COLOR_WATER (vec3(0.03, 0.2, 0.7))
@@ -585,53 +591,6 @@ const float shadowIntervalSize = 8.0;
 
 // inverse of TEX_RES
 #define TEXELS_PER_BLOCK (1 / TEX_RES)
-
-
-// defs logic
-
-// block mappings
-
-#define CUTOUTS 1
-#define CUTOUTS_UPSIDE_DOWN 2
-#define LIT 3
-#define LIT_CUTOUTS 4
-#define LIT_CUTOUTS_UPSIDE_DOWN 5
-#define LIT_PARTIAL 6
-#define LIT_PARTIAL_CUTOUTS 7
-#define LIT_PARTIAL_CUTOUTS_UPSIDE_DOWN 8
-#define LIT_PROBLEMATIC 9
-#define WAVING_CUTOUTS_BOTTOM 10
-#define WAVING_CUTOUTS_TOP 11
-#define WAVING_CUTOUTS_BOTTOM_STIFF 12
-#define WAVING_CUTOUTS_TOP_STIFF 13
-#if !defined NO_WAVING_FULL_BLOCKS
-    #define WAVING 14
-    #define WAVING_STIFF 15
-#else
-    #define WAVING (-2)
-    #define WAVING_STIFF (-2)
-#endif
-
-// g stands for gbuffers
-// gc stands for gbuffers category
-#if defined g_skybasic || defined g_skytextured
-    #define gc_sky
-#endif
-#if defined g_water || defined g_hand_water || defined g_weather || defined g_clouds
-    #define gc_transparent
-#endif
-#if defined g_water || defined g_terrain
-    #define gc_terrain
-#endif
-#if defined g_beaconbeam || defined g_entities_glowing || defined g_spidereyes || defined g_textured_lit
-    #define gc_emissive
-#endif
-#if defined g_textured || defined g_textured_lit
-    #define gc_textured
-#endif
-#if defined g_armor_glint || defined g_skytextured
-    #define gc_additive
-#endif
 
 
 // optifine setup

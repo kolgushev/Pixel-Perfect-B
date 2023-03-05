@@ -54,3 +54,48 @@ const float drynessHalflife = 100.0;
 #define MC_RENDER_STAGE_RAIN_SNOW 21                 // Rain and snow
 #define MC_RENDER_STAGE_WORLD_BORDER 22              // World border
 #define MC_RENDER_STAGE_HAND_TRANSLUCENT 23          // Translucent handheld objects
+
+
+// block mappings
+
+#define CUTOUTS 1
+#define CUTOUTS_UPSIDE_DOWN 2
+#define LIT 3
+#define LIT_CUTOUTS 4
+#define LIT_CUTOUTS_UPSIDE_DOWN 5
+#define LIT_PARTIAL 6
+#define LIT_PARTIAL_CUTOUTS 7
+#define LIT_PARTIAL_CUTOUTS_UPSIDE_DOWN 8
+#define LIT_PROBLEMATIC 9
+#define WAVING_CUTOUTS_BOTTOM 10
+#define WAVING_CUTOUTS_TOP 11
+#define WAVING_CUTOUTS_BOTTOM_STIFF 12
+#define WAVING_CUTOUTS_TOP_STIFF 13
+#if !defined NO_WAVING_FULL_BLOCKS
+    #define WAVING 14
+    #define WAVING_STIFF 15
+#else
+    #define WAVING (-2)
+    #define WAVING_STIFF (-2)
+#endif
+
+// g stands for gbuffers
+// gc stands for gbuffers category
+#if defined g_skybasic || defined g_skytextured
+    #define gc_sky
+#endif
+#if defined g_water || defined g_hand_water || defined g_weather || defined g_clouds
+    #define gc_transparent
+#endif
+#if defined g_water || defined g_terrain
+    #define gc_terrain
+#endif
+#if defined g_beaconbeam || defined g_entities_glowing || defined g_spidereyes || defined g_textured_lit
+    #define gc_emissive
+#endif
+#if defined g_textured || defined g_textured_lit
+    #define gc_textured
+#endif
+#if defined g_armor_glint || defined g_skytextured
+    #define gc_additive
+#endif

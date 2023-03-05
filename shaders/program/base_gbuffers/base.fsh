@@ -30,6 +30,9 @@ uniform vec4 entityColor;
 uniform int isEyeInWater;
 uniform float nightVision;
 
+uniform vec3 fogColor;
+uniform vec3 skyColor;
+
 uniform int renderStage;
 
 
@@ -55,9 +58,6 @@ uniform int renderStage;
     uniform mat4 gbufferProjectionInverse;
     uniform int viewWidth;
     uniform int viewHeight;
-
-    uniform vec3 skyColor;
-    uniform vec3 fogColor;
 #endif
 
 #if (defined gc_sky || defined gc_transparent) && defined DIM_END
@@ -82,11 +82,11 @@ uniform int renderStage;
 void main() {
     vec3 lightmap = vec3(light, color.a);
 
+    vec3 customFogColor = mix(fogColor, skyColor, SKY_COLOR_BLEND);
+
     #if defined g_skybasic
         // TODO: make a proper sunset
         if(renderStage == MC_RENDER_STAGE_SUNSET) discard;
-
-        vec3 customFogColor = mix(fogColor, skyColor, SKY_COLOR_BLEND);
 
         vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(calcSkyColor(normalize(position), skyColor, customFogColor));
         /*  The sky is rendered using a cylinder-like shape at the top and a flat shape at the bottom.
@@ -164,7 +164,7 @@ void main() {
         #endif
 
         // apply fog as well
-        vec4 fogged = fogify(position, albedo.rgb, far, isEyeInWater, nightVision);
+        vec4 fogged = fogify(position, albedo.rgb, far, isEyeInWater, nightVision, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg);
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;
