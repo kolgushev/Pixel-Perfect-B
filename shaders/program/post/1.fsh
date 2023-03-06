@@ -1,7 +1,8 @@
 #include "/common_defs.glsl"
 
-/* DRAWBUFFERS:0 */
+/* DRAWBUFFERS:04 */
 layout(location = 0) out vec4 b0;
+layout(location = 4) out vec4 b4;
 
 in vec2 texcoord;
 

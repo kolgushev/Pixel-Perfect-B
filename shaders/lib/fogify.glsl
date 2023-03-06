@@ -62,10 +62,13 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
     composite = mix(atmosPhogColor, composite, atmosPhog);
 
     #if defined WATER_FOG_FROM_OUTSIDE
+        // The following math attempts to compensate for the fact that we're doing water fog in gc_transparent instead of g_terrain
+        // aka. we're doing `mix(composite, mix(fog, transparent))` instead of `mix(mix(fog, composite), transparent)` and compensating for it by specially coloring the transparent layer
+
         // wolfram|alpha -> solve g(g(b,a,c),d,f)=g(a,x,f) for x where g(m,n,o)=m*(o-1)+n*o ->
         // x = ((a + b) * (c - 1) * (f - 1) + d * f) / f and f!=0
         // for: a=composite, b=ATMOSPHERIC_FOG_COLOR_WATER, c=atmosPhogWater, d=transparency.rgb, f=transparency.a
-        if(position != positionOpaque) {
+        if(position != positionOpaque && isEyeInWater == 0) {
             composite = ((composite + ATMOSPHERIC_FOG_COLOR_WATER) * (atmosPhogWater - 1) * (transparency.a - 1) + transparency.rgb * transparency.a) / transparency.a;
         }
     #endif
