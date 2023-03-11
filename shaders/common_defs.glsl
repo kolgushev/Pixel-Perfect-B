@@ -169,6 +169,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define SKY_SATURATION 1.0 // [0.5 0.75 1.0 1.13 1.69 2.53 3.8 5.7]
 #define SKY_BRIGHTNESS_USER 1.0 // [0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
+#define PLANET_BRIGHTNESS_USER 2.0
 
 #define CONTRAST 0.0 //[-0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6]
 #define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
@@ -493,6 +494,8 @@ const float shadowIntervalSize = 8.0;
     #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
+    
+    #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
 #elif defined DIM_END
     #define HAS_ATMOSPHERIC_FOG
 
@@ -502,6 +505,8 @@ const float shadowIntervalSize = 8.0;
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
     #define SKY_ADDITIVE (BASE_COLOR * 0.02)
+    
+    #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
 
     #define ATMOSPHERIC_FOG_COLOR ((vec3(0.7, 0.5, 1.2)) * 0.3 * SKY_BRIGHTNESS)
     #define ATMOSPHERIC_FOG_MULTIPLIER 5.0
@@ -521,6 +526,8 @@ const float shadowIntervalSize = 8.0;
     #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
+
+    #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
 #endif
 #if defined ATMOSPHERIC_FOG_USER && defined HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG

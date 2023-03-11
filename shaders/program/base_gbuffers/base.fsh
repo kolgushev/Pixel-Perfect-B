@@ -140,7 +140,7 @@ void main() {
 
     #if defined g_skytextured
         // since we're using an advanced color pipeline it's safe to pump up the skytextured brightness
-        albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime(worldTime));
+        albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime(worldTime)) * PLANET_BRIGHTNESS;
     #endif
 
     #if defined gc_sky
