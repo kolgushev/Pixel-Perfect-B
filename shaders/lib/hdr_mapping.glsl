@@ -5,6 +5,12 @@ float SDRToHDR(in float x) {
 	return 1 / (a - a * x * b) - 1 / a + x;
 }
 
-vec3 SDRToHDRColor(in vec3 x) {
+vec2 SDRToHDR(in vec2 x) {
+	return vec2(SDRToHDR(x.r), SDRToHDR(x.g));
+}
+vec3 SDRToHDR(in vec3 x) {
 	return vec3(SDRToHDR(x.r), SDRToHDR(x.g), SDRToHDR(x.b));
+}
+vec4 SDRToHDR(in vec4 x) {
+	return vec4(SDRToHDR(x.r), SDRToHDR(x.g), SDRToHDR(x.b), SDRToHDR(x.a));
 }

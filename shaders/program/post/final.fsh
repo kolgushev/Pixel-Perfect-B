@@ -14,6 +14,7 @@ uniform sampler2D colortex0;
     uniform sampler2D noisetex;
 
     #include "/lib/to_viewspace.glsl"
+    #include "/lib/sample_noisetex.glsl"
     #include "/lib/sample_noise.glsl"
     #include "/lib/get_shadow.glsl"
 #endif

@@ -89,6 +89,15 @@ uniform int renderStage;
     #include "/lib/switch_fog_color.glsl"
 #endif
 
+#if defined g_terrain
+    uniform sampler2D noisetex;
+    uniform vec3 cameraPosition;
+
+    uniform float frameTimeCounter;
+
+    #include "/lib/sample_noisetex.glsl"
+#endif
+
 void main() {
     vec3 lightmap = vec3(light, color.a);
 
@@ -168,8 +177,20 @@ void main() {
     #endif
 
     #if defined HDR_TEX_LIGHT_BRIGHTNESS        
-        if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN) {
-            albedo.rgb = SDRToHDRColor(albedo.rgb);
+        if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA) {
+            albedo.rgb = SDRToHDR(albedo.rgb);
+        }
+    #endif
+
+    #if defined g_terrain && NOISY_LAVA != 0
+        if(mcEntity == LAVA) {
+            #define noise_f(x) tile((position.xz + cameraPosition.xz) * (x), vec2(1, 0))
+            vec4 noise = noise_f(1);
+            #if NOISY_LAVA == 2
+                noise = pow2(noise - 0.3) * 20;
+            #endif
+            float t = frameTimeCounter;
+            albedo.rgb *= (noise.r * (sin(t) * 0.5 + 0.5) + noise.g * (sin(t + PI * 0.5) * 0.5 + 0.5) + noise.b * (sin(t + PI) * 0.5 + 0.5) + noise.a * (sin(t + PI * 1.5) * 0.5 + 0.5));
         }
     #endif
 

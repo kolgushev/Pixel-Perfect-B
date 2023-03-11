@@ -20,7 +20,6 @@ out vec4 color;
 out vec2 light;
 out vec3 position;
 out vec3 normal;
-out float gl_ClipDistance[3];
 
 #if defined g_skybasic
     out vec2 stars;

@@ -253,6 +253,12 @@ screen.MISC=Misc
         value.INVISIBILITY_DISTORTION.true=Yes
         value.INVISIBILITY_DISTORTION.false=No
 
+    option.NOISY_LAVA=Lava Variation
+        option.NOISY_LAVA.comment=Makes some spots of lava darker and others brighter. Helps break up the lava texture, especially in large pools such as in the nether.
+        value.NOISY_LAVA.0=§cNone
+        value.NOISY_LAVA.1=Subtle
+        value.NOISY_LAVA.2=Intense
+
     option.WAVING_ENABLED=Waving Objects
         value.WAVING_ENABLED.true=Yes
         value.WAVING_ENABLED.false=No
