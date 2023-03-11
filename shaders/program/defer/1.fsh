@@ -16,6 +16,9 @@ uniform sampler2D colortex2;
 
 uniform sampler2D depthtex1;
 
+uniform sampler2D noisetex;
+
+
 uniform mat4 gbufferProjectionInverse;
 uniform mat4 gbufferModelViewInverse;
 
@@ -25,6 +28,8 @@ uniform vec3 fogColor;
 uniform int isEyeInWater;
 uniform float nightVision;
 
+uniform vec3 cameraPosition;
+uniform float frameTimeCounter;
 
 #if defined DIM_END
     uniform int bossBattle;
@@ -34,6 +39,9 @@ uniform float nightVision;
 #include "/lib/fogify.glsl"
 #include "/lib/to_viewspace.glsl"
 #include "/lib/tonemapping.glsl"
+
+#include "/lib/sample_noisetex.glsl"
+#include "/lib/lava_noise.glsl"
 
 void main() {
     vec3 sky = texture(colortex0, texcoord).rgb;
@@ -57,7 +65,7 @@ void main() {
     #endif
 
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
-    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg);
+    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
     vec3 composite = fogged.rgb;
     float fog = fogged.a;
 

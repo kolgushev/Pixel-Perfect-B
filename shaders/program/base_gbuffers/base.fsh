@@ -83,13 +83,15 @@ uniform int renderStage;
     #include "/lib/switch_fog_color.glsl"
 #endif
 
-#if defined g_terrain
-    uniform sampler2D noisetex;
+#if defined g_terrain || defined gc_transparent
     uniform vec3 cameraPosition;
-
     uniform float frameTimeCounter;
 
+    uniform sampler2D noisetex;
+
     #include "/lib/sample_noisetex.glsl"
+
+    #include "/lib/lava_noise.glsl"
 #endif
 
 void main() {
@@ -115,9 +117,14 @@ void main() {
         albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a);
     #endif
 
-    // prevent underground sun/moon, add virtual horizon
-    #if defined g_skytextured && !defined DIM_NO_SKY
-        albedo.a = smoothstep(-0.05, 0.01, normalize(position).y);
+    #if defined g_skytextured
+        #if defined DIM_END
+            float degree = smoothstep(-1, 0.4, normalize(position).y);
+            albedo.rgb *= degree;
+        #elif !defined DIM_NO_SKY
+            // prevent underground sun/moon, add virtual horizon
+            albedo.a = smoothstep(-0.05, 0.01, normalize(position).y);
+        #endif
     #endif
 
     #if defined g_weather
@@ -182,13 +189,7 @@ void main() {
 
     #if defined g_terrain && NOISY_LAVA != 0
         if(mcEntity == LAVA) {
-            #define noise_f(x) tile((position.xz + cameraPosition.xz) * (x), vec2(1, 0))
-            vec4 noise = noise_f(1);
-            #if NOISY_LAVA == 2
-                noise = pow2(noise - 0.3) * 20;
-            #endif
-            float t = frameTimeCounter;
-            albedo.rgb *= (noise.r * (sin(t) * 0.5 + 0.5) + noise.g * (sin(t + PI * 0.5) * 0.5 + 0.5) + noise.b * (sin(t + PI) * 0.5 + 0.5) + noise.a * (sin(t + PI * 1.5) * 0.5 + 0.5));
+            albedo.rgb *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
         }
     #endif
 
@@ -216,7 +217,7 @@ void main() {
         #endif
 
         // apply fog as well
-        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg);
+        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;

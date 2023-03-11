@@ -1,4 +1,4 @@
-vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in vec3 fogColor) {
+vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
     vec3 composite = diffuse.rgb;
 
     // Render fog in a cylinder shape
@@ -43,7 +43,7 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
                 break;
             case 2:
                 atmosPhog = ATMOSPHERIC_FOG_DENSITY_LAVA;
-                atmosPhogColor = ATMOSPHERIC_FOG_COLOR_LAVA;
+                atmosPhogColor = ATMOSPHERIC_FOG_COLOR_LAVA * lavaNoise;
                 nightVisionVisibility = NIGHT_VISION_AFFECTS_FOG_LAVA;
                 break;
             case 3:

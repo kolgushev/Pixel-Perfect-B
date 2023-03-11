@@ -10,8 +10,8 @@ vec2 getCoords(in int id) {
 	return mod(originalCoords + offset, 1) * NOISETEX_TILES_RES;
 }
 
-vec4 sampleNoise(in vec2 texcoord, in int id, in vec2 offset) {
+vec4 sampleNoise(in vec2 texcoord, in int id, in vec2 offset, in bool sharp) {
 	// vec2 offset = vec2(0);
 
-	return tile(getCoords(id), offset);
+	return tile(getCoords(id), offset, sharp);
 }
