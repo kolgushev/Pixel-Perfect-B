@@ -31,7 +31,6 @@ flat out int mcEntity;
     in vec3 at_midBlock;
 #endif
 
-uniform vec3 chunkOffset;
 uniform float frameTimeCounter;
 
 uniform mat4 modelViewMatrix;
