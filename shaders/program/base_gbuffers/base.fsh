@@ -118,6 +118,12 @@ void main() {
         #endif
         #if defined g_weather
             albedo.a *= 0.5;
+        #elif defined g_basic
+            if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+                albedo = vec4(0.2, 0.2, 0.2, 0.8);
+            }
+        #elif defined g_damagedblock
+            albedo.a = clamp(albedo.a - 0.003, 0, 1);
         #endif
         
         // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed
