@@ -24,7 +24,6 @@ out vec3 normal;
     out vec2 stars;
 #endif
 
-in vec3 vaPosition;
 flat out int mcEntity;
 
 #if defined gc_terrain
@@ -91,7 +90,7 @@ void main() {
         normal = viewInverse(gl_Normal);
     #endif
 
-    position = chunkOffset + vaPosition;
+    position = gl_Vertex.xyz;
 
     #if (defined g_terrain || defined g_weather) && defined WAVING_ENABLED && !defined DIM_NO_WIND
         #if !defined g_weather
@@ -221,6 +220,6 @@ void main() {
     #endif
 
     #if defined use_viewinverse_pos
-        position = viewInverse(vaPosition);
+        position = viewInverse(gl_Vertex.xyz);
     #endif
 }
