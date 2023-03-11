@@ -25,7 +25,6 @@ out vec3 normal;
 #endif
 
 in vec2 vaUV0;
-in ivec2 vaUV2;
 in vec4 vaColor;
 in vec3 vaNormal;
 in vec3 vaPosition;
@@ -75,7 +74,7 @@ void main() {
     
     color = vaColor;
 
-    light = (LIGHT_MATRIX * vec4(vaUV2, 1, 1)).xy;
+    light = (LIGHT_MATRIX * gl_MultiTexCoord1).xy;
     /*
     The Optifine-provided lightmap is actually what is used to sample the
     vanilla lighting texture, so it isn't in a 0-1 range by default.
