@@ -467,14 +467,14 @@ const float shadowIntervalSize = 8.0;
 #define TORCH_TINT (kelvinToRGB(TORCH_TEMP))
 #define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * RGB_to_ACEScg)
 
-#if defined DIM_NETHER || defined DIM_END || defined DIM_TWILIGHT_FOREST
+#if defined DIM_NETHER || defined DIM_END
     #define DIM_NO_RAIN
 #endif
 #if defined DIM_NETHER || defined DIM_END
     #define DIM_NO_SKY
 #endif
 
-#if defined DIM_END || defined DIM_TWILIGHT_FOREST
+#if defined DIM_END
     #define DIM_NO_WIND
 #endif
 
