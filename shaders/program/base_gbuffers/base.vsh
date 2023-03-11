@@ -15,7 +15,6 @@
 #endif
 
 out vec2 texcoord;
-out vec2 texcoordScreenspace;
 out vec4 color;
 out vec2 light;
 out vec3 position;
@@ -26,7 +25,6 @@ out vec3 normal;
 #endif
 
 in vec2 vaUV0;
-in ivec2 vaUV1;
 in ivec2 vaUV2;
 in vec4 vaColor;
 in vec3 vaNormal;
