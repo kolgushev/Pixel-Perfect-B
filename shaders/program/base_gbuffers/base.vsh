@@ -91,7 +91,7 @@ void main() {
 
     #if (defined g_terrain || defined g_weather) && defined WAVING_ENABLED && !defined DIM_NO_WIND
         #if !defined g_weather
-            bool isTopPart = at_midBlock.y < 0;
+            bool isTopPart = at_midBlock.y < 10;
             bool isFullWaving = mc_Entity.x == WAVING || mc_Entity.x == WAVING_STIFF;
 
             bool allowWaving = 
