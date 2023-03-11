@@ -4,7 +4,7 @@ const int colortex0Format = RGB16F;
 
 const int colortex1Format = RGBA16F;
 
-const int colortex2Format = RG8F;
+const int colortex2Format = RGB8;
 const bool colortex3Clear = false;
 
 const int colortex3Format = RGB8_SNORM;
