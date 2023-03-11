@@ -35,7 +35,7 @@ uniform mat4 gbufferModelView;
 
 #if defined SHADOWS_ENABLED
     uniform sampler2D depthtex1;
-    uniform sampler2D shadowcolor1;
+    uniform sampler2D shadowtex1;
     uniform sampler2D noisetex;
     uniform mat4 shadowProjection;
     uniform mat4 shadowModelView;
@@ -74,7 +74,7 @@ void main() {
             shadowProjection,
             shadowModelView,
             texcoord,
-            shadowcolor1,
+            shadowtex1,
             noisetex,
             lightmap.g,
             worldTime);
