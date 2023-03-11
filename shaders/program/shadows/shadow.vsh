@@ -4,12 +4,6 @@ out vec2 texcoord;
 out vec3 position;
 out vec3 normal;
 
-in vec2 vaUV0;
-in vec3 vaPosition;
-in vec3 vaNormal;
-
-uniform vec3 chunkOffset;
-
 uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrixInverse;
@@ -25,10 +19,10 @@ uniform int frameCounter;
 void main() {
     #if defined SHADOWS_ENABLED
         // check against position texture instead of depth
-        texcoord = vaUV0;
+        texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 
-        position = chunkOffset + vaPosition;
-        normal = vaNormal;
+        position = gl_Vertex.xyz;
+        normal = gl_Normal;
 
         // if within range
         // xz / range
