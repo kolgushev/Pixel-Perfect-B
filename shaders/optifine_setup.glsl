@@ -1,10 +1,12 @@
 // use floats since they aren't capped at one (for easier color manipulation)
 /*
 const int colortex0Format = RGB16F;
+const bool colortex0Clear = false;
 
 const int colortex1Format = RGBA16F;
+const bool colortex1Clear = false;
 
-const int colortex2Format = RG16F;
+const int colortex2Format = RGB8;
 const bool colortex2Clear = false;
 
 const int colortex3Format = RGB8_SNORM;
