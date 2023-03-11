@@ -33,8 +33,6 @@ flat out int mcEntity;
 
 uniform float frameTimeCounter;
 
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
 uniform mat4 gbufferModelViewInverse;
 
 #if ISOLATE_RENDER_STAGE != -1
@@ -202,9 +200,9 @@ void main() {
     #endif
 
     #if !defined gc_sky
-        vec4 glPos = toForcedViewspace(projectionMatrix, modelViewMatrix, position);
+        vec4 glPos = toForcedViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
     #else
-        vec4 glPos = toViewspace(projectionMatrix, modelViewMatrix, position);
+        vec4 glPos = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
     #endif
     gl_Position = glPos;
 

@@ -4,11 +4,6 @@ out vec2 texcoord;
 out vec3 position;
 out vec3 normal;
 
-uniform mat4 projectionMatrix;
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrixInverse;
-uniform mat4 modelViewMatrixInverse;
-
 uniform mat4 shadowModelViewInverse;
 
 uniform int frameCounter;
@@ -48,7 +43,7 @@ void main() {
 
         // gl_Position = vec4(position, 1.0);
 
-        gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
+        gl_Position = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
         
         gl_Position.xy = distortShadow(gl_Position.xy);
         gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);
