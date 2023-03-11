@@ -24,7 +24,6 @@ out vec3 normal;
     out vec2 stars;
 #endif
 
-in vec2 vaUV0;
 in vec4 vaColor;
 in vec3 vaNormal;
 in vec3 vaPosition;
@@ -70,7 +69,7 @@ void main() {
         mcEntity = 1;
     #endif
 
-    texcoord = vaUV0;
+    texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
     
     color = vaColor;
 
