@@ -135,7 +135,7 @@ screen.SHADOWS=Shadows
 
 screen.COLORS=Colors
     option.BOSS_BATTLE_COLORS=Boss Battle Colors
-        option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact.
+        option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact. Does not work with Iris!
         value.BOSS_BATTLE_COLORS.true=Yes
         value.BOSS_BATTLE_COLORS.false=No
 

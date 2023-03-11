@@ -199,7 +199,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define NIGHT_EFFECT_SATURATION 0.3 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define NIGHT_EFFECT_POINT 0.1 // [0.0625 0.07 0.08 0.09 0.1 0.11 0.12 0.13 0.14 0.15]
 
-#define BOSS_BATTLE_COLORS
+// #define BOSS_BATTLE_COLORS
 #ifdef BOSS_BATTLE_COLORS
 #endif
 
