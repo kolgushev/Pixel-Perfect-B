@@ -7,10 +7,6 @@ Atmospheric fog changes based on biome
 
 No backface rendering, use normals to determine shadow validity
 
-Light opaque stuff on deferred pass and use composite to get shadows on transparent objects
-OR
-find out if you can sample shadow textures in gbuffers
-
 Re-add night effect
 
 PROPER SHADOW LEAKING FIX (instead of just removing shadows if there's no sky light)

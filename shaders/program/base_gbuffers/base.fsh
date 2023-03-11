@@ -116,7 +116,7 @@ void main() {
     #endif
 
     // prevent underground sun/moon, add virtual horizon
-    #if defined g_skytextured
+    #if defined g_skytextured && !defined DIM_NO_SKY
         albedo.a = smoothstep(-0.05, 0.01, normalize(position).y);
     #endif
 
@@ -134,6 +134,10 @@ void main() {
     #endif
 
     albedo.rgb *= RGB_to_ACEScg;
+
+    #if defined DIM_TEST
+        albedo.rgb = vec3(1, 0, 0);
+    #endif
 
     #if defined g_skybasic
         if(isEyeInWater == 1) {
