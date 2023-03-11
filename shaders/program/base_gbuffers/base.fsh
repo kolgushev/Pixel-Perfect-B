@@ -24,8 +24,6 @@ flat in int mcEntity;
 uniform sampler2D texture;
 uniform sampler2D shadowcolor0;
 
-uniform float alphaTestRef;
-
 uniform vec4 entityColor;
 uniform int isEyeInWater;
 uniform float nightVision;
@@ -130,7 +128,7 @@ void main() {
         albedo.a *= 0.5 * rainStrength;
     #endif
     
-    if(albedo.a < alphaTestRef) discard;
+    if(albedo.a < EPSILON) discard;
     
     albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
 
