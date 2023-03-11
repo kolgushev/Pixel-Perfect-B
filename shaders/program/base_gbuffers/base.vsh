@@ -24,8 +24,6 @@ out vec3 normal;
     out vec2 stars;
 #endif
 
-in vec4 vaColor;
-in vec3 vaNormal;
 in vec3 vaPosition;
 flat out int mcEntity;
 
@@ -71,7 +69,7 @@ void main() {
 
     texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
     
-    color = vaColor;
+    color = gl_Color;
 
     light = (LIGHT_MATRIX * gl_MultiTexCoord1).xy;
     /*
@@ -83,14 +81,14 @@ void main() {
     #endif
 
     #if defined use_raw_normal
-        normal = vaNormal;
+        normal = gl_Normal;
 
         #if defined g_terrain
             float fakeNormal = (getCutoutMask(mc_Entity.x) - 2) * CUTOUT_ALIGN_STRENGTH;
             normal = mix(normal, vec3(0, sign(fakeNormal), 0), abs(fakeNormal));
         #endif
     #else
-        normal = viewInverse(vaNormal);
+        normal = viewInverse(gl_Normal);
     #endif
 
     position = chunkOffset + vaPosition;
