@@ -113,6 +113,13 @@ void main() {
     #else
         vec4 albedo = texture2D(texture, texcoord);
         albedo.rgb *= color.rgb;
+        #if !defined g_terrain
+            albedo.a *= color.a;
+        #endif
+        #if defined g_weather
+            albedo.a *= 0.5;
+        #endif
+        
         // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed
         albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a);
     #endif
@@ -125,10 +132,6 @@ void main() {
             // prevent underground sun/moon, add virtual horizon
             albedo.a = smoothstep(-0.05, 0.01, normalize(position).y);
         #endif
-    #endif
-
-    #if defined g_weather
-        albedo.a *= 0.5 * rainStrength;
     #endif
     
     if(albedo.a < EPSILON) discard;
