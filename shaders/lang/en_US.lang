@@ -59,7 +59,7 @@ screen.LIGHTING=Lighting
             option.AMBIENT_LIGHT_MULT.comment=Sets the ambient light level. This is similar to minimum light, but affects all areas of the game, not just the darkest ones.
 
         option.DYNAMIC_EXPOSURE_LIGHTING=Realistic Light Strengths
-            option.DYNAMIC_EXPOSURE_LIGHTING.comment=BETA!. This feature is in beta and won't look good. Sets light levels to their real-life values. No performance impact.
+            option.DYNAMIC_EXPOSURE_LIGHTING.comment=§cBETA!. This feature is in beta and won't look good. Sets light levels to their real-life values. No performance impact.
             value.DYNAMIC_EXPOSURE_LIGHTING.true=Yes
             value.DYNAMIC_EXPOSURE_LIGHTING.false=No
 
@@ -135,7 +135,7 @@ screen.SHADOWS=Shadows
 
 screen.COLORS=Colors
     option.BOSS_BATTLE_COLORS=Boss Battle Colors
-        option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact. Does not work with Iris!
+        option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact. §cDoes not work with Iris!
         value.BOSS_BATTLE_COLORS.true=Yes
         value.BOSS_BATTLE_COLORS.false=No
 
@@ -195,7 +195,7 @@ screen.COLORS=Colors
             value.USE_LUT.false=No
 
         option.USER_GAMMA_CORRECT=Gamma correction
-            option.USER_GAMMA_CORRECT.comment=If you don't know what this is, you shouldn't disable it. May not work when "Use LUT" is enabled!
+            option.USER_GAMMA_CORRECT.comment=If you don't know what this is, you shouldn't disable it. §cMay not work when "Use LUT" is enabled!
             value.USER_GAMMA_CORRECT.true=Yes
             value.USER_GAMMA_CORRECT.false=No
 
@@ -203,13 +203,13 @@ screen.COLORS=Colors
             screen.ACES.comment=Academy Color Encoding System.
             
             option.USER_OUTPUT_COLORSPACE=Output Colorspace
-                option.USER_OUTPUT_COLORSPACE.comment=May not work when "Use LUT" is enabled!
+                option.USER_OUTPUT_COLORSPACE.comment=§cMay not work when "Use LUT" is enabled!
                 value.USER_OUTPUT_COLORSPACE.0=sRGB
                 value.USER_OUTPUT_COLORSPACE.1=ACEScg (raw)
                 value.USER_OUTPUT_COLORSPACE.2=ACES2065-1
 
             option.USER_LMT_MODE=LMT
-                option.USER_LMT_MODE.comment=Compresses the game's "realistic" light values into ones your monitor can display. (and does so in a way that looks nice). May not work when "Use LUT" is enabled!
+                option.USER_LMT_MODE.comment=Compresses the game's "realistic" light values into ones your monitor can display. (and does so in a way that looks nice). §cMay not work when "Use LUT" is enabled!
                 value.USER_LMT_MODE.0=§cNone (not recommended)
                 value.USER_LMT_MODE.1=§cDivide by 16 (not recommended)
                 value.USER_LMT_MODE.2=§6Reinhard
@@ -277,7 +277,7 @@ screen.ADVANCED=Advanced
         value.SHADOW_DEBUG.false=No
 
     option.ISOLATE_RENDER_STAGE=Isolate
-        option.ISOLATE_RENDER_STAGE.comment=Isolating red items is considered cheating!. Using this on servers may get you banned!
+        option.ISOLATE_RENDER_STAGE.comment=§cIsolating red items is considered cheating!. §cUsing this on servers may get you banned!
         value.ISOLATE_RENDER_STAGE.-1=Off
         value.ISOLATE_RENDER_STAGE.0=Unknown
         value.ISOLATE_RENDER_STAGE.1=Sky
