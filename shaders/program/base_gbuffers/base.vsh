@@ -67,6 +67,10 @@ void main() {
     
     color = gl_Color;
 
+    #if defined g_weather
+        color.a = 1;
+    #endif
+
     light = (LIGHT_MATRIX * gl_MultiTexCoord1).xy;
     /*
     The Optifine-provided lightmap is actually what is used to sample the

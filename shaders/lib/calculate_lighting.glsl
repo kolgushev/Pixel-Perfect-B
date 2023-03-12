@@ -25,7 +25,11 @@ vec3 actualSkyColor(in float skyTransition) {
 }
 
 vec3 lightningFlash(in vec3 sky, in float rain) {
-    return length(max(vec3(0), (sky - 0.243))) * step(1, rain) * LIGHTNING_FLASHES * 1000 * LIGHTNING_FLASH_TINT;
+    #if !defined DIM_NO_RAIN
+        return length(max(vec3(0), (sky - DIM_LIGHNING_DETECTION_OFFSET))) * step(1, rain) * LIGHTNING_FLASHES * 1000 * LIGHTNING_FLASH_TINT;
+    #else
+        return vec3(0);
+    #endif
 }
 
 // Input is not adjusted lightmap coordinates

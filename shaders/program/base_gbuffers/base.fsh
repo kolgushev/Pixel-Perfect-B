@@ -167,10 +167,10 @@ void main() {
         albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime(worldTime)) * PLANET_BRIGHTNESS;
     #endif
 
-    #if defined g_weather
+    #if defined g_weather && !defined DIM_NO_RAIN
         const float a = 1.5;
         float skyTransition = skyTime(worldTime);
-        albedo.rgb *= (1 + a - albedo.a * a) * 0.5;
+        albedo.a *= 0.5 * rainStrength;
         albedo.rgb *= 
             rainMultiplier(rainStrength) * mix(moonBrightness(moonPhase) * MOON_COLOR, SUN_COLOR, skyTransition)
             + actualSkyColor(skyTransition)
