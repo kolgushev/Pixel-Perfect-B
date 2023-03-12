@@ -253,6 +253,10 @@ screen.MISC=Misc
         value.INVISIBILITY_DISTORTION.true=Yes
         value.INVISIBILITY_DISTORTION.false=No
 
+    option.LIGHTNING_FLASHES=Lighning Flash Intensity
+        option.LIGHTNING_FLASHES.comment=Lights up the environment when lightning strikes. Disabled if "Hide Lightning Flashes" is ON in vanilla accessibility settings. §cMay trigger epilepsy!
+        value.LIGHTNING_FLASHES.0.0=None
+
     option.NOISY_LAVA=Lava Variation
         option.NOISY_LAVA.comment=Makes some spots of lava darker and others brighter. Helps break up the lava texture, especially in large pools such as in the nether.
         value.NOISY_LAVA.0=§cNone

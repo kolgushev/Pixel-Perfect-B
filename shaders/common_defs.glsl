@@ -145,6 +145,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef NO_WAVING_FULL_BLOCKS
 #endif
 
+#define LIGHTNING_FLASHES 0.8 // [0.0 0.1 0.2 0.4 0.6 0.8 1.0]
+
 #define WIND_STRENGTH_CONSTANT_USER 0.5 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]
 #define WIND_SPEED_CONSTANT_USER (-5.0)
 
@@ -481,6 +483,8 @@ const float shadowIntervalSize = 8.0;
 #define WIND_PERIOD_CONSTANT 0.3
 #define WIND_STRENGTH_CONSTANT (0.3 * WIND_STRENGTH_CONSTANT_USER)
 #define WIND_SPEED_CONSTANT (9000.0 * WIND_SPEED_CONSTANT_USER * WIND_STRENGTH_CONSTANT)
+
+#define LIGHTNING_FLASH_TINT (vec3(0.5, 0.6, 1.0))
 
 #if defined DIM_NETHER
     #define HAS_ATMOSPHERIC_FOG

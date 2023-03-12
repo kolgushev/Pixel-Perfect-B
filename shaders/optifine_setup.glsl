@@ -30,7 +30,7 @@ const float centerDepthHalflife = 1.0;
 /* WETNESSHL:600.0 */
 const float wetnessHalflife = 40.0;
 /* DRYNESSHL:200.0 */
-const float drynessHalflife = 100.0;
+const float drynessHalflife = 70.0;
 
 #define MC_RENDER_STAGE_NONE 0                      // Undefined
 #define MC_RENDER_STAGE_SKY 1                       // Sky

@@ -34,9 +34,6 @@ uniform int renderStage;
     uniform vec3 sunPosition;
     uniform vec3 moonPosition;
 
-    uniform int moonPhase;
-    uniform float rainStrength;
-
     uniform float darknessFactor;
     uniform float darknessLightFactor;
 
@@ -54,7 +51,7 @@ uniform int renderStage;
     uniform sampler2D depthtex1;
 #endif
 
-#if defined gc_transparent || defined g_skytextured
+#if defined gc_transparent || defined g_skytextured || defined g_weather
     uniform int worldTime;
 #endif
 
@@ -76,6 +73,12 @@ uniform int renderStage;
     #include "/lib/fogify.glsl"
     #include "/lib/color_manipulation.glsl"
     #include "/lib/to_viewspace.glsl"
+#endif
+
+#if defined gc_transparent || defined g_weather
+    uniform int moonPhase;
+    uniform float rainStrength;
+
     #include "/lib/calculate_lighting.glsl"
 #endif
 
@@ -116,9 +119,7 @@ void main() {
         #if !defined g_terrain
             albedo.a *= color.a;
         #endif
-        #if defined g_weather
-            albedo.a *= 0.5;
-        #elif defined g_basic
+        #if defined g_basic
             if(renderStage == MC_RENDER_STAGE_OUTLINE) {
                 albedo = vec4(0.2, 0.2, 0.2, 0.8);
             }
@@ -166,6 +167,17 @@ void main() {
         albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime(worldTime)) * PLANET_BRIGHTNESS;
     #endif
 
+    #if defined g_weather
+        const float a = 1.5;
+        float skyTransition = skyTime(worldTime);
+        albedo.rgb *= (1 + a - albedo.a * a) * 0.5;
+        albedo.rgb *= 
+            rainMultiplier(rainStrength) * mix(moonBrightness(moonPhase) * MOON_COLOR, SUN_COLOR, skyTransition)
+            + actualSkyColor(skyTransition)
+            + lightningFlash(gammaCorrection(skyColor, GAMMA) * RGB_to_ACEScg, rainStrength);
+        albedo.a *= 0.5;
+    #endif
+
     #if defined gc_sky
         #if defined SKY_ADDITIVE
             #if defined DIM_END
@@ -190,10 +202,14 @@ void main() {
         albedo.rgb = getFogColor(isEyeInWater, albedo.rgb);
     #endif
 
-    #if defined HDR_TEX_LIGHT_BRIGHTNESS        
-        if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA) {
-            albedo.rgb = SDRToHDR(albedo.rgb);
-        }
+    #if defined HDR_TEX_LIGHT_BRIGHTNESS
+        #if !defined gc_emissive
+            if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA) {
+        #endif
+                albedo.rgb = SDRToHDR(albedo.rgb);
+        #if !defined gc_emissive
+            }
+        #endif
     #endif
 
     #if defined g_terrain && NOISY_LAVA != 0
@@ -204,7 +220,7 @@ void main() {
 
     #if defined gc_transparent
         // apply lighting here for transparent stuff
-        mat2x3 lightColor = getLightColor(lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, worldTime, rainStrength, nightVision, darknessFactor, darknessLightFactor, shadowcolor0);
+        mat2x3 lightColor = getLightColor(lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, skyTime(worldTime), rainStrength, nightVision, darknessFactor, darknessLightFactor, gammaCorrection(skyColor, GAMMA) * RGB_to_ACEScg, shadowcolor0);
         
         #if defined SHADOWS_ENABLED
             vec4 directLighting = opaque(lightColor[1]) * albedo;
