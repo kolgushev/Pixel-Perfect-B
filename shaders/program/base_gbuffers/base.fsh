@@ -170,12 +170,12 @@ void main() {
     #if defined g_weather && !defined DIM_NO_RAIN
         const float a = 1.5;
         float skyTransition = skyTime(worldTime);
-        albedo.a *= 0.5 * rainStrength;
+        albedo.a *= 0.25 * rainStrength;
         albedo.rgb *= 
             rainMultiplier(rainStrength) * mix(moonBrightness(moonPhase) * MOON_COLOR, SUN_COLOR, skyTransition)
             + actualSkyColor(skyTransition)
             + lightningFlash(gammaCorrection(skyColor, GAMMA) * RGB_to_ACEScg, rainStrength);
-        albedo.a *= 0.5;
+        albedo.rgb *= 0.5;
     #endif
 
     #if defined gc_sky
@@ -204,7 +204,7 @@ void main() {
 
     #if defined HDR_TEX_LIGHT_BRIGHTNESS
         #if !defined gc_emissive
-            if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA) {
+            if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT) {
         #endif
                 albedo.rgb = SDRToHDR(albedo.rgb);
         #if !defined gc_emissive
