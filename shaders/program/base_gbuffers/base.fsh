@@ -27,6 +27,8 @@ uniform float nightVision;
 uniform vec3 fogColor;
 uniform vec3 skyColor;
 
+uniform float isLightning;
+
 uniform int renderStage;
 
 
@@ -71,14 +73,14 @@ uniform int renderStage;
 
 #if defined gc_transparent
     #include "/lib/fogify.glsl"
-    #include "/lib/color_manipulation.glsl"
     #include "/lib/to_viewspace.glsl"
 #endif
 
-#if defined gc_transparent || defined g_weather
+#if defined gc_transparent || defined g_weather || defined g_skybasic
     uniform int moonPhase;
     uniform float rainStrength;
 
+    #include "/lib/color_manipulation.glsl"
     #include "/lib/calculate_lighting.glsl"
 #endif
 
@@ -157,6 +159,8 @@ void main() {
     #endif
 
     #if defined g_skybasic
+        albedo.rgb += lightningFlash(isLightning, rainStrength) * 0.1;
+
         if(isEyeInWater == 1) {
             albedo.rgb = ATMOSPHERIC_FOG_COLOR_WATER;
         }
@@ -174,7 +178,7 @@ void main() {
         albedo.rgb *= 
             rainMultiplier(rainStrength) * mix(moonBrightness(moonPhase) * MOON_COLOR, SUN_COLOR, skyTransition)
             + actualSkyColor(skyTransition)
-            + lightningFlash(gammaCorrection(skyColor, GAMMA) * RGB_to_ACEScg, rainStrength);
+            + lightningFlash(isLightning, rainStrength);
         albedo.rgb *= 0.5;
     #endif
 
@@ -220,7 +224,20 @@ void main() {
 
     #if defined gc_transparent
         // apply lighting here for transparent stuff
-        mat2x3 lightColor = getLightColor(lightmap, normal, view(normal), sunPosition, moonPosition, moonPhase, skyTime(worldTime), rainStrength, nightVision, darknessFactor, darknessLightFactor, gammaCorrection(skyColor, GAMMA) * RGB_to_ACEScg, shadowcolor0);
+        mat2x3 lightColor = getLightColor(
+            lightmap,
+            normal,
+            view(normal),
+            sunPosition,
+            moonPosition,
+            moonPhase,
+            skyTime(worldTime),
+            rainStrength,
+            nightVision,
+            darknessFactor,
+            darknessLightFactor,
+            isLightning,
+            shadowcolor0);
         
         #if defined SHADOWS_ENABLED
             vec4 directLighting = opaque(lightColor[1]) * albedo;

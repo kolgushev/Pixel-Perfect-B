@@ -8,7 +8,7 @@ float gustFunction(in float t, in float smoothness) {
 	const float p = 0.75;
 	float start = x > p ? 0 : 1;
 
-	return smoothstep(start, 1 - start, );
+	return smoothstep(start, 1 - start, x);
 }
 
 vec2 windImpulse(in float size, in float rotation, in float directionality, in float offset, in float smoothness, in vec2 position, in float time) {

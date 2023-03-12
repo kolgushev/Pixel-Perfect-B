@@ -1,5 +1,3 @@
-#define lighting_pass
-
 float normalLighting(in vec3 normal, in vec3 lightPos) {
     #if VANILLA_LIGHTING != 2 && defined SHADOWS_ENABLED
         return clamp(dot(normal, normalize(lightPos)) * 6, 0, 1);
@@ -24,16 +22,16 @@ vec3 actualSkyColor(in float skyTransition) {
     return mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS), mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS), skyTransition);
 }
 
-vec3 lightningFlash(in vec3 sky, in float rain) {
+vec3 lightningFlash(in float isLightning, in float rain) {
     #if !defined DIM_NO_RAIN
-        return length(max(vec3(0), (sky - DIM_LIGHNING_DETECTION_OFFSET))) * step(1, rain) * LIGHTNING_FLASHES * 1000 * LIGHTNING_FLASH_TINT;
+        return isLightning * rain * LIGHTNING_FLASHES * 25 * LIGHTNING_FLASH_TINT;
     #else
         return vec3(0);
     #endif
 }
 
 // Input is not adjusted lightmap coordinates
-mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 sunPosition, in vec3 moonPosition, in int moonPhase, in float skyTransition, in float rain, in float nightVisionEffect, in float darknessEffect, in float darknessPulseEffect, in vec3 sky, in sampler2D vanillaLightTex) {
+mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 sunPosition, in vec3 moonPosition, in int moonPhase, in float skyTransition, in float rain, in float nightVisionEffect, in float darknessEffect, in float darknessPulseEffect, in float isLightning, in sampler2D vanillaLightTex) {
 
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
@@ -114,7 +112,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR;
         // technically the pow2 here isn't accurate, but it makes the falloff near the edges of the light look better
-        vec3 ambientSkyLighting = (actualSkyColor(skyTransition) + lightningFlash(sky, rain)) * skyShading * pow2(lightmap.y);
+        vec3 ambientSkyLighting = (actualSkyColor(skyTransition) + lightningFlash(isLightning, rain)) * skyShading * pow2(lightmap.y);
         
         // Add the lighting togther to get the total contribution of the lightmap the final color.
         vec3 indirectLighting = max(vec3(minLight), ambientLight + torchLighting + ambientSkyLighting);

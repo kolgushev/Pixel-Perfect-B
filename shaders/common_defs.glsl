@@ -538,8 +538,6 @@ const float shadowIntervalSize = 8.0;
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
 
     #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
-
-    #define DIM_LIGHNING_DETECTION_OFFSET 0.243
 #endif
 #if defined ATMOSPHERIC_FOG_USER && defined HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG

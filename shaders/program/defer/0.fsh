@@ -19,8 +19,8 @@ uniform vec3 cameraPosition;
 uniform int worldTime;
 uniform int moonPhase;
 uniform float rainStrength;
+uniform float isLightning;
 
-uniform vec3 skyColor;
 
 uniform float nightVision;
 uniform float darknessFactor;
@@ -91,9 +91,10 @@ void main() {
     moonPhase,
     skyTime(worldTime),
     rainStrength,
-    nightVision, darknessFactor,
+    nightVision,
+    darknessFactor,
     darknessLightFactor,
-    gammaCorrection(skyColor, GAMMA) * RGB_to_ACEScg,
+    isLightning,
     shadowcolor0);
 
     #if !defined DEBUG_VIEW
