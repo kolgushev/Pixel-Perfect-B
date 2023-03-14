@@ -32,22 +32,36 @@ flat out int mcEntity;
 #endif
 
 uniform float frameTimeCounter;
-
 uniform mat4 gbufferModelViewInverse;
+uniform int renderStage;
+
+#if (defined g_terrain || defined g_weather) && defined WAVING_ENABLED
+    #define USE_CAMERA_POS
+#endif
+
+#if defined DIM_END
+    uniform sampler2D noisetex;
+#endif
+
+#if defined DIM_END || defined USE_CAMERA_POS
+    uniform vec3 cameraPosition;
+#endif
 
 #if ISOLATE_RENDER_STAGE != -1
     uniform int renderStage;
 #endif
 
-#if (defined g_terrain || defined g_weather) && defined WAVING_ENABLED
-    uniform vec3 cameraPosition;
-
+#if defined USE_CAMERA_POS
     #if !defined DIM_NO_RAIN
         uniform float wetness;
     #endif
     // uniform float frameTimeCounter;
 
     #include "/lib/generate_wind.glsl"
+#endif
+
+#if defined DIM_END
+    #include "/lib/sample_noisetex.glsl"
 #endif
 
 #include "/lib/to_viewspace.glsl"
@@ -200,6 +214,21 @@ void main() {
             if(isFullWaving) {
                 position.y += EPSILON;
             }
+        }
+    #endif
+
+    #if defined DIM_END && defined gc_terrain
+        float displacement = tile((position.xz + cameraPosition.xz + EPSILON) * 0.1, vec2(1, 0), false).x - 0.5;
+        position.y += displacement * pow2(length(position.xz) * 0.05) * END_WARPING;
+    #endif
+
+    #if defined g_basic
+        if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+            #if defined OUTLINE_THROUGH_BLOCKS
+                position *= 0.2;
+            #else
+                position *= 0.995;
+            #endif
         }
     #endif
 

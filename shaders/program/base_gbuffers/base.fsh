@@ -121,11 +121,7 @@ void main() {
         #if !defined g_terrain
             albedo.a *= color.a;
         #endif
-        #if defined g_basic
-            if(renderStage == MC_RENDER_STAGE_OUTLINE) {
-                albedo = vec4(0.2, 0.2, 0.2, 0.8);
-            }
-        #elif defined g_damagedblock
+        #if defined g_damagedblock
             albedo.a = clamp(albedo.a - 0.003, 0, 1);
         #endif
         
@@ -153,6 +149,25 @@ void main() {
     #endif
 
     albedo.rgb *= RGB_to_ACEScg;
+
+    #if defined g_basic
+        if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+            #if OUTLINE_COLOR == 0
+                albedo = vec4(0.05, 0.05, 0.05, 0.8);
+            #elif OUTLINE_COLOR == 1
+                albedo = vec4(10, 10, 10, 0.8);
+            #elif OUTLINE_COLOR == 2
+                albedo = vec4(10, 0, 0, 0.8);
+            #elif OUTLINE_COLOR == 3
+                albedo = vec4(0, 10, 0, 0.8);
+            #elif OUTLINE_COLOR == 4
+                albedo = vec4(0, 0, 10, 0.8);
+            #elif OUTLINE_COLOR == 5
+                albedo.rgb = BASE_COLOR;
+                albedo.a = 0.8;
+            #endif
+        }
+    #endif
 
     #if defined DIM_TEST
         albedo.rgb = vec3(1, 0, 0);

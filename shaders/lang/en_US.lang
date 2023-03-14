@@ -255,13 +255,29 @@ screen.MISC=Misc
 
     option.LIGHTNING_FLASHES=Lighning Flash Intensity
         option.LIGHTNING_FLASHES.comment=Lights up the environment when lightning strikes. Disabled if "Hide Lightning Flashes" is ON in vanilla accessibility settings. §cMay trigger epilepsy!
-        value.LIGHTNING_FLASHES.0.0=Off
+        value.LIGHTNING_FLASHES.0.0=§cOff
 
     option.NOISY_LAVA=Lava Variation
         option.NOISY_LAVA.comment=Makes some spots of lava darker and others brighter. Helps break up the lava texture, especially in large pools such as in the nether.
         value.NOISY_LAVA.0=§cNone
         value.NOISY_LAVA.1=Subtle
         value.NOISY_LAVA.2=Intense
+
+    option.END_WARPING=End Warping Strength
+        value.END_WARPING.0.0=Off
+
+    option.OUTLINE_THROUGH_BLOCKS=Show Entire Selection Outline
+        option.OUTLINE_THROUGH_BLOCKS.comment=Show the block selection outline through blocks.
+        value.OUTLINE_THROUGH_BLOCKS.true=Yes
+        value.OUTLINE_THROUGH_BLOCKS.false=No
+
+    option.OUTLINE_COLOR=Selection Outline Color
+        value.OUTLINE_COLOR.0=Default
+        value.OUTLINE_COLOR.1=§fWhite
+        value.OUTLINE_COLOR.2=§4Red
+        value.OUTLINE_COLOR.3=§aGreen
+        value.OUTLINE_COLOR.4=§9Blue
+        value.OUTLINE_COLOR.5=Dimension Themed
 
     option.WAVING_ENABLED=Waving Objects
         value.WAVING_ENABLED.true=Yes
