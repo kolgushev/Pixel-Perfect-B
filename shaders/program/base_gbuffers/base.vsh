@@ -222,21 +222,22 @@ void main() {
         position.y += displacement * pow2(length(position.xz) * 0.05) * END_WARPING;
     #endif
 
-    #if defined g_basic
-        if(renderStage == MC_RENDER_STAGE_OUTLINE) {
-            #if defined OUTLINE_THROUGH_BLOCKS
-                position *= 0.2;
-            #else
-                position *= 0.995;
-            #endif
-        }
-    #endif
-
     #if !defined gc_sky
         vec4 glPos = toForcedViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
     #else
         vec4 glPos = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
     #endif
+
+    #if defined g_basic
+        if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+            #if defined OUTLINE_THROUGH_BLOCKS
+                glPos.z *= 0.2;
+            #else
+                glPos.z -= EPSILON;
+            #endif
+        }
+    #endif
+
     gl_Position = glPos;
 
     #if defined g_skybasic

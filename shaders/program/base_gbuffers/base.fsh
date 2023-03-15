@@ -161,7 +161,7 @@ void main() {
             #elif OUTLINE_COLOR == 3
                 albedo = vec4(0, 10, 0, 0.8);
             #elif OUTLINE_COLOR == 4
-                albedo = vec4(0, 0, 10, 0.8);
+                albedo = vec4(0, 1, 10, 0.8);
             #elif OUTLINE_COLOR == 5
                 albedo.rgb = BASE_COLOR;
                 albedo.a = 0.8;
@@ -229,6 +229,10 @@ void main() {
         #if !defined gc_emissive
             }
         #endif
+    #endif
+
+    #if defined g_spidereyes
+        albedo.rgb *= SPIDEREYES_MULT;
     #endif
 
     #if defined g_terrain && NOISY_LAVA != 0
