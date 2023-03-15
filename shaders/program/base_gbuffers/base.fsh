@@ -146,8 +146,6 @@ void main() {
         albedo.rgb *= color.rgb;
         #if !defined gc_terrain
             albedo.a *= color.a;
-        #elif defined g_entities_glowing
-            albedo.a *= entityColor.a;
         #elif defined g_damagedblock
             albedo.a = clamp(albedo.a - 0.003, 0, 1);
         #endif

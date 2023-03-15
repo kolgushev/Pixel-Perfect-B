@@ -181,6 +181,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define WIND_SPEED_CONSTANT_USER (-5.0)
 
 #define LIGHTNING_FLASHES 0.8 // [0.0 0.1 0.2 0.4 0.6 0.8 1.0]
+#define NOISY_RAIN
 
 // #define FOG_ENABLED_USER
 #ifdef FOG_ENABLED_USER
