@@ -43,7 +43,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // normal pow (usually) takes 9 GPU cycles to compute, so we can redefine any pow ≤ 9 as multiplication for a speedup
 // this is usually done automatically by the compiler, but these settings allow it to be enabled manually
 // #define OPTIMIZE_POW
-// #define OPTIMIZE_POW2
+#define OPTIMIZE_POW2
 
 // NOTE: enabling these settings may actually lead to a decrease in performance, since (n) is evaluted for each time it is multiplied
 
@@ -187,7 +187,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #endif
 
 // #define NETHER_HAS_FOGGY_WEATHER
-// #define END_HAS_FOGGY_WEATHER
+#define END_HAS_FOGGY_WEATHER
 
 #define SPIDEREYES_MULT 10.0
 
@@ -350,6 +350,7 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 #endif
 #define TEX_RES 0.0625 // [0.25 0.125 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
 
+#define END_SKY_RESOLUTION 128
 
 
 
@@ -573,12 +574,12 @@ const float shadowIntervalSize = 8.0;
     #define AMBIENT_COLOR (vec3(0.9, 0.85, 1.1) * RGB_to_ACEScg * 10.0)
     #define MIN_LIGHT_COLOR AMBIENT_COLOR
 
-    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
-    #define SKY_ADDITIVE (BASE_COLOR * 0.02)
+    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 10.2)
+    #define SKY_ADDITIVE (BASE_COLOR * 0.002)
     
     #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
 
-    #define ATMOSPHERIC_FOG_COLOR ((vec3(0.7, 0.5, 1.2)) * 0.3 * SKY_BRIGHTNESS)
+    #define ATMOSPHERIC_FOG_COLOR ((vec3(0.7, 0.5, 1.2)) * 0.4)
     #define ATMOSPHERIC_FOG_MULTIPLIER 5.0
 
     #define WEATHER_FOG_MULTIPLIER 10.0
@@ -590,6 +591,7 @@ const float shadowIntervalSize = 8.0;
     #define ATMOSPHERIC_FOG_IN_SKY_ONLY
     #define WEATHER_FOG_IN_SKY_ONLY
     #define DIM_HAS_FOGGY_WEATHER
+    #define DIM_HAS_DAYNIGHT_CYCLE
 
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)

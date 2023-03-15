@@ -17,6 +17,7 @@ flat in int mcEntity;
     in vec2 stars;
 #endif
 
+// TODO: make a separate def for each uniform
 uniform sampler2D texture;
 uniform sampler2D shadowcolor0;
 
@@ -40,10 +41,10 @@ uniform int renderStage;
     uniform float darknessFactor;
     uniform float darknessLightFactor;
 
-    uniform float far; 
     uniform mat4 gbufferModelView;
 
     uniform float directLightMult;
+    uniform float far;
 
     uniform float viewWidth;
     uniform float viewHeight;
@@ -57,6 +58,10 @@ uniform int renderStage;
 
 #if defined gc_transparent || defined g_skytextured || defined g_weather
     uniform int worldTime;
+#endif
+
+#if defined FOG_ENABLED && (defined g_skybasic || defined gc_skybox)
+    uniform float far;
 #endif
 
 #if defined g_skybasic
@@ -78,9 +83,6 @@ uniform int renderStage;
     #include "/lib/to_viewspace.glsl"
 #endif
 
-#if defined DIM_USES_SKYBOX && defined g_skytextured
-    #define gc_skybox
-#endif
 
 #if defined gc_transparent || defined g_weather || defined g_skybasic || defined gc_skybox
     uniform int moonPhase;
@@ -98,13 +100,22 @@ uniform int renderStage;
     #include "/lib/switch_fog_color.glsl"
 #endif
 
+#if defined DIM_END && defined g_skytextured
+    #define use_noisetex_lib
+#endif
 #if defined g_terrain || defined gc_transparent
+    #define use_noisetex_lib
+    #define use_terrain_transparent_uniforms
+#endif
+
+#if defined use_noisetex_lib
+    uniform sampler2D noisetex;
+    #include "/lib/sample_noisetex.glsl"
+#endif
+
+#if defined use_terrain_transparent_uniforms
     uniform vec3 cameraPosition;
     uniform float frameTimeCounter;
-
-    uniform sampler2D noisetex;
-
-    #include "/lib/sample_noisetex.glsl"
 
     #include "/lib/lava_noise.glsl"
 #endif
@@ -126,12 +137,18 @@ void main() {
         */
         if(distance(color.rgb, fogColor) < EPSILON) albedo = opaque(customFogColor);
     #else
-        vec4 albedo = texture2D(texture, texcoord);
+        #if defined DIM_END && defined g_skytextured
+            vec2 texcoordMod = tile(texcoord * END_SKY_RESOLUTION, vec2(1, 1), true).rg;
+            vec4 albedo = texture2D(texture, texcoordMod);
+        #else
+            vec4 albedo = texture2D(texture, texcoord);
+        #endif
         albedo.rgb *= color.rgb;
         #if !defined gc_terrain
             albedo.a *= color.a;
-        #endif
-        #if defined g_damagedblock
+        #elif defined g_entities_glowing
+            albedo.a *= entityColor.a;
+        #elif defined g_damagedblock
             albedo.a = clamp(albedo.a - 0.003, 0, 1);
         #endif
         
@@ -141,8 +158,14 @@ void main() {
 
     #if defined g_skytextured
         #if defined DIM_END
-            float degree = smoothstep(-1, 0.4, normalize(position).y);
-            albedo.rgb *= degree;
+            float vertical = normalize(position).y;
+            float gradient = smoothstep(-1, 0.1, vertical);
+            albedo.rgb *= gradient;
+
+            float gradient2 = smoothstep(-0.2, 1, vertical);
+            if(bossBattle != 2) {
+                albedo.rgb = mix(albedo.rgb, SDRToHDR(albedo.rgb * 7) * 0.05, pow2(gradient2));
+            }
         #elif !defined DIM_NO_HORIZON
             // prevent underground sun/moon, add virtual horizon
             albedo.a = smoothstep(-0.05, 0.01, normalize(position).y);
@@ -192,8 +215,13 @@ void main() {
     #endif
 
     #if defined g_skytextured
-        // since we're using an advanced color pipeline it's safe to pump up the skytextured brightness
-        albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime(worldTime)) * PLANET_BRIGHTNESS;
+        #if defined DIM_HAS_DAYNIGHT_CYCLE
+            // since we're using an advanced color pipeline it's safe to pump up the skytextured brightness
+            albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime(worldTime));
+        #endif
+        #if !defined DIM_USES_SKYBOX
+            albedo.rgb *= PLANET_BRIGHTNESS;
+        #endif
     #endif
 
     #if defined g_weather && !defined DIM_NO_RAIN
@@ -209,12 +237,13 @@ void main() {
 
     #if defined gc_sky
         #if defined SKY_ADDITIVE
-            #if defined DIM_END
+            #if defined DIM_END && defined g_skytextured
                 if(bossBattle != 2) {
-            #endif
-                    albedo.rgb += SKY_ADDITIVE;
-            #if defined DIM_END
+                    albedo.rgb += SKY_ADDITIVE * (gradient2 + 1);
+                    // albedo.rgb += SKY_ADDITIVE;
                 }
+            #else
+                albedo.rgb += SKY_ADDITIVE;
             #endif
         #endif
 
@@ -314,7 +343,7 @@ void main() {
         // ?for proper mixing of g_skytextured
 
         #if defined FOG_ENABLED && (defined g_skybasic || defined gc_skybox)
-            albedo.rgb = mix(albedo.rgb, ATMOSPHERIC_FOG_COLOR, fogWeather);
+            albedo.rgb = mix(ATMOSPHERIC_FOG_COLOR, albedo.rgb, exp(-fogWeather * far * ATMOSPHERIC_FOG_DENSITY * ATMOSPHERIC_FOG_MULTIPLIER * WEATHER_FOG_MULTIPLIER));
         #endif
         
         albedo.rgb = mix(albedo.rgb, vec3(0), blindness);

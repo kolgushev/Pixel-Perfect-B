@@ -47,10 +47,6 @@ uniform int renderStage;
     uniform vec3 cameraPosition;
 #endif
 
-#if ISOLATE_RENDER_STAGE != -1
-    uniform int renderStage;
-#endif
-
 #if defined USE_CAMERA_POS
     #if !defined DIM_NO_RAIN
         uniform float wetness;
@@ -70,6 +66,7 @@ uniform int renderStage;
     #include "/lib/get_terrain_mask.glsl"
 #endif
 
+// TODO: world-space coordinates for everything not terrain
 void main() {
     #if defined gc_terrain
         mcEntity = int(mc_Entity.x);
@@ -217,9 +214,16 @@ void main() {
         }
     #endif
 
-    #if defined DIM_END && defined gc_terrain
-        float displacement = tile((position.xz + cameraPosition.xz + EPSILON) * 0.1, vec2(1, 0), false).x - 0.5;
-        position.y += displacement * pow2(length(position.xz) * 0.05) * END_WARPING;
+    #if defined DIM_END
+        // #if defined g_skytextured
+        //     // turn the end sky into a hemisphere-like shape
+        //     position.xz *= 0.5;
+        // #endif
+
+        #if defined gc_terrain
+            float displacement = tile((position.xz + cameraPosition.xz + EPSILON) * 0.1, vec2(1, 0), false).x - 0.5;
+            position.y += displacement * pow2(length(position.xz) * 0.05) * END_WARPING;
+        #endif
     #endif
 
     #if !defined gc_sky

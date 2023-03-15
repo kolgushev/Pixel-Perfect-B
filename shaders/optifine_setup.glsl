@@ -107,3 +107,6 @@ const float drynessHalflife = 70.0;
 #if defined g_entities || defined g_entities_glowing || defined g_spidereyes
     #define gc_entities
 #endif
+#if defined DIM_USES_SKYBOX && defined g_skytextured
+    #define gc_skybox
+#endif
