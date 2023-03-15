@@ -263,6 +263,11 @@ screen.MISC=Misc
         value.NOISY_LAVA.1=Subtle
         value.NOISY_LAVA.2=Intense
 
+    option.SMOOTH_LAVA=Smooth Lava Variation
+        option.SMOOTH_LAVA.comment=Works like smooth lighting, making lava variation transition smoother. Turning this on or off won't affect performance - this option is here in case you like the sharper aesthetic.
+        value.SMOOTH_LAVA.true=Yes
+        value.SMOOTH_LAVA.false=No
+
     option.END_WARPING=End Warping Strength
         value.END_WARPING.0.0=Off
 

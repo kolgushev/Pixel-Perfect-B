@@ -289,8 +289,11 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 #ifdef PIXELATED_SHADOWS
 #endif
 
-// 0:off 1:on
 #define SHADOW_TRANSITION_MIXING 0 // [0 1]
+
+#define SMOOTH_LAVA
+#ifdef SMOOTH_LAVA
+#endif
 
 
 // #define USE_DOF
