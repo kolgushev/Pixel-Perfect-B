@@ -568,7 +568,7 @@ const float shadowIntervalSize = 8.0;
 #else
     #define HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG_IN_SKY_ONLY
-    #define DIM_COMPLEX_WEATHER
+    #define DIM_HAS_FOGGY_WEATHER
 
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
@@ -586,7 +586,7 @@ const float shadowIntervalSize = 8.0;
 #if defined ATMOSPHERIC_FOG_USER && defined HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG
 #endif
-#if defined DIM_COMPLEX_WEATHER && defined FOG_ENABLED_USER
+#if defined DIM_HAS_FOGGY_WEATHER && defined FOG_ENABLED_USER
     #define FOG_ENABLED
 #endif
 

@@ -83,6 +83,7 @@ uniform int renderStage;
     uniform float rainStrength;
 
     uniform float fogWeather;
+    uniform float fogWeatherSky;
     uniform float inSky;
 
     #include "/lib/color_manipulation.glsl"
@@ -285,7 +286,7 @@ void main() {
         #endif
 
         // apply fog as well
-        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindness, fogWeather, inSky, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindness, fogWeatherSky, inSky, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;
