@@ -41,9 +41,11 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 // utils
 // normal pow (usually) takes 9 GPU cycles to compute, so we can redefine any pow ≤ 9 as multiplication for a speedup
-// this is usually done automatically by the compiler, but this allows it to be enabled manually
+// this is usually done automatically by the compiler, but these settings allow it to be enabled manually
 // #define OPTIMIZE_POW
 // #define OPTIMIZE_POW2
+
+// NOTE: enabling these settings may actually lead to a decrease in performance, since (n) is evaluted for each time it is multiplied
 
 #ifdef OPTIMIZE_POW2
     #define pow2(n) ((n) * (n))
@@ -183,6 +185,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // #define FOG_ENABLED_USER
 #ifdef FOG_ENABLED_USER
 #endif
+
+// #define NETHER_HAS_FOGGY_WEATHER
+// #define END_HAS_FOGGY_WEATHER
 
 #define SPIDEREYES_MULT 10.0
 
@@ -519,11 +524,19 @@ const float shadowIntervalSize = 8.0;
 
 #define LIGHTNING_FLASH_TINT (vec3(0.5, 0.6, 1.0))
 
+// DIM_NO_SKY is for dimensions which lack any fullscreen-covering gbuffers_skybasic/skytextured
+// DIM_NO_HORIZON is for dimensions which don't have a defined horizon (and therefore look better with sky visible below said horizon)
+// DIM_NO_SKYLIGHT is for dimensions which don't have values for skylight
+// DIM_USES_SKYBOX is for dimensions which use skytextured as their main sky layer (rather than just for solar bodies)
+
 #if defined DIM_NETHER
     #define HAS_ATMOSPHERIC_FOG
     #define DIM_NO_RAIN
     #define DIM_NO_SKY
-
+    #define DIM_NO_SKYLIGHT
+    #if defined NETHER_HAS_FOGGY_WEATHER
+        #define DIM_HAS_FOGGY_WEATHER
+    #endif
 
     #if defined BRIGHT_NETHER
         #define BASE_COLOR (vec3(2.0, 1.8, 1.6))
@@ -539,14 +552,21 @@ const float shadowIntervalSize = 8.0;
 
     #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
 
+    #define WEATHER_FOG_MULTIPLIER 10.0
+
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
     
     #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
 #elif defined DIM_END
     #define HAS_ATMOSPHERIC_FOG
     #define DIM_NO_RAIN
-    #define DIM_NO_SKY
+    #define DIM_NO_HORIZON
+    #define DIM_USES_SKYBOX
+    #define DIM_NO_SKYLIGHT
     #define DIM_NO_WIND
+    #if defined END_HAS_FOGGY_WEATHER
+        #define DIM_HAS_FOGGY_WEATHER
+    #endif
 
 
     #define BASE_COLOR (vec3(0.9, 0.7, 1.2) * RGB_to_ACEScg)
@@ -561,20 +581,21 @@ const float shadowIntervalSize = 8.0;
     #define ATMOSPHERIC_FOG_COLOR ((vec3(0.7, 0.5, 1.2)) * 0.3 * SKY_BRIGHTNESS)
     #define ATMOSPHERIC_FOG_MULTIPLIER 5.0
 
-
+    #define WEATHER_FOG_MULTIPLIER 10.0
 
     #define BOSS_BATTLE_SKY_MULT 0.7
     #define BOSS_BATTLE_ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
 #else
     #define HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG_IN_SKY_ONLY
+    #define WEATHER_FOG_IN_SKY_ONLY
     #define DIM_HAS_FOGGY_WEATHER
 
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
     #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_ACEScg)
     
-    #define ATMOSPHERIC_FOG_COLOR (fogColor)
+    #define ATMOSPHERIC_FOG_COLOR (gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg)
     #define ATMOSPHERIC_FOG_MULTIPLIER 0.5
 
     #define WEATHER_FOG_MULTIPLIER 10.0

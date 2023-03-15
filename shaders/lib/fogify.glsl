@@ -23,7 +23,11 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
             #if defined FOG_ENABLED
                 float mult = fogWeather * WEATHER_FOG_MULTIPLIER;
                 #if defined ATMOSPHERIC_FOG
-                    mult += inSky;
+                    #if defined ATMOSPHERIC_FOG_IN_SKY_ONLY
+                        mult += inSky;
+                    #else
+                        mult += 1;
+                    #endif
                 #endif
                 atmosPhog *= mult;
             #elif defined ATMOSPHERIC_FOG_IN_SKY_ONLY

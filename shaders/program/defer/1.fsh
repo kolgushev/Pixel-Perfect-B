@@ -1,9 +1,5 @@
 #include "/common_defs.glsl"
 
-#if defined DIM_NETHER
-    #define NO_SKY
-#endif
-
 /* DRAWBUFFERS:01 */
 layout(location=0) out vec4 b0;
 layout(location=1) out vec4 b1;
@@ -30,6 +26,8 @@ uniform float nightVision;
 uniform float blindness;
 
 uniform float fogWeatherSky;
+uniform float fogWeather;
+
 uniform float inSky;
 
 uniform vec3 cameraPosition;
@@ -56,11 +54,14 @@ void main() {
     bool isSky = albedo.a == 0;
 
     // the nether doesn't render sky
-    #if defined NO_SKY
+    #if defined DIM_NO_SKY
         #if defined ATMOSPHERIC_FOG
             vec3 skyColorProcessed = ATMOSPHERIC_FOG_COLOR;
         #else
             vec3 skyColorProcessed = gammaCorrection(fogColor * 2, GAMMA) * RGB_to_ACEScg;
+            #if defined FOG_ENABLED
+                skyColorProcessed = mix(skyColorProcessed, ATMOSPHERIC_FOG_COLOR, fogWeather);
+            #endif
         #endif
 
         skyColorProcessed = getFogColor(isEyeInWater, skyColorProcessed);
@@ -69,7 +70,20 @@ void main() {
     #endif
 
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
-    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindness, fogWeatherSky, inSky, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+
+    #if !defined DIM_NO_SKYLIGHT
+        float inSkyProcessed = inSky;
+    #else
+        float inSkyProcessed = 1;
+    #endif
+
+    #if !defined DIM_NO_SKYLIGHT && defined WEATHER_FOG_IN_SKY_ONLY
+        float fogWeatherSkyProcessed = fogWeatherSky;
+    #else
+        float fogWeatherSkyProcessed = fogWeather;
+    #endif
+
+    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindness, fogWeatherSkyProcessed, inSkyProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
     vec3 composite = fogged.rgb;
     float fog = fogged.a;
 
