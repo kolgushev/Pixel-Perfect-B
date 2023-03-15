@@ -284,11 +284,18 @@ screen.MISC=Misc
         value.OUTLINE_COLOR.4=§9Blue
         value.OUTLINE_COLOR.5=Dimension Themed
 
-    option.WAVING_ENABLED=Waving Objects
-        value.WAVING_ENABLED.true=Yes
-        value.WAVING_ENABLED.false=No
-    
-    option.WIND_STRENGTH_CONSTANT_USER=Wind Strength
+    screen.WEATHER=Weather
+        option.WAVING_ENABLED=Waving Objects
+            value.WAVING_ENABLED.true=Yes
+            value.WAVING_ENABLED.false=No
+        # TODO: add waving rainy
+        option.WIND_STRENGTH_CONSTANT_USER=Wind Strength
+
+        option.FOG_ENABLED_USER=Enable Foggy Weather
+            option.FOG_ENABLED_USER.comment=Adds a new custom weather effect. Foggy weather is purely cosmetic and can be turned off if you don't like the restricted visibility.
+            value.FOG_ENABLED_USER.true=Yes
+            value.FOG_ENABLED_USER.false=No
+
 
 screen.ADVANCED=Advanced
     option.DEBUG_VIEW=Debug View

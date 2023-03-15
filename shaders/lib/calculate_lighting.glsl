@@ -31,7 +31,7 @@ vec3 lightningFlash(in float isLightning, in float rain) {
 }
 
 // Input is not adjusted lightmap coordinates
-mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 sunPosition, in vec3 moonPosition, in int moonPhase, in float skyTransition, in float rain, in float nightVisionEffect, in float darknessEffect, in float darknessPulseEffect, in float isLightning, in sampler2D vanillaLightTex) {
+mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 sunPosition, in vec3 moonPosition, in int moonPhase, in float skyTransition, in float rain, in float directLightMult, in float nightVisionEffect, in float darknessEffect, in float darknessPulseEffect, in float isLightning, in sampler2D vanillaLightTex) {
 
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
@@ -99,7 +99,13 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         vec3 moonLighting = moonShading * moonBrightness(moonPhase) * MOON_COLOR;
         vec3 sunLighting = sunShading * SUN_COLOR;
-        vec3 directSkyLighting = rainMultiplier(rain) * mix(moonLighting, sunLighting, skyTransition);
+        vec3 directSkyLighting = mix(moonLighting, sunLighting, skyTransition);
+
+        #if defined FOG_ENABLED
+            directSkyLighting *= directLightMult;
+        #else
+            directSkyLighting *= rainMultiplier(rain);
+        #endif
 
         float hardcoreMult = inversesqrt(darknessEffect * 0.75 + 0.25) - 1;
         vec3 ambientLight = hardcoreMult * AMBIENT_LIGHT_MULT * AMBIENT_COLOR;

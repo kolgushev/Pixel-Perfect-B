@@ -29,6 +29,9 @@ uniform int isEyeInWater;
 uniform float nightVision;
 uniform float blindness;
 
+uniform float fogWeather;
+uniform float inSky;
+
 uniform vec3 cameraPosition;
 uniform float frameTimeCounter;
 
@@ -66,7 +69,7 @@ void main() {
     #endif
 
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
-    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindness, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindness, fogWeather, inSky, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
     vec3 composite = fogged.rgb;
     float fog = fogged.a;
 

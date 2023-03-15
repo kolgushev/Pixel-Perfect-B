@@ -11,10 +11,6 @@ vec3 changeLuminance(in vec3 c_in, in float l_in, in float l_out) {
     return c_in * (l_out / l_in);
 }
 
-vec3 gammaCorrection(in vec3 x, in float gammaInverse) {
-    return pow(x, vec3(gammaInverse));
-}
-
 vec3 reinhard(in vec3 v) {
     float originalLum = luminance(v);
     float newLum = originalLum / (1.0 + originalLum);

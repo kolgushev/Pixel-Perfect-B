@@ -21,13 +21,13 @@ uniform int moonPhase;
 uniform float rainStrength;
 uniform float isLightning;
 
+uniform float directLightMult;
 
 uniform float nightVision;
 uniform float darknessFactor;
 uniform float darknessLightFactor;
 
 uniform mat4 gbufferModelView;
-
 
 // don't need to include to_viewspace since calculate_lighting already includes it
 #include "/lib/tonemapping.glsl"
@@ -91,6 +91,7 @@ void main() {
     moonPhase,
     skyTime(worldTime),
     rainStrength,
+    directLightMult,
     nightVision,
     darknessFactor,
     darknessLightFactor,

@@ -1,4 +1,4 @@
-vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
+vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in float fogWeather, in float inSky, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
     vec3 composite = diffuse.rgb;
 
     // Render fog in a cylinder shape
@@ -20,6 +20,11 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
     if(isEyeInWater == 0) {
         #if defined ATMOSPHERIC_FOG
             atmosPhog = length(position) * ATMOSPHERIC_FOG_DENSITY * ATMOSPHERIC_FOG_MULTIPLIER;
+            #if defined FOG_ENABLED
+                atmosPhog *= fogWeather * WEATHER_FOG_MULTIPLIER + inSky;
+            #elif defined ATMOSPHERIC_FOG_IN_SKY_ONLY
+                atmosPhog *= inSky;
+            #endif
             atmosPhogColor = ATMOSPHERIC_FOG_COLOR;
             #if defined DIM_END
                 if(bossBattle == 2) {
@@ -59,8 +64,6 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
         atmosPhog = exp(-atmosPhog);
     }
 
-    composite = mix(atmosPhogColor, composite, atmosPhog);
-
     #if defined WATER_FOG_FROM_OUTSIDE
         // The following math attempts to compensate for the fact that we're doing water fog in gc_transparent instead of g_terrain
         // aka. we're doing `mix(composite, mix(fog, transparent))` instead of `mix(mix(fog, composite), transparent)` and compensating for it by specially coloring the transparent layer
@@ -72,6 +75,8 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
             composite = ((composite + ATMOSPHERIC_FOG_COLOR_WATER) * (atmosPhogWater - 1) * (transparency.a - 1) + transparency.rgb * transparency.a) / transparency.a;
         }
     #endif
+
+    composite = mix(atmosPhogColor, composite, atmosPhog);
 
     return vec4(composite, fogTube);
 }

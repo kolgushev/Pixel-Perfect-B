@@ -43,6 +43,7 @@ uniform int renderStage;
     uniform float far; 
     uniform mat4 gbufferModelView;
 
+    uniform float directLightMult;
 
     uniform float viewWidth;
     uniform float viewHeight;
@@ -80,6 +81,9 @@ uniform int renderStage;
 #if defined gc_transparent || defined g_weather || defined g_skybasic
     uniform int moonPhase;
     uniform float rainStrength;
+
+    uniform float fogWeather;
+    uniform float inSky;
 
     #include "/lib/color_manipulation.glsl"
     #include "/lib/calculate_lighting.glsl"
@@ -254,6 +258,7 @@ void main() {
             moonPhase,
             skyTime(worldTime),
             rainStrength,
+            directLightMult,
             nightVision,
             darknessFactor,
             darknessLightFactor,
@@ -280,7 +285,7 @@ void main() {
         #endif
 
         // apply fog as well
-        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindness, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindness, fogWeather, inSky, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;
@@ -291,6 +296,10 @@ void main() {
     #if defined gc_sky
         // ?Even though the sky texture doesn't have an alpha layer, we use alpha in the gbuffers
         // ?for proper mixing of g_skytextured
+
+        #if defined FOG_ENABLED && defined g_skybasic
+            albedo.rgb = mix(albedo.rgb, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg, fogWeather);
+        #endif
         b0 = albedo;
         b1 = vec4(0, 0, 0, 0);
     #elif defined gc_transparent

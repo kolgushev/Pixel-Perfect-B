@@ -129,9 +129,39 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define LUMINANCE_COEFFS_INVERSE vec3(4.7037, 1.3982, 13.8504)
 
 #define hand(h) ((h) < 0.557)
-#define skyTime(t) (clamp(sin(2 * PI * float(t + 785) / 24000) + 0.5, 0, 1))
 #define removeBorder(n, r) (((n) - 0.5) * (1 - (r)) + 0.5)
+#define gammaCorrection(x, y) pow(x, vec3(y))
 
+// TODO: Add this as a custom uniform
+#define skyTime(t) (clamp(sin(2 * PI * float(t + 785) / 24000) + 0.5, 0, 1))
+
+
+
+#define USE_ACES
+#ifdef USE_ACES
+#endif
+
+// using cat02
+#if defined USE_ACES
+// \[ *(-?\d+\.\d+) *(-?\d+\.\d+) *(-?\d+\.\d+) *\]
+// $1, $2, $3, 
+
+    #define RGB_to_ACEScg mat3(0.6131178129, 0.3411819959, 0.0457873443, 0.0699340823, 0.9181030375, 0.0119327755, 0.0204629926, 0.1067686634, 0.8727159106)
+    #define ACEScg_to_RGB mat3(1.7048873310, -0.6241572745, -0.0808867739, -0.1295209353, 1.1383993260, -0.0087792418, -0.0241270599, -0.1246206123, 1.1488221099)
+    #define ACEScg_to_ACES2065_1 mat3(0.6954522414, 0.1406786965, 0.1638690622, 0.0447945634, 0.8596711184, 0.0955343182, -0.0055258826, 0.0040252103, 1.0015006723)
+#else
+    #define RGB_to_ACEScg transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
+    #define ACEScg_to_RGB transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
+    #define ACEScg_to_ACES2065_1 transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
+#endif
+
+// Used for hill ACES
+#define ACES_INPUT mat3(0.59719, 0.35458, 0.04823, 0.07600, 0.90834, 0.01566, 0.02840, 0.13383, 0.83777)
+#define ACES_OUTPUT mat3(1.60475, -0.53108, -0.07367, -0.10208, 1.10813, -0.00605, -0.00327, -0.07276,  1.07602)
+
+// ACEScg_to_RGB transformed with ACES_INPUT/ACES_OUTPUT so we don't have to do two matrix operations (although it's probably optimized by the compiler anyway)
+#define ACEScg_to_RRT_SAT mat3(0.968409, 0.0267469, 0.0046879, 0.00892041, 0.986953, 0.00422555, 0.00874694, 0.031994, 0.959333)
+#define RRT_SAT_to_ACEScg mat3(0.945253, 0.05206, 0.002847, 0.0147852, 0.981904, 0.00326916, 0.0149253, 0.0469684, 0.938042)
 
 
 
@@ -149,6 +179,11 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define WIND_SPEED_CONSTANT_USER (-5.0)
 
 #define LIGHTNING_FLASHES 0.8 // [0.0 0.1 0.2 0.4 0.6 0.8 1.0]
+
+// #define FOG_ENABLED_USER
+#ifdef FOG_ENABLED_USER
+#endif
+
 #define SPIDEREYES_MULT 10.0
 
 #define END_WARPING 0.0 // [0.0 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
@@ -188,10 +223,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define USE_LUT
 #ifdef USE_LUT
-#endif
-
-#define USE_ACES
-#ifdef USE_ACES
 #endif
 
 #define POST_TEMP 6550 // [3500 4000 4500 5000 5500 6000 6550 8000 9000 10000 11000 12000 13000 14000 15000]
@@ -481,16 +512,6 @@ const float shadowIntervalSize = 8.0;
 #define TORCH_TINT (kelvinToRGB(TORCH_TEMP))
 #define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * RGB_to_ACEScg)
 
-#if defined DIM_NETHER || defined DIM_END
-    #define DIM_NO_RAIN
-#endif
-#if defined DIM_NETHER || defined DIM_END
-    #define DIM_NO_SKY
-#endif
-
-#if defined DIM_END
-    #define DIM_NO_WIND
-#endif
 
 #define WIND_PERIOD_CONSTANT 0.3
 #define WIND_STRENGTH_CONSTANT (0.3 * WIND_STRENGTH_CONSTANT_USER)
@@ -500,6 +521,9 @@ const float shadowIntervalSize = 8.0;
 
 #if defined DIM_NETHER
     #define HAS_ATMOSPHERIC_FOG
+    #define DIM_NO_RAIN
+    #define DIM_NO_SKY
+
 
     #if defined BRIGHT_NETHER
         #define BASE_COLOR (vec3(2.0, 1.8, 1.6))
@@ -520,6 +544,10 @@ const float shadowIntervalSize = 8.0;
     #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
 #elif defined DIM_END
     #define HAS_ATMOSPHERIC_FOG
+    #define DIM_NO_RAIN
+    #define DIM_NO_SKY
+    #define DIM_NO_WIND
+
 
     #define BASE_COLOR (vec3(0.9, 0.7, 1.2) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (vec3(0.9, 0.85, 1.1) * RGB_to_ACEScg * 10.0)
@@ -538,14 +566,18 @@ const float shadowIntervalSize = 8.0;
     #define BOSS_BATTLE_SKY_MULT 0.7
     #define BOSS_BATTLE_ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
 #else
-    // #define HAS_ATMOSPHERIC_FOG
+    #define HAS_ATMOSPHERIC_FOG
+    #define ATMOSPHERIC_FOG_IN_SKY_ONLY
+    #define DIM_COMPLEX_WEATHER
 
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
     #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_ACEScg)
     
     #define ATMOSPHERIC_FOG_COLOR (fogColor)
-    #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
+    #define ATMOSPHERIC_FOG_MULTIPLIER 0.5
+
+    #define WEATHER_FOG_MULTIPLIER 10.0
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
 
@@ -553,6 +585,9 @@ const float shadowIntervalSize = 8.0;
 #endif
 #if defined ATMOSPHERIC_FOG_USER && defined HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG
+#endif
+#if defined DIM_COMPLEX_WEATHER && defined FOG_ENABLED_USER
+    #define FOG_ENABLED
 #endif
 
 
@@ -593,28 +628,6 @@ const float shadowIntervalSize = 8.0;
 #define NIGHT_EFFECT_HUE (vec3(0.2, 0.6, 1.0) * RGB_to_ACEScg)
 
 #define COLORS_SATURATION_WEIGHTS normalize(vec3(COLORS_SATURATION_WEIGHTS_RED, COLORS_SATURATION_WEIGHTS_GREEN, COLORS_SATURATION_WEIGHTS_BLUE))
-
-// using cat02
-#if defined USE_ACES
-// \[ *(-?\d+\.\d+) *(-?\d+\.\d+) *(-?\d+\.\d+) *\]
-// $1, $2, $3, 
-
-    #define RGB_to_ACEScg mat3(0.6131178129, 0.3411819959, 0.0457873443, 0.0699340823, 0.9181030375, 0.0119327755, 0.0204629926, 0.1067686634, 0.8727159106)
-    #define ACEScg_to_RGB mat3(1.7048873310, -0.6241572745, -0.0808867739, -0.1295209353, 1.1383993260, -0.0087792418, -0.0241270599, -0.1246206123, 1.1488221099)
-    #define ACEScg_to_ACES2065_1 mat3(0.6954522414, 0.1406786965, 0.1638690622, 0.0447945634, 0.8596711184, 0.0955343182, -0.0055258826, 0.0040252103, 1.0015006723)
-#else
-    #define RGB_to_ACEScg transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
-    #define ACEScg_to_RGB transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
-    #define ACEScg_to_ACES2065_1 transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
-#endif
-
-// Used for hill ACES
-#define ACES_INPUT mat3(0.59719, 0.35458, 0.04823, 0.07600, 0.90834, 0.01566, 0.02840, 0.13383, 0.83777)
-#define ACES_OUTPUT mat3(1.60475, -0.53108, -0.07367, -0.10208, 1.10813, -0.00605, -0.00327, -0.07276,  1.07602)
-
-// ACEScg_to_RGB transformed with ACES_INPUT/ACES_OUTPUT so we don't have to do two matrix operations (although it's probably optimized by the compiler anyway)
-#define ACEScg_to_RRT_SAT mat3(0.968409, 0.0267469, 0.0046879, 0.00892041, 0.986953, 0.00422555, 0.00874694, 0.031994, 0.959333)
-#define RRT_SAT_to_ACEScg mat3(0.945253, 0.05206, 0.002847, 0.0147852, 0.981904, 0.00326916, 0.0149253, 0.0469684, 0.938042)
 
 // #if TEX_RENDER_USER == 2
 //     #define TEX_RENDER (1 - DEBUG_VIEW)
