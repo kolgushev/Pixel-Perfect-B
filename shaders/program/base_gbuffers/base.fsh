@@ -118,7 +118,7 @@ void main() {
     #else
         vec4 albedo = texture2D(texture, texcoord);
         albedo.rgb *= color.rgb;
-        #if !defined g_terrain
+        #if !defined gc_terrain
             albedo.a *= color.a;
         #endif
         #if defined g_damagedblock
