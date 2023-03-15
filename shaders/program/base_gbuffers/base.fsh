@@ -153,7 +153,7 @@ void main() {
     #if defined g_basic
         if(renderStage == MC_RENDER_STAGE_OUTLINE) {
             #if OUTLINE_COLOR == 0
-                albedo = vec4(0.05, 0.05, 0.05, 0.8);
+                albedo = vec4(0.01, 0.01, 0.01, 0.8);
             #elif OUTLINE_COLOR == 1
                 albedo = vec4(10, 10, 10, 0.8);
             #elif OUTLINE_COLOR == 2
