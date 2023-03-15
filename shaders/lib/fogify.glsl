@@ -18,10 +18,14 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
     vec3 atmosPhogColor = vec3(0);
     float nightVisionVisibility = 0;
     if(isEyeInWater == 0) {
-        #if defined ATMOSPHERIC_FOG
+        #if defined ATMOSPHERIC_FOG || defined FOG_ENABLED
             atmosPhog = length(position) * ATMOSPHERIC_FOG_DENSITY * ATMOSPHERIC_FOG_MULTIPLIER;
             #if defined FOG_ENABLED
-                atmosPhog *= fogWeather * WEATHER_FOG_MULTIPLIER + inSky;
+                float mult = fogWeather * WEATHER_FOG_MULTIPLIER;
+                #if defined ATMOSPHERIC_FOG
+                    mult += inSky;
+                #endif
+                atmosPhog *= mult;
             #elif defined ATMOSPHERIC_FOG_IN_SKY_ONLY
                 atmosPhog *= inSky;
             #endif
