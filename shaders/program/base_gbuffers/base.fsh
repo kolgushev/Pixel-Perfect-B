@@ -23,6 +23,7 @@ uniform sampler2D shadowcolor0;
 uniform vec4 entityColor;
 uniform int isEyeInWater;
 uniform float nightVision;
+uniform float blindness;
 
 uniform vec3 fogColor;
 uniform vec3 skyColor;
@@ -103,6 +104,7 @@ void main() {
     vec3 lightmap = vec3(light, color.a);
 
     vec3 customFogColor = mix(fogColor, skyColor, SKY_COLOR_BLEND);
+    customFogColor = mix(customFogColor, vec3(0), blindness);
 
     #if defined g_skybasic
         // TODO: make a proper sunset
@@ -278,7 +280,7 @@ void main() {
         #endif
 
         // apply fog as well
-        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindness, gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;

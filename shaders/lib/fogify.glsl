@@ -1,8 +1,8 @@
-vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
+vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
     vec3 composite = diffuse.rgb;
 
     // Render fog in a cylinder shape
-    float farRcp = 1 / far;
+    float farRcp = mix(1 / far, 0.05, blindness);
     float fogFlat = length(position.y);
     float fogTube = length(position.xz) + 16;
     
