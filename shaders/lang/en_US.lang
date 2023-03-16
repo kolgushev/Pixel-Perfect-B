@@ -318,9 +318,9 @@ screen.MISC=Extras
             option.DIMENSION_WEATHER.comment=Change weather settings in each vanilla dimension. Currently this only includes nether weather
 
             option.OVERWORLD_FOGGY_WEATHER=Foggy Weather In Overworld
-                option.OVERWORLD_HAS_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
-                value.OVERWORLD_HAS_FOGGY_WEATHER.true=Yes
-                value.OVERWORLD_HAS_FOGGY_WEATHER.false=No
+                option.OVERWORLD_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
+                value.OVERWORLD_FOGGY_WEATHER.true=Yes
+                value.OVERWORLD_FOGGY_WEATHER.false=No
                 
             option.NETHER_FOGGY_WEATHER=Foggy Weather In Nether
                 option.NETHER_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
