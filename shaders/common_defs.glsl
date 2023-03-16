@@ -535,7 +535,7 @@ const float shadowIntervalSize = 8.0;
 
 #define LIGHTNING_FLASH_TINT (vec3(0.5, 0.6, 1.0))
 
-#define RAIN_CONSTRAINT 0.15
+#define RAIN_CONSTRAINT 0.12
 #define RAIN_AMOUNT (0.6 - RAIN_AMOUNT_USER * 0.2 - RAIN_CONSTRAINT * 0.5)
 
 // DIM_NO_SKY is for dimensions which lack any fullscreen-covering gbuffers_skybasic/skytextured

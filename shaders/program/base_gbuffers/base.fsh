@@ -166,14 +166,18 @@ void main() {
 
         #if defined g_damagedblock
             albedo.a = clamp(albedo.a - 0.003, 0, 1);
-        #elif defined g_weather && defined NOISY_RAIN
-            float rainMask = tile((frameTimeCounter * 12 + absolutePosition.y) * 3 + positionMod * 200 + absolutePosition.xz * 4, vec2(1, 0), false).r;
+        #elif defined g_weather
+            #if defined NOISY_RAIN
+                float rainMask = tile((frameTimeCounter * 12 + absolutePosition.y) * 3 + positionMod * 200 + absolutePosition.xz * 4, vec2(1, 0), false).r;
 
-            rainMask = smoothstep(RAIN_AMOUNT, RAIN_AMOUNT + RAIN_CONSTRAINT, rainMask);
+                rainMask = smoothstep(RAIN_AMOUNT, RAIN_AMOUNT + RAIN_CONSTRAINT, rainMask);
 
-            albedo.a *= rainMask;
-            // albedo.a = 1;
-            // albedo.rgb = vec3(rainMask);
+                albedo.a *= rainMask;
+                // albedo.a = 1;
+                // albedo.rgb = vec3(rainMask);
+            #else
+                albedo.a *= RAIN_AMOUNT_USER;
+            #endif
         #endif
         
         // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed
@@ -251,11 +255,10 @@ void main() {
     #if defined g_weather && !defined DIM_NO_RAIN
         const float a = 1.5;
         float skyTransition = skyTime(worldTime);
-        albedo.a *= RAIN_TRANSPARENCY;
 
-        albedo.a = max(0.1, albedo.a);
+        albedo.a = max(0.15, albedo.a);
 
-        albedo.a *= rainStrength;
+        albedo.a *= RAIN_TRANSPARENCY * rainStrength;
         
         albedo.rgb *= 
             rainMultiplier(rainStrength) * mix(moonBrightness(moonPhase) * MOON_COLOR, SUN_COLOR, skyTransition)
