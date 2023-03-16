@@ -23,6 +23,7 @@ screen.POST_PROCESSING=Post Processing
         value.DITHERING_MODE.1=Yes
 
 screen.LIGHTING=Lighting
+
     option.VANILLA_LIGHTING=Lighting Mode
         value.VANILLA_LIGHTING.0=Optifine
         value.VANILLA_LIGHTING.1=Vanilla §b+
@@ -40,6 +41,7 @@ screen.LIGHTING=Lighting
     screen.SSAO_BETA=Ambient Occlusion
     
     screen.SSAO=Ambient Occlusion §c(Experimental)§r
+
         option.AO_MODE=Mode
             option.AO_MODE.comment=Screen-Space ➤ Medium performance hit.
             value.AO_MODE.0=Off
@@ -134,6 +136,7 @@ screen.SHADOWS=Shadows
         value.SHADOW_AFFECTED_BY_LIGHTMAP.false=No
 
 screen.COLORS=Colors
+
     option.BOSS_BATTLE_COLORS=Boss Battle Colors
         option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact. §cDoes not work with Iris!
         value.BOSS_BATTLE_COLORS.true=Yes
@@ -236,7 +239,8 @@ screen.RESOURCEPACK=Resourcepack Settings
         value.TEX_RES.0.001953125=512×512
         value.TEX_RES.0.0009765625=1024×1024
 
-screen.MISC=Misc
+screen.MISC=Extras
+
     option.STREAMER_MODE=Darkness
         option.STREAMER_MODE.comment=Streamer Mode: For content creators - plays nice with compression but won't look as good. Normal: For normal people - the definitive experience. Midnight: For people with fancy monitors - darkness has never been darker. Hardcore Darkness: feel the void.
         value.STREAMER_MODE.3=Hardcore Darkness
@@ -285,19 +289,52 @@ screen.MISC=Misc
         value.OUTLINE_COLOR.5=Dimension Themed
 
     screen.WEATHER=Weather
+
         option.WAVING_ENABLED=Waving Objects
             value.WAVING_ENABLED.true=Yes
             value.WAVING_ENABLED.false=No
         # TODO: add waving rainy
         option.WIND_STRENGTH_CONSTANT_USER=Wind Strength
 
-        option.FOG_ENABLED_USER=Enable Foggy Weather
+        option.NOISY_RAIN=Scattered Rain
+            option.NOISY_RAIN.comment=In real life, rain isn't perfectly uniform. This option attempts to replicate that by making the rain more and less dense in some areas where it falls.
+            value.NOISY_RAIN.true=Yes
+            value.NOISY_RAIN.false=No
+
+        option.RAIN_AMOUNT_USER=Scattered Rain Amount
+            option.RAIN_AMOUNT_USER.comment=Changes how large the patches of rain are when Scattered Rain is turned on. If Scattered Rain is off, this setting acts the same as Rain Opacity.
+            
+        option.RAIN_TRANSPARENCY=Rain Opacity
+            option.RAIN_TRANSPARENCY.comment=Changes how see-through the rain is. Lower values mean more transparent rain.
+            value.RAIN_TRANSPARENCY.0.0=No Rain
+
+        option.FOG_ENABLED_USER=Foggy Weather
             option.FOG_ENABLED_USER.comment=Adds a new custom weather effect. Foggy weather is purely cosmetic and can be turned off if you don't like the restricted visibility.
             value.FOG_ENABLED_USER.true=Yes
             value.FOG_ENABLED_USER.false=No
 
+        screen.DIMENSION_WEATHER=Per-Dimension Weather Controls
+            option.DIMENSION_WEATHER.comment=Change weather settings in each vanilla dimension. Currently this only includes nether weather
+
+            option.OVERWORLD_FOGGY_WEATHER=Foggy Weather In Overworld
+                option.OVERWORLD_HAS_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
+                value.OVERWORLD_HAS_FOGGY_WEATHER.true=Yes
+                value.OVERWORLD_HAS_FOGGY_WEATHER.false=No
+                
+            option.NETHER_FOGGY_WEATHER=Foggy Weather In Nether
+                option.NETHER_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
+                value.NETHER_FOGGY_WEATHER.true=Yes
+                value.NETHER_FOGGY_WEATHER.false=No
+
+            option.END_FOGGY_WEATHER=Foggy Weather In End
+                option.NETHER_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
+                value.END_FOGGY_WEATHER.true=Yes
+                value.END_FOGGY_WEATHER.false=No
+
+
 
 screen.ADVANCED=Advanced
+
     option.DEBUG_VIEW=Debug View
         option.DEBUG_VIEW.comment=Disables all existing albedo writes to allow the developer (and you, within license restrictions) to create their own for debugging purposes.
         value.DEBUG_VIEW.true=Yes
@@ -341,8 +378,21 @@ screen.ADVANCED=Advanced
         value.SHADOW_TRANSITION_MIXING.1=Unshadowed
         value.SHADOW_TRANSITION_MIXING.0=Shadowed
 
+    option.END_SKY_RESOLUTION=End Sky Resolution
+        option.END_SKY_RESOLUTION.comment=Because the end sky has a custom renderer to avoid the repeating texture effect it usually has, we can control its resolution.
+
+    option.NO_WAVING_FULL_BLOCKS=Disable Full Blocks Waving
+        option.NO_WAVING_FULL_BLOCKS.comment=Waving full blocks (such as leaves) don't work too well with this shader's wind system. If you want to enable them anyway, do so here.
+        value.NO_WAVING_FULL_BLOCKS.true=Yes
+        value.NO_WAVING_FULL_BLOCKS.false=No
+
+    option.HDR_TEX_LIGHT_BRIGHTNESS=Convert Light Sources To HDR
+        option.HDR_TEX_LIGHT_BRIGHTNESS.comment=Uses a special algorithm to increase the contrast and brightness of lit blocks. Although this usually looks much better when turned on, some LMTs may blow out already super-bright blocks like froglights.
+        value.HDR_TEX_LIGHT_BRIGHTNESS.true=Yes
+        value.HDR_TEX_LIGHT_BRIGHTNESS.false=No
+        
     screen.AUTO_ADDED=Automatic Settings
-        screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work.
+        screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work correctly, if at all.
 
     screen.EXPERIMENTAL=Experimental
         screen.FORCED_PERSPECTIVE=Forced Perpective

@@ -186,17 +186,20 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #endif
 #define RAIN_AMOUNT_USER 0.6 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define RAIN_SCALE 3
-#define RAIN_TRANSPARENCY 0.5 // [0 0.25 0.50 0.75 1.00]
+#define RAIN_TRANSPARENCY 0.5 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
 // #define FOG_ENABLED_USER
 #ifdef FOG_ENABLED_USER
 #endif
 
-// #define NETHER_HAS_FOGGY_WEATHER
-#ifdef NETHER_HAS_FOGGY_WEATHER
+#define OVERWORLD_FOGGY_WEATHER
+#ifdef OVERWORLD_FOGGY_WEATHER
 #endif
-// #define END_HAS_FOGGY_WEATHER
-#ifdef END_HAS_FOGGY_WEATHER
+// #define NETHER_FOGGY_WEATHER
+#ifdef NETHER_FOGGY_WEATHER
+#endif
+// #define END_FOGGY_WEATHER
+#ifdef END_FOGGY_WEATHER
 #endif
 
 #define SPIDEREYES_MULT 10.0
@@ -548,7 +551,7 @@ const float shadowIntervalSize = 8.0;
     #define DIM_NO_RAIN
     #define DIM_NO_SKY
     #define DIM_NO_SKYLIGHT
-    #if defined NETHER_HAS_FOGGY_WEATHER
+    #if defined NETHER_FOGGY_WEATHER
         #define DIM_HAS_FOGGY_WEATHER
     #endif
 
@@ -578,7 +581,7 @@ const float shadowIntervalSize = 8.0;
     #define DIM_USES_SKYBOX
     #define DIM_NO_SKYLIGHT
     #define DIM_NO_WIND
-    #if defined END_HAS_FOGGY_WEATHER
+    #if defined END_FOGGY_WEATHER
         #define DIM_HAS_FOGGY_WEATHER
     #endif
 
@@ -603,8 +606,10 @@ const float shadowIntervalSize = 8.0;
     #define HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG_IN_SKY_ONLY
     #define WEATHER_FOG_IN_SKY_ONLY
-    #define DIM_HAS_FOGGY_WEATHER
     #define DIM_HAS_DAYNIGHT_CYCLE
+    #if defined OVERWORLD_FOGGY_WEATHER
+        #define DIM_HAS_FOGGY_WEATHER
+    #endif
 
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
