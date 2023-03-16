@@ -311,7 +311,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define NOISY_LAVA 1 // [0 1 2]
 
-// #define INVISIBILITY_DISTORTION
+#define INVISIBILITY_DISTORTION
 #ifdef INVISIBILITY_DISTORTION
 #endif
 #define INVISIBILITY_DISTORT_STRENGTH 0.005

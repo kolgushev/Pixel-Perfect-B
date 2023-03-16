@@ -138,7 +138,7 @@ screen.SHADOWS=Shadows
 screen.COLORS=Colors
 
     option.BOSS_BATTLE_COLORS=Boss Battle Colors
-        option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact. §cDoes not work with Iris!
+        option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact. This effect is exclusive to Optifine. §cDoes not work with Iris!
         value.BOSS_BATTLE_COLORS.true=Yes
         value.BOSS_BATTLE_COLORS.false=No
 
@@ -254,6 +254,7 @@ screen.MISC=Extras
         value.BRIGHT_NETHER.false=No
 
     option.INVISIBILITY_DISTORTION=Distort Screen When Invisible
+        option.INVISIBILITY_DISTORTION.comment=Adds a color distortion effect when drinking an invisibility potion. This effect is exclusive to Iris. §cDoes not work with Optifine!
         value.INVISIBILITY_DISTORTION.true=Yes
         value.INVISIBILITY_DISTORTION.false=No
 
