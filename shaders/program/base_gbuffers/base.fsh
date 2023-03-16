@@ -226,6 +226,8 @@ void main() {
             #elif OUTLINE_COLOR == 5
                 albedo.rgb = BASE_COLOR;
                 albedo.a = 0.8;
+            #elif OUTLINE_COLOR == -1
+                albedo = vec4(-1, -1, -1, 1);
             #endif
         }
     #endif
@@ -387,6 +389,11 @@ void main() {
         #if defined SHADOWS_ENABLED
             b1 = directLighting;
         #endif
+    
+    #elif OUTLINE_COLOR == -1 && defined g_basic
+        if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+            b0 = albedo;
+        }
     #else
         b1 = albedo;
     #endif

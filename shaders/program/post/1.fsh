@@ -55,7 +55,7 @@ void main() {
     #endif
 
     vec3 tonemapped = albedo.rgb;
-    
+
     if(isEyeInWater == 1) {
         tonemapped *= OVERLAY_COLOR_WATER;
         #if defined INVISIBILITY_DISTORTION
@@ -154,6 +154,7 @@ void main() {
     if(POST_SATURATION != 1.0) {
         colorCorrected = saturateRGB(POST_SATURATION) * max(colorCorrected, vec3(0));
     }
+
 
     // dithering
     #if DITHERING_MODE != 0

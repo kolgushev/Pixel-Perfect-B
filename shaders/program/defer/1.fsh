@@ -52,6 +52,9 @@ void main() {
     float depth = texture(depthtex1, texcoord).r;
 
     bool isSky = albedo.a == 0;
+    #if OUTLINE_COLOR == -1
+        bool isOutline = sky.rgb == vec3(-1);
+    #endif
 
     // the nether doesn't render sky
     #if defined DIM_NO_SKY
@@ -90,6 +93,13 @@ void main() {
     // fade out around edges of world
     composite = isSky ? skyColorProcessed : mix(composite, skyColorProcessed, fog);
     
+    #if OUTLINE_COLOR == -1
+        if(isOutline) {
+            float luma = luminance(composite);
+            composite = changeLuminance(composite, luma, 1 - luma);
+        }
+    #endif
+
     // manually clear for upcoming transparency pass
     b1 = vec4(0.0);
 

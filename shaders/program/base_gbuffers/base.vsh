@@ -237,7 +237,7 @@ void main() {
             #if defined OUTLINE_THROUGH_BLOCKS
                 glPos.z *= 0.2;
             #else
-                glPos.z -= EPSILON;
+                glPos.z -= EPSILON * 0.5;
             #endif
         }
     #endif

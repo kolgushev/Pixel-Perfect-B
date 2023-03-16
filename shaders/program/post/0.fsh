@@ -45,7 +45,7 @@ void main() {
     float skyLightmap = texture(colortex2, texcoord).g;
     float depth = texture(depthtex0, texcoord).r;
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
-    
+
     #if PIXELATED_SHADOWS != 0
         vec3 normal = texture(colortex3, texcoord).rgb;
 

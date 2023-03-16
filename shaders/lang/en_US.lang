@@ -281,8 +281,9 @@ screen.MISC=Extras
         value.OUTLINE_THROUGH_BLOCKS.false=No
 
     option.OUTLINE_COLOR=Selection Outline Color
+        value.OUTLINE_COLOR.-1=§k|§rNegative§k|§r
         value.OUTLINE_COLOR.0=Default
-        value.OUTLINE_COLOR.1=§fWhite
+        value.OUTLINE_COLOR.1=§7White
         value.OUTLINE_COLOR.2=§4Red
         value.OUTLINE_COLOR.3=§aGreen
         value.OUTLINE_COLOR.4=§9Blue
