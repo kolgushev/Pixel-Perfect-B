@@ -36,13 +36,16 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define RCP_GAMMA 0.45454545455
 
 #define LIGHT_MATRIX mat4(vec4(0.00390625, 0.0, 0.0, 0.0), vec4(0.0, 0.00390625, 0.0, 0.0), vec4(0.0, 0.0, 0.00390625, 0.0), vec4(0.03125, 0.03125, 0.03125, 1.0))
-#define NOISETEX_RES 512
+#define NOISETEX_TILES_RES 512
+#define NOISETEX_TILES_WIDTH 2
 
 // utils
 // normal pow (usually) takes 9 GPU cycles to compute, so we can redefine any pow ≤ 9 as multiplication for a speedup
-// this is usually done automatically by the compiler, but this allows it to be enabled manually
-#define OPTIMIZE_POW
+// this is usually done automatically by the compiler, but these settings allow it to be enabled manually
+// #define OPTIMIZE_POW
 #define OPTIMIZE_POW2
+
+// NOTE: enabling these settings may actually lead to a decrease in performance, since (n) is evaluted for each time it is multiplied
 
 #ifdef OPTIMIZE_POW2
     #define pow2(n) ((n) * (n))
@@ -74,14 +77,14 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // doing this may be faster on older hardware, but make sure to test before enabling
 #define OPTIMIZE_MUL 0
 #if OPTIMIZE_MUL == 1
-    #define mul_m4_v3(m, v) fma((v).xxxx, (m)[0], fma((v).yyyy, (m)[1], fma((v).zzzz, (m)[2], (m)[3])))
-    // #define mul_m4_v3(m, v) fma(vec4(v.x), (m)[0], fma(vec4(v.y), (m)[1], fma(vec4(v.z), (m)[2], (m)[3])))
+    #define mul_m4_v3(m, v) ((v).xxxx * (m)[0] + ((v).yyyy * (m)[1] + ((v).zzzz * (m)[2] + (m)[3])))
 #else
     #define mul_m4_v3(m, v) ((m) * vec4(v, 1))
 #endif
 
 #define average2(a, b) (((a) + (b)) / 2)
 #define rot(t) mat2(cos(t), -sin(t), sin(t), cos(t))
+#define signedPow(n, e) (sign(n) * pow(abs(n), e))
 
 #define view(a) vec4(mul_m4_v3(gbufferModelView, a)).xyz
 #define viewInverse(a) vec4(mul_m4_v3(gbufferModelViewInverse, a)).xyz
@@ -111,7 +114,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // \begin{pmatrix}1&0&0\\ 0&s&0\\ 0&0&s\end{pmatrix}
 
 // \begin{pmatrix}0.299+0.700807s&0.299-0.298629s&0.299-0.300017s\\ 0.587-0.586727s&0.587+0.412909s&0.587-0.588397s\\ 0.114-0.113745s&0.114-0.113905s&0.114+0.885602s\end{pmatrix}
-#define saturateRGB(s) mat3(0.299 + 0.700807 * s, 0.299 - 0.298629 * s, 0.299 - 0.300017 * s, 0.587 - 0.586727 * s, 0.587 + 0.412909 * s, 0.587 - 0.588397 * s, 0.114 - 0.113745 * s, 0.114 - 0.113905 * s, 0.114 + 0.885602 * s)
+#define saturateRGB(s) mat3(0.299 + 0.700807 * (s), 0.299 - 0.298629 * (s), 0.299 - 0.300017 * (s), 0.587 - 0.586727 * (s), 0.587 + 0.412909 * (s), 0.587 - 0.588397 * (s), 0.114 - 0.113745 * (s), 0.114 - 0.113905 * (s), 0.114 + 0.885602 * (s))
 // (u, w) from original paper replaced with (cos(h), sin(h)) since setting hue is more useful than modifying
 #define hue(h) vec2(cos(h), sin(h))
 #define transformHSV(h, s, v) mat3(0.299*(v)+0.701*(v)*(s)*(h).x+0.168*(v)*(s)*(h).y,0.587*(v)-0.587*(v)*(s)*(h).x+0.330*(v)*(s)*(h).y,0.114*(v)-0.114*(v)*(s)*(h).x-0.497*(v)*(s)*(h).y,0.299*(v)-0.299*(v)*(s)*(h).x-0.328*(v)*(s)*(h).y,0.587*(v)+0.413*(v)*(s)*(h).x+0.035*(v)*(s)*(h).y,0.114*(v)-0.114*(v)*(s)*(h).x+0.292*(v)*(s)*(h).y,0.299*(v)-0.3*(v)*(s)*(h).x+1.25*(v)*(s)*(h).y,0.587*(v)-0.588*(v)*(s)*(h).x-1.05*(v)*(s)*(h).y,0.114*(v)+0.886*(v)*(s)*(h).x-0.203*(v)*(s)*(h).y)
@@ -126,31 +129,94 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define LUMINANCE_COEFFS vec3(0.2126, 0.7152, 0.0722)
 #define LUMINANCE_COEFFS_INVERSE vec3(4.7037, 1.3982, 13.8504)
+
+#define hand(h) ((h) < 0.557)
+#define removeBorder(n, r) (((n) - 0.5) * (1 - (r)) + 0.5)
+#define gammaCorrection(x, y) pow(x, vec3(y))
+
+// TODO: Add this as a custom uniform
+#define skyTime(t) (clamp(sin(2 * PI * float(t + 785) / 24000) + 0.5, 0, 1))
+
+
+
+#define USE_ACES
+#ifdef USE_ACES
+#endif
+
+// using cat02
+#if defined USE_ACES
+// \[ *(-?\d+\.\d+) *(-?\d+\.\d+) *(-?\d+\.\d+) *\]
+// $1, $2, $3, 
+
+    #define RGB_to_ACEScg mat3(0.6131178129, 0.3411819959, 0.0457873443, 0.0699340823, 0.9181030375, 0.0119327755, 0.0204629926, 0.1067686634, 0.8727159106)
+    #define ACEScg_to_RGB mat3(1.7048873310, -0.6241572745, -0.0808867739, -0.1295209353, 1.1383993260, -0.0087792418, -0.0241270599, -0.1246206123, 1.1488221099)
+    #define ACEScg_to_ACES2065_1 mat3(0.6954522414, 0.1406786965, 0.1638690622, 0.0447945634, 0.8596711184, 0.0955343182, -0.0055258826, 0.0040252103, 1.0015006723)
+#else
+    #define RGB_to_ACEScg transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
+    #define ACEScg_to_RGB transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
+    #define ACEScg_to_ACES2065_1 transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
+#endif
+
+// Used for hill ACES
 #define ACES_INPUT mat3(0.59719, 0.35458, 0.04823, 0.07600, 0.90834, 0.01566, 0.02840, 0.13383, 0.83777)
 #define ACES_OUTPUT mat3(1.60475, -0.53108, -0.07367, -0.10208, 1.10813, -0.00605, -0.00327, -0.07276,  1.07602)
 
-
-#define hand(h) ((h) < 0.557)
-#define skyTime(t) (clamp(sin(2 * PI * float(t + 785) / 24000) + 0.5, 0, 1))
-#define removeBorder(n, r) (((n) - 0.5) * (1 - (r)) + 0.5)
-
-// block mappings
-
-#define CUTOUTS 1
-#define CUTOUTS_UPSIDE_DOWN 2
-#define LIT 3
-#define LIT_CUTOUTS 4
-#define LIT_CUTOUTS_UPSIDE_DOWN 5
-#define LIT_PARTIAL 6
-#define LIT_PARTIAL_CUTOUTS 7
-#define LIT_PARTIAL_CUTOUTS_UPSIDE_DOWN 8
-#define LIT_PROBLEMATIC 9
-
+// ACEScg_to_RGB transformed with ACES_INPUT/ACES_OUTPUT so we don't have to do two matrix operations (although it's probably optimized by the compiler anyway)
+#define ACEScg_to_RRT_SAT mat3(0.968409, 0.0267469, 0.0046879, 0.00892041, 0.986953, 0.00422555, 0.00874694, 0.031994, 0.959333)
+#define ACEScg_to_RRT_SAT_INVERSE mat3(1.03292, -0.027833, -0.00492491, -0.0092969, 1.01361, -0.00441921, -0.00910785, -0.0335505, 1.04258)
+#define RRT_SAT_to_ACEScg mat3(0.945253, 0.05206, 0.002847, 0.0147852, 0.981904, 0.00326916, 0.0149253, 0.0469684, 0.938042)
+#define RRT_SAT_to_ACEScg_INVERSE mat3(1.05884, -0.0559948, -0.00301848, -0.0158903, 1.01944, -0.00350461, -0.0160517, -0.0501531, 1.06627)
 
 
 
 
 // Settings
+#define WAVING_ENABLED
+#ifdef WAVING_ENABLED
+#endif
+
+#define NO_WAVING_FULL_BLOCKS
+#ifdef NO_WAVING_FULL_BLOCKS
+#endif
+
+#define WIND_STRENGTH_CONSTANT_USER 0.5 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]
+#define WIND_SPEED_CONSTANT_USER (-5.0)
+
+#define LIGHTNING_FLASHES 0.8 // [0.0 0.1 0.2 0.4 0.6 0.8 1.0]
+#define NOISY_RAIN
+#ifdef NOISY_RAIN
+#endif
+#define RAIN_AMOUNT_USER 0.6 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define RAIN_SCALE 3
+#define RAIN_TRANSPARENCY 0.5 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+
+// #define FOG_ENABLED_USER
+#ifdef FOG_ENABLED_USER
+#endif
+
+#define OVERWORLD_FOGGY_WEATHER
+#ifdef OVERWORLD_FOGGY_WEATHER
+#endif
+// #define NETHER_FOGGY_WEATHER
+#ifdef NETHER_FOGGY_WEATHER
+#endif
+// #define END_FOGGY_WEATHER
+#ifdef END_FOGGY_WEATHER
+#endif
+
+#define SPIDEREYES_MULT 10.0
+
+#define END_WARPING 0.0 // [0.0 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+
+// #define OUTLINE_THROUGH_BLOCKS
+#ifdef OUTLINE_THROUGH_BLOCKS
+#endif
+
+#define OUTLINE_COLOR 0 // [-1 0 1 2 3 4]
+
+#define FORCED_PERSPECTIVE_POWER 0.0 // [-0.5 -0.3 -0.2 -0.15 -0.1 -0.05 0.0 0.05 0.1 0.15 0.2 0.3 0.5]
+#define FORCED_PERSPECTIVE_BIAS 1.0  // [0.35 0.46 0.59 0.77 1.0 1.3 1.69 2.2 2.86]
+#define FORCED_PERSPECTIVE_SHAPE 1.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
 #define VANILLA_COLORS 0.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define CUTOUT_ALIGN_STRENGTH 0.8 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
@@ -158,26 +224,25 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // 0 is old lighting off, 1 is standard vanilla, 2 is custom shading
 #define VANILLA_LIGHTING 2 // [0 1 2]
 
-// #define REAL_LIGHTING
-#ifdef REAL_LIGHTING
+// #define DYNAMIC_EXPOSURE_LIGHTING
+#ifdef DYNAMIC_EXPOSURE_LIGHTING
 #endif
 #define SUN_TEMP 5777 // [1500 2000 2500 3000 3500 4000 4500 5000 5777 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000]
-#define TORCH_TEMP 4000 // [1500 2000 2500 3000 3500 4000 4500 5000 5500 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000]
+#define TORCH_TEMP 5000 // [1500 2000 2500 3000 3500 4000 4500 5000 5500 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000]
 
-#define SKY_COLOR_BLEND 0.4 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define SKY_COLOR_BLEND 0.6 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define STAR_WEIGHTS 1.5 // [0.75 1.0 1.25 1.5 1.75 2.0 2.25 2.5 2.75 3.0]
 
 #define SKY_SATURATION 1.0 // [0.5 0.75 1.0 1.13 1.69 2.53 3.8 5.7]
 #define SKY_BRIGHTNESS_USER 1.0 // [0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
+#define PLANET_BRIGHTNESS_USER 2.0
 
-#define CONTRAST 0.0 //[-0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6]
+#define CONTRAST 0.0 //[-0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6]
 #define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+#define POST_SATURATION 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+
 #define USE_LUT
 #ifdef USE_LUT
-#endif
-
-#define USE_ACES
-#ifdef USE_ACES
 #endif
 
 #define POST_TEMP 6550 // [3500 4000 4500 5000 5500 6000 6550 8000 9000 10000 11000 12000 13000 14000 15000]
@@ -196,7 +261,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define NIGHT_EFFECT_SATURATION 0.3 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define NIGHT_EFFECT_POINT 0.1 // [0.0625 0.07 0.08 0.09 0.1 0.11 0.12 0.13 0.14 0.15]
 
-#define BOSS_BATTLE_COLORS
+// #define BOSS_BATTLE_COLORS
 #ifdef BOSS_BATTLE_COLORS
 #endif
 
@@ -227,8 +292,33 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define NIGHT_SKY_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 #define BLOCK_LIGHT_MULT_USER 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
+#define BLOCK_LIGHT_POWER 1
+
+#define HDR_TEX_LIGHT_BRIGHTNESS
+#ifdef HDR_TEX_LIGHT_BRIGHTNESS
+#endif
+
+#define HDR_TEX_STANDARD 0
+
 #define ATMOSPHERIC_FOG_USER
-#define ATMOSPHERIC_FOG_DENSITY 0.001 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
+#ifdef ATMOSPHERIC_FOG_USER
+#endif
+#define ATMOSPHERIC_FOG_DENSITY 0.0015 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
+
+#define WATER_FOG_FROM_OUTSIDE
+#ifdef WATER_FOG_FROM_OUTSIDE
+#endif
+
+#define NOISY_LAVA 1 // [0 1 2]
+
+// #define INVISIBILITY_DISTORTION
+#ifdef INVISIBILITY_DISTORTION
+#endif
+#define INVISIBILITY_DISTORT_STRENGTH 0.005
+
+// #define BRIGHT_NETHER
+#ifdef BRIGHT_NETHER
+#endif
 
 // #define SHADOWS_ENABLED_USER
 #ifdef SHADOWS_ENABLED_USER
@@ -256,8 +346,17 @@ const float shadowDistance = 128.0;
 #ifdef PIXELATED_SHADOWS
 #endif
 
-// 0:off 1:on
 #define SHADOW_TRANSITION_MIXING 0 // [0 1]
+
+#define SMOOTH_LAVA
+#ifdef SMOOTH_LAVA
+#endif
+
+
+// #define USE_DOF
+#ifdef USE_DOF
+#endif
+
 
 // #define DEBUG_VIEW
 #ifdef DEBUG_VIEW
@@ -265,15 +364,19 @@ const float shadowDistance = 128.0;
 // #define SHADOW_DEBUG
 #ifdef SHADOW_DEBUG
 #endif
+#define ISOLATE_RENDER_STAGE -1 // [-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23]
 // #define TEX_RENDER
 #ifdef TEX_RENDER
 #endif
-#define TEX_RES 0.0625 // [0.25 -0.75 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
+#define TEX_RES 0.0625 // [0.25 0.125 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
 
+#define END_SKY_RESOLUTION 128 // [32 64 128 256]
 
 
 
 // "temporary" hardcoding
+const bool noisetexNearest = false;
+
 #if VANILLA_LIGHTING != 2
     const float sunPathRotation = 0.0;
 #else
@@ -326,7 +429,7 @@ const bool shadowcolor1Nearest = true;
 #endif
 
 #if VANILLA_LIGHTING == 2
-    #ifndef REAL_LIGHTING
+    #ifndef DYNAMIC_EXPOSURE_LIGHTING
         #define SUN_LIGHT_MULT (5.0 * SUN_LIGHT_MULT_USER)
         #define SKY_LIGHT_MULT (4.0 * SKY_LIGHT_MULT_USER)
         #define SKY_LIGHT_MULT_OVERCAST (2.0 * SKY_LIGHT_MULT_OVERCAST_USER)
@@ -334,14 +437,12 @@ const bool shadowcolor1Nearest = true;
         #define NIGHT_SKY_LIGHT_MULT (0.6 * NIGHT_SKY_LIGHT_MULT_USER)
         #define BLOCK_LIGHT_MULT (5.0 * BLOCK_LIGHT_MULT_USER)
     #else
-        // in lumens per meter² (lux) / 1000
-        #define SUN_LIGHT_MULT 1110.0
-        #define SKY_LIGHT_MULT 195.0
-        #define SKY_LIGHT_MULT_OVERCAST 10.0
-        #define MOON_LIGHT_MULT 0.00075
-        // TODO: measure night sky
-        #define NIGHT_SKY_LIGHT_MULT 0.00001
-        #define BLOCK_LIGHT_MULT 16
+        #define SUN_LIGHT_MULT 11.100
+        #define SKY_LIGHT_MULT 19.5
+        #define SKY_LIGHT_MULT_OVERCAST 1.0
+        #define MOON_LIGHT_MULT 0.0075
+        #define NIGHT_SKY_LIGHT_MULT 0.001
+        #define BLOCK_LIGHT_MULT 0.64
     #endif
 #else
     #define SKY_LIGHT_MULT (3.0 * SKY_LIGHT_MULT_USER)
@@ -393,79 +494,148 @@ const bool shadowcolor1Nearest = true;
 
 // measuring face of stone block
 #if LMT_MODE == 4
-    #if STREAMER_MODE == 0 || STREAMER_MODE == -1
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.4)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.55)
-    #elif STREAMER_MODE == 1
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.05)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.17)
-    #elif STREAMER_MODE == 2
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.01)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.10)
-    #elif STREAMER_MODE == 3
-        #define MIN_LIGHT_MULT 0.0
-        #define AMBIENT_LIGHT_MULT 0.0
+    #if !defined DYNAMIC_EXPOSURE_LIGHTING
+        #if STREAMER_MODE == 0 || STREAMER_MODE == -1
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.4)
+            #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.55)
+        #elif STREAMER_MODE == 1
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.05)
+            #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.17)
+        #elif STREAMER_MODE == 2
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.01)
+            #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.10)
+        #elif STREAMER_MODE == 3
+            #define MIN_LIGHT_MULT 0.0
+            #define AMBIENT_LIGHT_MULT 0.0
+        #endif
+    #else
+        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.0001)
+        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.001)
     #endif
 #else
-    #if STREAMER_MODE == 0 || STREAMER_MODE == -1
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.16)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.22)
-    #elif STREAMER_MODE == 1
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.02)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.068)
-    #elif STREAMER_MODE == 2
-        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.003)
-        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.03)
-    #elif STREAMER_MODE == 3
-        #define MIN_LIGHT_MULT 0.0
-        #define AMBIENT_LIGHT_MULT 0.0
+    #if !defined DYNAMIC_EXPOSURE_LIGHTING
+        #if STREAMER_MODE == 0 || STREAMER_MODE == -1
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.16)
+            #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.22)
+        #elif STREAMER_MODE == 1
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.02)
+            #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.068)
+        #elif STREAMER_MODE == 2
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.003)
+            #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.03)
+        #elif STREAMER_MODE == 3
+            #define MIN_LIGHT_MULT 0.0
+            #define AMBIENT_LIGHT_MULT 0.0
+        #endif
+    #else
+        #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.00003)
+        #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.0003)
     #endif
 #endif
 
-#define TORCH_TINT (kelvinToRGB(TORCH_TEMP) * RGB_to_ACEScg)
+#define TORCH_TINT (kelvinToRGB(TORCH_TEMP))
 #define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * RGB_to_ACEScg)
 
+
+#define WIND_PERIOD_CONSTANT 0.3
+#define WIND_STRENGTH_CONSTANT (0.3 * WIND_STRENGTH_CONSTANT_USER)
+#define WIND_SPEED_CONSTANT (9000.0 * WIND_SPEED_CONSTANT_USER * WIND_STRENGTH_CONSTANT)
+
+#define LIGHTNING_FLASH_TINT (vec3(0.5, 0.6, 1.0))
+
+#define RAIN_CONSTRAINT 0.12
+#define RAIN_AMOUNT (0.6 - RAIN_AMOUNT_USER * 0.2 - RAIN_CONSTRAINT * 0.5)
+
+// DIM_NO_SKY is for dimensions which lack any fullscreen-covering gbuffers_skybasic/skytextured
+// DIM_NO_HORIZON is for dimensions which don't have a defined horizon (and therefore look better with sky visible below said horizon)
+// DIM_NO_SKYLIGHT is for dimensions which don't have values for skylight
+// DIM_USES_SKYBOX is for dimensions which use skytextured as their main sky layer (rather than just for solar bodies)
+
 #if defined DIM_NETHER
-    #ifdef ATMOSPHERIC_FOG_USER
-        #define ATMOSPHERIC_FOG
+    #define HAS_ATMOSPHERIC_FOG
+    #define DIM_NO_RAIN
+    #define DIM_NO_SKY
+    #define DIM_NO_SKYLIGHT
+    #if defined NETHER_FOGGY_WEATHER
+        #define DIM_HAS_FOGGY_WEATHER
     #endif
-    #define BASE_COLOR (vec3(1.0, 0.55, 0.4) * RGB_to_ACEScg)
+
+    #if defined BRIGHT_NETHER
+        #define BASE_COLOR (vec3(2.0, 1.8, 1.6))
+    #else
+        #define BASE_COLOR (vec3(1.0, 0.55, 0.4) * RGB_to_ACEScg)
+    #endif
     #define AMBIENT_COLOR (BASE_COLOR * 5.0)
     #define MIN_LIGHT_COLOR AMBIENT_COLOR
     // The color is intentionally unconverted here to get a much more vibrant color than sRGB would allow
     // (that is the main benefit of an ACES workflow, after all)
-    #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.1, 0.04))
+    #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.09, 0.03))
     // #define ATMOSPHERIC_FOG_COLOR (vec3(0.04, 0.1, 1.0))
 
     #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
 
+    #define WEATHER_FOG_MULTIPLIER 10.0
+
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
+    
+    #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
 #elif defined DIM_END
-    #ifdef ATMOSPHERIC_FOG_USER
-        #define ATMOSPHERIC_FOG
+    #define HAS_ATMOSPHERIC_FOG
+    #define DIM_NO_RAIN
+    #define DIM_NO_HORIZON
+    #define DIM_USES_SKYBOX
+    #define DIM_NO_SKYLIGHT
+    #define DIM_NO_WIND
+    #if defined END_FOGGY_WEATHER
+        #define DIM_HAS_FOGGY_WEATHER
     #endif
+
+
     #define BASE_COLOR (vec3(0.9, 0.7, 1.2) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (vec3(0.9, 0.85, 1.1) * RGB_to_ACEScg * 10.0)
     #define MIN_LIGHT_COLOR AMBIENT_COLOR
 
-    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
-    #define SKY_ADDITIVE (BASE_COLOR * 0.02)
+    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 10.2)
+    #define SKY_ADDITIVE (BASE_COLOR * 0.002)
+    
+    #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
 
-    #define ATMOSPHERIC_FOG_COLOR ((vec3(0.7, 0.5, 1.2)) * 0.3 * SKY_BRIGHTNESS)
+    #define ATMOSPHERIC_FOG_COLOR ((vec3(0.7, 0.5, 1.2)) * 0.4)
     #define ATMOSPHERIC_FOG_MULTIPLIER 5.0
 
-
+    #define WEATHER_FOG_MULTIPLIER 10.0
 
     #define BOSS_BATTLE_SKY_MULT 0.7
     #define BOSS_BATTLE_ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
 #else
+    #define HAS_ATMOSPHERIC_FOG
+    #define ATMOSPHERIC_FOG_IN_SKY_ONLY
+    #define WEATHER_FOG_IN_SKY_ONLY
+    #define DIM_HAS_DAYNIGHT_CYCLE
+    #if defined OVERWORLD_FOGGY_WEATHER
+        #define DIM_HAS_FOGGY_WEATHER
+    #endif
+
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
     #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_ACEScg)
-    // #define ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
+    
+    #define ATMOSPHERIC_FOG_COLOR (gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg)
+    #define ATMOSPHERIC_FOG_MULTIPLIER 0.5
 
-    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
+    #define WEATHER_FOG_MULTIPLIER 10.0
+
+    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
+
+    #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
 #endif
+#if defined ATMOSPHERIC_FOG_USER && defined HAS_ATMOSPHERIC_FOG
+    #define ATMOSPHERIC_FOG
+#endif
+#if defined DIM_HAS_FOGGY_WEATHER && defined FOG_ENABLED_USER
+    #define FOG_ENABLED
+#endif
+
 
 #define ATMOSPHERIC_FOG_DENSITY_WATER 0.02
 #define ATMOSPHERIC_FOG_COLOR_WATER (vec3(0.03, 0.2, 0.7))
@@ -497,27 +667,13 @@ const bool shadowcolor1Nearest = true;
 // #define NIGHT_SKY_COLOR ((vec3(1, 0.98, 0.95) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
 #define DAY_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
 #define NIGHT_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
-#define SUN_COLOR ((kelvinToRGB(SUN_TEMP) * RGB_to_ACEScg) * SUN_LIGHT_MULT)
+#define SUN_COLOR ((kelvinToRGB(SUN_TEMP)) * SUN_LIGHT_MULT)
 #define MOON_COLOR ((vec3(0.5, 0.66, 1.0) * RGB_to_ACEScg) * MOON_LIGHT_MULT)
 // #define MOON_COLOR ((vec3(0.95, 0.99, 1) * RGB_to_ACEScg) * MOON_LIGHT_MULT)
 
 #define NIGHT_EFFECT_HUE (vec3(0.2, 0.6, 1.0) * RGB_to_ACEScg)
 
 #define COLORS_SATURATION_WEIGHTS normalize(vec3(COLORS_SATURATION_WEIGHTS_RED, COLORS_SATURATION_WEIGHTS_GREEN, COLORS_SATURATION_WEIGHTS_BLUE))
-
-// using cat02
-#if defined USE_ACES
-// \[ *(-?\d+\.\d+) *(-?\d+\.\d+) *(-?\d+\.\d+) *\]
-// $1, $2, $3, 
-
-    #define RGB_to_ACEScg mat3(0.6131178129, 0.3411819959, 0.0457873443, 0.0699340823, 0.9181030375, 0.0119327755, 0.0204629926, 0.1067686634, 0.8727159106)
-    #define ACEScg_to_RGB mat3(1.7048873310, -0.6241572745, -0.0808867739, -0.1295209353, 1.1383993260, -0.0087792418, -0.0241270599, -0.1246206123, 1.1488221099)
-    #define ACEScg_to_ACES2065_1 mat3(0.6954522414, 0.1406786965, 0.1638690622, 0.0447945634, 0.8596711184, 0.0955343182, -0.0055258826, 0.0040252103, 1.0015006723)
-#else
-    #define RGB_to_ACEScg transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
-    #define ACEScg_to_RGB transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
-    #define ACEScg_to_ACES2065_1 transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
-#endif
 
 // #if TEX_RENDER_USER == 2
 //     #define TEX_RENDER (1 - DEBUG_VIEW)
@@ -527,30 +683,6 @@ const bool shadowcolor1Nearest = true;
 
 // inverse of TEX_RES
 #define TEXELS_PER_BLOCK (1 / TEX_RES)
-
-
-// defs logic
-
-// g stands for gbuffers
-// gc stands for gbuffers category
-#if defined g_skybasic || defined g_skytextured
-    #define gc_sky
-#endif
-#if defined g_water || defined g_hand_water || defined g_weather
-    #define gc_transparent
-#endif
-#if defined g_water || defined g_terrain
-    #define gc_terrain
-#endif
-#if defined g_beaconbeam || defined g_entities_glowing || defined g_spidereyes || defined textured_lit
-    #define gc_emissive
-#endif
-#if defined g_textured || defined g_textured_lit
-    #define gc_textured
-#endif
-#if defined g_armor_glint || defined g_skytextured
-    #define gc_additive
-#endif
 
 
 // optifine setup

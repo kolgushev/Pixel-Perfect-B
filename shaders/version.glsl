@@ -1,1 +1,1 @@
-#version 460 compatibility
+#version 330 compatibility

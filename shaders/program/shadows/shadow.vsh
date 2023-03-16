@@ -4,17 +4,6 @@ out vec2 texcoordV;
 out vec3 positionV;
 out vec3 normalV;
 
-in vec2 vaUV0;
-in vec3 vaPosition;
-in vec3 vaNormal;
-
-uniform vec3 chunkOffset;
-
-uniform mat4 projectionMatrix;
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrixInverse;
-uniform mat4 modelViewMatrixInverse;
-
 uniform mat4 shadowModelViewInverse;
 
 uniform int frameCounter;
@@ -25,11 +14,10 @@ uniform int frameCounter;
 void main() {
     #if defined SHADOWS_ENABLED
         // check against position texture instead of depth
-        texcoordV = vaUV0;
+        texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 
-        normalV = vaNormal;
-        // subtract normals to move full block face centers away from block edge and towards block center
-        positionV = floor(chunkOffset) + vaPosition - normalV * 0.1;
+        position = gl_Vertex.xyz;
+        normal = gl_Normal;
 
         // if within range
         // xz / range
@@ -41,7 +29,17 @@ void main() {
 
         gl_Position = vec4(positionV, 1.0);
 
-        // gl_Position = toViewspace(projectionMatrix, modelViewMatrix, positionV);
+        // vec2 startPos = vec2(0);
+        // startPos.x = int(position.y) % int(sqrtNumLayers);
+        // startPos.y = floor(position.y / sqrtNumLayers);
+
+        // position.xz += startPos;
+
+        // position.xyz = position.xzy;
+
+        // gl_Position = vec4(position, 1.0);
+
+        gl_Position = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
         
         // gl_Position.xy = distortShadow(gl_Position.xy);
         // gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);

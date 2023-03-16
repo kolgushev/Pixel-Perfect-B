@@ -2,6 +2,9 @@ profile.ONE=§fVanilla §b+
 profile.TWO=§fVanilla §b++
 profile.THREE=§fVanilla §b+++
 
+profile.CONTENT_TWO=§fContent Creator §b++
+profile.CONTENT_THREE=§fContent Creator §b+++
+
 screen.POST_PROCESSING=Post Processing
     screen.POST_PROCESSING.comment=Any effects that are applied after the image has been rendered.
 
@@ -11,12 +14,16 @@ screen.POST_PROCESSING=Post Processing
     option.EXPOSURE=Exposure
         option.EXPOSURE.comment=Increases the brightness of the image while preserving dark areas. You can also control this setting through the vanilla "Brightness" slider. No performance impact.
 
+    option.POST_SATURATION=Vibrance
+        option.POST_SATURATION.comment=Also known as saturation. Increases the strength of colors in your world.
+
     option.DITHERING_MODE=Dithering
         option.DITHERING_MODE.comment=Slightly randomizes pixel colors to get rid of ugly bands of color (for instance, ones visible in the sky) that form because your monitor can't display color precisely enough. Does not work with Render Quality > 1x.  On ➤ Minimal performance hit.
         value.DITHERING_MODE.0=§cNo
         value.DITHERING_MODE.1=Yes
 
 screen.LIGHTING=Lighting
+
     option.VANILLA_LIGHTING=Lighting Mode
         value.VANILLA_LIGHTING.0=Optifine
         value.VANILLA_LIGHTING.1=Vanilla §b+
@@ -34,6 +41,7 @@ screen.LIGHTING=Lighting
     screen.SSAO_BETA=Ambient Occlusion
     
     screen.SSAO=Ambient Occlusion §c(Experimental)§r
+
         option.AO_MODE=Mode
             option.AO_MODE.comment=Screen-Space ➤ Medium performance hit.
             value.AO_MODE.0=Off
@@ -52,10 +60,10 @@ screen.LIGHTING=Lighting
         option.AMBIENT_LIGHT_MULT=Ambient Light
             option.AMBIENT_LIGHT_MULT.comment=Sets the ambient light level. This is similar to minimum light, but affects all areas of the game, not just the darkest ones.
 
-        option.REAL_LIGHTING=Realistic Light Strengths
-            option.REAL_LIGHTING.comment=BETA!. This feature is in beta and won't look good. Sets light levels to their real-life values. No performance impact.
-            value.REAL_LIGHTING.true=Yes
-            value.REAL_LIGHTING.false=No
+        option.DYNAMIC_EXPOSURE_LIGHTING=Realistic Light Strengths
+            option.DYNAMIC_EXPOSURE_LIGHTING.comment=§cBETA!. This feature is in beta and won't look good. Sets light levels to their real-life values. No performance impact.
+            value.DYNAMIC_EXPOSURE_LIGHTING.true=Yes
+            value.DYNAMIC_EXPOSURE_LIGHTING.false=No
 
         option.SUN_LIGHT_MULT_USER=Sunlight
             option.SUN_LIGHT_MULT_USER.comment=Strength of direct sunlight during the day.
@@ -128,8 +136,9 @@ screen.SHADOWS=Shadows
         value.SHADOW_AFFECTED_BY_LIGHTMAP.false=No
 
 screen.COLORS=Colors
+
     option.BOSS_BATTLE_COLORS=Boss Battle Colors
-        option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact.
+        option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact. §cDoes not work with Iris!
         value.BOSS_BATTLE_COLORS.true=Yes
         value.BOSS_BATTLE_COLORS.false=No
 
@@ -189,7 +198,7 @@ screen.COLORS=Colors
             value.USE_LUT.false=No
 
         option.USER_GAMMA_CORRECT=Gamma correction
-            option.USER_GAMMA_CORRECT.comment=If you don't know what this is, you shouldn't disable it.
+            option.USER_GAMMA_CORRECT.comment=If you don't know what this is, you shouldn't disable it. §cMay not work when "Use LUT" is enabled!
             value.USER_GAMMA_CORRECT.true=Yes
             value.USER_GAMMA_CORRECT.false=No
 
@@ -197,19 +206,18 @@ screen.COLORS=Colors
             screen.ACES.comment=Academy Color Encoding System.
             
             option.USER_OUTPUT_COLORSPACE=Output Colorspace
+                option.USER_OUTPUT_COLORSPACE.comment=§cMay not work when "Use LUT" is enabled!
                 value.USER_OUTPUT_COLORSPACE.0=sRGB
                 value.USER_OUTPUT_COLORSPACE.1=ACEScg (raw)
                 value.USER_OUTPUT_COLORSPACE.2=ACES2065-1
-            
+
             option.USER_LMT_MODE=LMT
-                option.USER_LMT_MODE.comment=Compresses the game's "realistic" light values into ones your monitor can display. (and does so in a way that looks nice).
+                option.USER_LMT_MODE.comment=Compresses the game's "realistic" light values into ones your monitor can display. (and does so in a way that looks nice). §cMay not work when "Use LUT" is enabled!
                 value.USER_LMT_MODE.0=§cNone (not recommended)
                 value.USER_LMT_MODE.1=§cDivide by 16 (not recommended)
-                value.USER_LMT_MODE.2=Reinhard
+                value.USER_LMT_MODE.2=§6Reinhard
                 value.USER_LMT_MODE.3=Hable (Uncharted 2)
-                value.USER_LMT_MODE.4=ACES (Unreal Engine 4)
-
-
+                value.USER_LMT_MODE.4=Hill ACES (Unreal Engine)
 
 screen.RESOURCEPACK=Resourcepack Settings
     screen.RESOURCEPACK.comment=Make sure to look at these settings if you have a resourcepack enabled.
@@ -231,7 +239,8 @@ screen.RESOURCEPACK=Resourcepack Settings
         value.TEX_RES.0.001953125=512×512
         value.TEX_RES.0.0009765625=1024×1024
 
-screen.MISC=Misc
+screen.MISC=Extras
+
     option.STREAMER_MODE=Darkness
         option.STREAMER_MODE.comment=Streamer Mode: For content creators - plays nice with compression but won't look as good. Normal: For normal people - the definitive experience. Midnight: For people with fancy monitors - darkness has never been darker. Hardcore Darkness: feel the void.
         value.STREAMER_MODE.3=Hardcore Darkness
@@ -240,9 +249,93 @@ screen.MISC=Misc
         value.STREAMER_MODE.0=Streamer Mode
         value.STREAMER_MODE.-1=Fullbright
 
-    screen.EXPERIMENTAL=Experimental
+    option.BRIGHT_NETHER=Brighter Nether
+        value.BRIGHT_NETHER.true=Yes
+        value.BRIGHT_NETHER.false=No
+
+    option.INVISIBILITY_DISTORTION=Distort Screen When Invisible
+        value.INVISIBILITY_DISTORTION.true=Yes
+        value.INVISIBILITY_DISTORTION.false=No
+
+    option.LIGHTNING_FLASHES=Lighning Flash Intensity
+        option.LIGHTNING_FLASHES.comment=Lights up the environment when lightning strikes. Disabled if "Hide Lightning Flashes" is ON in vanilla accessibility settings. §cMay trigger epilepsy!
+        value.LIGHTNING_FLASHES.0.0=§cOff
+
+    option.NOISY_LAVA=Lava Variation
+        option.NOISY_LAVA.comment=Makes some spots of lava darker and others brighter. Helps break up the lava texture, especially in large pools such as in the nether.
+        value.NOISY_LAVA.0=§cNone
+        value.NOISY_LAVA.1=Subtle
+        value.NOISY_LAVA.2=Intense
+
+    option.SMOOTH_LAVA=Smooth Lava Variation
+        option.SMOOTH_LAVA.comment=Works like smooth lighting, making lava variation transition smoother. Turning this on or off won't affect performance - this option is here in case you like the sharper aesthetic.
+        value.SMOOTH_LAVA.true=Yes
+        value.SMOOTH_LAVA.false=No
+
+    option.END_WARPING=End Warping Strength
+        value.END_WARPING.0.0=Off
+
+    option.OUTLINE_THROUGH_BLOCKS=Show Entire Selection Outline
+        option.OUTLINE_THROUGH_BLOCKS.comment=Show the block selection outline through blocks.
+        value.OUTLINE_THROUGH_BLOCKS.true=Yes
+        value.OUTLINE_THROUGH_BLOCKS.false=No
+
+    option.OUTLINE_COLOR=Selection Outline Color
+        value.OUTLINE_COLOR.-1=§k|§rNegative§k|§r
+        value.OUTLINE_COLOR.0=Default
+        value.OUTLINE_COLOR.1=§7White
+        value.OUTLINE_COLOR.2=§4Red
+        value.OUTLINE_COLOR.3=§aGreen
+        value.OUTLINE_COLOR.4=§9Blue
+        value.OUTLINE_COLOR.5=Dimension Themed
+
+    screen.WEATHER=Weather
+
+        option.WAVING_ENABLED=Waving Objects
+            value.WAVING_ENABLED.true=Yes
+            value.WAVING_ENABLED.false=No
+        # TODO: add waving rainy
+        option.WIND_STRENGTH_CONSTANT_USER=Wind Strength
+
+        option.NOISY_RAIN=Scattered Rain
+            option.NOISY_RAIN.comment=In real life, rain isn't perfectly uniform. This option attempts to replicate that by making the rain more and less dense in some areas where it falls.
+            value.NOISY_RAIN.true=Yes
+            value.NOISY_RAIN.false=No
+
+        option.RAIN_AMOUNT_USER=Scattered Rain Amount
+            option.RAIN_AMOUNT_USER.comment=Changes how large the patches of rain are when Scattered Rain is turned on. If Scattered Rain is off, this setting acts the same as Rain Opacity.
+            
+        option.RAIN_TRANSPARENCY=Rain Opacity
+            option.RAIN_TRANSPARENCY.comment=Changes how see-through the rain is. Lower values mean more transparent rain.
+            value.RAIN_TRANSPARENCY.0.0=No Rain
+
+        option.FOG_ENABLED_USER=Foggy Weather
+            option.FOG_ENABLED_USER.comment=Adds a new custom weather effect. Foggy weather is purely cosmetic and can be turned off if you don't like the restricted visibility.
+            value.FOG_ENABLED_USER.true=Yes
+            value.FOG_ENABLED_USER.false=No
+
+        screen.DIMENSION_WEATHER=Per-Dimension Weather Controls
+            option.DIMENSION_WEATHER.comment=Change weather settings in each vanilla dimension. Currently this only includes nether weather
+
+            option.OVERWORLD_FOGGY_WEATHER=Foggy Weather In Overworld
+                option.OVERWORLD_HAS_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
+                value.OVERWORLD_HAS_FOGGY_WEATHER.true=Yes
+                value.OVERWORLD_HAS_FOGGY_WEATHER.false=No
+                
+            option.NETHER_FOGGY_WEATHER=Foggy Weather In Nether
+                option.NETHER_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
+                value.NETHER_FOGGY_WEATHER.true=Yes
+                value.NETHER_FOGGY_WEATHER.false=No
+
+            option.END_FOGGY_WEATHER=Foggy Weather In End
+                option.NETHER_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
+                value.END_FOGGY_WEATHER.true=Yes
+                value.END_FOGGY_WEATHER.false=No
+
+
 
 screen.ADVANCED=Advanced
+
     option.DEBUG_VIEW=Debug View
         option.DEBUG_VIEW.comment=Disables all existing albedo writes to allow the developer (and you, within license restrictions) to create their own for debugging purposes.
         value.DEBUG_VIEW.true=Yes
@@ -253,10 +346,61 @@ screen.ADVANCED=Advanced
         value.SHADOW_DEBUG.true=Yes
         value.SHADOW_DEBUG.false=No
 
+    option.ISOLATE_RENDER_STAGE=Isolate
+        option.ISOLATE_RENDER_STAGE.comment=§cIsolating red items is considered cheating!. §cUsing this on servers may get you banned!
+        value.ISOLATE_RENDER_STAGE.-1=Off
+        value.ISOLATE_RENDER_STAGE.0=Unknown
+        value.ISOLATE_RENDER_STAGE.1=Sky
+        value.ISOLATE_RENDER_STAGE.2=Sunset
+        value.ISOLATE_RENDER_STAGE.3=Custom Sky
+        value.ISOLATE_RENDER_STAGE.4=Sun
+        value.ISOLATE_RENDER_STAGE.5=Moon
+        value.ISOLATE_RENDER_STAGE.6=Stars
+        value.ISOLATE_RENDER_STAGE.7=Void
+        value.ISOLATE_RENDER_STAGE.8=Solid Terrain
+        value.ISOLATE_RENDER_STAGE.9=Cutout Mipped Terrain
+        value.ISOLATE_RENDER_STAGE.10=Cutout Terrain
+        value.ISOLATE_RENDER_STAGE.11=§cEntities
+        value.ISOLATE_RENDER_STAGE.12=§cBlock Entities
+        value.ISOLATE_RENDER_STAGE.13=Block Break Animation
+        value.ISOLATE_RENDER_STAGE.14=Block Select Outline
+        value.ISOLATE_RENDER_STAGE.15=Debug Outlines
+        value.ISOLATE_RENDER_STAGE.16=Opaque Held Item
+        value.ISOLATE_RENDER_STAGE.17=Transparent Terrain
+        value.ISOLATE_RENDER_STAGE.18=Tripwire
+        value.ISOLATE_RENDER_STAGE.19=Particles
+        value.ISOLATE_RENDER_STAGE.20=Clouds
+        value.ISOLATE_RENDER_STAGE.21=Weather
+        value.ISOLATE_RENDER_STAGE.22=World Border
+        value.ISOLATE_RENDER_STAGE.23=Transparent Held Item
+
     option.SHADOW_TRANSITION_MIXING=Sunset Shadow Mixing
         option.SHADOW_TRANSITION_MIXING.comment=To increase performance, shadows are only calculated for the sun §oor§r moon, never both. To prevent an awkward "pop-in" effect as the shadows are switched from sun to moon and vice versa, the lighting is briefly switched to its shadowless version during sunset. This setting controls whether the terrain looks like it's in shadow (Shadowed) during this period.
         value.SHADOW_TRANSITION_MIXING.1=Unshadowed
         value.SHADOW_TRANSITION_MIXING.0=Shadowed
 
+    option.END_SKY_RESOLUTION=End Sky Resolution
+        option.END_SKY_RESOLUTION.comment=Because the end sky has a custom renderer to avoid the repeating texture effect it usually has, we can control its resolution.
+
+    option.NO_WAVING_FULL_BLOCKS=Disable Full Blocks Waving
+        option.NO_WAVING_FULL_BLOCKS.comment=Waving full blocks (such as leaves) don't work too well with this shader's wind system. If you want to enable them anyway, do so here.
+        value.NO_WAVING_FULL_BLOCKS.true=Yes
+        value.NO_WAVING_FULL_BLOCKS.false=No
+
+    option.HDR_TEX_LIGHT_BRIGHTNESS=Convert Light Sources To HDR
+        option.HDR_TEX_LIGHT_BRIGHTNESS.comment=Uses a special algorithm to increase the contrast and brightness of lit blocks. Although this usually looks much better when turned on, some LMTs may blow out already super-bright blocks like froglights.
+        value.HDR_TEX_LIGHT_BRIGHTNESS.true=Yes
+        value.HDR_TEX_LIGHT_BRIGHTNESS.false=No
+        
     screen.AUTO_ADDED=Automatic Settings
-        screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work.
+        screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work correctly, if at all.
+
+    screen.EXPERIMENTAL=Experimental
+        screen.FORCED_PERSPECTIVE=Forced Perpective
+            option.FORCED_PERSPECTIVE_POWER=Power
+            
+            option.FORCED_PERSPECTIVE_BIAS=Bias
+
+            option.FORCED_PERSPECTIVE_SHAPE=Shape
+                value.FORCED_PERSPECTIVE_SHAPE.0.0=Spherical
+                value.FORCED_PERSPECTIVE_SHAPE.1.0=Flat

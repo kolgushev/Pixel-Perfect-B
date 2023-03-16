@@ -19,13 +19,15 @@ uniform vec3 cameraPosition;
 uniform int worldTime;
 uniform int moonPhase;
 uniform float rainStrength;
+uniform float isLightning;
+
+uniform float directLightMult;
 
 uniform float nightVision;
 uniform float darknessFactor;
 uniform float darknessLightFactor;
 
 uniform mat4 gbufferModelView;
-
 
 // don't need to include to_viewspace since calculate_lighting already includes it
 #include "/lib/tonemapping.glsl"
@@ -35,7 +37,7 @@ uniform mat4 gbufferModelView;
 
 #if defined SHADOWS_ENABLED
     uniform sampler2D depthtex1;
-    uniform sampler2D shadowcolor1;
+    uniform sampler2D shadowtex1;
     uniform sampler2D noisetex;
     uniform mat4 shadowProjection;
     uniform mat4 shadowModelView;
@@ -50,6 +52,7 @@ uniform mat4 gbufferModelView;
     #include "/lib/sample_noisetex.glsl"
     #include "/lib/distortion.glsl"
     #include "/lib/voxelize.glsl"
+    #include "/lib/sample_noise.glsl"
     #include "/lib/get_shadow.glsl"
 #endif
 
@@ -72,7 +75,7 @@ void main() {
             shadowProjection,
             shadowModelView,
             texcoord,
-            shadowcolor1,
+            shadowtex1,
             noisetex,
             lightmap.g,
             worldTime);
@@ -85,10 +88,13 @@ void main() {
     sunPosition,
     moonPosition,
     moonPhase,
-    worldTime,
+    skyTime(worldTime),
     rainStrength,
-    nightVision, darknessFactor,
+    directLightMult,
+    nightVision,
+    darknessFactor,
     darknessLightFactor,
+    isLightning,
     shadowcolor0);
 
     #if !defined DEBUG_VIEW

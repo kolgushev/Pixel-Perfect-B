@@ -1,7 +1,8 @@
 #include "/common_defs.glsl"
 
-/* DRAWBUFFERS:0 */
+/* DRAWBUFFERS:04 */
 layout(location = 0) out vec4 b0;
+layout(location = 4) out vec4 b4;
 
 in vec2 texcoord;
 
@@ -13,29 +14,68 @@ uniform sampler2D colortex0;
     uniform float viewHeight;
 #endif
 
+uniform float near;
+uniform float far;
+
 uniform sampler3D shadowcolor1;
 
 uniform int isEyeInWater;
 uniform int bossBattle;
+uniform float invisibility;
 
+#include "/lib/linearize_depth.fsh"
 #include "/lib/tonemapping.glsl"
+#include "/lib/color_manipulation.glsl"
 
-#if POST_TEMP != 6550
-    #include "/lib/color_manipulation.glsl"
-#endif
 
 #if DITHERING_MODE != 0
     #include "/lib/sample_noisetex.glsl"
+    #include "/lib/sample_noise.glsl"
 #endif
 
 void main() {
     vec4 albedo = texture(colortex0, texcoord);
 
+    #if defined INVISIBILITY_DISTORTION
+        const vec2 colorOffsets[3] = vec2[3](
+            vec2(0.565, 0.825),
+            vec2(0.432, -0.902),
+            vec2(-0.997, 0.076)
+        );
+        vec3 magentaSample;
+        vec3 cyanSample;
+        vec3 yellowSample;
+        if(invisibility > 0) {
+            vec2 texcoordNormalized = texcoord * 2 - 1;
+            float distortion = invisibility * INVISIBILITY_DISTORT_STRENGTH * (pow2(texcoordNormalized.x) + pow2(texcoordNormalized.y));
+            magentaSample = texture(colortex0, texcoord + colorOffsets[0] * distortion).rgb;
+            cyanSample = texture(colortex0, texcoord + colorOffsets[1] * distortion).rgb;
+            yellowSample = texture(colortex0, texcoord + colorOffsets[2] * distortion).rgb;
+        }
+    #endif
+
     vec3 tonemapped = albedo.rgb;
-    
+
     if(isEyeInWater == 1) {
         tonemapped *= OVERLAY_COLOR_WATER;
+        #if defined INVISIBILITY_DISTORTION
+            if(invisibility > 0) {
+                magentaSample *= OVERLAY_COLOR_WATER;
+                cyanSample *= OVERLAY_COLOR_WATER;
+            }
+        #endif
     }
+
+    #if defined INVISIBILITY_DISTORTION
+        if(invisibility > 0) {
+            float k = RGBToCMYK(tonemapped).w;
+            float c = RGBToCMYK(cyanSample).x;
+            float m = RGBToCMYK(magentaSample).y;
+            float y = RGBToCMYK(yellowSample).z;
+
+            tonemapped = CMYKToRGB(vec4(c, m, y, k));
+        }
+    #endif
 
     #if defined BOSS_BATTLE_COLORS
         // color effects for boss battles
@@ -63,7 +103,8 @@ void main() {
 
     // white balance
     #if POST_TEMP != 6550
-        tonemapped *= kelvinToRGB(POST_TEMP);
+        vec3 tempColor = kelvinToRGB(POST_TEMP);
+        tonemapped *= changeLuminance(tempColor, luminance(tempColor), 1.0);
     #endif
 
     tonemapped *= EXPOSURE * EXPOSURE_BIAS;
@@ -76,7 +117,7 @@ void main() {
     #elif LMT_MODE == 3
         tonemapped = uncharted2_filmic(tonemapped);
     #elif LMT_MODE == 4
-        tonemapped = rtt_and_odt_fit(tonemapped * ACEScg_to_RGB) * RGB_to_ACEScg;
+        tonemapped = aces_fitted(tonemapped);
     #endif
 
     // Convert back to desired colorspace
@@ -110,6 +151,11 @@ void main() {
         colorCorrected = colorCorrected + (1 - abs(b)) * b * CONTRAST;
     }
 
+    if(POST_SATURATION != 1.0) {
+        colorCorrected = saturateRGB(POST_SATURATION) * max(colorCorrected, vec3(0));
+    }
+
+
     // dithering
     #if DITHERING_MODE != 0
         // TODO: rework to fix light loss bug
@@ -126,7 +172,9 @@ void main() {
             This happens per every color channel individually.
         */
 
-        vec3 noiseToSurpass = sampleNoise(texcoord, 0).rgb;
+        colorCorrected = colorCorrected + inverseMult;
+
+        vec3 noiseToSurpass = sampleNoise(texcoord, 0, vec2(0,1), true).rgb;
         vec3 interPrecisionGradient = mod(colorCorrected * mult, 1);
 
         /*

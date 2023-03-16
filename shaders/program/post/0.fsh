@@ -32,6 +32,7 @@ uniform float viewWidth;
 uniform float viewHeight;
 
 #include "/lib/sample_noisetex.glsl"
+#include "/lib/sample_noise.glsl"
 
 // don't need to include to_viewspace since calculate_lighting already includes it
 #include "/lib/to_viewspace.glsl"
@@ -46,8 +47,13 @@ void main() {
     float skyLightmap = texture(colortex2, texcoord).g;
     float depth = texture(depthtex0, texcoord).r;
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
-    
+
     vec3 normal = texture(colortex3, texcoord).rgb;
+    
+    #if PIXELATED_SHADOWS != 0
+        vec3 pixelatedPosition = floor((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
+        position = mix(pixelatedPosition, position, ceil(normal));
+    #endif
 
     float shadow = getShadow(
             position,
