@@ -163,7 +163,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 // ACEScg_to_RGB transformed with ACES_INPUT/ACES_OUTPUT so we don't have to do two matrix operations (although it's probably optimized by the compiler anyway)
 #define ACEScg_to_RRT_SAT mat3(0.968409, 0.0267469, 0.0046879, 0.00892041, 0.986953, 0.00422555, 0.00874694, 0.031994, 0.959333)
+#define ACEScg_to_RRT_SAT_INVERSE mat3(1.03292, -0.027833, -0.00492491, -0.0092969, 1.01361, -0.00441921, -0.00910785, -0.0335505, 1.04258)
 #define RRT_SAT_to_ACEScg mat3(0.945253, 0.05206, 0.002847, 0.0147852, 0.981904, 0.00326916, 0.0149253, 0.0469684, 0.938042)
+#define RRT_SAT_to_ACEScg_INVERSE mat3(1.05884, -0.0559948, -0.00301848, -0.0158903, 1.01944, -0.00350461, -0.0160517, -0.0501531, 1.06627)
 
 
 
@@ -295,6 +297,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define HDR_TEX_LIGHT_BRIGHTNESS
 #ifdef HDR_TEX_LIGHT_BRIGHTNESS
 #endif
+
+#define HDR_TEX_STANDARD 0
 
 #define ATMOSPHERIC_FOG_USER
 #ifdef ATMOSPHERIC_FOG_USER

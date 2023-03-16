@@ -204,6 +204,12 @@ void main() {
     
     albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
 
+    #if HDR_TEX_STANDARD == 1
+        albedo.rgb = uncharted2_filmic_inverse(albedo.rgb);
+    #elif HDR_TEX_STANDARD == 2
+        albedo.rgb = aces_fitted_inverse(albedo.rgb * RGB_to_ACEScg) * ACEScg_to_RGB;
+    #endif
+
     #if defined g_skybasic
         // saturate
         albedo.rgb = max(vec3(0), saturateRGB(SKY_SATURATION) * albedo.rgb);

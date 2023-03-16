@@ -35,11 +35,11 @@ vec3 uncharted2_tonemap_partial(in vec3 x)
 
 vec3 uncharted2_filmic(in vec3 v)
 {
-    float exposure_bias = 2.0f;
+    float exposure_bias = 2.0;
     vec3 curr = uncharted2_tonemap_partial(v * exposure_bias);
 
-    const vec3 W = vec3(11.2f);
-    vec3 white_scale = vec3(1.0f) / uncharted2_tonemap_partial(W);
+    const vec3 W = vec3(11.2);
+    vec3 white_scale = vec3(1.0) / uncharted2_tonemap_partial(W);
     return curr * white_scale;
 }
 
@@ -91,4 +91,19 @@ vec3 rtt_and_odt_fit_inverse(in vec3 v) {
 
     // technically (b ± c) / a but we don't need negative values
     return (b - c) / a;
+}
+
+// expects v to be in linear ACEScg (AP1 primaries)
+vec3 aces_fitted_inverse(in vec3 v) {
+    v = v * RRT_SAT_to_ACEScg_INVERSE;
+    // bring v into a range such that the output of rtt_and_odt_fit_inverse is between zero and one
+    v *= 0.619 / 1.00007;
+    v = rtt_and_odt_fit_inverse(v);
+    return v * ACEScg_to_RRT_SAT_INVERSE;
+}
+
+vec3 uncharted2_filmic_inverse(in vec3 y) {
+    // bring y into a range such that the output of the equation is between zero and one
+    y = y * 0.493;
+    return (-0.833333 * sqrt(1895912086208.0 * y * y + 206886131312.0 * y + 4680270125.0) - 1.06161e6 * y + 57010.4) / (sqrt(1895912086208.0 * y * y + 206886131312.0 * y + 4680270125.0) - 1.84714e6);
 }

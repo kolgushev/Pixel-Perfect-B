@@ -79,7 +79,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
             ambientLight += nightVisionEffect * NIGHT_VISION_COLOR;
         #endif
 
-        indirectLighting += ambientLight + lightningFlash(sky, rain) * skyShading * pow2(max(lightmap.y - 0.0313, 0));
+        indirectLighting += ambientLight + lightningFlash(isLightning, rain) * skyShading * pow2(max(lightmap.y - 0.0313, 0));
 
     #else
         float lightBoost = BLOCK_LIGHT_POWER + darknessEffect * 0.9 + darknessPulseEffect * 4 - nightVisionEffect * 0.5;
