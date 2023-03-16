@@ -28,5 +28,6 @@ void main() {
     #if defined SHADOW_DEBUG
         vec2 texcoordMod = supersampleSampleShift(texcoord);
         buffer0 = opaque1(texture(shadowcolor1, (texcoordMod - 0.46) * 0.05 + 0.46).r);
+        // buffer0 = opaque1(texture(shadowcolor1, texcoord).r);
     #endif
 }

@@ -14,10 +14,10 @@ uniform int frameCounter;
 void main() {
     #if defined SHADOWS_ENABLED
         // check against position texture instead of depth
-        texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
+        texcoordV = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 
-        position = gl_Vertex.xyz;
-        normal = gl_Normal;
+        positionV = gl_Vertex.xyz;
+        normalV = gl_Normal;
 
         // if within range
         // xz / range
@@ -39,7 +39,7 @@ void main() {
 
         // gl_Position = vec4(position, 1.0);
 
-        gl_Position = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
+        gl_Position = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, positionV);
         
         // gl_Position.xy = distortShadow(gl_Position.xy);
         // gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);
