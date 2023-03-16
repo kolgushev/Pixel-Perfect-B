@@ -182,13 +182,22 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define LIGHTNING_FLASHES 0.8 // [0.0 0.1 0.2 0.4 0.6 0.8 1.0]
 #define NOISY_RAIN
+#ifdef NOISY_RAIN
+#endif
+#define RAIN_AMOUNT_USER 0.6 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define RAIN_SCALE 3
+#define RAIN_TRANSPARENCY 0.5 // [0 0.25 0.50 0.75 1.00]
 
 // #define FOG_ENABLED_USER
 #ifdef FOG_ENABLED_USER
 #endif
 
 // #define NETHER_HAS_FOGGY_WEATHER
-#define END_HAS_FOGGY_WEATHER
+#ifdef NETHER_HAS_FOGGY_WEATHER
+#endif
+// #define END_HAS_FOGGY_WEATHER
+#ifdef END_HAS_FOGGY_WEATHER
+#endif
 
 #define SPIDEREYES_MULT 10.0
 
@@ -351,7 +360,7 @@ const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 #endif
 #define TEX_RES 0.0625 // [0.25 0.125 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
 
-#define END_SKY_RESOLUTION 128
+#define END_SKY_RESOLUTION 128 // [32 64 128 256]
 
 
 
@@ -525,6 +534,9 @@ const float shadowIntervalSize = 8.0;
 #define WIND_SPEED_CONSTANT (9000.0 * WIND_SPEED_CONSTANT_USER * WIND_STRENGTH_CONSTANT)
 
 #define LIGHTNING_FLASH_TINT (vec3(0.5, 0.6, 1.0))
+
+#define RAIN_CONSTRAINT 0.15
+#define RAIN_AMOUNT (0.6 - RAIN_AMOUNT_USER * 0.2 - RAIN_CONSTRAINT * 0.5)
 
 // DIM_NO_SKY is for dimensions which lack any fullscreen-covering gbuffers_skybasic/skytextured
 // DIM_NO_HORIZON is for dimensions which don't have a defined horizon (and therefore look better with sky visible below said horizon)

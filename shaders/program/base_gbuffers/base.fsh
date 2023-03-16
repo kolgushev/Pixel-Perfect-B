@@ -100,22 +100,30 @@ uniform int renderStage;
     #include "/lib/switch_fog_color.glsl"
 #endif
 
+#if defined g_weather && defined NOISY_RAIN
+    #define use_camera_position
+    #define use_noisetex_lib
+#endif
 #if defined DIM_END && defined g_skytextured
     #define use_noisetex_lib
 #endif
 #if defined g_terrain || defined gc_transparent
     #define use_noisetex_lib
-    #define use_terrain_transparent_uniforms
+    #define use_lava_noise
+    #define use_camera_position
+
+    uniform float frameTimeCounter;
 #endif
 
+#if defined use_camera_position
+    uniform vec3 cameraPosition;
+#endif
 #if defined use_noisetex_lib
     uniform sampler2D noisetex;
     #include "/lib/sample_noisetex.glsl"
 #endif
 
-#if defined use_terrain_transparent_uniforms
-    uniform vec3 cameraPosition;
-    uniform float frameTimeCounter;
+#if defined use_lava_noise
 
     #include "/lib/lava_noise.glsl"
 #endif
@@ -137,17 +145,35 @@ void main() {
         */
         if(distance(color.rgb, fogColor) < EPSILON) albedo = opaque(customFogColor);
     #else
-        #if defined DIM_END && defined g_skytextured
-            vec2 texcoordMod = tile(texcoord * END_SKY_RESOLUTION, vec2(1, 1), true).rg;
-            vec4 albedo = texture2D(texture, texcoordMod);
-        #else
-            vec4 albedo = texture2D(texture, texcoord);
+        #if defined g_weather
+            vec3 absolutePosition = position + cameraPosition;
+            vec2 positionMod = tile(absolutePosition.xz + frameTimeCounter * 4, vec2(1, 0), false).xy;
         #endif
+        
+        vec2 texcoordMod = texcoord;
+        
+        #if defined DIM_END && defined g_skytextured
+            texcoordMod = tile(texcoordMod * END_SKY_RESOLUTION, vec2(1, 1), true).rg;
+        #endif
+        
+        
+        vec4 albedo = texture2D(texture, texcoordMod);
+        
         albedo.rgb *= color.rgb;
         #if !defined gc_terrain
             albedo.a *= color.a;
-        #elif defined g_damagedblock
+        #endif
+
+        #if defined g_damagedblock
             albedo.a = clamp(albedo.a - 0.003, 0, 1);
+        #elif defined g_weather && defined NOISY_RAIN
+            float rainMask = tile((frameTimeCounter * 12 + absolutePosition.y) * 3 + positionMod * 200 + absolutePosition.xz * 4, vec2(1, 0), false).r;
+
+            rainMask = smoothstep(RAIN_AMOUNT, RAIN_AMOUNT + RAIN_CONSTRAINT, rainMask);
+
+            albedo.a *= rainMask;
+            // albedo.a = 1;
+            // albedo.rgb = vec3(rainMask);
         #endif
         
         // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed
@@ -225,7 +251,12 @@ void main() {
     #if defined g_weather && !defined DIM_NO_RAIN
         const float a = 1.5;
         float skyTransition = skyTime(worldTime);
-        albedo.a *= 0.25 * rainStrength;
+        albedo.a *= RAIN_TRANSPARENCY;
+
+        albedo.a = max(0.1, albedo.a);
+
+        albedo.a *= rainStrength;
+        
         albedo.rgb *= 
             rainMultiplier(rainStrength) * mix(moonBrightness(moonPhase) * MOON_COLOR, SUN_COLOR, skyTransition)
             + actualSkyColor(skyTransition)
