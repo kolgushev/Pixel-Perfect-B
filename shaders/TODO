@@ -1,3 +1,5 @@
+Add bedrockLevel-based void fog
+
 Make the noise texture a 3D file
 
 allow LUTs to output in any colorspace

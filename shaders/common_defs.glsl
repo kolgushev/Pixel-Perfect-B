@@ -548,6 +548,7 @@ const float shadowIntervalSize = 8.0;
 // DIM_NO_SKY is for dimensions which lack any fullscreen-covering gbuffers_skybasic/skytextured
 // DIM_NO_HORIZON is for dimensions which don't have a defined horizon (and therefore look better with sky visible below said horizon)
 // DIM_NO_SKYLIGHT is for dimensions which don't have values for skylight
+// TODO: implement  Iris's hasSkyLight uniform in a way that doesn't break with Optifine
 // DIM_USES_SKYBOX is for dimensions which use skytextured as their main sky layer (rather than just for solar bodies)
 
 #if defined DIM_NETHER
