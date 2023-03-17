@@ -65,14 +65,16 @@ void main() {
     #if defined SHADOWS_ENABLED
         float depth = texture(depthtex1, texcoord).r;
         vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
+        vec3 pixelatedPosition = position;
 
         #if PIXELATED_SHADOWS != 0
-            vec3 pixelatedPosition = floor((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
+            pixelatedPosition = floor((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
             position = mix(pixelatedPosition, position, ceil(abs(normal)));
         #endif
 
         float shadow = getShadow(
             position,
+            pixelatedPosition + cameraPosition,
             shadowProjection,
             shadowModelView,
             texcoord,

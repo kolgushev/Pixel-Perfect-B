@@ -11,15 +11,10 @@ float shadowSample(in vec3 positionViewSpace, in sampler2D shadowtex) {
     return shadowPosition.z - texture(shadowtex, shadowPosition.xy).r;
 }
 
-float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelView, in vec2 texcoord, in sampler2D shadowtex, in sampler2D noisetex, in float lightmapLight, in int time) {
+float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjection, in mat4 shadowModelView, in vec2 texcoord, in sampler2D shadowtex, in sampler2D noisetex, in float lightmapLight, in int time) {
     // check difference between backface and non-backface rendered
     
-    #if defined TEX_RENDER
-        vec3 positionMod = position;
-    #else
-        vec3 positionMod = position;
-    #endif
-
+    vec3 positionMod = position;
 
     float skyTransition = abs(skyTime(time) * 2 - 1);
     float dist = length(positionMod);
@@ -36,11 +31,18 @@ float getShadow(in vec3 position, in mat4 shadowProjection, in mat4 shadowModelV
         vec2 noise;
 
         for(int i = 0; i < SHADOW_FILTERING_SAMPLES; i++) {
-            noise = sampleNoise(texcoord, i, vec2(1,1), true).rg * 2 - 1;
+            vec2 sampleCoord = texcoord;
+            #if PIXELATED_SHADOWS != 0
+                sampleCoord = absolutePosition.xz + absolutePosition.y * 100;
+            #endif
+
+            noise = sampleNoise(sampleCoord, i, vec2(1,1), true).rg * 2 - 1;
 
             shadowOffset = vec3(noise, 0) / shadowDistance * 0.5 * SHADOW_FILTERING_RADIUS;
 
-            shadowAverage += step(shadowSample(shadowPosition + shadowOffset, shadowtex), EPSILON);
+            float sample = shadowSample(shadowPosition + shadowOffset, shadowtex);
+
+            shadowAverage += smoothstep(sample, sample + 2 * EPSILON, 2 * EPSILON);
         }
 
         float shadow = shadowAverage / SHADOW_FILTERING_SAMPLES;
