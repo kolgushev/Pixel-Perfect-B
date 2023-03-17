@@ -105,6 +105,9 @@ screen.SHADOWS=Shadows
     option.shadowDistance=Shadow Distance
         option.shadowDistance.comment=How far away the shadows can be, in blocks. Since setting higher distances means the same shadow image is spread over more blocks, shadows become less detailed when the distance is increased. Increased ➤ No performance impact.
 
+    option.entityShadowDistanceMul=Entity Shadow Distance
+        option.entityShadowDistanceMul.comment=How far away entities can be until they stop casting shadows. Unlike Shadow Distance, this doesn't change the quality of the shadows. Increased ➤ Small performance hit (depends on the amount of entities in your world).
+
     option.shadowMapResolution=Shadow Resolution
         option.shadowMapResolution.comment=Controls the resolution of the shadowmap (the shadow image). A higher-resolution shadowmap will increase the detail in shadows and make them look sharper. However, a higher resolution takes longer to calculate, decreasing performance. Increased ➤ Large performance hit.
 
