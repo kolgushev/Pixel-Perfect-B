@@ -307,7 +307,7 @@ screen.MISC=Extras
             value.NOISY_RAIN.false=No
 
         option.RAIN_AMOUNT_USER=Scattered Rain Amount
-            option.RAIN_AMOUNT_USER.comment=Changes how large the patches of rain are when Scattered Rain is turned on. If Scattered Rain is off, this setting acts the same as Rain Opacity.
+            option.RAIN_AMOUNT_USER.comment=Changes how large the patches of rain are when Scattered Rain is turned on. If Scattered Rain is off, this setting acts similarly to Rain Opacity.
             
         option.RAIN_TRANSPARENCY=Rain Opacity
             option.RAIN_TRANSPARENCY.comment=Changes how see-through the rain is. Lower values mean more transparent rain.

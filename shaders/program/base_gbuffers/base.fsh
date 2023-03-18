@@ -176,7 +176,7 @@ void main() {
                 // albedo.a = 1;
                 // albedo.rgb = vec3(rainMask);
             #else
-                albedo.a *= RAIN_AMOUNT_USER;
+                albedo.a *= RAIN_AMOUNT_USER * 0.9 + 0.1;
             #endif
         #endif
         
