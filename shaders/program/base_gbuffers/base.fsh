@@ -104,6 +104,11 @@ uniform int renderStage;
     #define use_camera_position
     #define use_noisetex_lib
 #endif
+
+#if defined g_weather
+    uniform float rainWind;
+#endif
+
 #if defined DIM_END && defined g_skytextured
     #define use_noisetex_lib
 #endif
@@ -167,17 +172,19 @@ void main() {
         #if defined g_damagedblock
             albedo.a = clamp(albedo.a - 0.003, 0, 1);
         #elif defined g_weather
+            float rainMask;
             #if defined NOISY_RAIN
-                float rainMask = tile((frameTimeCounter * 12 + absolutePosition.y) * 3 + positionMod * 200 + absolutePosition.xz * 4, vec2(1, 0), false).r;
+                rainMask = tile((frameTimeCounter * 12 + absolutePosition.y) * 3 + positionMod * 200 + absolutePosition.xz * 4, vec2(1, 0), false).r;
 
                 rainMask = smoothstep(RAIN_AMOUNT, RAIN_AMOUNT + RAIN_CONSTRAINT, rainMask);
 
-                albedo.a *= rainMask;
                 // albedo.a = 1;
                 // albedo.rgb = vec3(rainMask);
             #else
-                albedo.a *= RAIN_AMOUNT_USER * 0.9 + 0.1;
+                rainMask = RAIN_AMOUNT_USER * 0.9 + 0.1;
             #endif
+
+            albedo.a *= mix(SNOW_OPACITY, rainMask, rainWind);
         #endif
         
         // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed

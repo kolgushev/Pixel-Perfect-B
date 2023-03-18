@@ -39,6 +39,10 @@ uniform int renderStage;
     #define USE_CAMERA_POS
 #endif
 
+#if defined g_weather && defined WAVING_ENABLED
+    uniform float rainWind;
+#endif
+
 #if defined DIM_END
     uniform sampler2D noisetex;
 #endif
@@ -196,10 +200,12 @@ void main() {
                 }
             #else
                 if(isUpper) {
-                    offset *= 1.4;
+                    offset *= 2;
                 } else {
-                    offset *= 3.0;
+                    offset *= 4.0;
                 }
+
+                offset *= rainWind;
             #endif
             
             if(isStiff) {
