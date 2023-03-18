@@ -53,8 +53,12 @@ void main() {
         vec3 yellowSample;
         if(invisibility > 0) {
             vec2 texcoordNormalized = texcoord * 2 - 1;
+            
             float distortion = invisibility * (pow2(texcoordNormalized.x) + pow2(texcoordNormalized.y));
+            distortion = abs(distortion);
+            
             float displacement = distortion * INVISIBILITY_DISTORT_STRENGTH;
+            
             magentaSample = texture(colortex0, texcoord + colorOffsets[0] * displacement).rgb;
             cyanSample = texture(colortex0, texcoord + colorOffsets[1] * displacement).rgb;
             yellowSample = texture(colortex0, texcoord + colorOffsets[2] * displacement).rgb;
@@ -65,9 +69,9 @@ void main() {
             float m = RGBToCMYK(magentaSample).y;
             float y = RGBToCMYK(yellowSample).z;
 
-            tonemapped = CMYKToRGB(vec4(c, m, y, k));
+            tonemapped = CMYKToRGB(vec4(c + 0.1 * distortion, m, y, k));
 
-            tonemapped = saturateRGB(1 - abs(distortion * 0.25)) * tonemapped;
+            tonemapped = saturateRGB(1 - distortion * 0.25) * tonemapped;
         }
     #endif
 
