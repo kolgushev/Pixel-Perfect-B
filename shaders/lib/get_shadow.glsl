@@ -28,7 +28,7 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
     #elif SHADOW_FILTERING == 1
         float shadowAverage = 0;
         vec3 shadowOffset;
-        vec2 noise;
+        vec3 noise;
 
         for(int i = 0; i < SHADOW_FILTERING_SAMPLES; i++) {
             vec2 sampleCoord = texcoord;
@@ -36,13 +36,13 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
                 sampleCoord = absolutePosition.xz + absolutePosition.y * 100;
             #endif
 
-            noise = sampleNoise(sampleCoord, i, vec2(1,1), true).rg * 2 - 1;
+            noise = sampleNoise(sampleCoord, i, vec2(0,1), true).rgb * 2 - 1;
 
-            shadowOffset = vec3(noise, 0) / shadowDistance * 0.5 * SHADOW_FILTERING_RADIUS;
+            shadowOffset = noise / shadowDistance * 0.5 * SHADOW_FILTERING_RADIUS;
 
             float sample = shadowSample(shadowPosition + shadowOffset, shadowtex);
 
-            shadowAverage += smoothstep(sample, sample + 2 * EPSILON, 2 * EPSILON);
+            shadowAverage += step(sample, EPSILON);
         }
 
         float shadow = shadowAverage / SHADOW_FILTERING_SAMPLES;

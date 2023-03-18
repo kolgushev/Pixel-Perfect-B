@@ -51,13 +51,13 @@ void main() {
     #if PIXELATED_SHADOWS != 0
         vec3 normal = texture(colortex2, texcoord).rgb;
 
-        pixelatedPosition = floor((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
-        position = mix(pixelatedPosition, position, ceil(abs(normal)));
+        pixelatedPosition = floor((position + cameraPosition) * PIXELATED_SHADOWS - 0.5 * normal) / PIXELATED_SHADOWS;
+        position = mix(pixelatedPosition - cameraPosition, position, ceil(abs(normal)));
     #endif
 
     float shadow = getShadow(
             position,
-            pixelatedPosition + cameraPosition,
+            pixelatedPosition,
             shadowProjection,
             shadowModelView,
             texcoord,
