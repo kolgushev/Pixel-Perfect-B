@@ -396,6 +396,10 @@ void main() {
         
         albedo.rgb = mix(albedo.rgb, vec3(0), blindness);
 
+        #if defined GI_FAST
+            albedo.rgb *= 1 + GI_FAST_EXPOSURE_CORRECT_GRAY * GI_FAST_STRENGTH;
+        #endif
+
         b0 = albedo;
         b1 = vec4(0, 0, 0, 0);
     #elif defined gc_transparent

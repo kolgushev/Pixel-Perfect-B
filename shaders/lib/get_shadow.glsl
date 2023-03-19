@@ -40,9 +40,9 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
 
             shadowOffset = noise / shadowDistance * 0.5 * SHADOW_FILTERING_RADIUS;
 
-            float sample = shadowSample(shadowPosition + shadowOffset, shadowtex);
+            float sampled = shadowSample(shadowPosition + shadowOffset, shadowtex);
 
-            shadowAverage += step(sample, EPSILON);
+            shadowAverage += step(sampled, EPSILON);
         }
 
         float shadow = shadowAverage / SHADOW_FILTERING_SAMPLES;

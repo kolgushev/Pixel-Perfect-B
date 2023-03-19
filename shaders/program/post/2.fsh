@@ -7,6 +7,7 @@ layout(location = 4) out vec4 b4;
 in vec2 texcoord;
 
 uniform sampler2D colortex0;
+
 #if DITHERING_MODE != 0
     uniform sampler2D noisetex;
 
@@ -96,6 +97,11 @@ void main() {
     #if POST_TEMP != 6550
         vec3 tempColor = kelvinToRGB(POST_TEMP);
         tonemapped *= changeLuminance(tempColor, luminance(tempColor), 1.0);
+    #endif
+
+    // if fast GI is enabled, balance exposure accounting for increased brightness
+    #if defined GI_FAST
+        tonemapped /= 1 + GI_FAST_EXPOSURE_CORRECT_GRAY * GI_FAST_STRENGTH;
     #endif
 
     tonemapped *= EXPOSURE * EXPOSURE_BIAS;

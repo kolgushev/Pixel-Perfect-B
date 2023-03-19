@@ -50,8 +50,19 @@ comp0: transparency shadows
 
     0.rgb - fully composited albedo
     0.a - 
+    1.rgb - no-hand albedo.rgb (and potentially light-limited)
+    1.a - if light-limited, multiplier for light (for bloom)
 
-comp1: apply color
+
+
+comp1: Fast GI and bloom
+    REQUIRES fully composited albedo.rgb
+    REQUIRES no-hand albedo.rgb
+
+    0.rgb - albedo with bloom and GI
+    0.a - 
+
+comp2: apply color
     REQUIRES albedo.rgb
 
     0.rgb - colorgraded albedo

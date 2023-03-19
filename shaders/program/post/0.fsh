@@ -1,13 +1,17 @@
 #include "/common_defs.glsl"
 
-/* DRAWBUFFERS:0 */
+/* DRAWBUFFERS:01 */
 layout(location = 0) out vec4 b0;
+#if defined GI_FAST
+    layout(location = 1) out vec4 b1;
+#endif
 
 in vec2 texcoord;
 
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 uniform sampler2D colortex2;
+
 #if defined PIXELATED_SHADOWS
     uniform sampler2D colortex3;
 
@@ -66,9 +70,15 @@ void main() {
             skyLightmap,
             worldTime);
 
+    vec3 final = diffuse + directLighting * shadow;
+
+    #if defined GI_FAST
+        b1 = hand(depth) ? opaque1(GI_FAST_EXPOSURE_CORRECT_GRAY) : opaque(final);
+    #endif
+
     #if defined DEBUG_VIEW
         b0 = opaque(diffuse);
     #else
-        b0 = opaque(diffuse + directLighting * shadow);
+        b0 = opaque(final);
     #endif
 }

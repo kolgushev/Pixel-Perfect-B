@@ -1,6 +1,4 @@
-vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in bool isSpectator, in float fogWeather, in float inSky, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
-    vec3 composite = diffuse.rgb;
-
+float fogifyDistanceOnly(in vec3 position, in float far, in float blindness) {
     // Render fog in a cylinder shape
     float farRcp = mix(1 / far, 0.05, blindness);
     float fogFlat = length(position.y);
@@ -10,6 +8,14 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
     fogFlat = pow2(clamp((fogFlat * farRcp * 8 - 7), 0, 1));
     fogTube = pow2(clamp((fogTube * farRcp * 8 - 7), 0, 1));
     fogTube = clamp(fogTube + fogFlat, 0, 1);
+
+    return fogTube;
+}
+
+vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in bool isSpectator, in float fogWeather, in float inSky, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
+    vec3 composite = diffuse.rgb;
+
+    float fogTube = fogifyDistanceOnly(position, far, blindness);
 
     float atmosPhog = 1.0;
     #if defined WATER_FOG_FROM_OUTSIDE

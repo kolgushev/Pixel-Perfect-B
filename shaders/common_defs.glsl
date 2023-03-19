@@ -304,6 +304,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // #define GI_FAST
 #ifdef GI_FAST
 #endif
+#define GI_FAST_STRENGTH 0.6
+#define GI_FAST_EXPOSURE_CORRECT_GRAY 0.3
+#define GI_FAST_LOD_LEVEL 8
 
 #define ATMOSPHERIC_FOG_USER
 #ifdef ATMOSPHERIC_FOG_USER
@@ -400,6 +403,14 @@ const float shadowIntervalSize = 8.0;
     const bool shadowtex1Nearest = true;
     const bool shadowcolor1Nearest = true;
 #endif
+
+vec3 superSampleOffsetsCross[5] = vec3[5](
+    vec3(0, 0, 1),
+    vec3(-0.5, -0.5, ISQRT_2),
+    vec3(-0.5, 0.5, ISQRT_2),
+    vec3(0.5, -0.5, ISQRT_2),
+    vec3(0.5, 0.5, ISQRT_2)
+);
 
 #if SHADOW_SUPERSAMPLE == 1
     #define SHADOW_RES_MULT 2.0
