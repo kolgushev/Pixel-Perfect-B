@@ -40,6 +40,7 @@ uniform int renderStage;
 
     uniform float darknessFactor;
     uniform float darknessLightFactor;
+    uniform bool isSpectator;
 
     uniform mat4 gbufferModelView;
 
@@ -377,7 +378,7 @@ void main() {
             float fogWeatherSkyProcessed = fogWeather;
         #endif
 
-        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindness, fogWeatherSkyProcessed, inSkyProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindness, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;

@@ -1,4 +1,4 @@
-vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in float fogWeather, in float inSky, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
+vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in bool isSpectator, in float fogWeather, in float inSky, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
     vec3 composite = diffuse.rgb;
 
     // Render fog in a cylinder shape
@@ -53,16 +53,25 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
                 atmosPhog = ATMOSPHERIC_FOG_DENSITY_WATER;
                 atmosPhogColor = ATMOSPHERIC_FOG_COLOR_WATER;
                 nightVisionVisibility = NIGHT_VISION_AFFECTS_FOG_WATER;
+                if(isSpectator) {
+                    atmosPhog *= ATMOSPHERIC_FOG_SPECTATOR_MULT_WATER;
+                }
                 break;
             case 2:
                 atmosPhog = ATMOSPHERIC_FOG_DENSITY_LAVA;
                 atmosPhogColor = ATMOSPHERIC_FOG_COLOR_LAVA * lavaNoise;
                 nightVisionVisibility = NIGHT_VISION_AFFECTS_FOG_LAVA;
+                if(isSpectator) {
+                    atmosPhog *= ATMOSPHERIC_FOG_SPECTATOR_MULT_LAVA;
+                }
                 break;
             case 3:
                 atmosPhog = ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW;
                 atmosPhogColor = ATMOSPHERIC_FOG_COLOR_POWDER_SNOW;
                 nightVisionVisibility = NIGHT_VISION_AFFECTS_FOG_POWDER_SNOW;
+                if(isSpectator) {
+                    atmosPhog *= ATMOSPHERIC_FOG_SPECTATOR_MULT_POWDER_SNOW;
+                }
                 break;
         }
 

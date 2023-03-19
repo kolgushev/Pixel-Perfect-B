@@ -69,9 +69,7 @@ void main() {
             float m = RGBToCMYK(magentaSample).y;
             float y = RGBToCMYK(yellowSample).z;
 
-            tonemapped = CMYKToRGB(vec4(c + 0.1 * distortion, m, y, k));
-
-            tonemapped = saturateRGB(1 - distortion * 0.25) * tonemapped;
+            tonemapped = CMYKToRGB(vec4(c, m, y, k));
         }
     #endif
 
