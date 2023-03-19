@@ -301,6 +301,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define HDR_TEX_STANDARD 0
 
+// #define GI_FAST
+#ifdef GI_FAST
+#endif
+
 #define ATMOSPHERIC_FOG_USER
 #ifdef ATMOSPHERIC_FOG_USER
 #endif
@@ -337,7 +341,7 @@ const float entityShadowDistanceMul = 0.3; // [0.1 0.2 0.3 0.4]
 #endif
 
 // 0:off 1:Percentage Closer 2:Variable-Penumbra Offbrand 3:Variable-Penumbra
-#define SHADOW_FILTERING 1 // [0 1 2 3]
+#define SHADOW_FILTERING 1 // [0 1]
 #define SHADOW_FILTERING_SAMPLES 5 // [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
 #define SHADOW_FILTERING_RADIUS 0.1 // [0.025 0.05 0.075 0.1 0.125 0.15 0.175 0.2]
 
