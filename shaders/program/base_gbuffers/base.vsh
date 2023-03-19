@@ -226,12 +226,18 @@ void main() {
         //     position.xz *= 0.5;
         // #endif
 
-        #if defined gc_terrain
-            if(END_WARPING > 0.0) {
-                float displacement = tile((position.xz + cameraPosition.xz + EPSILON) * 0.1, vec2(1, 0), false).x - 0.5;
-                position.y *= pow(pow2(position.x) + pow2(position.z), 0.02 * END_WARPING);
-                position.y += displacement * (length(position.xz) * 0.2) * END_WARPING;
-            }
+        #if defined gc_terrain || defined g_basic
+            #if defined g_basic
+                if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+            #endif
+                    if(END_WARPING > 0.0) {
+                        float displacement = tile((position.xz + cameraPosition.xz + EPSILON) * 0.1, vec2(1, 0), false).x - 0.5;
+                        position.y *= pow(pow2(position.x) + pow2(position.z), 0.02 * END_WARPING);
+                        position.y += displacement * (length(position.xz) * 0.2) * END_WARPING;
+                    }
+            #if defined g_basic
+                }
+            #endif
         #endif
     #endif
 
