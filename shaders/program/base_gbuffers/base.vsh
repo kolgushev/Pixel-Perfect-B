@@ -228,7 +228,8 @@ void main() {
 
         #if defined gc_terrain
             float displacement = tile((position.xz + cameraPosition.xz + EPSILON) * 0.1, vec2(1, 0), false).x - 0.5;
-            position.y += displacement * pow2(length(position.xz) * 0.05) * END_WARPING;
+            position.y *= pow(pow2(position.x) + pow2(position.z), 0.02 * END_WARPING);
+            position.y += displacement * (length(position.xz) * 0.2) * END_WARPING;
         #endif
     #endif
 
