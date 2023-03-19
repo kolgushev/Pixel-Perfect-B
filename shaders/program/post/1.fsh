@@ -13,7 +13,7 @@ uniform int isEyeInWater;
 uniform float viewWidth;
 uniform float viewHeight;
 
-#if defined GI_FAST
+#if defined FAST_GI
 	uniform sampler2D colortex1;
 
 	uniform float far;
@@ -28,6 +28,7 @@ uniform float viewHeight;
 
 	#include "/lib/linearize_depth.fsh"
 	#include "/lib/fogify.glsl"
+	#include "/lib/tonemapping.glsl"
 #endif
 
 /*
@@ -39,13 +40,14 @@ void main() {
 	vec3 diffuse = texture(colortex0, texcoord).rgb;
 	vec3 colored = diffuse;
 
-	#if defined GI_FAST
+	#if defined FAST_GI
 		// check for sky
 		if(depth != 1) {
 			vec3 diffuseBlur = vec3(0);
 
-			vec2 offsetMult = pow(2, GI_FAST_LOD_LEVEL) / vec2(viewWidth, viewHeight);
+			vec2 offsetMult = pow(2, FAST_GI_LOD_LEVEL) / vec2(viewWidth, viewHeight);
 			float sum = 0;
+			const float maxBrightness = 3;
 
 			for(int i = 0; i < superSampleOffsetsCross.length; i++) {
 				vec3 offsetAndWeight = superSampleOffsetsCross[i];
@@ -53,16 +55,19 @@ void main() {
 
 				vec2 coord = texcoord + offset;
 				// coord = removeBorder(coord, offsetMult * 2);
+				vec3 sampled = texture(colortex1, coord, FAST_GI_LOD_LEVEL).rgb * offsetAndWeight.z;
 
-				diffuseBlur += texture(colortex1, coord, GI_FAST_LOD_LEVEL).rgb * offsetAndWeight.z;
+				diffuseBlur += reinhard(sampled / maxBrightness) * maxBrightness;
 				sum += offsetAndWeight.z;
 			}
 
 			diffuseBlur /= sum;
 
+
+
 			vec3 position = depthToView(texcoord, depth, gbufferProjectionInverse);
 			position = mul_m4_v3(gbufferModelViewInverse, position).rgb;
-			colored += colored * diffuseBlur * GI_FAST_STRENGTH * (1 - fogifyDistanceOnly(position, far, blindness));
+			colored += colored * diffuseBlur * FAST_GI_STRENGTH * (1 - fogifyDistanceOnly(position, far, blindness));
 			// colored = diffuseBlur;
 		}
 	#endif

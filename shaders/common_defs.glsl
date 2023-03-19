@@ -301,11 +301,11 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define HDR_TEX_STANDARD 0
 
-// #define GI_FAST
-#ifdef GI_FAST
+// #define FAST_GI
+#ifdef FAST_GI
 #endif
-#define GI_FAST_STRENGTH 0.6
-#define GI_FAST_LOD_LEVEL 8
+#define FAST_GI_STRENGTH 1.0
+#define FAST_GI_LOD_LEVEL 8
 
 #define ATMOSPHERIC_FOG_USER
 #ifdef ATMOSPHERIC_FOG_USER
@@ -596,7 +596,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     
     #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
 
-    #define GI_FAST_EXPOSURE_CORRECT_GRAY 0.6
+    #define FAST_GI_EXPOSURE_CORRECT_GRAY 0.6
 #elif defined DIM_END
     #define HAS_ATMOSPHERIC_FOG
     #define DIM_NO_RAIN
@@ -626,7 +626,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     #define BOSS_BATTLE_SKY_MULT 0.7
     #define BOSS_BATTLE_ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
 
-    #define GI_FAST_EXPOSURE_CORRECT_GRAY 0.5
+    #define FAST_GI_EXPOSURE_CORRECT_GRAY 0.5
 #else
     #define HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG_IN_SKY_ONLY
@@ -649,7 +649,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
 
     #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
 
-    #define GI_FAST_EXPOSURE_CORRECT_GRAY 0.3
+    #define FAST_GI_EXPOSURE_CORRECT_GRAY 0.3
 #endif
 #if defined ATMOSPHERIC_FOG_USER && defined HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG

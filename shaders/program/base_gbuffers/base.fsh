@@ -396,8 +396,8 @@ void main() {
         
         albedo.rgb = mix(albedo.rgb, vec3(0), blindness);
 
-        #if defined GI_FAST
-            albedo.rgb *= 1 + GI_FAST_EXPOSURE_CORRECT_GRAY * GI_FAST_STRENGTH;
+        #if defined FAST_GI
+            albedo.rgb *= 1 + FAST_GI_EXPOSURE_CORRECT_GRAY * FAST_GI_STRENGTH;
         #endif
 
         b0 = albedo;

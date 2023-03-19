@@ -100,8 +100,8 @@ void main() {
     #endif
 
     // if fast GI is enabled, balance exposure accounting for increased brightness
-    #if defined GI_FAST
-        tonemapped /= 1 + GI_FAST_EXPOSURE_CORRECT_GRAY * GI_FAST_STRENGTH;
+    #if defined FAST_GI
+        tonemapped /= 1 + FAST_GI_EXPOSURE_CORRECT_GRAY * FAST_GI_STRENGTH;
     #endif
 
     tonemapped *= EXPOSURE * EXPOSURE_BIAS;

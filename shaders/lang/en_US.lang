@@ -38,10 +38,10 @@ screen.LIGHTING=Lighting
 
     option.ATMOSPHERIC_FOG_DENSITY=Atmospheric Fog Density
 
-    option.GI_FAST=Fake GI
-        option.GI_FAST.comment=Fakes global illumination (raytracing) by applying a blurred version of the view image as "lighting".
-        value.GI_FAST.true=Yes
-        value.GI_FAST.false=No
+    option.FAST_GI=Fake GI
+        option.FAST_GI.comment=Fakes global illumination (raytracing) by applying a blurred version of the view image as "lighting".
+        value.FAST_GI.true=Yes
+        value.FAST_GI.false=No
 
     screen.SSAO_BETA=Ambient Occlusion
     

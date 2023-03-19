@@ -2,7 +2,7 @@
 
 /* DRAWBUFFERS:01 */
 layout(location = 0) out vec4 b0;
-#if defined GI_FAST
+#if defined FAST_GI
     layout(location = 1) out vec4 b1;
 #endif
 
@@ -72,8 +72,8 @@ void main() {
 
     vec3 final = diffuse + directLighting * shadow;
 
-    #if defined GI_FAST
-        b1 = hand(depth) ? opaque1(GI_FAST_EXPOSURE_CORRECT_GRAY) : opaque(final);
+    #if defined FAST_GI
+        b1 = hand(depth) ? opaque1(FAST_GI_EXPOSURE_CORRECT_GRAY) : opaque(final);
     #endif
 
     #if defined DEBUG_VIEW
