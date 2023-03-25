@@ -132,7 +132,7 @@ void main() {
                 bool isUpper = (mc_Entity.x == WAVING_CUTOUTS_TOP || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF) && isTopPart;
                 bool isStiff = mc_Entity.x == WAVING_CUTOUTS_BOTTOM_STIFF || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF || mc_Entity.x == WAVING_STIFF;
             #else
-                bool isUpper = position.y > 6;
+                bool isUpper = position.y > 3;
                 bool isStiff = false;
             #endif
 
