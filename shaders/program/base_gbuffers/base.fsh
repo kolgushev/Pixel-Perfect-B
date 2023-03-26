@@ -86,7 +86,7 @@ uniform int renderStage;
 
 
 #if defined gc_transparent || defined g_weather || defined g_skybasic || defined gc_skybox
-    uniform int moonPhase;
+    uniform float moonBrightness;
     uniform float rainStrength;
 
     uniform float fogWeather;
@@ -277,7 +277,7 @@ void main() {
         albedo.a *= RAIN_TRANSPARENCY * rainStrength;
         
         albedo.rgb *= 
-            rainMultiplier(rainStrength) * mix(moonBrightness(moonPhase) * MOON_COLOR, SUN_COLOR, skyTransition)
+            rainMultiplier(rainStrength) * mix(moonBrightness * MOON_COLOR, SUN_COLOR, skyTransition)
             + actualSkyColor(skyTransition)
             + lightningFlash(isLightning, rainStrength);
         albedo.rgb *= 0.5;
@@ -336,7 +336,7 @@ void main() {
             view(normal),
             sunPosition,
             moonPosition,
-            moonPhase,
+            moonBrightness,
             skyTime(worldTime),
             rainStrength,
             directLightMult,

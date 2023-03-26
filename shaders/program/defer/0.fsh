@@ -17,7 +17,7 @@ uniform vec3 moonPosition;
 uniform vec3 cameraPosition;
 
 uniform int worldTime;
-uniform int moonPhase;
+uniform float moonBrightness;
 uniform float rainStrength;
 uniform float isLightning;
 
@@ -90,7 +90,7 @@ void main() {
     normal,normalViewspace,
     sunPosition,
     moonPosition,
-    moonPhase,
+    moonBrightness,
     skyTime(worldTime),
     rainStrength,
     directLightMult,

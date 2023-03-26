@@ -10,10 +10,6 @@ float basicDirectShading(in float skyLight) {
     return pow2(clamp((skyLight - 1 + RCP_3) * 3, 0, 1));
 }
 
-float moonBrightness(in float phase) {
-    return cos(phase * 2 * PI * RCP_8) * 0.3 + 0.7;
-}
-
 float rainMultiplier(in float rain)  {
     return max(0, inversesqrt(rain + 1) * 3.4 - 2.4);
 }
@@ -31,7 +27,7 @@ vec3 lightningFlash(in float isLightning, in float rain) {
 }
 
 // Input is not adjusted lightmap coordinates
-mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 sunPosition, in vec3 moonPosition, in int moonPhase, in float skyTransition, in float rain, in float directLightMult, in float nightVisionEffect, in float darknessEffect, in float darknessPulseEffect, in float isLightning, in sampler2D vanillaLightTex) {
+mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 sunPosition, in vec3 moonPosition, in float moonBrightness, in float skyTransition, in float rain, in float directLightMult, in float nightVisionEffect, in float darknessEffect, in float darknessPulseEffect, in float isLightning, in sampler2D vanillaLightTex) {
 
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
@@ -97,7 +93,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         vec3 torchLighting = gammaCorrection(pow2(lightmap.x) * torchColor, lightBoost) * BLOCK_LIGHT_MULT;
 
-        vec3 moonLighting = moonShading * moonBrightness(moonPhase) * MOON_COLOR;
+        vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR;
         vec3 sunLighting = sunShading * SUN_COLOR;
         vec3 directSkyLighting = mix(moonLighting, sunLighting, skyTransition);
 
