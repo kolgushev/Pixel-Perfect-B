@@ -1,6 +1,6 @@
 vec3 makeCells(in float imax) {
     float actualCells1D = floor(sqrt(imax));
-    float actualCells = pow2(actualCells1D);
+    float actualCells = pow(actualCells1D, 2);
     return vec3(vec2(1) / actualCells1D, actualCells);
 }
 
