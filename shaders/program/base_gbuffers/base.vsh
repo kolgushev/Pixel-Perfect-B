@@ -189,7 +189,7 @@ void main() {
             
             #if !defined g_weather && !defined DIM_NO_SKY
                 // multiply by sky light to make sure grass doesn't wave in caves and indoors
-                offset *= pow2(light.y);
+                offset *= pow(light.y, 2);
             #endif
 
             offset = sign(offset) * (0.5 - 0.5 / (abs(2 * offset) + 1));
@@ -232,7 +232,7 @@ void main() {
             #endif
                     if(END_WARPING > 0.0) {
                         float displacement = tile((position.xz + cameraPosition.xz + EPSILON) * 0.1, vec2(1, 0), false).x - 0.5;
-                        position.y *= pow(pow2(position.x) + pow2(position.z), 0.02 * END_WARPING);
+                        position.y *= pow(pow(position.x, 2) + pow(position.z, 2), 0.02 * END_WARPING);
                         position.y += displacement * (length(position.xz) * 0.2) * END_WARPING;
                     }
             #if defined g_basic

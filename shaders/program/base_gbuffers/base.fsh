@@ -200,7 +200,7 @@ void main() {
 
             float gradient2 = smoothstep(-0.2, 1, vertical);
             if(bossBattle != 2) {
-                albedo.rgb = mix(albedo.rgb, SDRToHDR(albedo.rgb * 7) * 0.05, pow2(gradient2));
+                albedo.rgb = mix(albedo.rgb, SDRToHDR(albedo.rgb * 7) * 0.05, pow(gradient2, 2));
             }
         #elif !defined DIM_NO_HORIZON
             // prevent underground sun/moon, add virtual horizon

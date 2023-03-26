@@ -7,7 +7,7 @@ float normalLighting(in vec3 normal, in vec3 lightPos) {
 }
 
 float basicDirectShading(in float skyLight) {
-    return pow2(clamp((skyLight - 1 + RCP_3) * 3, 0, 1));
+    return pow(clamp((skyLight - 1 + RCP_3) * 3, 0, 1), 2);
 }
 
 float rainMultiplier(in float rain)  {
@@ -91,7 +91,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         // Multiply each part of the light map with it's color
 
-        vec3 torchLighting = gammaCorrection(pow2(lightmap.x) * torchColor, lightBoost) * BLOCK_LIGHT_MULT;
+        vec3 torchLighting = gammaCorrection(pow(lightmap.x, 2) * torchColor, lightBoost) * BLOCK_LIGHT_MULT;
 
         vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR;
         vec3 sunLighting = sunShading * SUN_COLOR;
@@ -114,13 +114,13 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR;
         // technically the pow2 here isn't accurate, but it makes the falloff near the edges of the light look better
-        vec3 ambientSkyLighting = (actualSkyColor(skyTransition) + lightningFlash(isLightning, rain)) * skyShading * pow2(lightmap.y);
+        vec3 ambientSkyLighting = (actualSkyColor(skyTransition) + lightningFlash(isLightning, rain)) * skyShading * pow(lightmap.y, 2);
         
         // Add the lighting togther to get the total contribution of the lightmap the final color.
         vec3 indirectLighting = max(vec3(minLight), ambientLight + torchLighting + ambientSkyLighting);
     #endif
 
-    float adjustedAo = 1 - clamp((1 - pow2(ambientOcclusion)) * VANILLA_AO_INTENSITY, 0, 1);
+    float adjustedAo = 1 - clamp((1 - pow(ambientOcclusion, 2)) * VANILLA_AO_INTENSITY, 0, 1);
 
     indirectLighting *= adjustedAo;
     #if VANILLA_LIGHTING != 2

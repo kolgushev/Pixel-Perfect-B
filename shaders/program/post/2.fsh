@@ -50,7 +50,7 @@ void main() {
         if(invisibility > 0) {
             vec2 texcoordNormalized = texcoord * 2 - 1;
             
-            float distortion = invisibility * (pow2(texcoordNormalized.x) + pow2(texcoordNormalized.y));
+            float distortion = invisibility * (pow(texcoordNormalized.x, 2) + pow(texcoordNormalized.y, 2));
             distortion = abs(distortion);
             
             float displacement = distortion * INVISIBILITY_DISTORT_STRENGTH;

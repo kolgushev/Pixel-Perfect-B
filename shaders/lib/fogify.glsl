@@ -5,8 +5,8 @@ float fogifyDistanceOnly(in vec3 position, in float far, in float blindness) {
     float fogTube = length(position.xz) + 16;
     
     // TODO: optimize, add a colored component similar to atmosPhog
-    fogFlat = pow2(clamp((fogFlat * farRcp * 8 - 7), 0, 1));
-    fogTube = pow2(clamp((fogTube * farRcp * 8 - 7), 0, 1));
+    fogFlat = pow(clamp((fogFlat * farRcp * 8 - 7), 0, 1), 2);
+    fogTube = pow(clamp((fogTube * farRcp * 8 - 7), 0, 1), 2);
     fogTube = clamp(fogTube + fogFlat, 0, 1);
 
     return fogTube;

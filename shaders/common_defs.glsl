@@ -40,35 +40,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define NOISETEX_TILES_WIDTH 2
 
 // utils
-// normal pow (usually) takes 9 GPU cycles to compute, so we can redefine any pow ≤ 9 as multiplication for a speedup
-// this is usually done automatically by the compiler, but these settings allow it to be enabled manually
-// #define OPTIMIZE_POW
-#define OPTIMIZE_POW2
 
-// NOTE: enabling these settings may actually lead to a decrease in performance, since (n) is evaluted for each time it is multiplied
-
-#ifdef OPTIMIZE_POW2
-    #define pow2(n) ((n) * (n))
-#else
-    #define pow2(n) pow(n, 2)
-#endif
-#ifdef OPTIMIZE_POW
-    #define pow3(n) ((n) * (n) * (n))
-    #define pow4(n) ((n) * (n) * (n) * (n))
-    #define pow5(n) ((n) * (n) * (n) * (n) * (n))
-    #define pow6(n) ((n) * (n) * (n) * (n) * (n) * (n))
-    #define pow7(n) ((n) * (n) * (n) * (n) * (n) * (n) * (n))
-    #define pow8(n) ((n) * (n) * (n) * (n) * (n) * (n) * (n) * (n))
-    #define pow9(n) ((n) * (n) * (n) * (n) * (n) * (n) * (n) * (n) * (n))
-#else
-    #define pow3(n) pow(n, 3)
-    #define pow4(n) pow(n, 4)
-    #define pow5(n) pow(n, 5)
-    #define pow6(n) pow(n, 6)
-    #define pow7(n) pow(n, 7)
-    #define pow8(n) pow(n, 8)
-    #define pow9(n) pow(n, 9)
-#endif
 #define apow2(n) ((n) * abs(n))
 
 #define approachOne(v) ((v) / (1 + (v)))
