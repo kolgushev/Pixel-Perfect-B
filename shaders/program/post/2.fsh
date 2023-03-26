@@ -172,13 +172,16 @@ void main() {
         colorCorrected = colorCorrected + inverseMult;
 
         vec3 noiseToSurpass = sampleNoise(texcoord, 0, vec2(0,1), true).rgb;
+
+        // noiseToSurpass = gammaCorrection(noiseToSurpass, RCP_GAMMA);
+        
         vec3 interPrecisionGradient = mod(colorCorrected * mult, 1);
 
         /*
             Do a custom half-float -> 8bit sRGB conversion
             to avoid dealing with the complicated one done by openGL
         */
-        colorCorrected = floor(colorCorrected * mult) * inverseMult;
+        colorCorrected = colorCorrected - mod(colorCorrected, inverseMult);
 
         vec3 factor = ceil(interPrecisionGradient - noiseToSurpass);
 
