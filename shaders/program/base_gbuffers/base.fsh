@@ -350,7 +350,12 @@ void main() {
             vec4 directLighting = opaque(lightColor[1]) * albedo;
             albedo.rgb *= lightColor[0];
         #else
-            albedo.rgb *= lightColor[0] + lightColor[1] * basicDirectShading(lightmap.g);
+            #if defined VANILLA_SHADOWS
+                float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;
+            #else
+                float shadow = basicDirectShading(lightmap.g);
+            #endif
+            albedo.rgb *= lightColor[0] + lightColor[1] * shadow;
         #endif
 
         vec3 positionOpaque = position;

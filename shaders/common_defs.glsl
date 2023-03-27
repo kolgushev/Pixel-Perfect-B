@@ -24,6 +24,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define RCP_7 0.14285714285
 #define RCP_8 0.75
 #define RCP_16 0.0625
+#define RCP_32 0.03125
 #define RCP_255 0.00392156862
 #define RCP_256 0.00390625
 
@@ -303,6 +304,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef SHADOWS_ENABLED_USER
 #endif
 
+// #define VANILLA_SHADOWS
+#ifdef VANILLA_SHADOWS
+#endif
+
 const int shadowMapResolution = 4096; // [512 1024 2048 4096 8192]
 const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.0 275.0 300.0]
 const float entityShadowDistanceMul = 0.3; // [0.1 0.2 0.3 0.4]
@@ -365,10 +370,6 @@ const int noiseTextureResolution = 512;
 const float shadowIntervalSize = 8.0;
 
 #define SHADOW_CUTOFF 0.76
-
-#if defined SHADOWS_ENABLED_USER && defined DIM_OVERWORLD
-    #define SHADOWS_ENABLED
-#endif
 
 #if SHADOW_SUPERSAMPLE != 0
     const bool shadowtex1Nearest = true;
@@ -604,6 +605,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     #define ATMOSPHERIC_FOG_IN_SKY_ONLY
     #define WEATHER_FOG_IN_SKY_ONLY
     #define DIM_HAS_DAYNIGHT_CYCLE
+    #define DIM_HAS_SHADOWS
     #if defined OVERWORLD_FOGGY_WEATHER
         #define DIM_HAS_FOGGY_WEATHER
     #endif
@@ -629,7 +631,9 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
 #if defined DIM_HAS_FOGGY_WEATHER && defined FOG_ENABLED_USER
     #define FOG_ENABLED
 #endif
-
+#if defined SHADOWS_ENABLED_USER && !defined VANILLA_SHADOWS && defined DIM_HAS_SHADOWS
+    #define SHADOWS_ENABLED
+#endif
 
 #define ATMOSPHERIC_FOG_DENSITY_WATER 0.02
 #define ATMOSPHERIC_FOG_COLOR_WATER (vec3(0.03, 0.2, 0.7))

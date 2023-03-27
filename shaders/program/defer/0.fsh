@@ -83,7 +83,11 @@ void main() {
             lightmap.g,
             worldTime);
     #else
-        float shadow = basicDirectShading(lightmap.g);
+        #if defined VANILLA_SHADOWS
+            float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;
+        #else
+            float shadow = basicDirectShading(lightmap.g);
+        #endif
     #endif
 
     mat2x3 lightColor = getLightColor(lightmap,
@@ -105,11 +109,4 @@ void main() {
     #endif
 
     b1 = albedo;
-
-    #if defined SHADOWS_ENABLED
-        // vec2 texcoordMod = supersampleSampleShift(texcoord);
-        // b1 = opaque1(texture(shadowcolor1, texcoordMod).r);
-    // b1 = opaque(texture(shadowcolor0, texcoord).rgb);
-    // b1 = opaque2(texcoordMod);
-    #endif
 }

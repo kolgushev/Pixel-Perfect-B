@@ -405,6 +405,12 @@ screen.ADVANCED=Advanced
         screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work correctly, if at all.
 
     screen.EXPERIMENTAL=Experimental
+
+        option.VANILLA_SHADOWS=Vanilla Shadows
+            option.VANILLA_SHADOWS.comment=Gives the effect of shadows without actually having to calculate them. Because this effect uses vanilla lightmaps, it may look messed-up in some scenarios. This effect overrides all other shadow effects.
+        value.VANILLA_SHADOWS.true=Yes
+        value.VANILLA_SHADOWS.false=No
+
         screen.FORCED_PERSPECTIVE=Forced Perpective
             option.FORCED_PERSPECTIVE_POWER=Power
             
