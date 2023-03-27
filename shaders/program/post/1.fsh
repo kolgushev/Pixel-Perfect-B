@@ -72,10 +72,11 @@ void main() {
 		}
 	#endif
 
-
-    if(isEyeInWater == 1) {
-        colored *= OVERLAY_COLOR_WATER;
-    }
+	#if defined WATER_FOG
+		if(isEyeInWater == 1) {
+			colored *= OVERLAY_COLOR_WATER;
+		}
+	#endif
 
     #ifdef DEBUG_VIEW
         b0 = opaque(diffuse);
