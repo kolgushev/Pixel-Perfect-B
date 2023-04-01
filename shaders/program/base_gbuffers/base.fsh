@@ -164,7 +164,8 @@ void main() {
         
         
         vec4 albedo = texture2D(texture, texcoordMod);
-        
+        vec3 uncoloredDiffuse = albedo.rgb;
+
         albedo.rgb *= color.rgb;
         #if !defined gc_terrain
             albedo.a *= color.a;
@@ -310,7 +311,7 @@ void main() {
 
     #if defined HDR_TEX_LIGHT_BRIGHTNESS
         #if !defined gc_emissive
-            if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT) {
+            if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT || mcEntity == LIT_PROBLEMATIC) {
         #endif
                 albedo.rgb = SDRToHDR(albedo.rgb);
         #if !defined gc_emissive
@@ -360,13 +361,26 @@ void main() {
 
         vec3 positionOpaque = position;
         vec3 diffuse = albedo.rgb;
-        #if defined WATER_FOG_FROM_OUTSIDE
+        #if defined TRANSPARENT_WATER || defined WATER_FOG_FROM_OUTSIDE
             if(mcEntity == WATER) {
-                vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
+                #if defined TRANSPARENT_WATER
+                    uncoloredDiffuse = gammaCorrection(uncoloredDiffuse, GAMMA);
+                    float luma = luminance(uncoloredDiffuse);
+                    albedo.a = pow(albedo.a * luma, 2) * 2;
+                    albedo.a = clamp(albedo.a, 0, 1);
+                    luma = smoothstep(0.4, 0.8, luma);
+                    albedo.rgb = mix(albedo.rgb, vec3(1), luma);
+                #endif
 
-                float depth = texture2D(depthtex1, texcoordScreenspace).r;
-                vec3 diffuse = texture2D(colortex0, texcoordScreenspace).rgb;
-                positionOpaque = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoordScreenspace, depth).xyz;
+                #if defined WATER_FOG_FROM_OUTSIDE
+                    vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
+
+                    float depth = texture2D(depthtex1, texcoordScreenspace).r;
+                    // TODO: figure out a way to fix this
+                    // diffuse = texture2D(colortex0, texcoordScreenspace).rgb;
+                    diffuse = albedo.rgb;
+                    positionOpaque = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoordScreenspace, depth).xyz;
+                #endif
             }
         #endif
 
