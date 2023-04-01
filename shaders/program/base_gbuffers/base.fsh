@@ -366,10 +366,10 @@ void main() {
                 #if defined TRANSPARENT_WATER
                     uncoloredDiffuse = gammaCorrection(uncoloredDiffuse, GAMMA);
                     float luma = luminance(uncoloredDiffuse);
-                    albedo.a = pow(albedo.a * luma, 2) * 2;
+                    albedo.a = pow(albedo.a * luma, 1);
                     albedo.a = clamp(albedo.a, 0, 1);
-                    luma = smoothstep(0.4, 0.8, luma);
-                    albedo.rgb = mix(albedo.rgb, vec3(1), luma);
+                    luma = smoothstep(0.45, 1.0, luma);
+                    albedo.rgb = mix(albedo.rgb, vec3(lightColor[0]), luma);
                 #endif
 
                 #if defined WATER_FOG_FROM_OUTSIDE
