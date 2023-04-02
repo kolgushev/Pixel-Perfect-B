@@ -2,6 +2,7 @@ profile.ONE=§fVanilla §b+
 profile.TWO=§fVanilla §b++
 profile.THREE=§fVanilla §b+++
 
+profile.CONTENT_ONE=§fContent Creator §b+
 profile.CONTENT_TWO=§fContent Creator §b++
 profile.CONTENT_THREE=§fContent Creator §b+++
 
@@ -298,6 +299,10 @@ screen.MISC=Extras
         value.OUTLINE_COLOR.4=§9Blue
         value.OUTLINE_COLOR.5=Dimension Themed
 
+    option.WATER_STYLE=Water Style
+        value.WATER_STYLE.0=Vanilla
+        value.WATER_STYLE.1=Clear
+
     screen.WEATHER=Weather
 
         option.WAVING_ENABLED=Waving Objects
@@ -310,6 +315,9 @@ screen.MISC=Extras
             option.NOISY_RAIN.comment=In real life, rain isn't perfectly uniform. This option attempts to replicate that by making the rain more and less dense in some areas where it falls.
             value.NOISY_RAIN.true=Yes
             value.NOISY_RAIN.false=No
+
+        option.RAIN_THICKNESS=Rain Density
+            option.RAIN_THICKNESS.comment=Larger values create more, thinner rain droplets, while smaller values increase droplet size and decrease droplet amount.
 
         option.RAIN_AMOUNT_USER=Scattered Rain Amount
             option.RAIN_AMOUNT_USER.comment=Changes how large the patches of rain are when Scattered Rain is turned on. If Scattered Rain is off, this setting acts similarly to Rain Opacity.

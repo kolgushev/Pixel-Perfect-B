@@ -370,9 +370,9 @@ void main() {
 
         vec3 positionOpaque = position;
         vec3 diffuse = albedo.rgb;
-        #if defined TRANSPARENT_WATER || defined WATER_FOG_FROM_OUTSIDE
+        #if WATER_STYLE == 1 || defined WATER_FOG_FROM_OUTSIDE
             if(mcEntity == WATER) {
-                #if defined TRANSPARENT_WATER
+                #if WATER_STYLE == 1
                     uncoloredDiffuse = gammaCorrection(uncoloredDiffuse, GAMMA);
                     float luma = luminance(uncoloredDiffuse);
                     albedo.a *= albedo.a * luma;
