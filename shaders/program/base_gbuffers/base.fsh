@@ -3,8 +3,8 @@
 /* DRAWBUFFERS:0123 */
 layout(location = 0) out vec4 b0;
 layout(location = 1) out vec4 b1;
-layout(location = 2) out vec3 b2;
-layout(location = 3) out vec3 b3;
+layout(location = 2) out vec4 b2;
+layout(location = 3) out vec4 b3;
 
 in vec2 texcoord;
 in vec4 color;
@@ -135,7 +135,13 @@ uniform int renderStage;
 #endif
 
 void main() {
-    vec3 lightmap = vec3(light, color.a);
+    #if defined gc_emissive
+        vec3 lightmap = vec3(0, 0, 1);
+    #elif defined g_basic
+        vec3 lightmap = vec3(0.7, 0.7, 1);
+    #else
+        vec3 lightmap = vec3(light, color.a);
+    #endif
 
     vec3 customFogColor = mix(fogColor, skyColor, SKY_COLOR_BLEND);
 
@@ -366,7 +372,7 @@ void main() {
                 #if defined TRANSPARENT_WATER
                     uncoloredDiffuse = gammaCorrection(uncoloredDiffuse, GAMMA);
                     float luma = luminance(uncoloredDiffuse);
-                    albedo.a = pow(albedo.a * luma, 1);
+                    albedo.a *= albedo.a * luma;
                     albedo.a = clamp(albedo.a, 0, 1);
                     luma = smoothstep(0.45, 1.0, luma);
                     albedo.rgb = mix(albedo.rgb, vec3(lightColor[0]), luma);
@@ -435,8 +441,12 @@ void main() {
         b1 = albedo;
     #endif
 
-    // Even though they should be, these buffers aren't being written to
-    // after the deferred phase. What the heck, Optifine?
-    b2 = lightmap;
-    b3 = normal;
+    b2 = opaque(lightmap);
+    b3 = opaque(normal);
+
+    #if defined g_basic
+        if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+            b2.a = 0;
+        }
+    #endif
 }

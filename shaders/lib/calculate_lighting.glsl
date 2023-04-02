@@ -120,7 +120,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         vec3 indirectLighting = max(vec3(minLight), ambientLight + torchLighting + ambientSkyLighting);
     #endif
 
-    float adjustedAo = 1 - clamp((1 - pow(ambientOcclusion, 2)) * VANILLA_AO_INTENSITY, 0, 1);
+    float adjustedAo = 1 - clamp((1 - pow(ambientOcclusion, GAMMA)) * VANILLA_AO_INTENSITY, 0, 1);
 
     indirectLighting *= adjustedAo;
     #if VANILLA_LIGHTING != 2
