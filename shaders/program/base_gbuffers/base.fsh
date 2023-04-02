@@ -168,7 +168,10 @@ void main() {
             texcoordMod = tile(texcoordMod * END_SKY_RESOLUTION, vec2(1, 1), true).rg;
         #endif
         
-        
+        #if defined g_weather
+            texcoordMod.x *= RAIN_THICKNESS;
+        #endif
+
         vec4 albedo = texture2D(texture, texcoordMod);
         vec3 uncoloredDiffuse = albedo.rgb;
 

@@ -541,6 +541,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
 
 #define RAIN_CONSTRAINT 0.12
 #define RAIN_AMOUNT (0.6 - RAIN_AMOUNT_USER * 0.2 - RAIN_CONSTRAINT * 0.5)
+#define RAIN_THICKNESS 1.4 // [0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.4 1.6 1.8 2.0]
 
 // DIM_NO_SKY is for dimensions which lack any fullscreen-covering gbuffers_skybasic/skytextured
 // DIM_NO_HORIZON is for dimensions which don't have a defined horizon (and therefore look better with sky visible below said horizon)
