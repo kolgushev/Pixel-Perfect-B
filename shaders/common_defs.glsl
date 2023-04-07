@@ -272,12 +272,12 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef HDR_TEX_LIGHT_BRIGHTNESS
 #endif
 
-#define HDR_TEX_STANDARD 0
+#define HDR_TEX_STANDARD 0 // [0 1 2]
 
 // #define FAST_GI
 #ifdef FAST_GI
 #endif
-#define FAST_GI_STRENGTH 1.0
+#define FAST_GI_STRENGTH 1.5
 #define FAST_GI_LOD_LEVEL 8
 
 #define ATMOSPHERIC_FOG_USER

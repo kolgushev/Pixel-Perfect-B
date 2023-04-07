@@ -47,7 +47,7 @@ void main() {
 
 			vec2 offsetMult = pow(2, FAST_GI_LOD_LEVEL) / vec2(viewWidth, viewHeight);
 			float sum = 0;
-			const float maxBrightness = 3;
+			const float maxBrightness = 1.7;
 
 			for(int i = 0; i < superSampleOffsetsCross.length; i++) {
 				vec3 offsetAndWeight = superSampleOffsetsCross[i];

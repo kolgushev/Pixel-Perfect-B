@@ -391,6 +391,10 @@ screen.ADVANCED=Advanced
         value.ISOLATE_RENDER_STAGE.22=World Border
         value.ISOLATE_RENDER_STAGE.23=Transparent Held Item
 
+    option.WATER_FOG=Water Fog
+        value.WATER_FOG.true=Yes
+        value.WATER_FOG.false=No
+
     option.SHADOW_TRANSITION_MIXING=Sunset Shadow Mixing
         option.SHADOW_TRANSITION_MIXING.comment=To increase performance, shadows are only calculated for the sun §oor§r moon, never both. To prevent an awkward "pop-in" effect as the shadows are switched from sun to moon and vice versa, the lighting is briefly switched to its shadowless version during sunset. This setting controls whether the terrain looks like it's in shadow (Shadowed) during this period.
         value.SHADOW_TRANSITION_MIXING.1=Unshadowed
