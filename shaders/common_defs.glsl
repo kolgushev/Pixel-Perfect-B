@@ -293,7 +293,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef WATER_FOG_FROM_OUTSIDE
 #endif
 
-#define WATER_STYLE 1 // [0 1]
+#define WATER_STYLE 0 // [0 1]
 
 #define NOISY_LAVA 1 // [0 1 2]
 
