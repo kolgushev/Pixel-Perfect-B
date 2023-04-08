@@ -32,8 +32,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
 
-    // Usually this is divided by 2, but we're dividing by more than that to simulate bounce lighting
-    float skyShading = (normal.y - 1) * RCP_3 + 1.0;
+    float skyShading = (normal.y - 1) * 0.5 + 1.0;
     
     #if VANILLA_LIGHTING != 2
 
@@ -78,6 +77,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         indirectLighting += ambientLight + lightningFlash(isLightning, rain) * skyShading * pow(max(lightmap.y - 0.0313, 0), 2);
 
     #else
+        vec2 lightmapAdjusted = lightmap * lightmap;
+
         float lightBoost = BLOCK_LIGHT_POWER + darknessEffect * 0.9 + darknessPulseEffect * 4 - nightVisionEffect * 0.5;
 
         // Compute dot product vertex shading from normals
@@ -87,11 +88,9 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), VANILLA_COLORS);
 
-        vec3 skyColor = mix(mix(NIGHT_SKY_COLOR, DAY_SKY_COLOR, skyTransition), mix(NIGHT_SKY_COLOR_VANILLA, DAY_SKY_COLOR_VANILLA, skyTransition), VANILLA_COLORS);
-
         // Multiply each part of the light map with it's color
 
-        vec3 torchLighting = gammaCorrection(pow(lightmap.x, 2) * torchColor, lightBoost) * BLOCK_LIGHT_MULT;
+        vec3 torchLighting = gammaCorrection(lightmapAdjusted.x * torchColor, lightBoost) * BLOCK_LIGHT_MULT;
 
         vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR;
         vec3 sunLighting = sunShading * SUN_COLOR;
@@ -113,11 +112,17 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         #endif
 
         vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR;
+
+        vec3 skyColor = actualSkyColor(skyTransition) + lightningFlash(isLightning, rain);
         // technically the pow2 here isn't accurate, but it makes the falloff near the edges of the light look better
-        vec3 ambientSkyLighting = (actualSkyColor(skyTransition) + lightningFlash(isLightning, rain)) * skyShading * pow(lightmap.y, 2);
+        vec3 skyLighting = skyColor * skyShading * lightmapAdjusted.y;
+
+        // the 0.47 here is an artistic decision, anything below 0.5 represents bounce lighting reaching above the surface of a block
+        float ambientSkyShading = (normal.y + 1) * -0.47 + 1.0;
+        vec3 ambientSkyLight = (directSkyLighting + skyColor) * ambientSkyShading * lightmapAdjusted.y * 0.6;
         
         // Add the lighting togther to get the total contribution of the lightmap the final color.
-        vec3 indirectLighting = max(vec3(minLight), ambientLight + torchLighting + ambientSkyLighting);
+        vec3 indirectLighting = max(vec3(minLight), ambientLight + torchLighting + skyLighting + ambientSkyLight);
     #endif
 
     float adjustedAo = 1 - clamp((1 - pow(ambientOcclusion, GAMMA)) * VANILLA_AO_INTENSITY, 0, 1);
