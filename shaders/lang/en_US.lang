@@ -66,8 +66,8 @@ screen.LIGHTING=Lighting
         option.AMBIENT_LIGHT_MULT=Ambient Light
             option.AMBIENT_LIGHT_MULT.comment=Sets the ambient light level. This is similar to minimum light, but affects all areas of the game, not just the darkest ones.
 
-        option.DYNAMIC_EXPOSURE_LIGHTING=Realistic Light Strengths
-            option.DYNAMIC_EXPOSURE_LIGHTING.comment=§cBETA!. This feature is in beta and won't look good. Sets light levels to their real-life values. No performance impact.
+        option.DYNAMIC_EXPOSURE_LIGHTING=HDR Exposure §c(Experimental)
+            option.DYNAMIC_EXPOSURE_LIGHTING.comment=§cEXPERIMENTAL!. This feature is experimental and won't look good. Sets light levels to their real-life values. No performance impact.
             value.DYNAMIC_EXPOSURE_LIGHTING.true=Yes
             value.DYNAMIC_EXPOSURE_LIGHTING.false=No
 

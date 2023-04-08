@@ -14,20 +14,18 @@ uniform float viewWidth;
 uniform float viewHeight;
 
 #if defined FAST_GI
-	uniform sampler2D colortex1;
-
 	uniform float far;
 	uniform float blindness;
-
-	#if defined DIM_END
-		uniform int bossBattle;
-	#endif
 
 	uniform mat4 gbufferProjectionInverse;
 	uniform mat4 gbufferModelViewInverse;
 
 	#include "/lib/linearize_depth.fsh"
 	#include "/lib/fogify.glsl"
+#endif
+
+#if defined FAST_GI || defined DYNAMIC_EXPOSURE_LIGHTING
+	uniform sampler2D colortex1;
 	#include "/lib/tonemapping.glsl"
 #endif
 
@@ -76,6 +74,13 @@ void main() {
 		if(isEyeInWater == 1) {
 			colored *= OVERLAY_COLOR_WATER;
 		}
+	#endif
+
+	#if defined DYNAMIC_EXPOSURE_LIGHTING
+		vec3 light = texture(colortex1, texcoord, 100).rgb;
+		float maxLight = max(max(light.r, light.g), light.b);
+
+		colored /= maxLight * 2 + 0.005;
 	#endif
 
     #ifdef DEBUG_VIEW

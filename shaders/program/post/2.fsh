@@ -104,7 +104,11 @@ void main() {
         tonemapped /= 1 + FAST_GI_EXPOSURE_CORRECT_GRAY * FAST_GI_STRENGTH;
     #endif
 
-    tonemapped *= EXPOSURE * EXPOSURE_BIAS;
+    tonemapped *= EXPOSURE;
+
+    #if !defined DYNAMIC_EXPOSURE_LIGHTING
+        tonemapped *= EXPOSURE_BIAS;
+    #endif
 
     // tonemap image
     #if LMT_MODE == 1
