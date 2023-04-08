@@ -61,7 +61,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
             float sunShading = normalLighting(normalViewspace, sunPosition);
             float moonShading = normalLighting(normalViewspace, moonPosition);
 
-            float skyShading = mix(moonShading, sunShading, skyTransition);
+            skyShading = mix(moonShading, sunShading, skyTransition);
 
             directSkyLighting *= skyShading;
         #endif
