@@ -89,10 +89,10 @@ const float drynessHalflife = 70.0;
 #if defined g_skybasic || defined g_skytextured
     #define gc_sky
 #endif
-#if defined g_textured || defined g_textured_lit
+#if defined g_textured || defined g_textured_lit || defined g_particles
     #define gc_textured
 #endif
-#if defined g_water || defined g_hand_water || defined g_weather || defined g_clouds || defined gc_textured
+#if defined g_water || defined g_hand_water || defined g_weather || defined g_clouds || defined gc_textured || defined g_particles_translucent
     #define gc_transparent
 #endif
 #if defined g_water || defined g_terrain
@@ -104,8 +104,11 @@ const float drynessHalflife = 70.0;
 #if defined g_armor_glint || defined g_skytextured
     #define gc_additive
 #endif
-#if defined g_entities || defined g_entities_glowing || defined g_spidereyes
+#if defined g_entities || defined g_entities_glowing || defined g_spidereyes || defined g_entities_translucent
     #define gc_entities
+#endif
+#if defined g_block || defined g_block_translucent
+    #define gc_block_entities
 #endif
 #if defined DIM_USES_SKYBOX && defined g_skytextured
     #define gc_skybox
