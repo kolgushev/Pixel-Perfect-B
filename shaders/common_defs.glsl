@@ -622,7 +622,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_ACEScg)
     
     #define ATMOSPHERIC_FOG_COLOR (gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg)
-    #define ATMOSPHERIC_FOG_MULTIPLIER 0.5
+    #define ATMOSPHERIC_FOG_MULTIPLIER 0.35
 
     #define WEATHER_FOG_MULTIPLIER 10.0
 
