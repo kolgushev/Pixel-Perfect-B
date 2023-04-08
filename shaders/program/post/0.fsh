@@ -19,8 +19,8 @@ uniform sampler2D colortex2;
 #endif
 
 uniform sampler2D depthtex0;
-// uniform sampler2D shadowcolor0;
-uniform sampler2D shadowcolor1;
+uniform sampler2D shadowcolor0;
+// uniform sampler2D shadowcolor1;
 uniform sampler2D noisetex;
 
 uniform mat4 shadowProjection;
@@ -65,7 +65,7 @@ void main() {
             shadowProjection,
             shadowModelView,
             texcoord,
-            shadowcolor1,
+            shadowcolor0,
             noisetex,
             skyLightmap,
             worldTime);

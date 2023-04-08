@@ -410,6 +410,9 @@ void main() {
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;
+        #if defined SHADOWS_ENABLED
+            directLighting.a *= 1 - fogged.a;
+        #endif
 
         // TODO: find out why water lighting is being inherited from opaque geometry
     #endif
