@@ -340,21 +340,42 @@ void main() {
 
     #if defined gc_transparent
         // apply lighting here for transparent stuff
-        mat2x3 lightColor = getLightColor(
-            lightmap,
-            normal,
-            view(normal),
-            sunPosition,
-            moonPosition,
-            moonBrightness,
-            skyTime(worldTime),
-            rainStrength,
-            directLightMult,
-            nightVision,
-            darknessFactor,
-            darknessLightFactor,
-            isLightning,
-            shadowcolor0);
+        #if !defined g_clouds
+            mat2x3 lightColor = getLightColor(
+                lightmap,
+                normal,
+                view(normal),
+                sunPosition,
+                moonPosition,
+                moonBrightness,
+                skyTime(worldTime),
+                rainStrength,
+                directLightMult,
+                nightVision,
+                darknessFactor,
+                darknessLightFactor,
+                isLightning,
+                shadowcolor0);
+        #else
+            float positionMod = clamp(position.y * RCP_8, 0, 1);
+            
+            albedo.a = mix(positionMod, 1, 0.6);
+            
+            positionMod = mix(positionMod, 1, 0.5);
+
+            #if VANILLA_LIGHTING != 2
+                vec3 skyColor = texture2D(shadowcolor0, vec2(0, positionMod)).rgb;
+                skyColor = gammaCorrection(skyColor, GAMMA) * RGB_to_ACEScg * SKY_LIGHT_MULT;
+            #else
+                vec3 skyColor = actualSkyColor(skyTime(worldTime)) + lightningFlash(isLightning, rainStrength);
+                skyColor *= positionMod;
+            #endif
+
+            mat2x3 lightColor = mat2x3(
+                skyColor,
+                vec3(0, 0, 0)
+            );
+        #endif
         
         #if defined SHADOWS_ENABLED
             vec4 directLighting = opaque(lightColor[1]) * albedo;

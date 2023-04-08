@@ -22,7 +22,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define ISQRT_5 0.4472135955
 #define RCP_3 0.33333333333
 #define RCP_7 0.14285714285
-#define RCP_8 0.75
+#define RCP_8 0.125
 #define RCP_16 0.0625
 #define RCP_32 0.03125
 #define RCP_255 0.00392156862
