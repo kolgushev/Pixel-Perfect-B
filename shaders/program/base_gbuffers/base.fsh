@@ -135,9 +135,7 @@ uniform int renderStage;
 #endif
 
 void main() {
-    #if defined gc_emissive
-        vec3 lightmap = vec3(0, 0, 1);
-    #elif defined g_basic
+    #if defined g_basic
         vec3 lightmap = vec3(0.7, 0.7, 1);
     #else
         vec3 lightmap = vec3(light, color.a);
@@ -340,23 +338,7 @@ void main() {
 
     #if defined gc_transparent
         // apply lighting here for transparent stuff
-        #if !defined g_clouds
-            mat2x3 lightColor = getLightColor(
-                lightmap,
-                normal,
-                view(normal),
-                sunPosition,
-                moonPosition,
-                moonBrightness,
-                skyTime(worldTime),
-                rainStrength,
-                directLightMult,
-                nightVision,
-                darknessFactor,
-                darknessLightFactor,
-                isLightning,
-                shadowcolor0);
-        #else
+        #if defined g_clouds
             float positionMod = clamp(position.y * RCP_8, 0, 1);
             
             albedo.a = mix(positionMod, 1, 0.6);
@@ -373,8 +355,24 @@ void main() {
 
             mat2x3 lightColor = mat2x3(
                 skyColor,
-                vec3(0, 0, 0)
+                vec3(0)
             );
+        #else
+            mat2x3 lightColor = getLightColor(
+                lightmap,
+                normal,
+                view(normal),
+                sunPosition,
+                moonPosition,
+                moonBrightness,
+                skyTime(worldTime),
+                rainStrength,
+                directLightMult,
+                nightVision,
+                darknessFactor,
+                darknessLightFactor,
+                isLightning,
+                shadowcolor0);
         #endif
         
         #if defined SHADOWS_ENABLED
@@ -392,16 +390,15 @@ void main() {
         vec3 positionOpaque = position;
         vec3 diffuse = albedo.rgb;
         #if defined g_water
+            albedo.a *= 0.9;
             if(mcEntity == WATER) {
                 #if WATER_STYLE == 1
                     uncoloredDiffuse = gammaCorrection(uncoloredDiffuse, GAMMA);
                     float luma = luminance(uncoloredDiffuse);
                     albedo.a *= albedo.a * luma;
-                    albedo.a = clamp(albedo.a, 0, 1);
+                    albedo.a = clamp(albedo.a * 1.1, 0, 1);
                     luma = smoothstep(0.45, 1.0, luma);
                     albedo.rgb = mix(albedo.rgb, vec3(lightColor[0]), luma);
-                #elif WATER_STYLE == 0
-                    albedo.a *= 0.9;
                 #endif
 
                 #if defined WATER_FOG_FROM_OUTSIDE
@@ -409,8 +406,8 @@ void main() {
 
                     float depth = texture2D(depthtex1, texcoordScreenspace).r;
                     // TODO: figure out a way to fix this
-                    // diffuse = texture2D(colortex0, texcoordScreenspace).rgb;
-                    diffuse = albedo.rgb;
+                    // diffuse = texture2D(colortex3, texcoordScreenspace).rgb;
+                    // diffuse = vec3(1);
                     positionOpaque = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoordScreenspace, depth).xyz;
                 #endif
             }
