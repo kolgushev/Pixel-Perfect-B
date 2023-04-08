@@ -58,7 +58,7 @@ void main() {
     #endif
 
     // the nether doesn't render sky
-    #if defined DIM_NO_SKY
+    #if !defined HAS_SKY
         #if defined ATMOSPHERIC_FOG
             vec3 skyColorProcessed = ATMOSPHERIC_FOG_COLOR;
         #else
@@ -75,13 +75,13 @@ void main() {
 
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
 
-    #if !defined DIM_NO_SKYLIGHT
+    #if defined HAS_SKYLIGHT
         float inSkyProcessed = inSky;
     #else
         float inSkyProcessed = 1;
     #endif
 
-    #if !defined DIM_NO_SKYLIGHT && defined WEATHER_FOG_IN_SKY_ONLY
+    #if defined HAS_SKYLIGHT && defined WEATHER_FOG_IN_SKY_ONLY
         float fogWeatherSkyProcessed = fogWeatherSky;
     #else
         float fogWeatherSkyProcessed = fogWeather;

@@ -550,8 +550,6 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
 #if defined DIM_NETHER
     #define HAS_ATMOSPHERIC_FOG
     #define DIM_NO_RAIN
-    #define DIM_NO_SKY
-    #define DIM_NO_SKYLIGHT
     #if defined NETHER_FOGGY_WEATHER
         #define DIM_HAS_FOGGY_WEATHER
     #endif
@@ -582,7 +580,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     #define DIM_NO_RAIN
     #define DIM_NO_HORIZON
     #define DIM_USES_SKYBOX
-    #define DIM_NO_SKYLIGHT
+    #define HAS_SKY
     #define DIM_NO_WIND
     #if defined END_FOGGY_WEATHER
         #define DIM_HAS_FOGGY_WEATHER
@@ -611,8 +609,9 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     #define HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG_IN_SKY_ONLY
     #define WEATHER_FOG_IN_SKY_ONLY
-    #define DIM_HAS_DAYNIGHT_CYCLE
-    #define DIM_HAS_SHADOWS
+    #define HAS_DAYNIGHT_CYCLE
+    #define HAS_SKY
+    #define HAS_SKYLIGHT
     #if defined OVERWORLD_FOGGY_WEATHER
         #define DIM_HAS_FOGGY_WEATHER
     #endif
@@ -638,7 +637,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
 #if defined DIM_HAS_FOGGY_WEATHER && defined FOG_ENABLED_USER
     #define FOG_ENABLED
 #endif
-#if defined SHADOWS_ENABLED_USER && !defined VANILLA_SHADOWS && defined DIM_HAS_SHADOWS
+#if defined SHADOWS_ENABLED_USER && !defined VANILLA_SHADOWS && defined HAS_SKYLIGHT
     #define SHADOWS_ENABLED
 #endif
 

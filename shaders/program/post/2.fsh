@@ -159,7 +159,6 @@ void main() {
 
     // dithering
     #if DITHERING_MODE != 0
-        // TODO: rework to fix light loss bug
         // const float mult = 2;
         // const float inverseMult = 0.5;
         const float mult = 256;

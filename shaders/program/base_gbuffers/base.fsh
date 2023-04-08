@@ -269,7 +269,7 @@ void main() {
     #endif
 
     #if defined g_skytextured
-        #if defined DIM_HAS_DAYNIGHT_CYCLE
+        #if defined HAS_DAYNIGHT_CYCLE
             // since we're using an advanced color pipeline it's safe to pump up the skytextured brightness
             albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime(worldTime));
         #endif
@@ -396,16 +396,16 @@ void main() {
         #endif
 
         // apply fog as well
-        #if !defined DIM_NO_SKYLIGHT
-            float inSkyProcessed = inSky;
-        #else
+        #if defined HAS_SKYLIGHT
             float inSkyProcessed = 1;
+        #else
+            float inSkyProcessed = inSky;
         #endif
 
-        #if !defined DIM_NO_SKYLIGHT && defined WEATHER_FOG_IN_SKY_ONLY
-            float fogWeatherSkyProcessed = fogWeatherSky;
-        #else
+        #if defined HAS_SKYLIGHT && defined WEATHER_FOG_IN_SKY_ONLY
             float fogWeatherSkyProcessed = fogWeather;
+        #else
+            float fogWeatherSkyProcessed = fogWeatherSky;
         #endif
 
         vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindness, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));

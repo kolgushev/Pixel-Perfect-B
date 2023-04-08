@@ -149,7 +149,6 @@ void main() {
             }
             // simulates wind gusts from several directions at several frequencies
             // requires a lot of computation but results in very good looking wind
-            // TODO: add a custom wind configuration for nether and end
             
             // there is no rain in the nether (rain in deserts is a windstorm)
             #if defined DIM_NO_RAIN
@@ -187,7 +186,7 @@ void main() {
                 }
             #endif
             
-            #if !defined g_weather && !defined DIM_NO_SKY
+            #if !defined g_weather && defined HAS_SKY
                 // multiply by sky light to make sure grass doesn't wave in caves and indoors
                 offset *= pow(light.y, 2);
             #endif
