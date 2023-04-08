@@ -264,4 +264,8 @@ void main() {
     #if defined use_viewinverse_pos
         position = viewInverse(gl_Vertex.xyz);
     #endif
+
+    #if defined NO_SHADING
+        normal = vec3(0, 1, 0);
+    #endif
 }
