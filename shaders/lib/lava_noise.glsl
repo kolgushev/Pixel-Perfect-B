@@ -12,7 +12,8 @@ float lavaNoise(in vec2 position, in float t) {
 	#endif
 	vec4 noise = noise_f(LAVA_SCALE);
 	#if NOISY_LAVA == 2
-		noise = pow(noise - 0.35, 2) * 20;
+		noise = noise - 0.35;
+		noise = noise * noise * 20;
 	#endif
 
 	return (noise.r * (sin(t) * 0.5 + 0.5) + noise.g * (sin(t + PI * 0.5) * 0.5 + 0.5) + noise.b * (sin(t + PI) * 0.5 + 0.5) + noise.a * (sin(t + PI * 1.5) * 0.5 + 0.5));
