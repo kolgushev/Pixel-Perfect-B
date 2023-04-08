@@ -91,7 +91,8 @@ void main() {
     #endif
 
     mat2x3 lightColor = getLightColor(lightmap,
-    normal,normalViewspace,
+    normal,
+    normalViewspace,
     sunPosition,
     moonPosition,
     moonBrightness,
