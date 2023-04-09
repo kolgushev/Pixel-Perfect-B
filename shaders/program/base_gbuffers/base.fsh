@@ -86,8 +86,16 @@ uniform int renderStage;
 
 
 #if defined gc_transparent || defined g_weather || defined g_skybasic || defined gc_skybox
+    #define NEED_WEATHER_DATA
+#endif
+
+#if defined NEED_WEATHER_DATA
     uniform float moonBrightness;
     uniform float rainStrength;
+
+    #if defined IS_IRIS
+        uniform float thunderStrength;
+    #endif
 
     uniform float fogWeather;
     uniform float fogWeatherSky;
@@ -135,6 +143,13 @@ uniform int renderStage;
 #endif
 
 void main() {
+    #if defined NEED_WEATHER_DATA
+        float rain = rainStrength;
+        #if defined IS_IRIS
+            rain *= mix(thunderStrength, 1, 0.6);
+        #endif
+    #endif
+
     #if defined g_basic
         vec3 lightmap = vec3(0.7, 0.7, 1);
     #else
@@ -259,7 +274,7 @@ void main() {
     #endif
 
     #if defined g_skybasic
-        albedo.rgb += lightningFlash(isLightning, rainStrength) * 0.1;
+        albedo.rgb += lightningFlash(isLightning, rain) * 0.1;
 
         if(isEyeInWater == 1) {
             albedo.rgb = ATMOSPHERIC_FOG_COLOR_WATER;
@@ -282,12 +297,12 @@ void main() {
 
         albedo.a = max(0.15, albedo.a);
 
-        albedo.a *= RAIN_TRANSPARENCY * rainStrength;
+        albedo.a *= RAIN_TRANSPARENCY * rain;
         
         albedo.rgb *= 
-            rainMultiplier(rainStrength) * mix(moonBrightness * MOON_COLOR, SUN_COLOR, skyTransition)
+            rainMultiplier(rain) * mix(moonBrightness * MOON_COLOR, SUN_COLOR, skyTransition)
             + actualSkyColor(skyTransition)
-            + lightningFlash(isLightning, rainStrength);
+            + lightningFlash(isLightning, rain);
         albedo.rgb *= 0.5;
     #endif
 
@@ -343,18 +358,18 @@ void main() {
             
             albedo.a = mix(positionMod, 1, 0.6);
             
-            positionMod = mix(positionMod * (1 - rainStrength), 1, 0.5);
+            positionMod = mix(positionMod * (1 - rain), 1, 0.5);
 
             #if VANILLA_LIGHTING != 2
                 vec3 skyColor = texture2D(shadowcolor0, vec2(0, positionMod)).rgb;
                 skyColor = gammaCorrection(skyColor, GAMMA) * RGB_to_ACEScg * SKY_LIGHT_MULT;
             #else
-                vec3 skyColor = actualSkyColor(skyTime(worldTime)) + lightningFlash(isLightning, rainStrength);
+                vec3 skyColor = actualSkyColor(skyTime(worldTime)) + lightningFlash(isLightning, rain);
                 skyColor *= positionMod;
             #endif
 
             mat2x3 lightColor = mat2x3(
-                skyColor * CLOUD_COLOR,
+                skyColor * CLOUD_COLOR * rainMultiplier(rain),
                 vec3(0)
             );
         #else
@@ -366,7 +381,7 @@ void main() {
                 moonPosition,
                 moonBrightness,
                 skyTime(worldTime),
-                rainStrength,
+                rain,
                 directLightMult,
                 nightVision,
                 darknessFactor,
