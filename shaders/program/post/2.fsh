@@ -104,7 +104,19 @@ void main() {
         tonemapped /= 1 + FAST_GI_EXPOSURE_CORRECT_GRAY * FAST_GI_STRENGTH;
     #endif
 
-    tonemapped *= EXPOSURE;
+    // this is personal taste, but Hable has some desaturated/dark colors, so compensate for that through post-processing
+    #if LMT_MODE == 3
+    #define LMT_MODE_EXPOSURE_WEIGHT 1.2
+        #define LMT_MODE_EXPOSURE_WEIGHT 1.2
+        #define LMT_MODE_CONTRAST_BIAS 0.1
+    #else
+        #define LMT_MODE_EXPOSURE_WEIGHT 1.0
+        #define LMT_MODE_CONTRAST_BIAS 0.0
+    #endif
+
+    #define ADJUSTED_CONTRAST (CONTRAST + LMT_MODE_CONTRAST_BIAS)
+
+    tonemapped *= EXPOSURE * LMT_MODE_EXPOSURE_WEIGHT;
 
     #if !defined DYNAMIC_EXPOSURE_LIGHTING
         tonemapped *= EXPOSURE_BIAS;
@@ -144,12 +156,12 @@ void main() {
     #endif
 
     // apply contrast
-    if(CONTRAST != 0.0) {
+    if(ADJUSTED_CONTRAST != 0.0) {
         // equation for contrast is x+(1-|2x-1|)(2x-1)a
         // where "x" is the color channel and "a" is the contrast
         vec3 b = 2 * colorCorrected - 1;
 
-        colorCorrected = colorCorrected + (1 - abs(b)) * b * CONTRAST;
+        colorCorrected = colorCorrected + (1 - abs(b)) * b * ADJUSTED_CONTRAST;
     }
 
     if(POST_SATURATION != 1.0) {
