@@ -343,7 +343,7 @@ void main() {
             
             albedo.a = mix(positionMod, 1, 0.6);
             
-            positionMod = mix(positionMod, 1, 0.5);
+            positionMod = mix(positionMod * (1 - rainStrength), 1, 0.5);
 
             #if VANILLA_LIGHTING != 2
                 vec3 skyColor = texture2D(shadowcolor0, vec2(0, positionMod)).rgb;
@@ -354,7 +354,7 @@ void main() {
             #endif
 
             mat2x3 lightColor = mat2x3(
-                skyColor,
+                skyColor * CLOUD_COLOR,
                 vec3(0)
             );
         #else
@@ -377,14 +377,22 @@ void main() {
         
         #if defined SHADOWS_ENABLED
             vec4 directLighting = opaque(lightColor[1]) * albedo;
-            albedo.rgb *= lightColor[0];
+            #if defined g_clouds
+                albedo.rgb = lightColor[0];
+            #else
+                albedo.rgb *= lightColor[0];
+            #endif
         #else
             #if defined VANILLA_SHADOWS
                 float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;
             #else
                 float shadow = basicDirectShading(lightmap.g);
             #endif
-            albedo.rgb *= lightColor[0] + lightColor[1] * shadow;
+            #if defined g_clouds
+                albedo.rgb = lightColor[0];
+            #else
+                albedo.rgb *= lightColor[0] + lightColor[1] * shadow;
+            #endif
         #endif
 
         vec3 positionOpaque = position;

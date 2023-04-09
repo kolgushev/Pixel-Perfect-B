@@ -571,6 +571,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     // (that is the main benefit of an ACES workflow, after all)
     #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.09, 0.03))
     // #define ATMOSPHERIC_FOG_COLOR (vec3(0.04, 0.1, 1.0))
+    #define CLOUD_COLOR AMBIENT_COLOR
 
     #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
 
@@ -596,6 +597,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     #define BASE_COLOR (vec3(0.9, 0.7, 1.2) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (vec3(0.9, 0.85, 1.1) * RGB_to_ACEScg * 10.0)
     #define MIN_LIGHT_COLOR AMBIENT_COLOR
+    #define CLOUD_COLOR AMBIENT_COLOR
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 10.2)
     #define SKY_ADDITIVE (BASE_COLOR * 0.002)
@@ -625,6 +627,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
     #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_ACEScg)
+    #define CLOUD_COLOR (vec3(0.55, 0.57, 0.62))
     
     #define ATMOSPHERIC_FOG_COLOR (gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg)
     #define ATMOSPHERIC_FOG_MULTIPLIER 0.35
