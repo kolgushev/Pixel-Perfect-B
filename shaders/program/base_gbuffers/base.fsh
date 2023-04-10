@@ -386,7 +386,7 @@ void main() {
             //     vec3(0)
             // );
 
-            vec3 normalMod = vec3(0, positionMod, 0);
+            vec3 normalMod = vec3(0, positionMod * 2 - 1, 0);
 
             mat2x3 lightColor = getLightColor(
                 lightmap,
