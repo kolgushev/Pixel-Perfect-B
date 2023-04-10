@@ -85,7 +85,7 @@ uniform int renderStage;
 #endif
 
 
-#if defined gc_transparent || defined g_weather || defined g_skybasic || defined gc_skybox
+#if defined gc_transparent || defined g_weather || defined gc_sky
     #define NEED_WEATHER_DATA
 #endif
 
@@ -144,14 +144,20 @@ uniform int renderStage;
 
 void main() {
     #if defined NEED_WEATHER_DATA
-        float rain = rainStrength;
-        #if defined IS_IRIS
-            rain *= mix(thunderStrength, 1, 0.6);
+        #if defined DIM_NO_RAIN
+            float rain = 0;
+        #else
+            float rain = rainStrength;
+            #if defined IS_IRIS
+                rain *= mix(thunderStrength, 1, THUNDER_THRESHOLD);
+            #endif
         #endif
     #endif
 
     #if defined g_basic
         vec3 lightmap = vec3(0.7, 0.7, 1);
+    #elif defined g_clouds
+        vec3 lightmap = vec3(0, 1, 1);
     #else
         vec3 lightmap = vec3(light, color.a);
     #endif
@@ -169,6 +175,8 @@ void main() {
             instead of evaluating the gradient.
         */
         if(distance(color.rgb, fogColor) < EPSILON) albedo = opaque(customFogColor);
+
+        albedo.rgb = mix(albedo.rgb, RAINY_SKY_COLOR, clamp((rain - THUNDER_THRESHOLD) / (1 - THUNDER_THRESHOLD), 0, 1));
     #else
         #if defined g_weather
             vec3 absolutePosition = position + cameraPosition;
@@ -228,6 +236,9 @@ void main() {
         #elif !defined DIM_NO_HORIZON
             // prevent underground sun/moon, add virtual horizon
             albedo.a = smoothstep(-0.05, 0.01, normalize(position).y);
+
+            // prevent sun from showing during rain
+            albedo.a *= clamp(1 - rain / THUNDER_THRESHOLD, 0, 1);
         #endif
     #endif
     
@@ -356,22 +367,42 @@ void main() {
         #if defined g_clouds
             float positionMod = clamp(position.y * RCP_8, 0, 1);
             
-            albedo.a = mix(positionMod, 1, 0.6);
+            albedo.a = mix(positionMod, 1, 0.65);
             
-            positionMod = mix(positionMod * (1 - rain), 1, 0.5);
+            positionMod = mix(positionMod * (1 - rain), 1, 0.0);
 
-            #if VANILLA_LIGHTING != 2
-                vec3 skyColor = texture2D(shadowcolor0, vec2(0, positionMod)).rgb;
-                skyColor = gammaCorrection(skyColor, GAMMA) * RGB_to_ACEScg * SKY_LIGHT_MULT;
-            #else
-                vec3 skyColor = actualSkyColor(skyTime(worldTime)) + lightningFlash(isLightning, rain);
-                skyColor *= positionMod;
-            #endif
+            // #if VANILLA_LIGHTING != 2
+            //     vec3 skyColor = texture2D(shadowcolor0, vec2(0, positionMod)).rgb;
+            //     skyColor = gammaCorrection(skyColor, GAMMA) * RGB_to_ACEScg * SKY_LIGHT_MULT * rainMultiplier(rain);
+            // #else
+            //     vec3 skyColor = actualSkyColor(skyTime(worldTime)) * rainMultiplier(rain) + lightningFlash(isLightning, rain);
+            //     skyColor *= positionMod;
+            // #endif
 
-            mat2x3 lightColor = mat2x3(
-                skyColor * CLOUD_COLOR * rainMultiplier(rain),
-                vec3(0)
-            );
+            // mat2x3 lightColor = mat2x3(
+            //     skyColor,
+            //     vec3(0)
+            // );
+
+            vec3 normalMod = vec3(0, positionMod, 0);
+
+            mat2x3 lightColor = getLightColor(
+                lightmap,
+                normalMod,
+                view(normalMod),
+                sunPosition,
+                moonPosition,
+                moonBrightness,
+                skyTime(worldTime),
+                rain,
+                directLightMult,
+                nightVision,
+                darknessFactor,
+                darknessLightFactor,
+                isLightning,
+                shadowcolor0);
+
+            lightColor[0] *= CLOUD_COLOR * mix(1 - rain, 1, RAINCLOUD_BRIGHTNESS);
         #else
             mat2x3 lightColor = getLightColor(
                 lightmap,

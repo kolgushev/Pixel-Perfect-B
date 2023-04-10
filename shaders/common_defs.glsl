@@ -549,6 +549,15 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
 #define RAIN_AMOUNT (0.6 - RAIN_AMOUNT_USER * 0.2 - RAIN_CONSTRAINT * 0.5)
 #define RAIN_THICKNESS 1.4 // [0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.4 1.6 1.8 2.0]
 
+#if defined IS_IRIS
+    #define THUNDER_THRESHOLD 0.6
+#else
+    #define THUNDER_THRESHOLD EPSILON
+#endif
+
+#define THUNDER_BRIGHTNESS 0.6
+#define RAINCLOUD_BRIGHTNESS 0.05
+
 // DIM_NO_SKY is for dimensions which lack any fullscreen-covering gbuffers_skybasic/skytextured
 // DIM_NO_HORIZON is for dimensions which don't have a defined horizon (and therefore look better with sky visible below said horizon)
 // DIM_NO_SKYLIGHT is for dimensions which don't have values for skylight
@@ -569,15 +578,16 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     #endif
     #define AMBIENT_COLOR (BASE_COLOR * 5.0)
     #define MIN_LIGHT_COLOR AMBIENT_COLOR
+    #define CLOUD_COLOR AMBIENT_COLOR
+
+
     // The color is intentionally unconverted here to get a much more vibrant color than sRGB would allow
     // (that is the main benefit of an ACES workflow, after all)
     #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.09, 0.03))
-    // #define ATMOSPHERIC_FOG_COLOR (vec3(0.04, 0.1, 1.0))
-    #define CLOUD_COLOR AMBIENT_COLOR
-
     #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
 
     #define WEATHER_FOG_MULTIPLIER 10.0
+    #define RAINY_SKY_COLOR ATMOSPHERIC_FOG_COLOR
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
     
@@ -610,6 +620,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     #define ATMOSPHERIC_FOG_MULTIPLIER 5.0
 
     #define WEATHER_FOG_MULTIPLIER 10.0
+    #define RAINY_SKY_COLOR ATMOSPHERIC_FOG_COLOR
 
     #define BOSS_BATTLE_SKY_MULT 0.7
     #define BOSS_BATTLE_ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
@@ -629,12 +640,13 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
     #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_ACEScg)
-    #define CLOUD_COLOR (vec3(0.8, 0.81, 0.82))
+    #define CLOUD_COLOR (vec3(0.97, 0.98, 1.0))
     
     #define ATMOSPHERIC_FOG_COLOR (gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg)
     #define ATMOSPHERIC_FOG_MULTIPLIER 0.35
 
     #define WEATHER_FOG_MULTIPLIER 10.0
+    #define RAINY_SKY_COLOR (vec3(0.3, 0.34, 0.4))
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
 

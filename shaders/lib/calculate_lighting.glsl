@@ -113,7 +113,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR;
 
-        vec3 skyColor = actualSkyColor(skyTransition) + lightningFlash(isLightning, rain);
+        vec3 skyColor = actualSkyColor(skyTransition) * mix(1 - rain, 1, THUNDER_BRIGHTNESS) + lightningFlash(isLightning, rain);
         // technically the pow2 here isn't accurate, but it makes the falloff near the edges of the light look better
         vec3 skyLighting = skyColor * skyShading * lightmapAdjusted.y;
 

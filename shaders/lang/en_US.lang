@@ -28,7 +28,7 @@ screen.LIGHTING=Lighting
     option.VANILLA_LIGHTING=Lighting Mode
         value.VANILLA_LIGHTING.0=Optifine
         value.VANILLA_LIGHTING.1=Vanilla §b+
-        value.VANILLA_LIGHTING.2=Custom
+        value.VANILLA_LIGHTING.2=Shaders
 
     option.CUTOUT_ALIGN_STRENGTH=Grass Transluscency
         option.CUTOUT_ALIGN_STRENGTH.comment=Makes grass shading less harsh and more like vanilla. No performance impact.
