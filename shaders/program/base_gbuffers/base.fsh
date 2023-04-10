@@ -321,8 +321,10 @@ void main() {
         #if defined SKY_ADDITIVE
             #if defined DIM_END && defined g_skytextured
                 if(bossBattle != 2) {
-                    albedo.rgb += SKY_ADDITIVE * (gradient2 + 1);
+                    albedo.rgb += SKY_ADDITIVE * gradient2;
                     // albedo.rgb += SKY_ADDITIVE;
+                } else {
+                    albedo.rgb += SKY_ADDITIVE;
                 }
             #else
                 albedo.rgb += SKY_ADDITIVE;
