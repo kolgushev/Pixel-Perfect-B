@@ -7,6 +7,9 @@ float fogifyDistanceOnly(in vec3 position, in float far, in float blindness) {
         fogTube = length(position.xz) + 16;
         #if defined g_clouds
             fogTube *= CLOUD_EXTENSION;
+            #if !defined IS_IRIS
+                fogTube *= 8.1;
+            #endif
         #endif
     } else {
         fogTube = length(position) + 16;
