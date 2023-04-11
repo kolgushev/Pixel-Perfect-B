@@ -197,7 +197,9 @@ void main() {
         vec3 uncoloredDiffuse = albedo.rgb;
 
         albedo.rgb *= color.rgb;
-        #if !defined gc_terrain
+        #if defined g_clouds
+            albedo.a *= step(0.1, albedo.a);
+        #elif !defined gc_terrain
             albedo.a *= color.a;
         #endif
 
@@ -367,9 +369,13 @@ void main() {
     #if defined gc_transparent
         // apply lighting here for transparent stuff
         #if defined g_clouds
-            float positionMod = clamp(position.y * RCP_8, 0, 1);
+            #if defined IS_IRIS
+                float positionMod = clamp(position.y * RCP_8, 0, 1);
+            #else
+                float positionMod = mix(normal.y, 1, 0.6);
+            #endif
             
-            albedo.a = mix(positionMod, 1, 0.65);
+            albedo.a *= mix(positionMod, 1, 0.65);
             
             positionMod = mix(positionMod * (1 - rain), 1, 0.0);
 
