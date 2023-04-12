@@ -1,5 +1,5 @@
 #include "/common_defs.glsl"
-#if defined gc_terrain || defined gc_textured || defined g_clouds
+#if defined gc_terrain || defined gc_textured || defined g_clouds || defined g_weather
     #define use_raw_normal
 #endif
 

@@ -176,7 +176,7 @@ void main() {
         */
         if(distance(color.rgb, fogColor) < EPSILON) albedo = opaque(customFogColor);
 
-        albedo.rgb = mix(albedo.rgb, RAINY_SKY_COLOR, clamp((rain - THUNDER_THRESHOLD) / (1 - THUNDER_THRESHOLD), 0, 1));
+        albedo.rgb = mix(albedo.rgb, RAINY_SKY_COLOR, smoothstep(THUNDER_THRESHOLD, 1, rain));
     #else
         #if defined g_weather
             vec3 absolutePosition = position + cameraPosition;
@@ -240,7 +240,7 @@ void main() {
             albedo.a = smoothstep(-0.05, 0.01, normalize(position).y);
 
             // prevent sun from showing during rain
-            albedo.a *= clamp(1 - rain / THUNDER_THRESHOLD, 0, 1);
+            albedo.a *= smoothstep(-THUNDER_THRESHOLD, 0, -rain);
         #endif
     #endif
     
@@ -375,42 +375,44 @@ void main() {
                 float positionMod = mix(normal.y, 1, 0.6);
             #endif
             
-            albedo.a *= mix(positionMod, 1, 0.65);
+            albedo.a *= 0.8;
             
             positionMod = mix(positionMod * (1 - rain), 1, 0.0);
 
-            // #if VANILLA_LIGHTING != 2
-            //     vec3 skyColor = texture2D(shadowcolor0, vec2(0, positionMod)).rgb;
-            //     skyColor = gammaCorrection(skyColor, GAMMA) * RGB_to_ACEScg * SKY_LIGHT_MULT * rainMultiplier(rain);
-            // #else
-            //     vec3 skyColor = actualSkyColor(skyTime(worldTime)) * rainMultiplier(rain) + lightningFlash(isLightning, rain);
-            //     skyColor *= positionMod;
-            // #endif
+            #if VANILLA_LIGHTING == 2
+                vec3 normalMod = vec3(0, positionMod * 2 - 1, 0);
 
-            // mat2x3 lightColor = mat2x3(
-            //     skyColor,
-            //     vec3(0)
-            // );
+                mat2x3 lightColor = getLightColor(
+                    lightmap,
+                    normalMod,
+                    view(normalMod),
+                    sunPosition,
+                    moonPosition,
+                    moonBrightness,
+                    skyTime(worldTime),
+                    rain,
+                    directLightMult,
+                    nightVision,
+                    darknessFactor,
+                    darknessLightFactor,
+                    isLightning,
+                    shadowcolor0);
+            #else
+                vec3 skyColor = actualSkyColor(skyTime(worldTime)) + lightningFlash(isLightning, rain);
+                skyColor *= mix(positionMod, 1, 0.5);
 
-            vec3 normalMod = vec3(0, positionMod * 2 - 1, 0);
-
-            mat2x3 lightColor = getLightColor(
-                lightmap,
-                normalMod,
-                view(normalMod),
-                sunPosition,
-                moonPosition,
-                moonBrightness,
-                skyTime(worldTime),
-                rain,
-                directLightMult,
-                nightVision,
-                darknessFactor,
-                darknessLightFactor,
-                isLightning,
-                shadowcolor0);
+                mat2x3 lightColor = mat2x3(
+                    skyColor,
+                    vec3(0)
+                );
+            #endif
 
             lightColor[0] *= CLOUD_COLOR * mix(1 - rain, 1, RAINCLOUD_BRIGHTNESS);
+        #elif defined g_weather
+            mat2x3 lightColor = mat2x3(
+                vec3(1),
+                vec3(0)
+            );
         #else
             mat2x3 lightColor = getLightColor(
                 lightmap,
@@ -442,7 +444,7 @@ void main() {
             #else
                 float shadow = basicDirectShading(lightmap.g);
             #endif
-            #if defined g_clouds
+            #if defined g_clouds || defined g_weather
                 albedo.rgb = lightColor[0];
             #else
                 albedo.rgb *= lightColor[0] + lightColor[1] * shadow;

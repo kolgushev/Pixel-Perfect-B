@@ -556,7 +556,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
 #endif
 
 #define THUNDER_BRIGHTNESS 0.6
-#define RAINCLOUD_BRIGHTNESS 0.05
+#define RAINCLOUD_BRIGHTNESS 0.1
 
 // DIM_NO_SKY is for dimensions which lack any fullscreen-covering gbuffers_skybasic/skytextured
 // DIM_NO_HORIZON is for dimensions which don't have a defined horizon (and therefore look better with sky visible below said horizon)
@@ -640,7 +640,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
     #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_ACEScg)
-    #define CLOUD_COLOR (vec3(0.97, 0.98, 1.0))
+    #define CLOUD_COLOR (vec3(0.97, 0.98, 1.0) * 0.8)
     
     #define ATMOSPHERIC_FOG_COLOR (gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg)
     #define ATMOSPHERIC_FOG_MULTIPLIER 0.35
