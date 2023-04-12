@@ -310,7 +310,7 @@ void main() {
 
         albedo.a = max(0.15, albedo.a);
 
-        albedo.a *= RAIN_TRANSPARENCY * rain;
+        albedo.a *= RAIN_TRANSPARENCY * smoothstep(0, THUNDER_THRESHOLD, rain);
         
         albedo.rgb *= 
             rainMultiplier(rain) * mix(moonBrightness * MOON_COLOR, SUN_COLOR, skyTransition)

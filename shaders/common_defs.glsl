@@ -552,7 +552,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
 #if defined IS_IRIS
     #define THUNDER_THRESHOLD 0.6
 #else
-    #define THUNDER_THRESHOLD EPSILON
+    #define THUNDER_THRESHOLD 1.0
 #endif
 
 #define THUNDER_BRIGHTNESS 0.6
