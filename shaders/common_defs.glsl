@@ -180,7 +180,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef END_FOGGY_WEATHER
 #endif
 
-#define SPIDEREYES_MULT 10.0
+#define SPIDEREYES_MULT 1.0
 
 #define END_WARPING 0.0 // [0.0 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
