@@ -100,6 +100,7 @@ uniform int renderStage;
     uniform float fogWeather;
     uniform float fogWeatherSky;
     uniform float inSky;
+    uniform float eyeBrightnessSmoothFloat;
 
     #include "/lib/color_manipulation.glsl"
     #include "/lib/calculate_lighting.glsl"
@@ -479,9 +480,11 @@ void main() {
 
         // apply fog as well
         #if defined HAS_SKYLIGHT
-            float inSkyProcessed = 1;
-        #else
             float inSkyProcessed = inSky;
+            float eyeBrightnessProcessed = eyeBrightnessSmoothFloat;
+        #else
+            float inSkyProcessed = 1;
+            float eyeBrightnessProcessed = 1;
         #endif
 
         #if defined HAS_SKYLIGHT && defined WEATHER_FOG_IN_SKY_ONLY
@@ -490,7 +493,7 @@ void main() {
             float fogWeatherSkyProcessed = fogWeatherSky;
         #endif
 
-        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindness, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindness, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;

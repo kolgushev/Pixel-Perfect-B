@@ -23,8 +23,9 @@ float fogifyDistanceOnly(in vec3 position, in float far, in float blindness) {
     return fogTube;
 }
 
-vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in bool isSpectator, in float fogWeather, in float inSky, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
+vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in bool isSpectator, in float fogWeather, in float inSky, in float eyeBrightnessSmoothFloat, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
     vec3 composite = diffuse.rgb;
+    vec3 fogColorWater = mix(eyeBrightnessSmoothFloat, 1, 0.2) * ATMOSPHERIC_FOG_COLOR_WATER;
 
     float fogTube = fogifyDistanceOnly(position, far, blindnessEffect);
 
@@ -70,7 +71,7 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
             switch(isEyeInWater) {
                 case 1:
                     atmosPhog = ATMOSPHERIC_FOG_DENSITY_WATER;
-                    atmosPhogColor = ATMOSPHERIC_FOG_COLOR_WATER;
+                    atmosPhogColor = fogColorWater;
                     nightVisionVisibility = NIGHT_VISION_AFFECTS_FOG_WATER;
                     if(isSpectator) {
                         atmosPhog *= ATMOSPHERIC_FOG_SPECTATOR_MULT_WATER;
@@ -109,7 +110,7 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
         // x = ((a + b) * (c - 1) * (f - 1) + d * f) / f and f!=0
         // for: a=composite, b=ATMOSPHERIC_FOG_COLOR_WATER, c=atmosPhogWater, d=transparency.rgb, f=transparency.a
         if(position != positionOpaque && isEyeInWater == 0) {
-            composite = ((composite + ATMOSPHERIC_FOG_COLOR_WATER) * (atmosPhogWater - 1) * (transparency.a - 1) + transparency.rgb * transparency.a) / transparency.a;
+            composite = ((composite + fogColorWater) * (atmosPhogWater - 1) * (transparency.a - 1) + transparency.rgb * transparency.a) / transparency.a;
         }
     #endif
 

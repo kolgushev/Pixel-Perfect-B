@@ -30,6 +30,7 @@ uniform float fogWeatherSky;
 uniform float fogWeather;
 
 uniform float inSky;
+uniform float eyeBrightnessSmoothFloat;
 
 uniform vec3 cameraPosition;
 uniform float frameTimeCounter;
@@ -77,8 +78,10 @@ void main() {
 
     #if defined HAS_SKYLIGHT
         float inSkyProcessed = inSky;
+        float eyeBrightnessProcessed = eyeBrightnessSmoothFloat;
     #else
         float inSkyProcessed = 1;
+        float eyeBrightnessProcessed = 1;
     #endif
 
     #if defined HAS_SKYLIGHT && defined WEATHER_FOG_IN_SKY_ONLY
@@ -87,7 +90,7 @@ void main() {
         float fogWeatherSkyProcessed = fogWeather;
     #endif
 
-    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindness, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindness, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
     vec3 composite = fogged.rgb;
     float fog = fogged.a;
 
