@@ -537,7 +537,7 @@ void main() {
         b1 = albedo;
     #endif
 
-    if(albedo.a > 0.5) {
+    if(albedo.a > 0.5 || renderStage == MC_RENDER_STAGE_TERRAIN_CUTOUT_MIPPED) {
         b2 = opaque(lightmap);
         b3 = opaque(normal);
     }
