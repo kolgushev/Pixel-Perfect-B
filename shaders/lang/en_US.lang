@@ -1,9 +1,8 @@
 profile.ONE=§fVanilla §b+
-profile.TWO=§fVanilla §b++
-profile.THREE=§fVanilla §b+++
-
 profile.CONTENT_ONE=§fContent Creator §b+
+profile.TWO=§fVanilla §b++
 profile.CONTENT_TWO=§fContent Creator §b++
+profile.THREE=§fVanilla §b+++
 profile.CONTENT_THREE=§fContent Creator §b+++
 
 screen.POST_PROCESSING=Post Processing
