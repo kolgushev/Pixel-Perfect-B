@@ -289,7 +289,7 @@ void main() {
         albedo.rgb = vec3(1, 0, 0);
     #endif
 
-    #if defined gc_sky
+    #if defined g_skybasic
         albedo.rgb += lightningFlash(isLightning, rain) * 0.1;
 
         if(isEyeInWater == 1) {
