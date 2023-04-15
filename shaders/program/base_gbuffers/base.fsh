@@ -537,8 +537,10 @@ void main() {
         b1 = albedo;
     #endif
 
-    b2 = opaque(lightmap);
-    b3 = opaque(normal);
+    if(albedo.a > 0.5) {
+        b2 = opaque(lightmap);
+        b3 = opaque(normal);
+    }
 
     #if defined g_basic
         if(renderStage == MC_RENDER_STAGE_OUTLINE) {
