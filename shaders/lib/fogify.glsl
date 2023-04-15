@@ -1,6 +1,5 @@
-float fogifyDistanceOnly(in vec3 position, in float far, in float blindness) {
+float fogifyDistanceOnly(in vec3 position, in float far, in float blindness, in float farRcp) {
     // Render fog in a cylinder shape
-    float farRcp = mix(1 / far, 0.05, blindness);
     float fogFlat = length(position.y);
     float fogTube;
     if(blindness == 0) {
@@ -23,11 +22,18 @@ float fogifyDistanceOnly(in vec3 position, in float far, in float blindness) {
     return fogTube;
 }
 
+float fogifyDistanceOnly(in vec3 position, in float far, in float blindness) {
+    float farRcp = mix(1 / far, 0.05, blindness);
+
+    return fogifyDistanceOnly(position, far, blindness, farRcp);
+}
+
 vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in bool isSpectator, in float fogWeather, in float inSky, in float eyeBrightnessSmoothFloat, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
     vec3 composite = diffuse.rgb;
     vec3 fogColorWater = mix(eyeBrightnessSmoothFloat, 1, 0.2) * ATMOSPHERIC_FOG_COLOR_WATER;
 
-    float fogTube = fogifyDistanceOnly(position, far, blindnessEffect);
+    float farRcp = mix(1 / far, 0.05, blindness);
+    float fogTube = fogifyDistanceOnly(position, far, blindnessEffect, farRcp);
 
     float atmosPhog = 1.0;
     #if defined WATER_FOG_FROM_OUTSIDE
@@ -103,7 +109,8 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
     #endif
 
     #if defined WATER_FOG_FROM_OUTSIDE
-        float fogTubeOpaque = fogifyDistanceOnly(positionOpaque, far, blindnessEffect);
+        float fogTubeOpaque = fogifyDistanceOnly(positionOpaque, far, blindnessEffect, farRcp);
+        float farFog = exp(-far * ATMOSPHERIC_FOG_DENSITY_WATER);
 
         // The following math attempts to compensate for the fact that we're doing water fog in gc_transparent instead of g_terrain
         // aka. we're doing `mix(composite, mix(fog, transparent))` instead of `mix(mix(fog, composite), transparent)` and compensating for it by specially coloring the transparent layer
@@ -112,7 +119,7 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
         // x = ((a + b) * (c - 1) * (f - 1) + d * f) / f and f!=0
         // for: a=composite, b=ATMOSPHERIC_FOG_COLOR_WATER, c=atmosPhogWater, d=transparency.rgb, f=transparency.a
         if(position != positionOpaque && isEyeInWater == 0) {
-            composite = ((composite + fogColorWater) * (mix(atmosPhogWater, 0, fogTubeOpaque) - 1) * (transparency.a - 1) + transparency.rgb * transparency.a) / transparency.a;
+            composite = ((composite + fogColorWater) * (mix(atmosPhogWater, farFog, fogTubeOpaque) - 1) * (transparency.a - 1) + transparency.rgb * transparency.a) / transparency.a;
         }
     #endif
 

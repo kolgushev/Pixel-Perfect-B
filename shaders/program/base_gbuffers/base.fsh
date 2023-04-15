@@ -107,6 +107,8 @@ uniform int renderStage;
 #endif
 
 #if defined gc_sky
+    uniform float far;
+
     #include "/lib/switch_fog_color.glsl"
 #endif
 
@@ -287,11 +289,12 @@ void main() {
         albedo.rgb = vec3(1, 0, 0);
     #endif
 
-    #if defined g_skybasic
+    #if defined gc_sky
         albedo.rgb += lightningFlash(isLightning, rain) * 0.1;
 
         if(isEyeInWater == 1) {
-            albedo.rgb = ATMOSPHERIC_FOG_COLOR_WATER;
+            float farFog = exp(-far * ATMOSPHERIC_FOG_DENSITY_WATER);
+            albedo.rgb = mix(ATMOSPHERIC_FOG_COLOR_WATER, albedo.rgb, farFog);
         }
     #endif
 
