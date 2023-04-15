@@ -103,6 +103,8 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
     #endif
 
     #if defined WATER_FOG_FROM_OUTSIDE
+        float fogTubeOpaque = fogifyDistanceOnly(positionOpaque, far, blindnessEffect);
+
         // The following math attempts to compensate for the fact that we're doing water fog in gc_transparent instead of g_terrain
         // aka. we're doing `mix(composite, mix(fog, transparent))` instead of `mix(mix(fog, composite), transparent)` and compensating for it by specially coloring the transparent layer
 
@@ -110,7 +112,7 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
         // x = ((a + b) * (c - 1) * (f - 1) + d * f) / f and f!=0
         // for: a=composite, b=ATMOSPHERIC_FOG_COLOR_WATER, c=atmosPhogWater, d=transparency.rgb, f=transparency.a
         if(position != positionOpaque && isEyeInWater == 0) {
-            composite = ((composite + fogColorWater) * (atmosPhogWater - 1) * (transparency.a - 1) + transparency.rgb * transparency.a) / transparency.a;
+            composite = ((composite + fogColorWater) * (mix(atmosPhogWater, 0, fogTubeOpaque) - 1) * (transparency.a - 1) + transparency.rgb * transparency.a) / transparency.a;
         }
     #endif
 
