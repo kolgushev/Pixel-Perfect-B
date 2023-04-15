@@ -1,9 +1,9 @@
 profile.ONE=§fVanilla §b+
-profile.CONTENT_ONE=§fContent Creator §b+
+profile.CONTENT_ONE=§fStreamer §b+
 profile.TWO=§fVanilla §b++
-profile.CONTENT_TWO=§fContent Creator §b++
+profile.CONTENT_TWO=§fStreamer §b++
 profile.THREE=§fVanilla §b+++
-profile.CONTENT_THREE=§fContent Creator §b+++
+profile.CONTENT_THREE=§fStreamer §b+++
 
 screen.POST_PROCESSING=Post Processing
     screen.POST_PROCESSING.comment=Any effects that are applied after the image has been rendered.
