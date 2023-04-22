@@ -200,7 +200,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // 0 is old lighting off, 1 is standard vanilla, 2 is custom shading
 #define VANILLA_LIGHTING 2 // [0 1 2]
 
-#define BACKLIGHTING
+// #define BACKLIGHTING
 #ifdef BACKLIGHTING
 #endif
 #define BACKLIGHTING_MULT 2.6
