@@ -103,7 +103,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define LUMINANCE_COEFFS vec3(0.2126, 0.7152, 0.0722)
 #define LUMINANCE_COEFFS_INVERSE vec3(4.7037, 1.3982, 13.8504)
 
-#define hand(h) ((h) < 0.557)
+#define hand(h) ((h) < 0.558)
 #define removeBorder(n, r) (((n) - 0.5) * (1 - (r)) + 0.5)
 #define gammaCorrection(x, y) pow(x, vec3(y))
 
@@ -199,6 +199,11 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 // 0 is old lighting off, 1 is standard vanilla, 2 is custom shading
 #define VANILLA_LIGHTING 2 // [0 1 2]
+
+#define BACKLIGHTING
+#ifdef BACKLIGHTING
+#endif
+#define BACKLIGHTING_MULT 2.6
 
 // #define DYNAMIC_EXPOSURE_LIGHTING
 #ifdef DYNAMIC_EXPOSURE_LIGHTING

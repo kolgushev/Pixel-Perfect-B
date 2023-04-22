@@ -12,9 +12,11 @@ uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 uniform sampler2D colortex2;
 
-#if defined PIXELATED_SHADOWS
+#if defined PIXELATED_SHADOWS || defined BACKLIGHTING
     uniform sampler2D colortex3;
+#endif
 
+#if defined PIXELATED_SHADOWS
     uniform vec3 cameraPosition; 
 #endif
 
@@ -48,12 +50,13 @@ void main() {
 
     float skyLightmap = texture(colortex2, texcoord).g;
     float depth = texture(depthtex0, texcoord).r;
+    
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
 
     vec3 pixelatedPosition = position;
 
     #if PIXELATED_SHADOWS != 0
-        vec3 normal = texture(colortex2, texcoord).rgb;
+        vec3 normal = texture(colortex3, texcoord).rgb;
 
         pixelatedPosition = floor((position + cameraPosition) * PIXELATED_SHADOWS - 0.5 * normal) / PIXELATED_SHADOWS;
         position = mix(pixelatedPosition - cameraPosition, position, ceil(abs(normal)));

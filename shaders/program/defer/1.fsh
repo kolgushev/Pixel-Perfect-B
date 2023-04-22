@@ -9,6 +9,9 @@ in vec2 texcoord;
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 uniform sampler2D colortex2;
+#if defined BACKLIGHTING
+    uniform sampler2D colortex3;
+#endif
 
 uniform sampler2D depthtex1;
 
@@ -38,6 +41,14 @@ uniform float frameTimeCounter;
 #if defined DIM_END
     uniform int bossBattle;
 #endif
+
+#if defined BACKLIGHTING
+    uniform float near;
+    uniform float aspectRatio;
+
+    #include "/lib/linearize_depth.fsh"
+#endif
+
 
 #include "/lib/switch_fog_color.glsl"
 #include "/lib/fogify.glsl"
@@ -93,6 +104,27 @@ void main() {
     vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindness, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
     vec3 composite = fogged.rgb;
     float fog = fogged.a;
+
+    #if defined BACKLIGHTING
+        vec3 normal = texture(colortex3, texcoord).rgb;
+        float maxBacklight = 1;
+
+        for(int i = 1; i < superSampleOffsetsCross.length; i++) {
+            vec2 sampleRadius = 0.004 / (vec2(aspectRatio, 1));
+            float sampledDepth = texture(depthtex1, texcoord + superSampleOffsetsCross[i].xy * sampleRadius).r;
+
+            vec3 sampledPosition = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, sampledDepth).xyz;
+
+            if(!hand(depth) && sampledDepth > depth) {
+                float backlight = smoothstep(SQRT_3, 3 * SQRT_3, length((position - sampledPosition) * normal)) * BACKLIGHTING_MULT;
+                if(maxBacklight < backlight) {
+                    maxBacklight = backlight;
+                }
+            }
+        }
+
+        composite *= mix(mix(1, maxBacklight, clamp(20 / length(position), 0, 1)), 1, fog);
+    #endif
 
     // fade out around edges of world
     composite = isSky ? skyColorProcessed : mix(composite, skyColorProcessed, fog);
