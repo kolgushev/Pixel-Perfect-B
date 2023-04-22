@@ -9,7 +9,7 @@ in vec2 texcoord;
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 uniform sampler2D colortex2;
-#if defined BACKLIGHTING
+#if defined RIMLIGHT
     uniform sampler2D colortex3;
 #endif
 
@@ -42,7 +42,7 @@ uniform float frameTimeCounter;
     uniform int bossBattle;
 #endif
 
-#if defined BACKLIGHTING
+#if defined RIMLIGHT
     uniform float near;
     uniform float aspectRatio;
     uniform float viewWidth;
@@ -107,20 +107,24 @@ void main() {
     vec3 composite = fogged.rgb;
     float fog = fogged.a;
 
-    #if defined BACKLIGHTING
+    #if defined RIMLIGHT
         float dist = length(position);
 
         vec3 normal = texture(colortex3, texcoord).rgb;
         float maxBacklight = 1;
 
+        #if defined RIMLIGHT_PIXEL_RADIUS
+            vec2 sampleRadius = 3 / vec2(viewWidth, viewHeight);
+        #else
+            vec2 sampleRadius = 0.02 / (dist * vec2(aspectRatio, 1)) + 2 / vec2(viewWidth, viewHeight);
+        #endif
         for(int i = 1; i < superSampleOffsetsCross.length; i++) {
-            vec2 sampleRadius = 0.02 / (dist * vec2(aspectRatio, 1)) + 1 / vec2(viewWidth, viewHeight);
             float sampledDepth = texture(depthtex1, texcoord + superSampleOffsetsCross[i].xy * sampleRadius).r;
 
             vec3 sampledPosition = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, sampledDepth).xyz;
 
             if(!hand(depth) && sampledDepth > depth) {
-                float backlight = smoothstep(0, SQRT_2, length(normal * (position - sampledPosition))) * BACKLIGHTING_MULT;
+                float backlight = smoothstep(0, RIMLIGHT_DIST, length(normal * (position - sampledPosition))) * RIMLIGHT_MULT;
                 if(maxBacklight < backlight) {
                     maxBacklight = backlight;
                 }
