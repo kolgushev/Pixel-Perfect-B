@@ -106,24 +106,26 @@ void main() {
     float fog = fogged.a;
 
     #if defined BACKLIGHTING
+        float dist = length(position);
+
         vec3 normal = texture(colortex3, texcoord).rgb;
         float maxBacklight = 1;
 
         for(int i = 1; i < superSampleOffsetsCross.length; i++) {
-            vec2 sampleRadius = 0.004 / (vec2(aspectRatio, 1));
+            vec2 sampleRadius = 0.02 / (dist * vec2(aspectRatio, 1));
             float sampledDepth = texture(depthtex1, texcoord + superSampleOffsetsCross[i].xy * sampleRadius).r;
 
             vec3 sampledPosition = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, sampledDepth).xyz;
 
             if(!hand(depth) && sampledDepth > depth) {
-                float backlight = smoothstep(SQRT_3, 3 * SQRT_3, length((position - sampledPosition) * normal)) * BACKLIGHTING_MULT;
+                float backlight = smoothstep(0, SQRT_3, length((position - sampledPosition) * normal)) * BACKLIGHTING_MULT;
                 if(maxBacklight < backlight) {
                     maxBacklight = backlight;
                 }
             }
         }
 
-        composite *= mix(mix(1, maxBacklight, clamp(20 / length(position), 0, 1)), 1, fog);
+        composite *= mix(mix(1, maxBacklight, clamp(20 / dist, 0, 1)), 1, fog);
     #endif
 
     // fade out around edges of world
