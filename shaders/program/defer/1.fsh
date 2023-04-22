@@ -45,6 +45,8 @@ uniform float frameTimeCounter;
 #if defined BACKLIGHTING
     uniform float near;
     uniform float aspectRatio;
+    uniform float viewWidth;
+    uniform float viewHeight;
 
     #include "/lib/linearize_depth.fsh"
 #endif
@@ -112,20 +114,20 @@ void main() {
         float maxBacklight = 1;
 
         for(int i = 1; i < superSampleOffsetsCross.length; i++) {
-            vec2 sampleRadius = 0.02 / (dist * vec2(aspectRatio, 1));
+            vec2 sampleRadius = 0.02 / (dist * vec2(aspectRatio, 1)) + 1 / vec2(viewWidth, viewHeight);
             float sampledDepth = texture(depthtex1, texcoord + superSampleOffsetsCross[i].xy * sampleRadius).r;
 
             vec3 sampledPosition = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, sampledDepth).xyz;
 
             if(!hand(depth) && sampledDepth > depth) {
-                float backlight = smoothstep(0, SQRT_3, length((position - sampledPosition) * normal)) * BACKLIGHTING_MULT;
+                float backlight = smoothstep(0, SQRT_2, length(normal * (position - sampledPosition))) * BACKLIGHTING_MULT;
                 if(maxBacklight < backlight) {
                     maxBacklight = backlight;
                 }
             }
         }
 
-        composite *= mix(mix(1, maxBacklight, clamp(20 / dist, 0, 1)), 1, fog);
+        composite *= mix(1, maxBacklight, clamp(20 / dist - fog, 0, 1));
     #endif
 
     // fade out around edges of world
