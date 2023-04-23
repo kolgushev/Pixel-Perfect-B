@@ -115,11 +115,11 @@ void main() {
         #else
             vec3 normal = vec3(1);
         #endif
-        float maxBacklight = 1;
+        float maxBacklight = 0;
 
-        vec2 sampleRadius = 1.1 / vec2(viewWidth, viewHeight);
-        #if !defined RIMLIGHT_PIXEL_RADIUS
-            sampleRadius += 0.02 / (dist * vec2(aspectRatio, 1));
+        vec2 sampleRadius = (RIMLIGHT_PIXEL_RADIUS + 0.1) / vec2(viewWidth, viewHeight);
+        #if defined RIMLIGHT_DYNAMIC_RADIUS
+            sampleRadius += 0.01 / (dist * vec2(aspectRatio, 1));
         #endif
         for(int i = 1; i < superSampleOffsetsCross.length; i++) {
             float sampledDepth = texture(depthtex1, texcoord + superSampleOffsetsCross[i].xy * sampleRadius).r;
@@ -127,14 +127,17 @@ void main() {
             vec3 sampledPosition = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, sampledDepth).xyz;
 
             if(!hand(depth) && sampledDepth > depth) {
-                float backlight = smoothstep(0, RIMLIGHT_DIST, length(normal * (position - sampledPosition))) * RIMLIGHT_MULT;
+                float backlight = smoothstep(0.25 * RIMLIGHT_DIST, RIMLIGHT_DIST, length(normal * (position - sampledPosition)));
                 if(maxBacklight < backlight) {
                     maxBacklight = backlight;
                 }
             }
         }
 
-        composite *= mix(1, maxBacklight, clamp(20 / dist - fog, 0, 1));
+        float rimlightRaw = mix(0, maxBacklight * RIMLIGHT_MULT, clamp(20 / dist - fog, 0, 1));
+        float luma = luminance(composite);
+        float lumaNew = (luma + 0.075) * rimlightRaw + luma;
+        composite = changeLuminance(composite, luma, lumaNew);
     #endif
 
     // fade out around edges of world
