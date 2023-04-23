@@ -110,13 +110,16 @@ void main() {
     #if defined RIMLIGHT
         float dist = length(position);
 
-        vec3 normal = texture(colortex3, texcoord).rgb;
+        #if defined RIMLIGHT_NORMAL_CORRECTION
+            vec3 normal = texture(colortex3, texcoord).rgb;
+        #else
+            vec3 normal = vec3(1);
+        #endif
         float maxBacklight = 1;
 
-        #if defined RIMLIGHT_PIXEL_RADIUS
-            vec2 sampleRadius = 3 / vec2(viewWidth, viewHeight);
-        #else
-            vec2 sampleRadius = 0.02 / (dist * vec2(aspectRatio, 1)) + 2 / vec2(viewWidth, viewHeight);
+        vec2 sampleRadius = 1.1 / vec2(viewWidth, viewHeight);
+        #if !defined RIMLIGHT_PIXEL_RADIUS
+            sampleRadius += 0.02 / (dist * vec2(aspectRatio, 1));
         #endif
         for(int i = 1; i < superSampleOffsetsCross.length; i++) {
             float sampledDepth = texture(depthtex1, texcoord + superSampleOffsetsCross[i].xy * sampleRadius).r;

@@ -200,14 +200,17 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // 0 is old lighting off, 1 is standard vanilla, 2 is custom shading
 #define VANILLA_LIGHTING 2 // [0 1 2]
 
-// #define RIMLIGHT
+#define RIMLIGHT
 #ifdef RIMLIGHT
 #endif
-// #define RIMLIGHT_PIXEL_RADIUS
+#define RIMLIGHT_PIXEL_RADIUS
 #ifdef RIMLIGHT_PIXEL_RADIUS
 #endif
+// #define RIMLIGHT_NORMAL_CORRECTION
+#ifdef RIMLIGHT_NORMAL_CORRECTION
+#endif
 #define RIMLIGHT_MULT 2.6
-#define RIMLIGHT_DIST 1.4 // [1.0 1.4 10.0]
+#define RIMLIGHT_DIST 7.0 // [1.4 7.0 10.0]
 
 // #define DYNAMIC_EXPOSURE_LIGHTING
 #ifdef DYNAMIC_EXPOSURE_LIGHTING
