@@ -9,7 +9,7 @@ in vec2 texcoord;
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 uniform sampler2D colortex2;
-#if defined RIMLIGHT
+#if defined RIMLIGHT_ENABLED
     uniform sampler2D colortex3;
 #endif
 
@@ -42,7 +42,7 @@ uniform float frameTimeCounter;
     uniform int bossBattle;
 #endif
 
-#if defined RIMLIGHT
+#if defined RIMLIGHT_ENABLED
     uniform float near;
     uniform float aspectRatio;
     uniform float viewWidth;
@@ -107,7 +107,7 @@ void main() {
     vec3 composite = fogged.rgb;
     float fog = fogged.a;
 
-    #if defined RIMLIGHT
+    #if defined RIMLIGHT_ENABLED
         float dist = length(position);
 
         #if defined RIMLIGHT_NORMAL_CORRECTION
@@ -134,9 +134,9 @@ void main() {
             }
         }
 
-        float rimlightRaw = mix(0, maxBacklight * RIMLIGHT_MULT, clamp(20 / dist - fog, 0, 1));
+        float rimlightRaw = mix(0, maxBacklight * RIMLIGHT_MULT, clamp(clamp(50 / dist, 0, 1) - fog, 0, 1));
         float luma = luminance(composite);
-        float lumaNew = (luma + 0.075) * rimlightRaw + luma;
+        float lumaNew = (luma + 0.1) * rimlightRaw + luma;
         composite = changeLuminance(composite, luma, lumaNew);
     #endif
 

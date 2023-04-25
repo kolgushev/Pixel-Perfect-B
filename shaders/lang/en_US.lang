@@ -19,8 +19,8 @@ screen.POST_PROCESSING=Post Processing
 
     option.DITHERING_MODE=Dithering
         option.DITHERING_MODE.comment=Slightly randomizes pixel colors to get rid of ugly bands of color (for instance, ones visible in the sky) that form because your monitor can't display color precisely enough. Does not work with Render Quality > 1x.  On ➤ Minimal performance hit.
-        value.DITHERING_MODE.0=§cNo
-        value.DITHERING_MODE.1=Yes
+        value.DITHERING_MODE.0=§cOff
+        value.DITHERING_MODE.1=On
 
 screen.LIGHTING=Lighting
 
@@ -33,15 +33,15 @@ screen.LIGHTING=Lighting
         option.CUTOUT_ALIGN_STRENGTH.comment=Makes grass shading less harsh and more like vanilla. No performance impact.
 
     option.ATMOSPHERIC_FOG_USER=Atmospheric Fog
-        value.ATMOSPHERIC_FOG_USER.true=Yes
-        value.ATMOSPHERIC_FOG_USER.false=No
+        value.ATMOSPHERIC_FOG_USER.true=On
+        value.ATMOSPHERIC_FOG_USER.false=Off
 
     option.ATMOSPHERIC_FOG_DENSITY=Atmospheric Fog Density
 
     option.FAST_GI=Fake GI
         option.FAST_GI.comment=Fakes global illumination (raytracing) by applying a blurred version of the view image as "lighting".
-        value.FAST_GI.true=Yes
-        value.FAST_GI.false=No
+        value.FAST_GI.true=On
+        value.FAST_GI.false=Off
 
     screen.SSAO_BETA=Ambient Occlusion
     
@@ -67,8 +67,8 @@ screen.LIGHTING=Lighting
 
         option.DYNAMIC_EXPOSURE_LIGHTING=HDR Exposure §c(Experimental)
             option.DYNAMIC_EXPOSURE_LIGHTING.comment=§cEXPERIMENTAL!. This feature is experimental and won't look good. Sets light levels to their real-life values. No performance impact.
-            value.DYNAMIC_EXPOSURE_LIGHTING.true=Yes
-            value.DYNAMIC_EXPOSURE_LIGHTING.false=No
+            value.DYNAMIC_EXPOSURE_LIGHTING.true=On
+            value.DYNAMIC_EXPOSURE_LIGHTING.false=Off
 
         option.SUN_LIGHT_MULT_USER=Sunlight
             option.SUN_LIGHT_MULT_USER.comment=Strength of direct sunlight during the day.
@@ -92,8 +92,8 @@ screen.SHADOWS=Shadows
     screen.SHADOWS.comment=Control realtime shadowmapped shadows.
 
     option.SHADOWS_ENABLED_USER=Enabled
-        value.SHADOWS_ENABLED_USER.true=Yes
-        value.SHADOWS_ENABLED_USER.false=No
+        value.SHADOWS_ENABLED_USER.true=On
+        value.SHADOWS_ENABLED_USER.false=Off
 
     option.PIXELATED_SHADOWS=Pixelated Shadows
         option.PIXELATED_SHADOWS.comment=Pixelates shadows so they match with the pixels on a block. Inspired from complementary's pixelated shadows, though the implementation is my own. Enabled ➤ Minimal performance hit.
@@ -140,15 +140,15 @@ screen.SHADOWS=Shadows
         
     option.SHADOW_AFFECTED_BY_LIGHTMAP=Vanilla Lighting Affects Shadows
         option.SHADOW_AFFECTED_BY_LIGHTMAP.comment=To avoid "shadow leaking" and to simulate light being absorbed by stuff like water or tinted glass, increase shadows based on the vanilla sky light level. No performance impact.
-        value.SHADOW_AFFECTED_BY_LIGHTMAP.true=Yes
-        value.SHADOW_AFFECTED_BY_LIGHTMAP.false=No
+        value.SHADOW_AFFECTED_BY_LIGHTMAP.true=On
+        value.SHADOW_AFFECTED_BY_LIGHTMAP.false=Off
 
 screen.COLORS=Colors
 
     option.BOSS_BATTLE_COLORS=Boss Battle Colors
         option.BOSS_BATTLE_COLORS.comment=Applies custom color grading to the ender dragon, wither, and raid fights. Enabled ➤ No performance impact. This effect is exclusive to Optifine. §cDoes not work with Iris!
-        value.BOSS_BATTLE_COLORS.true=Yes
-        value.BOSS_BATTLE_COLORS.false=No
+        value.BOSS_BATTLE_COLORS.true=On
+        value.BOSS_BATTLE_COLORS.false=Off
 
     option.SUN_TEMP=Sunlight Temperature
         option.SUN_TEMP.comment=Sunlight temperature in Kelvin. The default value is the most physically-accurate. Lower temperatures are redder, while higher temps are more white-ish.
@@ -183,8 +183,8 @@ screen.COLORS=Colors
 
         option.REALISTIC_COLORS=Enabled
             option.REALISTIC_COLORS.comment=Feel free to turn this off if you don't like how it looks or if you're using a realistic resource pack.
-            value.REALISTIC_COLORS.true=Yes
-            value.REALISTIC_COLORS.false=No
+            value.REALISTIC_COLORS.true=On
+            value.REALISTIC_COLORS.false=Off
 
         option.COLORS_SATURATION=Saturation
 
@@ -202,13 +202,13 @@ screen.COLORS=Colors
     screen.TONEMAPPING=Color Management
         option.USE_LUT=Use LUT
             option.USE_LUT.comment=To use your own colorgrading, unzip this shader's folder, go to '[unzipped folder]/shaders/LUTs' and put a .cube file there. Run the python script in the same folder to use your file as the default LUT.
-            value.USE_LUT.true=Yes
-            value.USE_LUT.false=No
+            value.USE_LUT.true=On
+            value.USE_LUT.false=Off
 
         option.USER_GAMMA_CORRECT=Gamma correction
             option.USER_GAMMA_CORRECT.comment=If you don't know what this is, you shouldn't disable it. §cMay not work when "Use LUT" is enabled!
-            value.USER_GAMMA_CORRECT.true=Yes
-            value.USER_GAMMA_CORRECT.false=No
+            value.USER_GAMMA_CORRECT.true=On
+            value.USER_GAMMA_CORRECT.false=Off
 
         screen.ACES=ACES
             screen.ACES.comment=Academy Color Encoding System.
@@ -232,8 +232,8 @@ screen.RESOURCEPACK=Resourcepack Settings
     
     option.TEX_RENDER=Pixel Perfect
         option.TEX_RENDER.comment=Enables the authentic Pixel Perfect look by using a single color per Minecraft texture pixel. Off ➤ performance hit varies.
-        value.TEX_RENDER.true=Yes
-        value.TEX_RENDER.false=No
+        value.TEX_RENDER.true=On
+        value.TEX_RENDER.false=Off
     
     option.TEX_RES=Resource Pack Resolution
         option.TEX_RES.comment=Anything above 1024×1024 is near-identical to just turning off the Pixel Perfect setting
@@ -249,27 +249,55 @@ screen.RESOURCEPACK=Resourcepack Settings
 
 screen.MISC=Extras
 
-    option.STREAMER_MODE=Darkness
-        option.STREAMER_MODE.comment=Streamer Mode: For content creators - plays nice with compression but won't look as good. Normal: For normal people - the definitive experience. Midnight: For people with fancy monitors - darkness has never been darker. Hardcore Darkness: feel the void.
-        value.STREAMER_MODE.3=Hardcore Darkness
-        value.STREAMER_MODE.2=Midnight
-        value.STREAMER_MODE.1=Normal
-        value.STREAMER_MODE.0=Streamer Mode
-        value.STREAMER_MODE.-1=Fullbright
+    screen.STREAMER_SETTINGS=Streamer Settings
 
-    option.BRIGHT_NETHER=Brighter Nether
-        value.BRIGHT_NETHER.true=Yes
-        value.BRIGHT_NETHER.false=No
+        option.STREAMER_MODE=Darkness
+            option.STREAMER_MODE.comment=Streamer Mode: For content creators - plays nice with compression but won't look as good. Normal: For normal people - the definitive experience. Midnight: For people with fancy monitors - darkness has never been darker. Hardcore Darkness: feel the void.
+            value.STREAMER_MODE.3=Hardcore Darkness
+            value.STREAMER_MODE.2=Midnight
+            value.STREAMER_MODE.1=Normal
+            value.STREAMER_MODE.0=Streamer Mode
+            value.STREAMER_MODE.-1=Fullbright
 
-    option.INVISIBILITY_DISTORTION=Distort Screen When Invisible
-        option.INVISIBILITY_DISTORTION.comment=Adds a color distortion effect when drinking an invisibility potion. This effect is exclusive to Iris. §cDoes not work with Optifine!
-        value.INVISIBILITY_DISTORTION.true=Yes
-        value.INVISIBILITY_DISTORTION.false=No
+        option.BRIGHT_NETHER=Brighter Nether
+            value.BRIGHT_NETHER.true=On
+            value.BRIGHT_NETHER.false=Off
 
-    option.LIGHTNING_FLASHES=Lighning Flash Intensity
-        option.LIGHTNING_FLASHES.comment=Lights up the environment when lightning strikes. Disabled if "Hide Lightning Flashes" is ON in vanilla accessibility settings. §cMay trigger epilepsy!
-        value.LIGHTNING_FLASHES.0.0=§cOff
+        option.INVISIBILITY_DISTORTION=Distort Screen When Invisible
+            option.INVISIBILITY_DISTORTION.comment=Adds a color distortion effect when drinking an invisibility potion. This effect is exclusive to Iris. §cDoes not work with Optifine!
+            value.INVISIBILITY_DISTORTION.true=On
+            value.INVISIBILITY_DISTORTION.false=Off
 
+        option.LIGHTNING_FLASHES=Lighning Flash Intensity
+            option.LIGHTNING_FLASHES.comment=Lights up the environment when lightning strikes. Disabled if "Hide Lightning Flashes" is ON in vanilla accessibility settings. §cMay trigger epilepsy!
+            value.LIGHTNING_FLASHES.0.0=§cOff
+
+    screen.RIMLIGHT=Object Outlines
+
+        option.RIMLIGHT_ENABLED=Outlines Enabled
+            value.RIMLIGHT_ENABLED.true=On
+            value.RIMLIGHT_ENABLED.false=Off
+
+        option.RIMLIGHT_MULT=Outline Brightness
+        
+        option.RIMLIGHT_PIXEL_RADIUS=Outline Width
+            # TODO: Test this on Optifine
+            suffix.RIMLIGHT_PIXEL_RADIUS=pixels
+
+        option.RIMLIGHT_DIST=Outline Separation
+            option.RIMLIGHT_DIST.comment=Changes how far apart two objects have to be before an outline is shown between them.
+        
+        option.RIMLIGHT_DYNAMIC_RADIUS=Dynamic Outline Size
+            option.RIMLIGHT_DYNAMIC_RADIUS.comment=When enabled, increases the size of an object's outline as you get closer to it.
+            value.RIMLIGHT_DYNAMIC_RADIUS.true=On
+            value.RIMLIGHT_DYNAMIC_RADIUS.false=Off
+
+        option.RIMLIGHT_NORMAL_CORRECTION=Normal-Corrected Outlines
+            option.RIMLIGHT_NORMAL_CORRECTION.comment=Uses object normals to fix a bug where long flat surfaces (such as a superflat world) look brighter than usual in the distance, at the cost of the outlines looking worse.
+            value.RIMLIGHT_NORMAL_CORRECTION.true=On
+            value.RIMLIGHT_NORMAL_CORRECTION.false=Off
+        
+        
     option.NOISY_LAVA=Lava Variation
         option.NOISY_LAVA.comment=Makes some spots of lava darker and others brighter. Helps break up the lava texture, especially in large pools such as in the nether.
         value.NOISY_LAVA.0=§cNone
@@ -278,16 +306,16 @@ screen.MISC=Extras
 
     option.SMOOTH_LAVA=Smooth Lava Variation
         option.SMOOTH_LAVA.comment=Works like smooth lighting, making lava variation transition smoother. Turning this on or off won't affect performance - this option is here in case you like the sharper aesthetic.
-        value.SMOOTH_LAVA.true=Yes
-        value.SMOOTH_LAVA.false=No
+        value.SMOOTH_LAVA.true=On
+        value.SMOOTH_LAVA.false=Off
 
     option.END_WARPING=End Warping Strength
         value.END_WARPING.0.0=Off
 
     option.OUTLINE_THROUGH_BLOCKS=Show Entire Selection Outline
         option.OUTLINE_THROUGH_BLOCKS.comment=Show the block selection outline through blocks.
-        value.OUTLINE_THROUGH_BLOCKS.true=Yes
-        value.OUTLINE_THROUGH_BLOCKS.false=No
+        value.OUTLINE_THROUGH_BLOCKS.true=On
+        value.OUTLINE_THROUGH_BLOCKS.false=Off
 
     option.OUTLINE_COLOR=Selection Outline Color
         value.OUTLINE_COLOR.-1=§k|§rNegative§k|§r
@@ -305,15 +333,15 @@ screen.MISC=Extras
     screen.WEATHER=Weather
 
         option.WAVING_ENABLED=Waving Objects
-            value.WAVING_ENABLED.true=Yes
-            value.WAVING_ENABLED.false=No
+            value.WAVING_ENABLED.true=On
+            value.WAVING_ENABLED.false=Off
         # TODO: add waving rainy
         option.WIND_STRENGTH_CONSTANT_USER=Wind Strength
 
         option.NOISY_RAIN=Scattered Rain
             option.NOISY_RAIN.comment=In real life, rain isn't perfectly uniform. This option attempts to replicate that by making the rain more and less dense in some areas where it falls.
-            value.NOISY_RAIN.true=Yes
-            value.NOISY_RAIN.false=No
+            value.NOISY_RAIN.true=On
+            value.NOISY_RAIN.false=Off
 
         option.RAIN_THICKNESS=Rain Density
             option.RAIN_THICKNESS.comment=Larger values create more, thinner rain droplets, while smaller values increase droplet size and decrease droplet amount.
@@ -327,26 +355,26 @@ screen.MISC=Extras
 
         option.FOG_ENABLED_USER=Foggy Weather
             option.FOG_ENABLED_USER.comment=Adds a new custom weather effect. Foggy weather is purely cosmetic and can be turned off if you don't like the restricted visibility.
-            value.FOG_ENABLED_USER.true=Yes
-            value.FOG_ENABLED_USER.false=No
+            value.FOG_ENABLED_USER.true=On
+            value.FOG_ENABLED_USER.false=Off
 
         screen.DIMENSION_WEATHER=Per-Dimension Weather Controls
             option.DIMENSION_WEATHER.comment=Change weather settings in each vanilla dimension. Currently this only includes nether weather
 
             option.OVERWORLD_FOGGY_WEATHER=Foggy Weather In Overworld
                 option.OVERWORLD_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
-                value.OVERWORLD_FOGGY_WEATHER.true=Yes
-                value.OVERWORLD_FOGGY_WEATHER.false=No
+                value.OVERWORLD_FOGGY_WEATHER.true=On
+                value.OVERWORLD_FOGGY_WEATHER.false=Off
                 
             option.NETHER_FOGGY_WEATHER=Foggy Weather In Nether
                 option.NETHER_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
-                value.NETHER_FOGGY_WEATHER.true=Yes
-                value.NETHER_FOGGY_WEATHER.false=No
+                value.NETHER_FOGGY_WEATHER.true=On
+                value.NETHER_FOGGY_WEATHER.false=Off
 
             option.END_FOGGY_WEATHER=Foggy Weather In End
                 option.NETHER_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
-                value.END_FOGGY_WEATHER.true=Yes
-                value.END_FOGGY_WEATHER.false=No
+                value.END_FOGGY_WEATHER.true=On
+                value.END_FOGGY_WEATHER.false=Off
 
 
 
@@ -354,13 +382,13 @@ screen.ADVANCED=Advanced
 
     option.DEBUG_VIEW=Debug View
         option.DEBUG_VIEW.comment=Disables all existing albedo writes to allow the developer (and you, within license restrictions) to create their own for debugging purposes.
-        value.DEBUG_VIEW.true=Yes
-        value.DEBUG_VIEW.false=No
+        value.DEBUG_VIEW.true=On
+        value.DEBUG_VIEW.false=Off
 
     option.SHADOW_DEBUG=Debug Shadows
         option.SHADOW_DEBUG.comment=Overrides the albedo with the shadow texture in the final pass.
-        value.SHADOW_DEBUG.true=Yes
-        value.SHADOW_DEBUG.false=No
+        value.SHADOW_DEBUG.true=On
+        value.SHADOW_DEBUG.false=Off
 
     option.ISOLATE_RENDER_STAGE=Isolate
         option.ISOLATE_RENDER_STAGE.comment=§cIsolating red items is considered cheating!. §cUsing this on servers may get you banned!
@@ -391,8 +419,8 @@ screen.ADVANCED=Advanced
         value.ISOLATE_RENDER_STAGE.23=Transparent Held Item
 
     option.WATER_FOG=Water Fog
-        value.WATER_FOG.true=Yes
-        value.WATER_FOG.false=No
+        value.WATER_FOG.true=On
+        value.WATER_FOG.false=Off
 
     option.SHADOW_TRANSITION_MIXING=Sunset Shadow Mixing
         option.SHADOW_TRANSITION_MIXING.comment=To increase performance, shadows are only calculated for the sun §oor§r moon, never both. To prevent an awkward "pop-in" effect as the shadows are switched from sun to moon and vice versa, the lighting is briefly switched to its shadowless version during sunset. This setting controls whether the terrain looks like it's in shadow (Shadowed) during this period.
@@ -404,13 +432,13 @@ screen.ADVANCED=Advanced
 
     option.NO_WAVING_FULL_BLOCKS=Disable Full Blocks Waving
         option.NO_WAVING_FULL_BLOCKS.comment=Waving full blocks (such as leaves) don't work too well with this shader's wind system. If you want to enable them anyway, do so here.
-        value.NO_WAVING_FULL_BLOCKS.true=Yes
-        value.NO_WAVING_FULL_BLOCKS.false=No
+        value.NO_WAVING_FULL_BLOCKS.true=On
+        value.NO_WAVING_FULL_BLOCKS.false=Off
 
     option.HDR_TEX_LIGHT_BRIGHTNESS=Convert Light Sources To HDR
         option.HDR_TEX_LIGHT_BRIGHTNESS.comment=Uses a special algorithm to increase the contrast and brightness of lit blocks. Although this usually looks much better when turned on, some LMTs may blow out already super-bright blocks like froglights.
-        value.HDR_TEX_LIGHT_BRIGHTNESS.true=Yes
-        value.HDR_TEX_LIGHT_BRIGHTNESS.false=No
+        value.HDR_TEX_LIGHT_BRIGHTNESS.true=On
+        value.HDR_TEX_LIGHT_BRIGHTNESS.false=Off
         
     screen.AUTO_ADDED=Automatic Settings
         screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work correctly, if at all.
@@ -419,8 +447,8 @@ screen.ADVANCED=Advanced
 
         option.VANILLA_SHADOWS=Vanilla Shadows
             option.VANILLA_SHADOWS.comment=Gives the effect of shadows without actually having to calculate them. Because this effect uses vanilla lightmaps, it may look messed-up in some scenarios. This effect overrides all other shadow effects.
-        value.VANILLA_SHADOWS.true=Yes
-        value.VANILLA_SHADOWS.false=No
+        value.VANILLA_SHADOWS.true=On
+        value.VANILLA_SHADOWS.false=Off
 
         screen.FORCED_PERSPECTIVE=Forced Perpective
             option.FORCED_PERSPECTIVE_POWER=Power
