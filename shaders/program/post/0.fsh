@@ -31,7 +31,7 @@ uniform mat4 shadowModelView;
 uniform mat4 gbufferProjectionInverse;
 uniform mat4 gbufferModelViewInverse;
 
-uniform int worldTime;
+uniform float skyTime;
 
 uniform int frameCounter;
 uniform float viewWidth;
@@ -71,7 +71,7 @@ void main() {
             shadowcolor1,
             noisetex,
             skyLightmap,
-            worldTime);
+            skyTime);
 
     vec3 final = diffuse + directLighting * shadow;
 

@@ -16,7 +16,7 @@ uniform vec3 moonPosition;
 
 uniform vec3 cameraPosition;
 
-uniform int worldTime;
+uniform float skyTime;
 uniform float moonBrightness;
 uniform float rainStrength;
 uniform float isLightning;
@@ -81,7 +81,7 @@ void main() {
             shadowtex1,
             noisetex,
             lightmap.g,
-            worldTime);
+            skyTime);
     #else
         #if defined VANILLA_SHADOWS
             float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;
@@ -96,7 +96,7 @@ void main() {
     sunPosition,
     moonPosition,
     moonBrightness,
-    skyTime(worldTime),
+    skyTime,
     rainStrength,
     directLightMult,
     nightVision,

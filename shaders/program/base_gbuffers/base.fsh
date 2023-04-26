@@ -57,8 +57,8 @@ uniform int renderStage;
     uniform sampler2D depthtex1;
 #endif
 
-#if defined gc_transparent || defined g_skytextured || defined g_weather
-    uniform int worldTime;
+#if defined gc_transparent || defined gc_sky || defined weather
+    uniform float skyTime;
 #endif
 
 #if defined FOG_ENABLED && (defined g_skybasic || defined gc_skybox)
@@ -141,7 +141,6 @@ uniform int renderStage;
 #endif
 
 #if defined use_lava_noise
-
     #include "/lib/lava_noise.glsl"
 #endif
 
@@ -179,7 +178,7 @@ void main() {
         */
         if(distance(color.rgb, fogColor) < EPSILON) albedo = opaque(customFogColor);
 
-        albedo.rgb = mix(albedo.rgb, RAINY_SKY_COLOR, smoothstep(THUNDER_THRESHOLD, 1, rain));
+        albedo.rgb = mix(albedo.rgb, RAINY_SKY_COLOR, smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime);
     #else
         #if defined g_weather
             vec3 absolutePosition = position + cameraPosition;
@@ -301,7 +300,7 @@ void main() {
     #if defined g_skytextured
         #if defined HAS_DAYNIGHT_CYCLE
             // since we're using an advanced color pipeline it's safe to pump up the skytextured brightness
-            albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime(worldTime));
+            albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime);
         #endif
         #if !defined DIM_USES_SKYBOX
             albedo.rgb *= PLANET_BRIGHTNESS;
@@ -310,7 +309,7 @@ void main() {
 
     #if defined g_weather && !defined DIM_NO_RAIN
         const float a = 1.5;
-        float skyTransition = skyTime(worldTime);
+        float skyTransition = skyTime;
 
         albedo.a = max(0.15, albedo.a);
 
@@ -395,7 +394,7 @@ void main() {
                     sunPosition,
                     moonPosition,
                     moonBrightness,
-                    skyTime(worldTime),
+                    skyTime,
                     rain,
                     directLightMult,
                     nightVision,
@@ -404,7 +403,7 @@ void main() {
                     isLightning,
                     shadowcolor0);
             #else
-                vec3 skyColor = actualSkyColor(skyTime(worldTime)) + lightningFlash(isLightning, rain);
+                vec3 skyColor = actualSkyColor(skyTime) + lightningFlash(isLightning, rain);
                 skyColor *= mix(positionMod, 1, 0.5);
 
                 mat2x3 lightColor = mat2x3(
@@ -427,7 +426,7 @@ void main() {
                 sunPosition,
                 moonPosition,
                 moonBrightness,
-                skyTime(worldTime),
+                skyTime,
                 rain,
                 directLightMult,
                 nightVision,

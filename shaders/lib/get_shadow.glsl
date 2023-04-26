@@ -11,12 +11,12 @@ float shadowSample(in vec3 positionViewSpace, in sampler2D shadowtex) {
     return shadowPosition.z - texture(shadowtex, shadowPosition.xy).r;
 }
 
-float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjection, in mat4 shadowModelView, in vec2 texcoord, in sampler2D shadowtex, in sampler2D noisetex, in float lightmapLight, in int time) {
+float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjection, in mat4 shadowModelView, in vec2 texcoord, in sampler2D shadowtex, in sampler2D noisetex, in float lightmapLight, in float skyTime) {
     // check difference between backface and non-backface rendered
     
     vec3 positionMod = position;
 
-    float skyTransition = abs(skyTime(time) * 2 - 1);
+    float skyTransition = abs(skyTime * 2 - 1);
     float dist = length(positionMod);
     float shadowCutoff = clamp((dist / (shadowDistance * SHADOW_CUTOFF)) * 10 - 9, 0, 1);
 
