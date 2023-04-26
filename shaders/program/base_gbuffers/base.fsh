@@ -374,10 +374,12 @@ void main() {
         // apply lighting here for transparent stuff
         #if defined g_clouds
             #if defined IS_IRIS
-                float positionMod = clamp(position.y * RCP_8, 0, 1);
+                float positionMod = clamp(position.y * 0.25, 0, 1);
             #else
-                float positionMod = mix(normal.y, 1, 0.6);
+                float positionMod = normal.y;
             #endif
+            
+            positionMod = mix(positionMod, 1, 0.6);
             
             albedo.a *= 0.8;
             
