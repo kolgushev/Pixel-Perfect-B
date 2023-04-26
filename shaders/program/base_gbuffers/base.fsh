@@ -450,7 +450,7 @@ void main() {
             #else
                 float shadow = basicDirectShading(lightmap.g);
             #endif
-            #if defined g_clouds || defined g_weather
+            #if defined g_clouds
                 albedo.rgb = lightColor[0];
             #else
                 albedo.rgb *= lightColor[0] + lightColor[1] * shadow;
