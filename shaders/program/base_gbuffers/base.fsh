@@ -378,7 +378,7 @@ void main() {
                 float positionMod = normal.y;
             #endif
             
-            positionMod = mix(positionMod, 1, 0.6);
+            positionMod = mix(positionMod, 1, 0);
             
             albedo.a *= 0.8;
             

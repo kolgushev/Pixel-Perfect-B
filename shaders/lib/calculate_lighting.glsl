@@ -2,7 +2,11 @@ float normalLighting(in vec3 normal, in vec3 lightPos) {
     #if VANILLA_LIGHTING != 2 && defined SHADOWS_ENABLED
         return clamp(dot(normal, normalize(lightPos)) * 6, 0, 1);
     #else
-        return max(dot(normal, normalize(lightPos)), 0);
+        #if defined g_clouds
+            return (normal.y - 1) * 0.5 + 1;
+        #else
+            return max(dot(normal, normalize(lightPos)), 0);
+        #endif
     #endif
 }
 
