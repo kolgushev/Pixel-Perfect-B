@@ -124,6 +124,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
     #define RGB_to_ACEScg mat3(0.6131178129, 0.3411819959, 0.0457873443, 0.0699340823, 0.9181030375, 0.0119327755, 0.0204629926, 0.1067686634, 0.8727159106)
     #define ACEScg_to_RGB mat3(1.7048873310, -0.6241572745, -0.0808867739, -0.1295209353, 1.1383993260, -0.0087792418, -0.0241270599, -0.1246206123, 1.1488221099)
     #define ACEScg_to_ACES2065_1 mat3(0.6954522414, 0.1406786965, 0.1638690622, 0.0447945634, 0.8596711184, 0.0955343182, -0.0055258826, 0.0040252103, 1.0015006723)
+    #define ACES2065_1_to_ACEScg mat3(1.45144, -0.236511, -0.214929, -0.0765538, 1.17623, -0.0996759, 0.00831615, -0.00603245, 0.997716)
 #else
     #define RGB_to_ACEScg transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
     #define ACEScg_to_RGB transpose(mat3(1, 0, 0, 0, 1, 0, 0, 0, 1))
@@ -237,6 +238,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define POST_TEMP 6550 // [3500 4000 4500 5000 5500 6000 6550 8000 9000 10000 11000 12000 13000 14000 15000]
 
 // output mapping: 0:sRGB 1:ACEScg(raw) 2:ACES2065-1
+#define INPUT_COLORSPACE 0 // [0 1 2]
 #define USER_OUTPUT_COLORSPACE 0 // [0 1 2]
 // output mapping: 0:none 1:divide by 16 2:reinhard 3:Hable 4:ACES/UE4 (default)
 #define USER_LMT_MODE 4 // [0 1 2 3 4]

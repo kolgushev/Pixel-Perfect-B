@@ -246,22 +246,30 @@ void main() {
         #endif
     #endif
     
-    if(albedo.a < EPSILON) discard;
-    
-    albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
-
-    #if HDR_TEX_STANDARD == 1
-        albedo.rgb = uncharted2_filmic_inverse(albedo.rgb);
-    #elif HDR_TEX_STANDARD == 2
-        albedo.rgb = aces_fitted_inverse(albedo.rgb * RGB_to_ACEScg) * ACEScg_to_RGB;
+    #if defined g_terrain
+        if(albedo.a < 0.5) discard;
+    #else
+        if(albedo.a < EPSILON) discard;
     #endif
+
+    albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
 
     #if defined g_skybasic
         // saturate
         albedo.rgb = max(vec3(0), saturateRGB(SKY_SATURATION) * albedo.rgb);
     #endif
 
-    albedo.rgb *= RGB_to_ACEScg;
+    #if INPUT_COLORSPACE == 0
+        albedo.rgb *= RGB_to_ACEScg;
+    #elif INPUT_COLORSPACE == 2
+        albedo.rgb = clamp(albedo.rgb * ACES2065_1_to_ACEScg, 0, 1);
+    #endif
+
+    #if HDR_TEX_STANDARD == 1
+        albedo.rgb = uncharted2_filmic_inverse(albedo.rgb * ACEScg_to_RGB) * RGB_to_ACEScg;
+    #elif HDR_TEX_STANDARD == 2
+        albedo.rgb = aces_fitted_inverse(albedo.rgb);
+    #endif
 
     #if defined g_basic
         if(renderStage == MC_RENDER_STAGE_OUTLINE) {
@@ -538,7 +546,7 @@ void main() {
         b1 = albedo;
     #endif
 
-    if(albedo.a > 0.5 || renderStage == MC_RENDER_STAGE_TERRAIN_CUTOUT_MIPPED) {
+    if(albedo.a > 0.5 || renderStage == MC_RENDER_STAGE_TERRAIN_CUTOUT_MIPPED || renderStage == MC_RENDER_STAGE_TERRAIN_SOLID) {
         b2 = opaque(lightmap);
         b3 = opaque(normal);
     }
