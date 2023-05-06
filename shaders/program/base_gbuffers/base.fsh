@@ -33,6 +33,7 @@ uniform float isLightning;
 
 uniform int renderStage;
 
+uniform float alphaTestRef;
 
 #if defined gc_transparent
     uniform vec3 sunPosition;
@@ -59,10 +60,6 @@ uniform int renderStage;
 
 #if defined gc_transparent || defined gc_sky || defined weather
     uniform float skyTime;
-#endif
-
-#if defined FOG_ENABLED && (defined g_skybasic || defined gc_skybox)
-    uniform float far;
 #endif
 
 #if defined g_skybasic
@@ -246,10 +243,14 @@ void main() {
         #endif
     #endif
     
-    #if defined g_terrain
-        if(albedo.a < 0.5) discard;
+    #if !defined IS_IRIS
+        if(albedo.a < alphaTestRef) discard;
     #else
-        if(albedo.a < EPSILON) discard;
+        #if defined g_terrain
+            if(albedo.a < 0.1) discard;
+        #else
+            if(albedo.a < EPSILON) discard;
+        #endif
     #endif
 
     albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
@@ -442,6 +443,8 @@ void main() {
                 darknessLightFactor,
                 isLightning,
                 shadowcolor0);
+
+            lightColor *= albedo.a;
         #endif
         
         #if defined SHADOWS_ENABLED

@@ -661,7 +661,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     #define ATMOSPHERIC_FOG_MULTIPLIER 0.35
 
     #define WEATHER_FOG_MULTIPLIER 10.0
-    #define RAINY_SKY_COLOR (vec3(0.3, 0.34, 0.4))
+    #define RAINY_SKY_COLOR (vec3(0.3, 0.305, 0.31))
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
 
