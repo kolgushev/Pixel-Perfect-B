@@ -3,7 +3,11 @@ float normalLighting(in vec3 normal, in vec3 lightPos) {
         return clamp(dot(normal, normalize(lightPos)) * 6, 0, 1);
     #else
         #if defined g_clouds
-            return (normal.y - 1) * 0.2 + 1;
+            #if defined IS_IRIS
+                return (normal.y - 1) * 0.5 + 1;
+            #else
+                return (normal.y - 1) * 0.2 + 1;
+            #endif
         #else
             return max(dot(normal, normalize(lightPos)), 0);
         #endif
