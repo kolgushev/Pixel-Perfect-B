@@ -3,7 +3,7 @@ float normalLighting(in vec3 normal, in vec3 lightPos) {
         return clamp(dot(normal, normalize(lightPos)) * 6, 0, 1);
     #else
         #if defined g_clouds
-            return (normal.y - 1) * 0.5 + 1;
+            return (normal.y - 1) * 0.2 + 1;
         #else
             return max(dot(normal, normalize(lightPos)), 0);
         #endif
@@ -37,7 +37,11 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
     float ambientOcclusion = lightAndAO.b;
 
     float skyShading = (normal.y - 1) * 0.5 + 1.0;
-    
+
+    #if defined g_clouds
+        normalViewspace = normal;
+    #endif
+
     #if VANILLA_LIGHTING != 2
 
         // using texture2D instead of texture since the Optifine-provided varying block atlas is also called texture
