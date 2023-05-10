@@ -422,6 +422,8 @@ void main() {
             #endif
 
             lightColor[0] *= CLOUD_COLOR * mix(1 - rain, 1, RAINCLOUD_BRIGHTNESS);
+            lightColor[0] += lightColor[1];
+            lightColor[1] = vec3(0);
         #elif defined g_weather
             mat2x3 lightColor = mat2x3(
                 vec3(1),
