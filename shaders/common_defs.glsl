@@ -631,7 +631,7 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     
     #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
 
-    #define ATMOSPHERIC_FOG_COLOR ((vec3(0.7, 0.5, 1.2)) * 0.2)
+    #define ATMOSPHERIC_FOG_COLOR ((vec3(0.7, 0.5, 1.2)) * 0.1)
     #define ATMOSPHERIC_FOG_MULTIPLIER 5.0
 
     #define WEATHER_FOG_MULTIPLIER 10.0
