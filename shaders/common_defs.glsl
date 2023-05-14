@@ -25,6 +25,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define RCP_8 0.125
 #define RCP_16 0.0625
 #define RCP_32 0.03125
+#define RCP_64 0.015625
 #define RCP_255 0.00392156862
 #define RCP_256 0.00390625
 
@@ -73,7 +74,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 
 #define opaque(a) vec4(a, 1)
+#define transparent(a) vec4(a, 0)
 #define opaque1(a) vec4(a, a, a, 1)
+#define transparent1(a) vec4(a, a, a, 0)
 #define opaque2(a) vec4(a, 0, 1)
 #define opaque3(a, b, c) vec4(a, b, c, 1)
 
@@ -153,7 +156,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef NO_WAVING_FULL_BLOCKS
 #endif
 
-#define WIND_STRENGTH_CONSTANT_USER 0.5 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]
+#define WIND_STRENGTH_CONSTANT_USER 0.5 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7]
 #define WIND_SPEED_CONSTANT_USER (-5.0)
 
 #define LIGHTNING_FLASHES 0.8 // [0.0 0.1 0.2 0.4 0.6 0.8 1.0]

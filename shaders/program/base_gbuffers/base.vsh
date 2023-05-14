@@ -211,11 +211,22 @@ void main() {
                 offset *= 0.3;
             }
 
+
             position.xz += offset;
+            // realistic value is 1.0
+            float heightOffset = 0.8;
             // prevent z-fighting for full blocks
             if(isFullWaving) {
                 position.y += EPSILON;
             }
+            #if !defined g_weather
+                else if(!isFullWaving) {
+                    // realistic value is * 2.0
+                    if(isUpper) heightOffset *= 2.3;
+                    position.y += sqrt(pow(heightOffset, 2) - pow(offset.x, 2) - pow(offset.y, 2)) - heightOffset;
+                }
+            #endif
+
         }
     #endif
 

@@ -561,4 +561,8 @@ void main() {
             b2.a = 0;
         }
     #endif
+
+    #if defined WHITE_WORLD
+        b1 = color;
+    #endif
 }
