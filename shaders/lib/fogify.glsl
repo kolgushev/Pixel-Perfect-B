@@ -3,36 +3,33 @@ float fogifyDistanceOnly(in vec3 position, in float far, in float blindness, in 
     float fogFlat = length(position.y);
     float fogTube;
     if(blindness == 0) {
-        fogTube = length(position.xz) + 16;
+        fogTube = length(position.xz);
         #if defined g_clouds
             fogTube *= CLOUD_EXTENSION;
             #if !defined IS_IRIS
                 fogTube *= 8.1;
             #endif
         #endif
+        // TODO: optimize, add a colored component similar to atmosPhog
+        fogFlat = pow(clamp((fogFlat * farRcp * 8 - 7), 0, 1), 2);
+        fogTube = pow(clamp((fogTube * farRcp * 8 - 7), 0, 1), 2);
+        fogTube = clamp(fogTube + fogFlat, 0, 1);
     } else {
-        fogTube = length(position) + 16;
+        fogTube = length(position);
+        fogTube = mix(fogTube * farRcp * 8 - 7, fogTube * 0.2, blindness);
+
+        fogTube = smoothstep(0, 1, fogTube);
     }
     
-    // TODO: optimize, add a colored component similar to atmosPhog
-    fogFlat = pow(clamp((fogFlat * farRcp * 8 - 7), 0, 1), 2);
-    fogTube = pow(clamp((fogTube * farRcp * 8 - 7), 0, 1), 2);
-    fogTube = clamp(fogTube + fogFlat, 0, 1);
 
     return fogTube;
-}
-
-float fogifyDistanceOnly(in vec3 position, in float far, in float blindness) {
-    float farRcp = mix(1 / far, 0.05, blindness);
-
-    return fogifyDistanceOnly(position, far, blindness, farRcp);
 }
 
 vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in bool isSpectator, in float fogWeather, in float inSky, in float eyeBrightnessSmoothFloat, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
     vec3 composite = diffuse.rgb;
     vec3 fogColorWater = mix(eyeBrightnessSmoothFloat, 1, 0.2) * ATMOSPHERIC_FOG_COLOR_WATER;
 
-    float farRcp = mix(1 / far, 0.05, blindness);
+    float farRcp = 1 / far;
     float fogTube = fogifyDistanceOnly(position, far, blindnessEffect, farRcp);
 
     float atmosPhog = 1.0;

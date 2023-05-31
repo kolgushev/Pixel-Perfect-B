@@ -24,7 +24,7 @@ uniform sampler2D shadowcolor0;
 uniform vec4 entityColor;
 uniform int isEyeInWater;
 uniform float nightVision;
-uniform float blindness;
+uniform float blindnessSmooth;
 
 uniform vec3 fogColor;
 uniform vec3 skyColor;
@@ -510,7 +510,7 @@ void main() {
             float fogWeatherSkyProcessed = fogWeatherSky;
         #endif
 
-        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindness, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;
@@ -529,7 +529,7 @@ void main() {
             albedo.rgb = mix(ATMOSPHERIC_FOG_COLOR, albedo.rgb, exp(-fogWeather * far * ATMOSPHERIC_FOG_DENSITY * ATMOSPHERIC_FOG_MULTIPLIER * WEATHER_FOG_MULTIPLIER));
         #endif
         
-        albedo.rgb = mix(albedo.rgb, vec3(0), blindness);
+        albedo.rgb = mix(albedo.rgb, vec3(0), blindnessSmooth);
 
         #if defined FAST_GI
             albedo.rgb *= 1 + FAST_GI_EXPOSURE_CORRECT_GRAY * FAST_GI_STRENGTH;

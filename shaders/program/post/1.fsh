@@ -15,7 +15,7 @@ uniform float viewHeight;
 
 #if defined FAST_GI
 	uniform float far;
-	uniform float blindness;
+	uniform float blindnessSmooth;
 
 	uniform mat4 gbufferProjectionInverse;
 	uniform mat4 gbufferModelViewInverse;
@@ -65,7 +65,7 @@ void main() {
 
 			vec3 position = depthToView(texcoord, depth, gbufferProjectionInverse);
 			position = mul_m4_v3(gbufferModelViewInverse, position).rgb;
-			colored += colored * diffuseBlur * FAST_GI_STRENGTH * (1 - fogifyDistanceOnly(position, far, blindness));
+			colored += colored * diffuseBlur * FAST_GI_STRENGTH * (1 - fogifyDistanceOnly(position, far, blindnessSmooth));
 			// colored = diffuseBlur;
 		}
 	#endif

@@ -26,7 +26,7 @@ uniform float far;
 uniform vec3 fogColor;
 uniform int isEyeInWater;
 uniform float nightVision;
-uniform float blindness;
+uniform float blindnessSmooth;
 uniform bool isSpectator;
 
 uniform float fogWeatherSky;
@@ -103,7 +103,7 @@ void main() {
         float fogWeatherSkyProcessed = fogWeather;
     #endif
 
-    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindness, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
     vec3 composite = fogged.rgb;
     float fog = fogged.a;
 
