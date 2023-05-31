@@ -50,3 +50,18 @@ continuous TODO:s
 use in/out for functions
 add cycle counts to functions
 reduce branching
+
+
+## Roadmap
+This shader is currently in development, meaning it is still being tweaked and new features are still being developed. The next few releases aim to:
+- Add antialiasing
+- Overhaul performance
+  - Currently, the shading for a pixel is often re-calculated multiple times, slowing down the shader. Once fixed, performance should significantly improve.
+- Add several common effects missing from this shader, including:
+  - Screen Space Reflections
+  - Wavy Water
+  - Screen Space Ambient Occlusion
+  - Bloom
+  - Motion blur
+  - Depth of Field
+- Improve the End Dimension visuals
