@@ -197,7 +197,7 @@ void main() {
 
         albedo.rgb *= color.rgb;
         #if defined g_clouds
-            albedo.a *= step(0.1, albedo.a) * 0.7;
+            albedo.a *= step(0.1, albedo.a) * 0.6;
         #elif !defined gc_terrain
             albedo.a *= color.a;
         #endif
