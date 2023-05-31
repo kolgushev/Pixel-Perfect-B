@@ -35,7 +35,7 @@ uniform float frameTimeCounter;
 uniform mat4 gbufferModelViewInverse;
 uniform int renderStage;
 
-#if (defined g_terrain || defined g_weather) && defined WAVING_ENABLED
+#if (defined g_terrain || defined g_water || defined g_weather) && defined WAVING_ENABLED
     #define USE_CAMERA_POS
 #endif
 
@@ -108,10 +108,11 @@ void main() {
 
     position = gl_Vertex.xyz;
 
-    #if (defined g_terrain || defined g_weather) && defined WAVING_ENABLED && !defined DIM_NO_WIND
+    #if (defined g_terrain || defined g_weather || (defined g_water && !defined NO_WAVING_WATER)) && defined WAVING_ENABLED && !defined DIM_NO_WIND
         #if !defined g_weather
             bool isTopPart = at_midBlock.y < 10;
             bool isFullWaving = mc_Entity.x == WAVING || mc_Entity.x == WAVING_STIFF;
+            bool isWater = mc_Entity.x == WATER;
 
             bool allowWaving = 
                 (
@@ -120,10 +121,11 @@ void main() {
                     isTopPart
                 )
                 ||
-                (mc_Entity.x == WAVING_CUTOUTS_TOP || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF || isFullWaving);
+                (mc_Entity.x == WAVING_CUTOUTS_TOP || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF || isFullWaving || isWater);
         #else
             bool isTopPart = false;
             bool isFullWaving = true;
+            bool isWater = false;
             bool allowWaving = true;
         #endif
 
@@ -167,7 +169,9 @@ void main() {
             }
 
             // custom faster wind for bad weather
-            if(wetness >= rainLower) {
+            if(isWater) {
+                rainOffset = getStormyWindProfile(absolutePosition.xz, time * 0.4, fine * 1.7) * 1.5;
+            } else if(wetness >= rainLower) {
                 rainOffset = getStormyWindProfile(absolutePosition.xz, time, fine);
             }
             
@@ -211,21 +215,26 @@ void main() {
                 offset *= 0.3;
             }
 
-
-            position.xz += offset;
-            // realistic value is 1.0
-            float heightOffset = 0.8;
-            // prevent z-fighting for full blocks
-            if(isFullWaving) {
-                position.y += EPSILON;
-            }
-            #if !defined g_weather
-                else if(!isFullWaving) {
-                    // realistic value is * 2.0
-                    if(isUpper) heightOffset *= 2.3;
-                    position.y += sqrt(pow(heightOffset, 2) - pow(offset.x, 2) - pow(offset.y, 2)) - heightOffset;
+            if(isWater) {
+                float offset1D = length(offset) * 0.375 - 0.1;
+                if(!isTopPart && offset1D > 0) offset1D = 0;
+                position.y += offset1D;
+            } else {
+                position.xz += offset;
+                // realistic value is 1.0
+                float heightOffset = 0.8;
+                // prevent z-fighting for full blocks
+                if(isFullWaving) {
+                    position.y += EPSILON;
                 }
-            #endif
+                #if !defined g_weather
+                    else if(!isFullWaving) {
+                        // realistic value is * 2.0
+                        if(isUpper) heightOffset *= 2.3;
+                        position.y += sqrt(pow(heightOffset, 2) - pow(offset.x, 2) - pow(offset.y, 2)) - heightOffset;
+                    }
+                #endif
+            }
 
         }
         

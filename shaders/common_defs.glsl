@@ -156,6 +156,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef NO_WAVING_FULL_BLOCKS
 #endif
 
+// #define NO_WAVING_WATER
+#ifdef NO_WAVING_WATER
+#endif
+
 #define WIND_STRENGTH_CONSTANT_USER 0.5 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7]
 #define WIND_SPEED_CONSTANT_USER (-5.0)
 

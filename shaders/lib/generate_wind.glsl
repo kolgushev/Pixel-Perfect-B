@@ -1,8 +1,3 @@
-// float gustFunction(in float t, in float smoothness) {
-// 	float x = sin((mod(t, 2 * PI) + PI) * 0.5);
-// 	return -sin(signedPow(x, smoothness) * PI + PI);
-// }
-
 float gustFunction(in float t, in float p) {
 	float x = mod(t * 0.5 / PI, 1);
 
