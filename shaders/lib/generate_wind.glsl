@@ -3,9 +3,8 @@
 // 	return -sin(signedPow(x, smoothness) * PI + PI);
 // }
 
-float gustFunction(in float t, in float sharpness) {
+float gustFunction(in float t, in float p) {
 	float x = mod(t * 0.5 / PI, 1);
-	float p = sharpness;
 
 	return smoothstep(
 		x < p ? 0 : p,

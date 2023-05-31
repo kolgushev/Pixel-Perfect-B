@@ -163,7 +163,7 @@ void main() {
             
             // normal wind
             if(wetness <= rainUpper) {
-                offset = getCalmWindProfile(absolutePosition.xz, time, fine);
+                offset = getCalmWindProfile(absolutePosition.xz, time, fine) * WIND_STRENGTH_CONSTANT_CALM;
             }
 
             // custom faster wind for bad weather
