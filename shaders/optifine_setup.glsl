@@ -73,7 +73,7 @@ const float drynessHalflife = 70.0;
 #define WAVING_CUTOUTS_TOP 11
 #define WAVING_CUTOUTS_BOTTOM_STIFF 12
 #define WAVING_CUTOUTS_TOP_STIFF 13
-#if !defined NO_WAVING_FULL_BLOCKS
+#if defined WAVING_FULL_BLOCKS_ENABLED
     #define WAVING 14
     #define WAVING_STIFF 15
 #else

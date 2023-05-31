@@ -152,15 +152,19 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef WAVING_ENABLED
 #endif
 
-#define NO_WAVING_FULL_BLOCKS
-#ifdef NO_WAVING_FULL_BLOCKS
+// #define WAVING_FULL_BLOCKS_ENABLED
+#ifdef WAVING_FULL_BLOCKS_ENABLED
 #endif
 
-// #define NO_WAVING_WATER
-#ifdef NO_WAVING_WATER
+#define WAVING_WATER_ENABLED
+#ifdef WAVING_WATER_ENABLED
 #endif
 
-#define WIND_STRENGTH_CONSTANT_USER 0.5 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7]
+#define WAVING_RAIN_ENABLED
+#ifdef WAVING_RAIN_ENABLED
+#endif
+
+#define WIND_STRENGTH_CONSTANT_USER 0.5 // [0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define WIND_SPEED_CONSTANT_USER (-5.0)
 
 #define LIGHTNING_FLASHES 0.8 // [0.0 0.1 0.2 0.4 0.6 0.8 1.0]

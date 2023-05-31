@@ -108,7 +108,7 @@ void main() {
 
     position = gl_Vertex.xyz;
 
-    #if (defined g_terrain || defined g_weather || (defined g_water && !defined NO_WAVING_WATER)) && defined WAVING_ENABLED && !defined DIM_NO_WIND
+    #if (defined g_terrain || (defined g_weather && defined WAVING_RAIN_ENABLED) || (defined g_water && defined WAVING_WATER_ENABLED)) && defined WAVING_ENABLED && !defined DIM_NO_WIND
         #if !defined g_weather
             bool isTopPart = at_midBlock.y < 10;
             bool isFullWaving = mc_Entity.x == WAVING || mc_Entity.x == WAVING_STIFF;

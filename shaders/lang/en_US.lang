@@ -332,34 +332,56 @@ screen.MISC=Extras
 
     screen.WEATHER=Weather
 
-        option.WAVING_ENABLED=Waving Objects
-            value.WAVING_ENABLED.true=On
-            value.WAVING_ENABLED.false=Off
-        # TODO: add waving rainy
-        option.WIND_STRENGTH_CONSTANT_USER=Wind Strength
+        screen.WIND=Wind
 
-        option.NOISY_RAIN=Scattered Rain
-            option.NOISY_RAIN.comment=In real life, rain isn't perfectly uniform. This option attempts to replicate that by making the rain more and less dense in some areas where it falls.
-            value.NOISY_RAIN.true=On
-            value.NOISY_RAIN.false=Off
-
-        option.RAIN_THICKNESS=Rain Density
-            option.RAIN_THICKNESS.comment=Larger values create more, thinner rain droplets, while smaller values increase droplet size and decrease droplet amount.
-
-        option.RAIN_AMOUNT_USER=Scattered Rain Amount
-            option.RAIN_AMOUNT_USER.comment=Changes how large the patches of rain are when Scattered Rain is turned on. If Scattered Rain is off, this setting acts similarly to Rain Opacity.
+            option.WAVING_ENABLED=Wind Enabled
+                value.WAVING_ENABLED.true=On
+                value.WAVING_ENABLED.false=Off
             
-        option.RAIN_TRANSPARENCY=Rain Opacity
-            option.RAIN_TRANSPARENCY.comment=Changes how see-through the rain is. Lower values mean more transparent rain.
-            value.RAIN_TRANSPARENCY.0.0=No Rain
+            option.WAVING_WATER_ENABLED=Waving Water
+                value.WAVING_WATER_ENABLED.true=On
+                value.WAVING_WATER_ENABLED.false=Off
+            
+            option.WAVING_RAIN_ENABLED=Waving Rain
+                value.WAVING_RAIN_ENABLED.true=On
+                value.WAVING_RAIN_ENABLED.false=Off
 
-        option.FOG_ENABLED_USER=Foggy Weather
-            option.FOG_ENABLED_USER.comment=Adds a new custom weather effect. Foggy weather is purely cosmetic and can be turned off if you don't like the restricted visibility.
-            value.FOG_ENABLED_USER.true=On
-            value.FOG_ENABLED_USER.false=Off
+            option.WAVING_FULL_BLOCKS_ENABLED=Waving Full Blocks
+                option.WAVING_FULL_BLOCKS_ENABLED.comment=Waving full blocks (such as leaves) don't work too well with this shader's wind system. If you want to enable them anyway, do so here.
+                value.WAVING_FULL_BLOCKS_ENABLED.true=On
+                value.WAVING_FULL_BLOCKS_ENABLED.false=Off
+
+            option.WIND_STRENGTH_CONSTANT_USER=Wind Strength
+
+
+        screen.RAIN=Rain
+
+            option.NOISY_RAIN=Scattered Rain
+                option.NOISY_RAIN.comment=In real life, rain isn't perfectly uniform. This option attempts to replicate that by making the rain more and less dense in some areas where it falls.
+                value.NOISY_RAIN.true=On
+                value.NOISY_RAIN.false=Off
+
+            option.RAIN_THICKNESS=Rain Density
+                option.RAIN_THICKNESS.comment=Larger values create more, thinner rain droplets, while smaller values increase droplet size and decrease droplet amount.
+
+            option.RAIN_AMOUNT_USER=Scattered Rain Amount
+                option.RAIN_AMOUNT_USER.comment=Changes how large the patches of rain are when Scattered Rain is turned on. If Scattered Rain is off, this setting acts similarly to Rain Opacity.
+                
+            option.RAIN_TRANSPARENCY=Rain Opacity
+                option.RAIN_TRANSPARENCY.comment=Changes how see-through the rain is. Lower values mean more transparent rain.
+                value.RAIN_TRANSPARENCY.0.0=No Rain
+
+
+        screen.FOG=Fog
+
+            option.FOG_ENABLED_USER=Foggy Weather
+                option.FOG_ENABLED_USER.comment=Adds a new custom weather effect. Foggy weather is purely cosmetic and can be turned off if you don't like the restricted visibility.
+                value.FOG_ENABLED_USER.true=On
+                value.FOG_ENABLED_USER.false=Off
+
 
         screen.DIMENSION_WEATHER=Per-Dimension Weather Controls
-            option.DIMENSION_WEATHER.comment=Change weather settings in each vanilla dimension. Currently this only includes nether weather
+            screen.DIMENSION_WEATHER.comment=Change weather settings in each vanilla dimension. Currently this only includes nether weather
 
             option.OVERWORLD_FOGGY_WEATHER=Foggy Weather In Overworld
                 option.OVERWORLD_FOGGY_WEATHER.comment=Only takes effect when Foggy Weather is enabled. 
@@ -429,11 +451,6 @@ screen.ADVANCED=Advanced
 
     option.END_SKY_RESOLUTION=End Sky Resolution
         option.END_SKY_RESOLUTION.comment=Because the end sky has a custom renderer to avoid the repeating texture effect it usually has, we can control its resolution.
-
-    option.NO_WAVING_FULL_BLOCKS=Disable Full Blocks Waving
-        option.NO_WAVING_FULL_BLOCKS.comment=Waving full blocks (such as leaves) don't work too well with this shader's wind system. If you want to enable them anyway, do so here.
-        value.NO_WAVING_FULL_BLOCKS.true=On
-        value.NO_WAVING_FULL_BLOCKS.false=Off
 
     option.HDR_TEX_LIGHT_BRIGHTNESS=Convert Light Sources To HDR
         option.HDR_TEX_LIGHT_BRIGHTNESS.comment=Uses a special algorithm to increase the contrast and brightness of lit blocks. Although this usually looks much better when turned on, some LMTs may blow out already super-bright blocks like froglights.
