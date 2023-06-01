@@ -126,11 +126,12 @@ screen.SHADOWS=Shadows
         option.SHADOW_DISTORTION.comment=Because things that are farther away appear smaller, the shadowmap (shadow image) is warped to have a higher resolution closer to the player. Lower distortion makes the resolution seem lower, but higher resolution might look weird. Increased ➤ No performance impact.
 
     option.SHADOW_FILTERING=Filtering
-        option.SHADOW_FILTERING.comment=Makes shadows look nicer by blurring them. Enabled ➤ Large performance hit (based on number of samples).
+        option.SHADOW_FILTERING.comment=Makes shadows look nicer by blurring them. PCF ➤ Medium-Large performance hit (based on number of samples). Bilinear ➤ Small performance hit.
         value.SHADOW_FILTERING.0=Off
         value.SHADOW_FILTERING.1=PCF
         value.SHADOW_FILTERING.2=VP Lite §c(Experimental)
         value.SHADOW_FILTERING.3=VP §c(Experimental)
+        value.SHADOW_FILTERING.4=Bilinear
 
     option.SHADOW_FILTERING_RADIUS=Filtering Radius
         option.SHADOW_FILTERING_RADIUS.comment=How much the shadow is blurred (if filtering is enabled). Increased ➤ No performance impact.

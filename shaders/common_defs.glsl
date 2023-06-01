@@ -357,8 +357,8 @@ const float entityShadowDistanceMul = 0.3; // [0.1 0.2 0.3 0.4]
 #ifdef SHADOW_AFFECTED_BY_LIGHTMAP
 #endif
 
-// 0:off 1:Percentage Closer 2:Variable-Penumbra Offbrand 3:Variable-Penumbra
-#define SHADOW_FILTERING 1 // [0 1]
+// 0:off 1:Percentage Closer 2:Variable-Penumbra Offbrand 3:Variable-Penumbra 4:Bilinear
+#define SHADOW_FILTERING 1 // [0 1 4]
 #define SHADOW_FILTERING_SAMPLES 5 // [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
 #define SHADOW_FILTERING_RADIUS 0.1 // [0.025 0.05 0.075 0.1 0.125 0.15 0.175 0.2]
 
@@ -414,7 +414,7 @@ const float shadowIntervalSize = 8.0;
     const bool shadowcolor1Nearest = true;
 #endif
 
-vec3 superSampleOffsetsCross[5] = vec3[5](
+const vec3 superSampleOffsetsCross[5] = vec3[5](
     vec3(0, 0, 1),
     vec3(-0.5, -0.5, ISQRT_2),
     vec3(-0.5, 0.5, ISQRT_2),
@@ -422,19 +422,14 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
     vec3(0.5, 0.5, ISQRT_2)
 );
 
-#if SHADOW_SUPERSAMPLE == 1
-    #define SHADOW_RES_MULT 2.0
-    #define SHADOW_RES_MULT_RCP 0.5
-    vec2 superSampleOffsets[4] = vec2[4](
+const vec2 superSampleOffsets4[4] = vec2[4](
         vec2(-0.5, -0.5),
         vec2(-0.5, 0.5),
         vec2(0.5, -0.5),
         vec2(0.5, 0.5)
     );
-#elif SHADOW_SUPERSAMPLE == 2
-    #define SHADOW_RES_MULT 4.0
-    #define SHADOW_RES_MULT_RCP 0.25
-    vec2 superSampleOffsets[16] = vec2[16](
+
+const vec2 superSampleOffsets16[16] = vec2[16](
         vec2(-0.25, -0.25),
         vec2(0.75, 0.75),
         vec2(-0.75, 0.75),
@@ -452,6 +447,15 @@ vec3 superSampleOffsetsCross[5] = vec3[5](
         vec2(-0.75, 0.25),
         vec2(0.25, -0.25)
     );
+
+#if SHADOW_SUPERSAMPLE == 1
+    #define SHADOW_RES_MULT 2.0
+    #define SHADOW_RES_MULT_RCP 0.5
+    const vec2 superSampleOffsets[4] = superSampleOffsets4;
+#elif SHADOW_SUPERSAMPLE == 2
+    #define SHADOW_RES_MULT 4.0
+    #define SHADOW_RES_MULT_RCP 0.25
+    const vec2 superSampleOffsets[16] = superSampleOffsets16;
 #endif
 
 #if VANILLA_LIGHTING == 2

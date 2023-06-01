@@ -46,6 +46,23 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
         }
 
         float shadow = shadowAverage / SHADOW_FILTERING_SAMPLES;
+    #elif SHADOW_FILTERING == 4
+        vec2 samplePositionWithinBounds = mod(shadowPosition.xy * shadowMapResolution, 1);
+
+        shadowPosition.xy = floor(shadowPosition.xy * shadowMapResolution) / shadowMapResolution;
+
+        float shadowSamples[4] = float[4](0);
+
+        for(int i = 0; i < superSampleOffsets4.length; i++) {
+            shadowSamples[i] = shadowSample(shadowPosition + vec3(superSampleOffsets4[i] / shadowMapResolution, 0), shadowtex);
+            // shadowSamples[i] = shadowSample(shadowPosition, shadowtex);
+            shadowSamples[i] = smoothstep(EPSILON, 0, shadowSamples[i]);
+        }
+
+        shadowSamples[0] = mix(shadowSamples[0], shadowSamples[1], samplePositionWithinBounds.y);
+        shadowSamples[1] = mix(shadowSamples[2], shadowSamples[3], samplePositionWithinBounds.y);
+
+        float shadow = mix(shadowSamples[0], shadowSamples[1], samplePositionWithinBounds.x);
     #endif
 
     shadow = mix(shadow, 1, shadowCutoff);
