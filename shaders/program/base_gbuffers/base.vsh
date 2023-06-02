@@ -216,9 +216,9 @@ void main() {
             }
 
             if(isWater) {
-                float offset1D = length(offset) * 0.375 - 0.1;
+                float offset1D = length(offset) * 0.4 - (smoothstep(rainLower, rainUpper, wetness) * 0.03 + 0.07);
                 if(!isTopPart && offset1D > 0) offset1D = 0;
-                position.y += offset1D;
+                position.y += min(offset1D, 0.112);
             } else {
                 position.xz += offset;
                 // realistic value is 1.0
