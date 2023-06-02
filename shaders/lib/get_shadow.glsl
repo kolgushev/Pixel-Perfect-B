@@ -46,7 +46,7 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
         }
 
         float shadow = shadowAverage / SHADOW_FILTERING_SAMPLES;
-    #elif SHADOW_FILTERING == 4
+    #elif SHADOW_FILTERING == 4 || SHADOW_FILTERING == 5
         vec2 samplePositionWithinBounds = mod(shadowPosition.xy * shadowMapResolution, 1);
 
         shadowPosition.xy = floor(shadowPosition.xy * shadowMapResolution) / shadowMapResolution;

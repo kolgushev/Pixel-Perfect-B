@@ -25,8 +25,8 @@ screen.POST_PROCESSING=Post Processing
 screen.LIGHTING=Lighting
 
     option.VANILLA_LIGHTING=Lighting Mode
+        value.VANILLA_LIGHTING.1=Vanilla
         value.VANILLA_LIGHTING.0=Optifine
-        value.VANILLA_LIGHTING.1=Vanilla §b+
         value.VANILLA_LIGHTING.2=Shaders
 
     option.CUTOUT_ALIGN_STRENGTH=Grass Transluscency
@@ -95,17 +95,17 @@ screen.SHADOWS=Shadows
         value.SHADOWS_ENABLED_USER.true=On
         value.SHADOWS_ENABLED_USER.false=Off
 
-    option.PIXELATED_SHADOWS=Pixelated Shadows
-        option.PIXELATED_SHADOWS.comment=Pixelates shadows so they match with the pixels on a block. Inspired from complementary's pixelated shadows, though the implementation is my own. Enabled ➤ Minimal performance hit.
-        value.PIXELATED_SHADOWS.0=Off
-        value.PIXELATED_SHADOWS.8=8×8
-        value.PIXELATED_SHADOWS.16=16×16
-        value.PIXELATED_SHADOWS.32=32×32
-        value.PIXELATED_SHADOWS.64=64×64
-        value.PIXELATED_SHADOWS.128=128×128
-        value.PIXELATED_SHADOWS.256=256×256
-        value.PIXELATED_SHADOWS.512=512×512
-        value.PIXELATED_SHADOWS.1024=1024×1024
+    option.PIXELATED_SHADOWS_USER=Pixelated Shadow Override
+        option.PIXELATED_SHADOWS_USER.comment=Pixelates shadows so they match with the pixels on a block. Inspired from complementary's pixelated shadows, though the implementation is my own. Enabled ➤ Minimal performance hit.
+        value.PIXELATED_SHADOWS_USER.0=Off
+        value.PIXELATED_SHADOWS_USER.8=8×8
+        value.PIXELATED_SHADOWS_USER.16=16×16
+        value.PIXELATED_SHADOWS_USER.32=32×32
+        value.PIXELATED_SHADOWS_USER.64=64×64
+        value.PIXELATED_SHADOWS_USER.128=128×128
+        value.PIXELATED_SHADOWS_USER.256=256×256
+        value.PIXELATED_SHADOWS_USER.512=512×512
+        value.PIXELATED_SHADOWS_USER.1024=1024×1024
 
     option.shadowDistance=Shadow Distance
         option.shadowDistance.comment=How far away the shadows can be, in blocks. Since setting higher distances means the same shadow image is spread over more blocks, shadows become less detailed when the distance is increased. Increased ➤ No performance impact.
@@ -132,6 +132,7 @@ screen.SHADOWS=Shadows
         value.SHADOW_FILTERING.2=VP Lite §c(Experimental)
         value.SHADOW_FILTERING.3=VP §c(Experimental)
         value.SHADOW_FILTERING.4=Bilinear
+        value.SHADOW_FILTERING.5=Pixelated
 
     option.SHADOW_FILTERING_RADIUS=Filtering Radius
         option.SHADOW_FILTERING_RADIUS.comment=How much the shadow is blurred (if filtering is enabled). Increased ➤ No performance impact.
@@ -238,15 +239,15 @@ screen.RESOURCEPACK=Resourcepack Settings
     
     option.TEX_RES=Resource Pack Resolution
         option.TEX_RES.comment=Anything above 1024×1024 is near-identical to just turning off the Pixel Perfect setting
-        value.TEX_RES.0.25=4×4
-        value.TEX_RES.0.125=8×8
-        value.TEX_RES.0.0625=16×16
-        value.TEX_RES.0.03125=32×32
-        value.TEX_RES.0.015625=64×64
-        value.TEX_RES.0.0078125=128×128
-        value.TEX_RES.0.00390625=256×256
-        value.TEX_RES.0.001953125=512×512
-        value.TEX_RES.0.0009765625=1024×1024
+        value.TEX_RES.4=4×4
+        value.TEX_RES.8=8×8
+        value.TEX_RES.16=16×16
+        value.TEX_RES.32=32×32
+        value.TEX_RES.64=64×64
+        value.TEX_RES.128=128×128
+        value.TEX_RES.256=256×256
+        value.TEX_RES.512=512×512
+        value.TEX_RES.1024=1024×1024
 
 screen.MISC=Extras
 

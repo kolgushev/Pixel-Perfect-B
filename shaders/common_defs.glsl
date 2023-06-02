@@ -210,7 +210,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define CUTOUT_ALIGN_STRENGTH 0.8 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
 // 0 is old lighting off, 1 is standard vanilla, 2 is custom shading
-#define VANILLA_LIGHTING 2 // [0 1 2]
+#define VANILLA_LIGHTING 2 // [1 0 2]
 
 // #define RIMLIGHT_ENABLED
 #ifdef RIMLIGHT_ENABLED
@@ -242,7 +242,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 #define POST_SATURATION 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
-#define USE_LUT
+// #define USE_LUT
 #ifdef USE_LUT
 #endif
 
@@ -338,7 +338,12 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef BRIGHT_NETHER
 #endif
 
-// #define SHADOWS_ENABLED_USER
+// #define TEX_RENDER
+#ifdef TEX_RENDER
+#endif
+#define TEX_RES 16 // [4 8 16 32 64 128 256 512 1024]
+
+#define SHADOWS_ENABLED_USER
 #ifdef SHADOWS_ENABLED_USER
 #endif
 
@@ -347,7 +352,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #endif
 
 const int shadowMapResolution = 4096; // [512 1024 2048 4096 8192]
-const float shadowDistance = 200.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.0 275.0 300.0]
+const float shadowDistance = 150.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.0 275.0 300.0]
 const float entityShadowDistanceMul = 0.3; // [0.1 0.2 0.3 0.4]
 
 #define SHADOW_DISTORTION 0.9 // [0.0 0.5 0.8 0.9 0.95 0.98]
@@ -357,13 +362,17 @@ const float entityShadowDistanceMul = 0.3; // [0.1 0.2 0.3 0.4]
 #ifdef SHADOW_AFFECTED_BY_LIGHTMAP
 #endif
 
-// 0:off 1:Percentage Closer 2:Variable-Penumbra Offbrand 3:Variable-Penumbra 4:Bilinear
-#define SHADOW_FILTERING 1 // [0 1 4]
+// 0:off 1:Percentage Closer 2:Variable-Penumbra Offbrand 3:Variable-Penumbra 4:Bilinear 5:Bilinear+Pixelated
+#define SHADOW_FILTERING 5 // [0 1 4 5]
 #define SHADOW_FILTERING_SAMPLES 5 // [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
 #define SHADOW_FILTERING_RADIUS 0.1 // [0.025 0.05 0.075 0.1 0.125 0.15 0.175 0.2]
 
-#define PIXELATED_SHADOWS 0 // [0 8 16 32 64 128]
-#ifdef PIXELATED_SHADOWS
+#define PIXELATED_SHADOWS_USER 0 // [0 8 16 32 64 128]
+
+#if SHADOW_FILTERING == 5 && PIXELATED_SHADOWS == 0
+    #define PIXELATED_SHADOWS TEX_RES
+#else
+    #define PIXELATED_SHADOWS PIXELATED_SHADOWS_USER
 #endif
 
 #define SHADOW_TRANSITION_MIXING 0 // [0 1]
@@ -385,10 +394,6 @@ const float entityShadowDistanceMul = 0.3; // [0.1 0.2 0.3 0.4]
 #ifdef SHADOW_DEBUG
 #endif
 #define ISOLATE_RENDER_STAGE -1 // [-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23]
-// #define TEX_RENDER
-#ifdef TEX_RENDER
-#endif
-#define TEX_RES 0.0625 // [0.25 0.125 0.0625 0.03125 0.015625 0.0078125 0.00390625 0.001953125 0.0009765625]
 
 #define END_SKY_RESOLUTION 128 // [32 64 128 256]
 
