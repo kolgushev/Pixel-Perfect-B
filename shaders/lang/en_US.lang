@@ -459,6 +459,9 @@ screen.ADVANCED=Advanced
         value.HDR_TEX_LIGHT_BRIGHTNESS.true=On
         value.HDR_TEX_LIGHT_BRIGHTNESS.false=Off
         
+    option.CLOUD_EXTENSION=Extend Clouds
+        option.CLOUD_EXTENSION.comment=Best left at §a1.0§b. Lower values extend the fog distance. The default cloud fog distance matches environment fog distance.
+
     screen.AUTO_ADDED=Automatic Settings
         screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work correctly, if at all.
 
