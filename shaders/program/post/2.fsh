@@ -6,32 +6,28 @@ layout(location = 4) out vec4 b4;
 
 in vec2 texcoord;
 
-uniform sampler2D colortex0;
+#define use_colortex0
+#define use_shadowcolor1
+
+#define use_near
+#define use_far
+#define use_boss_battle
+#define use_invisibility
+
+#define use_linearize_depth
+#define use_tonemapping
+#define use_color_manipulation
 
 #if DITHERING_MODE != 0
-    uniform sampler2D noisetex;
+    #define use_noisetex
 
-    uniform float viewWidth;
-    uniform float viewHeight;
+    #define use_view_width
+    #define use_view_height
+
+    #define use_sample_noise
 #endif
 
-uniform float near;
-uniform float far;
-
-uniform sampler3D shadowcolor1;
-
-uniform int bossBattle;
-uniform float invisibility;
-
-#include "/lib/linearize_depth.fsh"
-#include "/lib/tonemapping.glsl"
-#include "/lib/color_manipulation.glsl"
-
-
-#if DITHERING_MODE != 0
-    #include "/lib/sample_noisetex.glsl"
-    #include "/lib/sample_noise.glsl"
-#endif
+#include "/lib/use.glsl"
 
 void main() {
     vec4 albedo = texture(colortex0, texcoord);

@@ -5,29 +5,36 @@ layout(location = 0) out vec4 b0;
 
 in vec2 texcoord;
 
-uniform sampler2D depthtex0;
-uniform sampler2D colortex0;
 
-uniform int isEyeInWater;
 
-uniform float viewWidth;
-uniform float viewHeight;
+// uniforms
+
+#define use_depthtex0
+#define use_colortex0
+
+#define use_is_eye_in_water
+#define use_view_width
+#define use_view_height
 
 #if defined FAST_GI
-	uniform float far;
-	uniform float blindnessSmooth;
+	#define use_colortex1
 
-	uniform mat4 gbufferProjectionInverse;
-	uniform mat4 gbufferModelViewInverse;
+	#define use_far
+	#define use_blindness_smooth
+	#define use_gbuffer_projection_inverse
+	#define use_gbuffer_model_view_inverse
 
-	#include "/lib/linearize_depth.fsh"
-	#include "/lib/fogify.glsl"
+	#define use_linearize_depth
+	#define use_fogify
+	#define use_tonemapping
 #endif
 
-#if defined FAST_GI || defined DYNAMIC_EXPOSURE_LIGHTING
-	uniform sampler2D colortex1;
-	#include "/lib/tonemapping.glsl"
+#if defined DYNAMIC_EXPOSURE_LIGHTING
+	#define use_colortex1
+	#define use_tonemapping
 #endif
+
+#include "/lib/use.glsl"
 
 /*
 const bool colortex1MipmapEnabled = true;

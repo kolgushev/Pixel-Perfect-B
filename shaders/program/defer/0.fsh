@@ -5,54 +5,49 @@ layout(location = 1) out vec4 b1;
 
 in vec2 texcoord;
 
-uniform sampler2D colortex1;
-uniform sampler2D colortex2;
-uniform sampler2D colortex3;
+// uniforms
 
-uniform sampler2D shadowcolor0;
+#define use_colortex1
+#define use_colortex2
+#define use_colortex3
+#define use_shadowcolor0
 
-uniform vec3 sunPosition;
-uniform vec3 moonPosition;
+#define use_sun_position
+#define use_moon_position
+#define use_camera_position
+#define use_sky_time
+#define use_moon_brightness
+#define use_rain_strength
+#define use_is_lightning
+#define use_direct_light_mult
+#define use_night_vision
+#define use_darkness_factor
+#define use_darkness_light_factor
+#define use_gbuffer_model_view
 
-uniform vec3 cameraPosition;
-
-uniform float skyTime;
-uniform float moonBrightness;
-uniform float rainStrength;
-uniform float isLightning;
-
-uniform float directLightMult;
-
-uniform float nightVision;
-uniform float darknessFactor;
-uniform float darknessLightFactor;
-
-uniform mat4 gbufferModelView;
-
-// don't need to include to_viewspace since calculate_lighting already includes it
-#include "/lib/tonemapping.glsl"
-#include "/lib/color_manipulation.glsl"
-#include "/lib/to_viewspace.glsl"
-#include "/lib/calculate_lighting.glsl"
+#define use_tonemapping
+#define use_color_manipulation
+#define use_calculate_lighting
 
 #if defined SHADOWS_ENABLED
-    uniform sampler2D depthtex1;
-    uniform sampler2D shadowtex1;
-    uniform sampler2D noisetex;
-    uniform mat4 shadowProjection;
-    uniform mat4 shadowModelView;
+    #define use_depthtex1
+    #define use_shadowtex1
+    #define use_noisetex
+    #define use_shadow_projection
+    #define use_shadow_model_view
     
-    uniform mat4 gbufferProjectionInverse;
-    uniform mat4 gbufferModelViewInverse;
+    #define use_gbuffer_projection_inverse
+    #define use_gbuffer_model_view_inverse
 
-    uniform int frameCounter;
-    uniform float viewWidth;
-    uniform float viewHeight;
+    #define use_frame_counter
+    #define use_view_width
+    #define use_view_height
 
-    #include "/lib/sample_noisetex.glsl"
-    #include "/lib/sample_noise.glsl"
-    #include "/lib/get_shadow.glsl"
+    #define use_sample_noise
+    #define use_get_shadow
 #endif
+
+#include "/lib/use.glsl"
 
 void main() {
     vec4 albedo = texture(colortex1, texcoord);

@@ -6,59 +6,52 @@ layout(location=1) out vec4 b1;
 
 in vec2 texcoord;
 
-uniform sampler2D colortex0;
-uniform sampler2D colortex1;
-uniform sampler2D colortex2;
-#if defined RIMLIGHT_ENABLED
-    uniform sampler2D colortex3;
-#endif
 
-uniform sampler2D depthtex1;
+// uniforms
 
-uniform sampler2D noisetex;
+#define use_colortex0
+#define use_colortex1
+#define use_colortex2
+#define use_depthtex1
+#define use_noisetex
 
+#define use_gbuffer_projection_inverse
+#define use_gbuffer_model_view_inverse
+#define use_far
+#define use_fog_color
+#define use_is_eye_in_water
+#define use_night_vision
+#define use_blindness_smooth
+#define use_is_spectator
+#define use_fog_weather_sky
+#define use_fog_weather
+#define use_in_sky
+#define use_eye_brightness_smooth_float
+#define use_camera_position
+#define use_frame_time_counter
 
-uniform mat4 gbufferProjectionInverse;
-uniform mat4 gbufferModelViewInverse;
-
-uniform float far;
-
-uniform vec3 fogColor;
-uniform int isEyeInWater;
-uniform float nightVision;
-uniform float blindnessSmooth;
-uniform bool isSpectator;
-
-uniform float fogWeatherSky;
-uniform float fogWeather;
-
-uniform float inSky;
-uniform float eyeBrightnessSmoothFloat;
-
-uniform vec3 cameraPosition;
-uniform float frameTimeCounter;
+#define use_switch_fog_color
+#define use_fogify
+#define use_to_viewspace
+#define use_tonemapping
+#define use_lava_noise
 
 #if defined DIM_END
-    uniform int bossBattle;
+    #define use_boss_battle
 #endif
 
 #if defined RIMLIGHT_ENABLED
-    uniform float near;
-    uniform float aspectRatio;
-    uniform float viewWidth;
-    uniform float viewHeight;
+    #define use_colortex3
 
-    #include "/lib/linearize_depth.fsh"
+    #define use_near
+    #define use_aspect_ratio
+    #define use_view_width
+    #define use_view_height
+
+    #define use_linearize_depth
 #endif
 
-
-#include "/lib/switch_fog_color.glsl"
-#include "/lib/fogify.glsl"
-#include "/lib/to_viewspace.glsl"
-#include "/lib/tonemapping.glsl"
-
-#include "/lib/sample_noisetex.glsl"
-#include "/lib/lava_noise.glsl"
+#include "/lib/use.glsl"
 
 void main() {
     vec3 sky = texture(colortex0, texcoord).rgb;

@@ -17,129 +17,115 @@ flat in int mcEntity;
     in vec2 stars;
 #endif
 
-// TODO: make a separate def for each uniform
-uniform sampler2D texture;
-uniform sampler2D shadowcolor0;
 
-uniform vec4 entityColor;
-uniform int isEyeInWater;
-uniform float nightVision;
-uniform float blindnessSmooth;
+// uniforms
 
-uniform vec3 fogColor;
-uniform vec3 skyColor;
+#define use_texture
+#define use_shadowcolor0
+#define use_entity_color
+#define use_is_eye_in_water
+#define use_night_vision
+#define use_blindness_smooth
+#define use_fog_color
+#define use_sky_color
+#define use_is_lightning
+#define use_render_stage
+#define use_alpha_test_ref
 
-uniform float isLightning;
-
-uniform int renderStage;
-
-uniform float alphaTestRef;
-
-#if defined gc_transparent
-    uniform vec3 sunPosition;
-    uniform vec3 moonPosition;
-
-    uniform float darknessFactor;
-    uniform float darknessLightFactor;
-    uniform bool isSpectator;
-
-    uniform mat4 gbufferModelView;
-
-    uniform float directLightMult;
-    uniform float far;
-
-    uniform float viewWidth;
-    uniform float viewHeight;
-
-    uniform mat4 gbufferProjectionInverse;
-    uniform mat4 gbufferModelViewInverse;
-
-    uniform sampler2D colortex0;
-    uniform sampler2D depthtex1;
-#endif
-
-#if defined gc_transparent || defined gc_sky || defined weather
-    uniform float skyTime;
-#endif
-
-#if defined g_skybasic
-    uniform mat4 gbufferProjectionInverse;
-    uniform int viewWidth;
-    uniform int viewHeight;
-#endif
-
-#if (defined gc_sky || defined gc_transparent) && defined DIM_END
-    uniform int bossBattle;
-#endif
-
-#include "/lib/tonemapping.glsl"
-#include "/lib/calculate_sky.glsl"
-#include "/lib/hdr_mapping.glsl"
+#define use_tonemapping
+#define use_calculate_sky
+#define use_hdr_mapping
 
 #if defined gc_transparent
-    #include "/lib/fogify.glsl"
-    #include "/lib/to_viewspace.glsl"
-#endif
+    #define use_sun_position
+    #define use_moon_position
+    #define use_darkness_factor
+    #define use_darkness_light_factor
+    #define use_is_spectator
+    #define use_gbuffer_model_view
+    #define use_direct_light_mult
+    #define use_far
+    #define use_view_width
+    #define use_view_height
+    #define use_gbuffer_projection_inverse
+    #define use_gbuffer_model_view_inverse
+    #define use_colortex0
+    #define use_depthtex1
+    #define use_sky_time
+    #define use_frame_time_counter
 
-
-#if defined gc_transparent || defined g_weather || defined gc_sky
-    #define NEED_WEATHER_DATA
-#endif
-
-#if defined NEED_WEATHER_DATA
-    uniform float moonBrightness;
-    uniform float rainStrength;
-
-    #if defined IS_IRIS
-        uniform float thunderStrength;
-    #endif
-
-    uniform float fogWeather;
-    uniform float fogWeatherSky;
-    uniform float inSky;
-    uniform float eyeBrightnessSmoothFloat;
-
-    #include "/lib/color_manipulation.glsl"
-    #include "/lib/calculate_lighting.glsl"
-#endif
-
-#if defined gc_sky
-    uniform float far;
-
-    #include "/lib/switch_fog_color.glsl"
-#endif
-
-#if defined g_weather && defined NOISY_RAIN
-    #define use_camera_position
-    #define use_noisetex_lib
-#endif
-
-#if defined g_weather
-    uniform float rainWind;
-#endif
-
-#if defined DIM_END && defined g_skytextured
-    #define use_noisetex_lib
-#endif
-#if defined g_terrain || defined gc_transparent
-    #define use_noisetex_lib
+    #define use_fogify
+    #define use_to_viewspace
+    #define use_sample_noisetex
     #define use_lava_noise
     #define use_camera_position
 
-    uniform float frameTimeCounter;
+    // for changing the end sky rendering when fighting the dragon
+    #if defined DIM_END
+        #define use_boss_battle
+    #endif
+
+    #define NEED_WEATHER_DATA
 #endif
 
-#if defined use_camera_position
-    uniform vec3 cameraPosition;
-#endif
-#if defined use_noisetex_lib
-    uniform sampler2D noisetex;
-    #include "/lib/sample_noisetex.glsl"
+#if defined g_terrain
+    #define use_frame_time_counter
+    #define use_sample_noisetex
+    #define use_lava_noise
+    #define use_camera_position
 #endif
 
-#if defined use_lava_noise
-    #include "/lib/lava_noise.glsl"
+#if defined gc_sky
+    #define use_far
+    #define use_sky_time
+
+    #if defined DIM_END
+        #define use_boss_battle
+    #endif
+
+    #define use_switch_fog_color
+
+    #define NEED_WEATHER_DATA
 #endif
+
+#if defined g_weather
+    #define use_sky_time
+
+    #if defined NOISY_RAIN
+        #define use_rain_wind
+        #define use_camera_position
+        #define use_sample_noisetex
+    #endif
+
+    #define NEED_WEATHER_DATA
+#endif
+
+#if defined g_skybasic
+    #define use_gbuffer_projection_inverse
+    #define use_view_width
+    #define use_view_height
+#endif
+
+#if defined NEED_WEATHER_DATA
+    #define use_moon_brightness
+    #define use_rain_strength
+    #define use_thunder_strength
+
+    #define use_fog_weather
+    #define use_fog_weather_sky
+    #define use_in_sky
+    #define use_eye_brightness_smooth_float
+
+    #define use_color_manipulation
+    #define use_calculate_lighting
+#endif
+
+#if defined DIM_END && defined g_skytextured
+    #define use_sample_noisetex
+#endif
+
+
+#include "/lib/use.glsl"
 
 void main() {
     #if defined NEED_WEATHER_DATA

@@ -8,41 +8,40 @@ layout(location = 0) out vec4 b0;
 
 in vec2 texcoord;
 
-uniform sampler2D colortex0;
-uniform sampler2D colortex1;
-uniform sampler2D colortex2;
 
-#if defined PIXELATED_SHADOWS || defined RIMLIGHT_ENABLED
-    uniform sampler2D colortex3;
+// uniforms
+
+
+#define use_colortex0
+#define use_colortex1
+#define use_colortex2
+#define use_depthtex0
+#define use_shadowcolor1
+#define use_noisetex
+
+#define use_shadow_projection
+#define use_shadow_model_view
+#define use_gbuffer_projection_inverse
+#define use_gbuffer_model_view_inverse
+#define use_sky_time
+#define use_frame_counter
+#define use_view_width
+#define use_view_height
+
+#define use_sample_noisetex
+#define use_sample_noise
+#define use_get_shadow
+
+#if defined RIMLIGHT_ENABLED
+    #define use_colortex3
 #endif
 
 #if defined PIXELATED_SHADOWS
-    uniform vec3 cameraPosition; 
+    #define use_colortex3
+    #define use_camera_position
 #endif
 
-uniform sampler2D depthtex0;
-// uniform sampler2D shadowcolor0;
-uniform sampler2D shadowcolor1;
-uniform sampler2D noisetex;
-
-uniform mat4 shadowProjection;
-uniform mat4 shadowModelView;
-
-uniform mat4 gbufferProjectionInverse;
-uniform mat4 gbufferModelViewInverse;
-
-uniform float skyTime;
-
-uniform int frameCounter;
-uniform float viewWidth;
-uniform float viewHeight;
-
-#include "/lib/sample_noisetex.glsl"
-#include "/lib/sample_noise.glsl"
-
-// don't need to include to_viewspace since calculate_lighting already includes it
-#include "/lib/to_viewspace.glsl"
-#include "/lib/get_shadow.glsl"
+#include "/lib/use.glsl"
 
 void main() {
     vec3 diffuse = texture(colortex0, texcoord).rgb;

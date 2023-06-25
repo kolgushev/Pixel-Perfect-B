@@ -1,18 +1,4 @@
 #include "/common_defs.glsl"
-#if defined gc_terrain || defined gc_textured || defined g_clouds || defined g_weather
-    #define use_raw_normal
-#endif
-
-#if defined g_skytextured
-    #define use_viewinverse_pos
-
-    uniform mat4 gbufferProjectionInverse;
-#endif
-
-#if defined gc_terrain && defined USE_DOF
-    const int countInstances = 2;
-    uniform int instanceId;
-#endif
 
 out vec2 texcoord;
 out vec4 color;
@@ -31,44 +17,49 @@ flat out int mcEntity;
     in vec3 at_midBlock;
 #endif
 
-uniform float frameTimeCounter;
-uniform mat4 gbufferModelViewInverse;
-uniform int renderStage;
 
-#if (defined g_terrain || defined g_water || defined g_weather) && defined WAVING_ENABLED
-    #define USE_CAMERA_POS
+
+// uniforms
+
+#define use_frame_time_counter
+#define use_gbuffer_model_view_inverse
+#define use_render_stage
+
+#define use_to_viewspace
+
+#if defined gc_terrain && defined USE_DOF
+    const int countInstances = 2;
+    #define use_instance_id
 #endif
-
-#if defined g_weather && defined WAVING_ENABLED
-    uniform float rainWind;
-#endif
-
-#if defined DIM_END
-    uniform sampler2D noisetex;
-#endif
-
-#if defined DIM_END || defined USE_CAMERA_POS
-    uniform vec3 cameraPosition;
-#endif
-
-#if defined USE_CAMERA_POS
-    #if !defined DIM_NO_RAIN
-        uniform float wetness;
-    #endif
-    // uniform float frameTimeCounter;
-
-    #include "/lib/generate_wind.glsl"
-#endif
-
-#if defined DIM_END
-    #include "/lib/sample_noisetex.glsl"
-#endif
-
-#include "/lib/to_viewspace.glsl"
 
 #if defined g_terrain
-    #include "/lib/get_terrain_mask.glsl"
+    #define use_get_terrain_mask
 #endif
+
+#if defined WAVING_ENABLED
+    #if (defined g_terrain || defined g_water || defined g_weather)
+        #if !defined DIM_NO_RAIN
+            #define use_wetness
+        #endif
+
+        #define use_generate_wind
+        #define use_camera_position
+    #endif
+
+    #if defined g_weather
+        #define use_rain_wind
+    #endif
+
+#endif
+
+#if defined DIM_END
+    #define use_camera_position
+
+    #define use_noisetex
+    #define use_sample_noisetex
+#endif
+
+#include "/lib/use.glsl"
 
 // TODO: world-space coordinates for everything not terrain
 void main() {
@@ -95,7 +86,7 @@ void main() {
         light = max(light - 0.0313, 0) * 1.067;
     #endif
 
-    #if defined use_raw_normal
+    #if defined gc_terrain || defined gc_textured || defined g_clouds || defined g_weather
         normal = gl_Normal;
 
         #if defined g_terrain
@@ -282,7 +273,7 @@ void main() {
         }
     #endif
 
-    #if defined use_viewinverse_pos
+    #if defined g_skytextured
         position = viewInverse(gl_Vertex.xyz);
     #endif
 

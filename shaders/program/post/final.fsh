@@ -3,21 +3,20 @@
 layout(location = 0) out vec4 buffer0;
 
 in vec2 texcoord;
-uniform sampler2D colortex0;
+
+
+// uniforms
+
+#define use_colortex0
 
 #if defined SHADOW_DEBUG
-    uniform sampler2D shadowcolor1;
+    #define use_shadowcolor1
+    #define use_noisetex
 
-    uniform int viewWidth;
-    uniform int viewHeight;
-
-    uniform sampler2D noisetex;
-
-    #include "/lib/to_viewspace.glsl"
-    #include "/lib/sample_noisetex.glsl"
-    #include "/lib/sample_noise.glsl"
-    #include "/lib/get_shadow.glsl"
+    #define use_get_shadow
 #endif
+
+#include "/lib/use.glsl"
 
 void main() {
     vec4 albedo = texture(colortex0, texcoord);

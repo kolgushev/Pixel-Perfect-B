@@ -4,13 +4,15 @@ float lavaNoise(in vec2 position, in float t) {
 	#else
 		const bool sharpLava = true;
 	#endif
-	#define noise_f(x) tile(position * (x), vec2(1, 0), sharpLava)
+
 	#if defined DIM_NETHER
 		#define LAVA_SCALE 1
 	#else
 		#define LAVA_SCALE 2
 	#endif
-	vec4 noise = noise_f(LAVA_SCALE);
+
+	vec4 noise = tile(position * LAVA_SCALE, vec2(1, 0), sharpLava);
+	
 	#if NOISY_LAVA == 2
 		noise = noise - 0.35;
 		noise = noise * noise * 20;
