@@ -40,6 +40,11 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
 
+    #if defined AO_SQUARED
+        // the correct multiplier is 1.5 but 1.75 looks better
+        ambientOcclusion = 1 - (pow(1 - ambientOcclusion, 2) * 1.75);
+    #endif
+
     float skyShading = (normal.y - 1) * 0.5 + 1.0;
 
     #if defined g_clouds

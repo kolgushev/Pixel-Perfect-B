@@ -273,6 +273,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // output mapping: 0:none 1:vanilla 2:SSAO
 #define AO_MODE 1 // [0 1 2]
 
+#define AO_SQUARED
+#ifdef AO_SQUARED
+#endif
+
 #if AO_MODE == 2
     #define SSAO_ENABLED
 #endif
