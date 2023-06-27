@@ -18,6 +18,7 @@
 #endif
 
 #if defined use_fogify
+	#define use_boss_battle
 #endif
 
 #if defined use_generate_wind

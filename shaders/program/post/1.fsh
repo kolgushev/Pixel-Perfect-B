@@ -72,7 +72,7 @@ void main() {
 
 			vec3 position = depthToView(texcoord, depth, gbufferProjectionInverse);
 			position = mul_m4_v3(gbufferModelViewInverse, position).rgb;
-			colored += colored * diffuseBlur * FAST_GI_STRENGTH * (1 - fogifyDistanceOnly(position, far, blindnessSmooth));
+			colored += colored * diffuseBlur * FAST_GI_STRENGTH * (1 - fogifyDistanceOnly(position, far, blindnessSmooth, 1 / far));
 			// colored = diffuseBlur;
 		}
 	#endif
