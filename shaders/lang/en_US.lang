@@ -294,10 +294,10 @@ screen.MISC=Extras
             value.RIMLIGHT_DYNAMIC_RADIUS.true=On
             value.RIMLIGHT_DYNAMIC_RADIUS.false=Off
 
-        option.RIMLIGHT_NORMAL_CORRECTION=Normal-Corrected Outlines
-            option.RIMLIGHT_NORMAL_CORRECTION.comment=Uses object normals to fix a bug where long flat surfaces (such as a superflat world) look brighter than usual in the distance, at the cost of the outlines looking worse.
-            value.RIMLIGHT_NORMAL_CORRECTION.true=On
-            value.RIMLIGHT_NORMAL_CORRECTION.false=Off
+        option.RIMLIGHT_OUTLINE=Outline Everything
+            option.RIMLIGHT_OUTLINE.comment=Outline the corners of things as well as the edges. Similar to the outlines in official Minecraft promotional material.
+            value.RIMLIGHT_OUTLINE.true=On
+            value.RIMLIGHT_OUTLINE.false=Off
         
         
     option.NOISY_LAVA=Lava Variation

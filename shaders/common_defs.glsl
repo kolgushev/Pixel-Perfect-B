@@ -215,11 +215,11 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // #define RIMLIGHT_ENABLED
 #ifdef RIMLIGHT_ENABLED
 #endif
+// #define RIMLIGHT_OUTLINE
+#ifdef RIMLIGHT_OUTLINE
+#endif
 #define RIMLIGHT_DYNAMIC_RADIUS
 #ifdef RIMLIGHT_DYNAMIC_RADIUS
-#endif
-// #define RIMLIGHT_NORMAL_CORRECTION
-#ifdef RIMLIGHT_NORMAL_CORRECTION
 #endif
 #define RIMLIGHT_MULT 1.3 // [0.5 0.7 0.9 1.1 1.3 1.5 1.7 1.9 2.1 2.3 2.5]
 #define RIMLIGHT_DIST 10.0 // [1.3 10.0]

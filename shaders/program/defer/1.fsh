@@ -103,11 +103,6 @@ void main() {
     #if defined RIMLIGHT_ENABLED
         float dist = length(position);
 
-        #if defined RIMLIGHT_NORMAL_CORRECTION
-            vec3 normal = texture(colortex3, texcoord).rgb;
-        #else
-            vec3 normal = vec3(1);
-        #endif
         float maxBacklight = 0;
 
         vec2 sampleRadius = (RIMLIGHT_PIXEL_RADIUS + 0.1) / vec2(viewWidth, viewHeight);
@@ -115,12 +110,27 @@ void main() {
             sampleRadius += 0.01 / (dist * vec2(aspectRatio, 1));
         #endif
         for(int i = 1; i < superSampleOffsetsCross.length; i++) {
-            float sampledDepth = texture(depthtex1, texcoord + superSampleOffsetsCross[i].xy * sampleRadius).r;
+            vec2 samplePoint = texcoord + superSampleOffsetsCross[i].xy * sampleRadius;
+            float sampledDepth = texture(depthtex1, samplePoint).r;
 
             vec3 sampledPosition = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, sampledDepth).xyz;
 
-            if(!hand(depth) && sampledDepth > depth) {
-                float backlight = smoothstep(0.25 * RIMLIGHT_DIST, RIMLIGHT_DIST, length(normal * (position - sampledPosition)));
+            bool isRimlit = sampledDepth > depth;
+
+            #if defined RIMLIGHT_OUTLINE
+                vec3 normal = texture(colortex3, texcoord).rgb;
+                vec3 sampledNormal = texture(colortex3, samplePoint).rgb;
+
+                bool isOutlined = distance(normal, sampledNormal) > 0.1;
+                isRimlit = isRimlit || isOutlined;
+            #endif
+
+            if(!hand(depth) && isRimlit) {
+                float backlight = smoothstep(0.25 * RIMLIGHT_DIST, RIMLIGHT_DIST, length(position - sampledPosition));
+
+                #if defined RIMLIGHT_OUTLINE
+                    backlight = isOutlined ? 1 : backlight;
+                #endif
                 if(maxBacklight < backlight) {
                     maxBacklight = backlight;
                 }
