@@ -402,6 +402,45 @@ uniform sampler2D colortex8;
 #endif
 
 
+#if defined use_colortex0_3d
+uniform sampler3D colortex0;
+#endif
+
+#if defined use_colortex1_3d
+uniform sampler3D colortex1;
+#endif
+
+#if defined use_colortex2_3d
+uniform sampler3D colortex2;
+#endif
+
+#if defined use_colortex3_3d
+uniform sampler3D colortex3;
+#endif
+
+#if defined use_colortex4_3d
+uniform sampler3D colortex4;
+#endif
+
+#if defined use_colortex5_3d
+uniform sampler3D colortex5;
+#endif
+
+#if defined use_colortex6_3d
+uniform sampler3D colortex6;
+#endif
+
+#if defined use_colortex7_3d
+uniform sampler3D colortex7;
+#endif
+
+#if defined use_colortex8_3d
+uniform sampler3D colortex8;
+#endif
+
+
+
+
 
 #if defined use_shadowcolor0
 uniform sampler2D shadowcolor0;
@@ -410,6 +449,16 @@ uniform sampler2D shadowcolor0;
 #if defined use_shadowcolor1
 uniform sampler2D shadowcolor1;
 #endif
+
+
+#if defined use_shadowcolor0_3d
+uniform sampler3D shadowcolor0;
+#endif
+
+#if defined use_shadowcolor1_3d
+uniform sampler3D shadowcolor1;
+#endif
+
 
 
 
@@ -422,6 +471,16 @@ uniform sampler2D shadowtex1;
 #endif
 
 
+#if defined use_shadowtex0_3d
+uniform sampler3D shadowtex0;
+#endif
+
+#if defined use_shadowtex1_3d
+uniform sampler3D shadowtex1;
+#endif
+
+
+
 
 #if defined use_depthtex0
 uniform sampler2D depthtex0;
@@ -430,6 +489,16 @@ uniform sampler2D depthtex0;
 #if defined use_depthtex1
 uniform sampler2D depthtex1;
 #endif
+
+
+#if defined use_depthtex0_3d
+uniform sampler3D depthtex0;
+#endif
+
+#if defined use_depthtex1_3d
+uniform sampler3D depthtex1;
+#endif
+
 
 
 #if defined use_noisetex

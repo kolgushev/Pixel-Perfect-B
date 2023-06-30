@@ -9,7 +9,10 @@ screen.POST_PROCESSING=Post Processing
     screen.POST_PROCESSING.comment=Any effects that are applied after the image has been rendered.
 
     option.CONTRAST=Contrast
-        option.CONTRAST.comment=Higher contrast intensifies colors, white and black levels, while lower contrast decreases them. Too much contrast may cause color clipping, while too little may make everything look grayed out. No performance impact.
+        option.CONTRAST.comment=Higher contrast intensifies colors and white/black levels, while lower contrast decreases them. Too much contrast may cause color clipping, while too little may make everything look grayed out. No performance impact.
+
+    option.LUMINANCE_CONTRAST=Contrast
+        option.LUMINANCE_CONTRAST.comment=Higher contrast intensifies white and black levels, while lower contrast decreases them. Too much contrast may cause color clipping, while too little may make everything look grayed out. No performance impact.
 
     option.EXPOSURE=Exposure
         option.EXPOSURE.comment=Increases the brightness of the image while preserving dark areas. You can also control this setting through the vanilla "Brightness" slider. No performance impact.

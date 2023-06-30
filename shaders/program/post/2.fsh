@@ -7,7 +7,6 @@ layout(location = 4) out vec4 b4;
 in vec2 texcoord;
 
 #define use_colortex0
-#define use_shadowcolor1
 
 #define use_near
 #define use_far
@@ -17,6 +16,10 @@ in vec2 texcoord;
 #define use_linearize_depth
 #define use_tonemapping
 #define use_color_manipulation
+
+#if defined USE_LUT
+    #define use_shadowcolor1_3d
+#endif
 
 #if DITHERING_MODE != 0
     #define use_noisetex
@@ -151,6 +154,11 @@ void main() {
         colorCorrected = vec3(lutApplied * LUT_RANGE_MULT);
     #endif
 
+    // un-gamma-correct
+    #if defined GAMMA_CORRECT
+        colorCorrected = gammaCorrection(colorCorrected, GAMMA);
+    #endif
+
     // apply contrast
     if(ADJUSTED_CONTRAST != 0.0) {
         // equation for contrast is x+(1-|2x-1|)(2x-1)a
@@ -160,9 +168,22 @@ void main() {
         colorCorrected = colorCorrected + (1 - abs(b)) * b * ADJUSTED_CONTRAST;
     }
 
+    // apply luma contrast
+    if(LUMINANCE_CONTRAST != 0.0) {
+        float luminance = luminance(colorCorrected);
+
+        float b = 2 * luminance - 1;
+        colorCorrected = changeLuminance(colorCorrected, luminance, luminance + (1 - abs(b)) * b * LUMINANCE_CONTRAST);
+    }
+
     if(POST_SATURATION != 1.0) {
         colorCorrected = saturateRGB(POST_SATURATION) * max(colorCorrected, vec3(0));
     }
+
+    // re-gamma-correct
+    #if defined GAMMA_CORRECT
+        colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
+    #endif
 
 
     // dithering
