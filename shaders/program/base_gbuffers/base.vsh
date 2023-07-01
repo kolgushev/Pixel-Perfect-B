@@ -245,10 +245,24 @@ void main() {
         }
     #endif
 
-    #if !defined gc_sky
-        vec4 glPos = toForcedViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
+    #if defined PANORAMIC_WORLD
+        vec4 glPos = mul_m4_v3(gl_ModelViewMatrix, position);
+        float yaw = atan(glPos.x, -glPos.z);
+
+        // mult * some value 0.5<n<=1
+        // yaw = yaw * 0.9;
+        yaw = mix(yaw, yaw * 0.7, abs(yaw * 0.3));
+        
+        glPos.xz = vec2(sin(yaw), -cos(yaw)) * length(glPos.xz);
+        glPos.x *= 1;
+
+        glPos = (gl_ProjectionMatrix * glPos);
     #else
-        vec4 glPos = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
+        #if !defined gc_sky
+            vec4 glPos = toForcedViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
+        #else
+            vec4 glPos = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
+        #endif
     #endif
 
     #if defined g_basic

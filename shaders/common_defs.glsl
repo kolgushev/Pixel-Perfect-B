@@ -13,7 +13,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define EPSILON 0.001
 #define E 2.7182818284
 #define PI 3.1415926538
-
+#define RCP_PI 0.318309886184
 #define SQRT_2 1.4142135624
 #define ISQRT_2 0.7071067812
 #define SQRT_3 1.73205080757
@@ -191,6 +191,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define SPIDEREYES_MULT 1.0
 
 #define END_WARPING 0.0 // [0.0 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+
+// #define PANORAMIC_WORLD
+#ifdef PANORAMIC_WORLD
+#endif
 
 // #define OUTLINE_THROUGH_BLOCKS
 #ifdef OUTLINE_THROUGH_BLOCKS
