@@ -250,11 +250,15 @@ void main() {
         float yaw = atan(glPos.x, -glPos.z);
 
         // mult * some value 0.5<n<=1
-        // yaw = yaw * 0.9;
-        yaw = mix(yaw, yaw * 0.7, abs(yaw * 0.3));
+        yaw = yaw * 0.6;
         
         glPos.xz = vec2(sin(yaw), -cos(yaw)) * length(glPos.xz);
-        glPos.x *= 1;
+
+        const float n = 3;
+        glPos.x /= glPos.z * n;
+        glPos.x = mix(glPos.x * (1.5 - 0.5 * abs(glPos.x)), glPos.x, pow(glPos.x, 2));
+        glPos.x *= glPos.z * n;
+
 
         glPos = (gl_ProjectionMatrix * glPos);
     #else
