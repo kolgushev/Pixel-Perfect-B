@@ -192,9 +192,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define END_WARPING 0.0 // [0.0 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
-// #define PANORAMIC_WORLD
-#ifdef PANORAMIC_WORLD
-#endif
+#define PANORAMIC_WORLD 0 // [0 1 2]
 
 // #define OUTLINE_THROUGH_BLOCKS
 #ifdef OUTLINE_THROUGH_BLOCKS
@@ -337,7 +335,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define INVISIBILITY_DISTORTION
 #ifdef INVISIBILITY_DISTORTION
 #endif
-#define INVISIBILITY_DISTORT_STRENGTH 0.005
+#define INVISIBILITY_DISTORT_STRENGTH 0.005 // [0.003 0.004 0.005 0.006 0.007 0.008 0.009 0.01 0.011 0.012 0.013 0.014 0.015 0.016 0.017 0.018 0.019 0.02]
 
 // #define BRIGHT_NETHER
 #ifdef BRIGHT_NETHER

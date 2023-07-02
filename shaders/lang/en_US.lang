@@ -48,8 +48,9 @@ screen.LIGHTING=Lighting
 
     option.PANORAMIC_WORLD=Panoramic World
         option.PANORAMIC_WORLD.comment=Meant for use with curved screens. Slightly curves your world to avoid the stretching you see near the edges of the screen at higher FOVs.
-        value.PANORAMIC_WORLD.true=On
-        value.PANORAMIC_WORLD.false=Off
+        value.PANORAMIC_WORLD.0=Off
+        value.PANORAMIC_WORLD.1=Panoramic
+        value.PANORAMIC_WORLD.2=Hybrid
 
     screen.SSAO_BETA=Ambient Occlusion
     
@@ -469,6 +470,9 @@ screen.ADVANCED=Advanced
         
     option.CLOUD_EXTENSION=Extend Clouds
         option.CLOUD_EXTENSION.comment=Best left at §a1.0§b. Lower values extend the fog distance. The default cloud fog distance matches environment fog distance.
+
+    option.INVISIBILITY_DISTORT_STRENGTH=Invisibility Distortion Strength
+        option.INVISIBILITY_DISTORT_STRENGTH.comment=Controls the intensity of the "Distort Screen When Invisible" option.
 
     screen.AUTO_ADDED=Automatic Settings
         screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work correctly, if at all.

@@ -245,20 +245,28 @@ void main() {
         }
     #endif
 
-    #if defined PANORAMIC_WORLD
+    #if PANORAMIC_WORLD == 1 || PANORAMIC_WORLD == 2
         vec4 glPos = mul_m4_v3(gl_ModelViewMatrix, position);
         float yaw = atan(glPos.x, -glPos.z);
+        float absYaw = abs(yaw);
 
-        // mult * some value 0.5<n<=1
-        yaw = yaw * 0.6;
+        #if PANORAMIC_WORLD == 1
+            // mult * some value 0.5<n<=1
+            yaw = yaw * 0.6;
+        #else if PANORAMIC_WORLD == 2
+            yaw = min(absYaw, absYaw * 0.5 + 0.5) * sign(yaw);
+        #else if PANORAMIC_WORLD == 3
+            yaw = mix(absYaw, 0.5 * absYaw + 0.3, smoothstep(0.5, 2.4, absYaw)) * sign(yaw);
+        #endif
         
         glPos.xz = vec2(sin(yaw), -cos(yaw)) * length(glPos.xz);
 
-        const float n = 3;
-        glPos.x /= glPos.z * n;
-        glPos.x = mix(glPos.x * (1.5 - 0.5 * abs(glPos.x)), glPos.x, pow(glPos.x, 2));
-        glPos.x *= glPos.z * n;
-
+        #if PANORAMIC_WORLD == 1
+            const float n = 3;
+            glPos.x /= glPos.z * n;
+            glPos.x = mix(glPos.x * (1.5 - 0.5 * abs(glPos.x)), glPos.x, pow(glPos.x, 2));
+            glPos.x *= glPos.z * n;
+        #endif
 
         glPos = (gl_ProjectionMatrix * glPos);
     #else

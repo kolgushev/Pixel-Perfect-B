@@ -159,6 +159,9 @@ void main() {
         colorCorrected = gammaCorrection(colorCorrected, GAMMA);
     #endif
 
+    // restrict colors to a 0-1 range to prevent weirdness with contrast/saturation formulas
+    colorCorrected = clamp(colorCorrected, 0, 1);
+
     // apply contrast
     if(ADJUSTED_CONTRAST != 0.0) {
         // equation for contrast is x+(1-|2x-1|)(2x-1)a
