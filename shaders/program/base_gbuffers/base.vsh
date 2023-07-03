@@ -79,6 +79,8 @@ void main() {
         mcEntity = int(mc_Entity.x);
     #elif defined gc_emissive
         mcEntity = 1;
+    #else
+        mcEntity = -1;
     #endif
 
     texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
@@ -317,9 +319,9 @@ void main() {
         #if PANORAMIC_WORLD == 1
             // mult * some value 0.5<n<=1
             yaw = yaw * 0.6;
-        #else if PANORAMIC_WORLD == 2
+        #elif PANORAMIC_WORLD == 2
             yaw = min(absYaw, absYaw * 0.5 + 0.5) * sign(yaw);
-        #else if PANORAMIC_WORLD == 3
+        #elif PANORAMIC_WORLD == 3
             yaw = mix(absYaw, 0.5 * absYaw + 0.3, smoothstep(0.5, 2.4, absYaw)) * sign(yaw);
         #endif
         
