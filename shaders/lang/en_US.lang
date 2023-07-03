@@ -303,9 +303,9 @@ screen.MISC=Extras
             value.RIMLIGHT_DYNAMIC_RADIUS.true=On
             value.RIMLIGHT_DYNAMIC_RADIUS.false=Off
 
-        option.RIMLIGHT_OUTLINE=Outline Everything
+        option.RIMLIGHT_OUTLINE=Outline Everything §c(Experimental)§r
             option.RIMLIGHT_OUTLINE.comment=Outline the corners of things as well as the edges. Similar to the outlines in official Minecraft promotional material.
-            value.RIMLIGHT_OUTLINE.true=On §c(Experimental)§r
+            value.RIMLIGHT_OUTLINE.true=On
             value.RIMLIGHT_OUTLINE.false=Off
         
         
