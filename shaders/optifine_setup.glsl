@@ -32,6 +32,7 @@ const float wetnessHalflife = 40.0;
 /* DRYNESSHL:200.0 */
 const float drynessHalflife = 70.0;
 
+// These are already supported, this is mainly for linting
 #define MC_RENDER_STAGE_NONE 0                      // Undefined
 #define MC_RENDER_STAGE_SKY 1                       // Sky
 #define MC_RENDER_STAGE_SUNSET 2                    // Sunset and sunrise overlay
@@ -86,6 +87,9 @@ const float drynessHalflife = 70.0;
 
 // g stands for gbuffers
 // gc stands for gbuffers category
+#if defined g_basic || defined g_basic_lit || defined g_line
+    #define gc_basic
+#endif
 #if defined g_skybasic || defined g_skytextured
     #define gc_sky
 #endif

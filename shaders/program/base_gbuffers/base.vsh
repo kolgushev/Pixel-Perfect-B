@@ -17,6 +17,9 @@ flat out int mcEntity;
     in vec3 at_midBlock;
 #endif
 
+#if defined g_line
+    in vec3 vaNormal;
+#endif
 
 
 // uniforms
@@ -24,6 +27,15 @@ flat out int mcEntity;
 #define use_frame_time_counter
 #define use_gbuffer_model_view_inverse
 #define use_render_stage
+
+#if defined g_line
+    #define use_view_width
+    #define use_view_height
+    #define use_model_view_matrix
+    #define use_model_view_matrix_inverse
+    #define use_projection_matrix
+    #define use_projection_matrix_inverse
+#endif
 
 #define use_to_viewspace
 
@@ -98,6 +110,58 @@ void main() {
     #endif
 
     position = gl_Vertex.xyz;
+
+    #if defined g_line
+        // The line is given to us as a single point at the start with the offset being given via the normal
+        // We have to turn that into a thin parallelogram stretching across the screen with a pixel width
+        // Special thanks to https://cdn.discordapp.com/attachments/960320448594329630/960695935837548695/base150.zip
+        // for providing a solution
+
+        const float LINE_WIDTH  = 4.0;
+        const float VIEW_SHRINK = 1.0 - (1.0 / 256.0);
+        const mat4 VIEW_SCALE   = mat4(
+            VIEW_SHRINK, 0.0, 0.0, 0.0,
+            0.0, VIEW_SHRINK, 0.0, 0.0,
+            0.0, 0.0, VIEW_SHRINK, 0.0,
+            0.0, 0.0, 0.0, 1.0
+        );
+
+        // find the resolution used for the pixel-width
+        vec2 resolution = vec2(viewWidth, viewHeight);
+
+        // Find the viewspace position of the line start and end
+        vec4 linePosStart = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(gl_Vertex.xyz, 1.0)));
+        vec4 linePosEnd = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(gl_Vertex.xyz + vaNormal, 1.0)));
+
+        // account for perspective
+        vec3 ndc1 = linePosStart.xyz / linePosStart.w;
+        vec3 ndc2 = linePosEnd.xyz / linePosEnd.w;
+
+        // calculate the direction of the line (using the resolution is a surprise tool that will help us later)
+        vec2 lineScreenDirection = normalize((ndc2.xy - ndc1.xy) * resolution);
+
+        // use the surprise tool right away to add thickness to our polygons by stretching them perpendicularly to the line
+        // we multiply by the resolution to specify a pixel width for our lines
+        // and convert them back from pixel-space by dividing by the resolution
+        vec2 lineOffset = vec2(-lineScreenDirection.y, lineScreenDirection.x) * LINE_WIDTH / resolution;
+
+        // I'm gonna be honest, I have no idea what this does
+        if(lineOffset.x < 0) lineOffset = -lineOffset;
+        // offset half the vertices in the parallelogram one way
+        // (if all vertices are offset by the same value they won't have thickness)
+        if(gl_VertexID % 2 != 0) lineOffset = -lineOffset;
+
+        vec3 viewPosition = (ndc1 + vec3(lineOffset, 0.0)) * linePosStart.w;
+
+        position = (
+            modelViewMatrixInverse
+            * (
+                projectionMatrixInverse
+                *
+                vec4(viewPosition, linePosStart.w)
+                )
+            ).xyz;
+    #endif
 
     #if (defined g_terrain || (defined g_weather && defined WAVING_RAIN_ENABLED) || (defined g_water && defined WAVING_WATER_ENABLED)) && defined WAVING_ENABLED && !defined DIM_NO_WIND
         #if !defined g_weather
@@ -270,23 +334,22 @@ void main() {
 
         glPos = (gl_ProjectionMatrix * glPos);
     #else
-        #if !defined gc_sky
-            vec4 glPos = toForcedViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
-        #else
+        #if defined gc_sky
             vec4 glPos = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
+        #else
+            vec4 glPos = toForcedViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
         #endif
     #endif
 
-    #if defined g_basic
-        if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+    #if defined gc_basic
+        if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
             #if defined OUTLINE_THROUGH_BLOCKS
                 glPos.z *= 0.2;
-            #else
-                glPos.z -= EPSILON * 0.5;
             #endif
         }
     #endif
 
+    
     gl_Position = glPos;
 
     #if defined g_skybasic

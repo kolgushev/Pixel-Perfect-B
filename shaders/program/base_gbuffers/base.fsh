@@ -139,7 +139,7 @@ void main() {
         #endif
     #endif
 
-    #if defined g_basic
+    #if defined gc_basic
         vec3 lightmap = vec3(0.7, 0.7, 1);
     #elif defined g_clouds
         vec3 lightmap = vec3(0, 1, 1);
@@ -258,8 +258,8 @@ void main() {
         albedo.rgb = aces_fitted_inverse(albedo.rgb);
     #endif
 
-    #if defined g_basic
-        if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+    #if defined gc_basic
+        if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
             #if OUTLINE_COLOR == 0
                 albedo = vec4(0.01, 0.01, 0.01, 0.8);
             #elif OUTLINE_COLOR == 1
@@ -529,8 +529,8 @@ void main() {
             b1 = directLighting;
         #endif
     
-    #elif OUTLINE_COLOR == -1 && defined g_basic
-        if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+    #elif OUTLINE_COLOR == -1 && defined gc_basic
+        if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
             b0 = albedo;
         }
     #else
@@ -542,8 +542,8 @@ void main() {
         b3 = opaque(normal);
     }
 
-    #if defined g_basic
-        if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+    #if defined gc_basic
+        if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
             b2.a = 0;
         }
     #endif
