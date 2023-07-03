@@ -271,7 +271,7 @@ void main() {
             }
 
             if(isWater) {
-                float offset1D = length(offset) * 0.4 - (smoothstep(rainLower, rainUpper, wetness) * 0.03 + 0.07);
+                float offset1D = length(offset) * 0.4 - (smoothstep(rainLower, rainUpper, wetness) * 0.3 * WIND_STRENGTH_CONSTANT + 0.07);
                 if(!isTopPart && offset1D > 0) offset1D = 0;
                 position.y += min(offset1D, 0.112);
             } else {
