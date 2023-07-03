@@ -258,21 +258,21 @@ void main() {
         albedo.rgb = aces_fitted_inverse(albedo.rgb);
     #endif
 
-    #if defined gc_basic
+    #if defined g_line
         if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
             #if OUTLINE_COLOR == 0
-                albedo = vec4(0.01, 0.01, 0.01, 0.8);
+                albedo = vec4(0.01, 0.01, 0.01, 1);
             #elif OUTLINE_COLOR == 1
-                albedo = vec4(10, 10, 10, 0.8);
+                albedo = vec4(10, 10, 10, 1);
             #elif OUTLINE_COLOR == 2
-                albedo = vec4(10, 0, 0, 0.8);
+                albedo = vec4(10, 0, 0, 1);
             #elif OUTLINE_COLOR == 3
-                albedo = vec4(0, 10, 0, 0.8);
+                albedo = vec4(0, 10, 0, 1);
             #elif OUTLINE_COLOR == 4
-                albedo = vec4(0, 1, 10, 0.8);
+                albedo = vec4(0, 1, 10, 1);
             #elif OUTLINE_COLOR == 5
                 albedo.rgb = BASE_COLOR;
-                albedo.a = 0.8;
+                albedo.a = 1;
             #elif OUTLINE_COLOR == -1
                 albedo = vec4(-1, -1, -1, 1);
             #endif
@@ -529,7 +529,7 @@ void main() {
             b1 = directLighting;
         #endif
     
-    #elif OUTLINE_COLOR == -1 && defined gc_basic
+    #elif OUTLINE_COLOR == -1 && defined g_line
         if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
             b0 = albedo;
         }
@@ -542,7 +542,7 @@ void main() {
         b3 = opaque(normal);
     }
 
-    #if defined gc_basic
+    #if defined g_line
         if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
             b2.a = 0;
         }

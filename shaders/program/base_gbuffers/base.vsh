@@ -107,6 +107,8 @@ void main() {
             float fakeNormal = (getCutoutMask(mc_Entity.x) - 2) * CUTOUT_ALIGN_STRENGTH;
             normal = mix(normal, vec3(0, sign(fakeNormal), 0), abs(fakeNormal));
         #endif
+    #elif defined g_line
+        normal = vaNormal;
     #else
         normal = viewInverse(gl_Normal);
     #endif
@@ -133,7 +135,7 @@ void main() {
 
         // Find the viewspace position of the line start and end
         vec4 linePosStart = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(gl_Vertex.xyz, 1.0)));
-        vec4 linePosEnd = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(gl_Vertex.xyz + vaNormal, 1.0)));
+        vec4 linePosEnd = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(gl_Vertex.xyz + normal, 1.0)));
 
         // account for perspective
         vec3 ndc1 = linePosStart.xyz / linePosStart.w;
