@@ -47,7 +47,7 @@ screen.LIGHTING=Lighting
         value.FAST_GI.false=Off
 
     option.PANORAMIC_WORLD=Panoramic World
-        option.PANORAMIC_WORLD.comment=Meant for use with curved screens. Slightly curves your world to avoid the stretching you see near the edges of the screen at higher FOVs.
+        option.PANORAMIC_WORLD.comment=Meant for use with curved screens. Slightly curves your world to avoid the stretching you see near the edges of the screen at higher FOVs. Not actually a panorama.
         value.PANORAMIC_WORLD.0=Off
         value.PANORAMIC_WORLD.1=Hybrid
         value.PANORAMIC_WORLD.2=Panoramic
