@@ -322,8 +322,6 @@ void main() {
             // mult * some value 0.5<n<=1
             yaw = yaw * 0.6;
         #elif PANORAMIC_WORLD == 2
-            yaw = min(absYaw, absYaw * 0.5 + 0.5) * sign(yaw);
-        #elif PANORAMIC_WORLD == 3
             yaw = mix(absYaw, 0.5 * absYaw + 0.3, smoothstep(0.5, 2.4, absYaw)) * sign(yaw);
         #endif
         
