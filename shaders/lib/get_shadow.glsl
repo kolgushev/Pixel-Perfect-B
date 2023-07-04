@@ -53,7 +53,7 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
 
         float shadowSamples[4] = float[4](0, 0, 0, 0);
 
-        for(int i = 0; i < superSampleOffsets4.length; i++) {
+        for(int i = 0; i < 4; i++) {
             shadowSamples[i] = shadowSample(shadowPosition + vec3(superSampleOffsets4[i] / shadowMapResolution, 0), shadowtex);
             // shadowSamples[i] = shadowSample(shadowPosition, shadowtex);
             shadowSamples[i] = smoothstep(EPSILON, 0, shadowSamples[i]);
