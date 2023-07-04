@@ -280,7 +280,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
     #define SSAO_ENABLED
 #endif
 
-#define AO_INTENSITY 1.6 // [0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
+#define AO_INTENSITY 1.8 // [0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0]
 #define VANILLA_AO_INTENSITY (AO_INTENSITY * 0.5)
 
 // #define NO_SHADING
