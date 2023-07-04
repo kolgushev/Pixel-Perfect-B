@@ -51,7 +51,7 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
 
         shadowPosition.xy = floor(shadowPosition.xy * shadowMapResolution) / shadowMapResolution;
 
-        float shadowSamples[4] = float[4](0);
+        float shadowSamples[4] = float[4](0, 0, 0, 0);
 
         for(int i = 0; i < superSampleOffsets4.length; i++) {
             shadowSamples[i] = shadowSample(shadowPosition + vec3(superSampleOffsets4[i] / shadowMapResolution, 0), shadowtex);
