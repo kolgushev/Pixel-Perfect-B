@@ -313,21 +313,21 @@ void main() {
         }
     #endif
 
-    #if PANORAMIC_WORLD == 1 || PANORAMIC_WORLD == 2
+    #if (PANORAMIC_WORLD == 1 || PANORAMIC_WORLD == 2) && !defined gc_skybox && !defined g_skybasic
         vec4 glPos = mul_m4_v3(gl_ModelViewMatrix, position);
         float yaw = atan(glPos.x, -glPos.z);
         float absYaw = abs(yaw);
 
-        #if PANORAMIC_WORLD == 1
+        #if PANORAMIC_WORLD == 2
             // mult * some value 0.5<n<=1
             yaw = yaw * 0.6;
-        #elif PANORAMIC_WORLD == 2
+        #elif PANORAMIC_WORLD == 1
             yaw = mix(absYaw, 0.5 * absYaw + 0.3, smoothstep(0.5, 2.4, absYaw)) * sign(yaw);
         #endif
         
         glPos.xz = vec2(sin(yaw), -cos(yaw)) * length(glPos.xz);
 
-        #if PANORAMIC_WORLD == 1
+        #if PANORAMIC_WORLD == 2
             const float n = 3;
             glPos.x /= glPos.z * n;
             glPos.x = mix(glPos.x * (1.5 - 0.5 * abs(glPos.x)), glPos.x, pow(glPos.x, 2));
