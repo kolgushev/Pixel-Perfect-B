@@ -249,7 +249,7 @@ void main() {
     #if INPUT_COLORSPACE == 0
         albedo.rgb *= RGB_to_ACEScg;
     #elif INPUT_COLORSPACE == 2
-        albedo.rgb = clamp(albedo.rgb * ACES2065_1_to_ACEScg, 0, 1);
+        albedo.rgb = clamp(albedo.rgb * ACES2065_1_to_ACEScg, vec3(0), vec3(1));
     #endif
 
     #if HDR_TEX_STANDARD == 1
@@ -377,7 +377,7 @@ void main() {
             
             albedo.a *= 0.8;
             
-            positionMod = mix(positionMod * (1 - rain), 1, 0.0);
+            positionMod = mix(positionMod * (1 - rain), 1, 0);
 
             #if VANILLA_LIGHTING == 2
                 vec3 normalMod = vec3(0, positionMod * 2 - 1, 0);

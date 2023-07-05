@@ -104,10 +104,6 @@
 #include "/lib/generate_wind.glsl"
 #endif
 
-#if defined use_get_samples
-#include "/lib/get_samples.glsl"
-#endif
-
 #if defined use_get_terrain_mask
 #include "/lib/get_terrain_mask.glsl"
 #endif

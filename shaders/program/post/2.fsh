@@ -160,7 +160,7 @@ void main() {
     #endif
 
     // restrict colors to a 0-1 range to prevent weirdness with contrast/saturation formulas
-    colorCorrected = clamp(colorCorrected, 0, 1);
+    colorCorrected = clamp(colorCorrected, vec3(0), vec3(1));
 
     // apply contrast
     if(ADJUSTED_CONTRAST != 0.0) {
@@ -210,13 +210,13 @@ void main() {
 
         // noiseToSurpass = gammaCorrection(noiseToSurpass, RCP_GAMMA);
         
-        vec3 interPrecisionGradient = mod(colorCorrected * mult, 1);
+        vec3 interPrecisionGradient = mod(colorCorrected * mult, vec3(1));
 
         /*
             Do a custom half-float -> 8bit sRGB conversion
             to avoid dealing with the complicated one done by openGL
         */
-        colorCorrected = colorCorrected - mod(colorCorrected, inverseMult);
+        colorCorrected = colorCorrected - mod(colorCorrected, vec3(inverseMult));
 
         vec3 factor = ceil(interPrecisionGradient - noiseToSurpass);
 
