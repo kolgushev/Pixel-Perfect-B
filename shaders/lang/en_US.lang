@@ -364,6 +364,8 @@ screen.MISC=Extras
 
             option.WIND_STRENGTH_CONSTANT_USER=Wind Strength
 
+            option.WAVE_STRENGTH_CONSTANT_USER=Wave Strength
+                option.WAVE_STRENGTH_CONSTANT_USER.comment=Changes how much the wind causes waves.
 
         screen.RAIN=Rain
 
