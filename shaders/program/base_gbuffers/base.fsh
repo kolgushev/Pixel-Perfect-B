@@ -189,7 +189,7 @@ void main() {
         #endif
 
         #if defined g_damagedblock
-            albedo.a = clamp(albedo.a - 0.003, 0, 1);
+            albedo.a = clamp(albedo.a - 0.003, 0.0, 1.0);
         #elif defined g_weather
             float rainMask;
             #if defined NOISY_RAIN
@@ -333,7 +333,7 @@ void main() {
 
 
         // anything more than about 100 causes an overflow
-        albedo.rgb *= clamp(SKY_LIGHT_MULT * 0.45, 0, 100) * SKY_BRIGHTNESS;
+        albedo.rgb *= clamp(SKY_LIGHT_MULT * 0.45, 0.0, 100.0) * SKY_BRIGHTNESS;
 
         #if defined DIM_END
             if(bossBattle == 2) {
@@ -368,7 +368,7 @@ void main() {
         // apply lighting here for transparent stuff
         #if defined g_clouds
             #if defined IS_IRIS
-                float positionMod = clamp(position.y * 0.25, 0, 1);
+                float positionMod = clamp(position.y * 0.25, 0.0, 1.0);
             #else
                 float positionMod = normal.y;
             #endif
@@ -464,7 +464,7 @@ void main() {
                     uncoloredDiffuse = gammaCorrection(uncoloredDiffuse, GAMMA);
                     float luma = luminance(uncoloredDiffuse);
                     albedo.a *= albedo.a * luma;
-                    albedo.a = clamp(albedo.a * 1.1, 0, 1);
+                    albedo.a = clamp(albedo.a * 1.1, 0.0, 1.0);
                     luma = smoothstep(0.45, 1.0, luma);
                     albedo.rgb = mix(albedo.rgb, vec3(lightColor[0]), luma);
                 #endif
