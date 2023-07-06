@@ -1,6 +1,6 @@
 float normalLighting(in vec3 normal, in vec3 lightPos) {
     #if VANILLA_LIGHTING != 2 && defined SHADOWS_ENABLED
-        return clamp(dot(normal, normalize(lightPos)) * 6, 0, 1);
+        return clamp(dot(normal, normalize(lightPos)) * 6, 0.0, 1.0);
     #else
         #if defined g_clouds
             #if defined IS_IRIS
@@ -56,8 +56,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         vec3 indirectLighting = texture2D(vanillaLightTex, vec2(lightmap.r, mix(0.0313, lightmap.g, VANILLA_LIGHTING_SKY_BLEED))).rgb - VANILLA_NATURAL_AMBIENT_LIGHT;
         vec3 directSkyLighting = texture2D(vanillaLightTex, lightmap).rgb - VANILLA_NATURAL_AMBIENT_LIGHT;
 
-        indirectLighting = max(indirectLighting, 0.0);
-        directSkyLighting = max(directSkyLighting, 0.0);
+        indirectLighting = max(indirectLighting, vec3(0));
+        directSkyLighting = max(directSkyLighting, vec3(0));
 
         directSkyLighting = gammaCorrection(directSkyLighting, GAMMA) * RGB_to_ACEScg * SKY_LIGHT_MULT;
         indirectLighting = gammaCorrection(indirectLighting, GAMMA) * RGB_to_ACEScg * BLOCK_LIGHT_MULT;

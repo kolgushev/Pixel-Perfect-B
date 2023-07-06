@@ -163,6 +163,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define WIND_STRENGTH_CONSTANT_USER 0.5 // [0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define WIND_SPEED_CONSTANT_USER (-5.0)
 
+#define WAVE_STRENGTH_CONSTANT_USER 1.0 // [0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.4 1.6 1.8 2.0 2.4 2.8 3.2 3.6 4.0 4.5 5.0]
+
 #define LIGHTNING_FLASHES 0.8 // [0.0 0.1 0.2 0.4 0.6 0.8 1.0]
 #define NOISY_RAIN
 #ifdef NOISY_RAIN
