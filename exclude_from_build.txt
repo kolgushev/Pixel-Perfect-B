@@ -1,0 +1,11 @@
+build\
+assets\
+.git\
+.github\
+
+.gitignore
+
+build.bat
+exclude_from_build.txt
+
+shaders\LUTs\misc\
