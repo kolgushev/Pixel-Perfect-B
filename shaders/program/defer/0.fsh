@@ -63,7 +63,7 @@ void main() {
         vec3 pixelatedPosition = position;
 
         #if PIXELATED_SHADOWS != 0
-            pixelatedPosition = floor((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
+            pixelatedPosition = ceil((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
             position = mix(pixelatedPosition, position, ceil(abs(normal)));
         #endif
 

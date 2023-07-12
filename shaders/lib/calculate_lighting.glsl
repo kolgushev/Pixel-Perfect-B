@@ -1,25 +1,25 @@
 float normalLighting(in vec3 normal, in vec3 lightPos) {
     #if VANILLA_LIGHTING != 2 && defined SHADOWS_ENABLED
-        return clamp(dot(normal, normalize(lightPos)) * 6, 0.0, 1.0);
+        return clamp(dot(normal, normalize(lightPos)) * 6.0, 0.0, 1.0);
     #else
         #if defined g_clouds
             #if defined IS_IRIS
-                return (normal.y - 1) * 0.5 + 1;
+                return (normal.y - 1) * 0.5 + 1.0;
             #else
-                return (normal.y - 1) * 0.2 + 1;
+                return (normal.y - 1) * 0.2 + 1.0;
             #endif
         #else
-            return max(dot(normal, normalize(lightPos)), 0);
+            return max(dot(normal, normalize(lightPos)), 0.0);
         #endif
     #endif
 }
 
 float basicDirectShading(in float skyLight) {
-    return pow(clamp((skyLight - 1 + RCP_3) * 3, 0, 1), 2);
+    return pow(clamp((skyLight - 1.0 + RCP_3) * 3.0, 0.0, 1.0), 2.0);
 }
 
 float rainMultiplier(in float rain)  {
-    return max(0, inversesqrt(rain + 1) * 3.4 - 2.4);
+    return max(0.0, inversesqrt(rain + 1.0) * 3.4 - 2.4);
 }
 
 vec3 actualSkyColor(in float skyTransition) {
@@ -28,7 +28,7 @@ vec3 actualSkyColor(in float skyTransition) {
 
 vec3 lightningFlash(in float isLightning, in float rain) {
     #if !defined DIM_NO_RAIN
-        return isLightning * rain * LIGHTNING_FLASHES * 25 * LIGHTNING_FLASH_TINT;
+        return isLightning * rain * LIGHTNING_FLASHES * 25.0 * LIGHTNING_FLASH_TINT;
     #else
         return vec3(0);
     #endif
@@ -120,7 +120,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         float hardcoreMult = inversesqrt(darknessEffect * 0.75 + 0.25) - 1;
         vec3 ambientLight = hardcoreMult * AMBIENT_LIGHT_MULT * AMBIENT_COLOR;
-        ambientLight *= (1 - clamp(lightmap.y * 1.5, 0, 1));
+        ambientLight *= (1 - clamp(lightmap.y * 1.5, 0.0, 1.0));
         #if STREAMER_MODE == -1
             ambientLight += vec3(0.8, 0.9, 1.0) * 2.0;
         #else
@@ -141,7 +141,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         vec3 indirectLighting = max(vec3(minLight), ambientLight + torchLighting + skyLighting + ambientSkyLight);
     #endif
 
-    float adjustedAo = 1 - clamp((1 - pow(ambientOcclusion, GAMMA)) * VANILLA_AO_INTENSITY, 0, 1);
+    float adjustedAo = 1 - clamp((1 - pow(ambientOcclusion, GAMMA)) * VANILLA_AO_INTENSITY, 0.0, 1.0);
 
     indirectLighting *= adjustedAo;
     #if VANILLA_LIGHTING != 2
