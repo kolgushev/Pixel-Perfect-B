@@ -214,7 +214,7 @@ void main() {
 
         /*
             Do a custom half-float -> 8bit sRGB conversion
-            to avoid dealing with the complicated one done by openGL
+            to avoid dealing with the (presumably) driver-dependent one done by openGL
         */
         colorCorrected = colorCorrected - mod(colorCorrected, vec3(inverseMult));
 
