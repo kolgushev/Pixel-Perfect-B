@@ -200,6 +200,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef OUTLINE_THROUGH_BLOCKS
 #endif
 
+#define OUTLINE_ALPHA 0.8 // [0.5 0.6 0.7 0.8 0.9 1.0]
+
 #define OUTLINE_COLOR 0 // [-1 0 1 2 3 4]
 
 #define FORCED_PERSPECTIVE_POWER 0.0 // [-0.5 -0.3 -0.2 -0.15 -0.1 -0.05 0.0 0.05 0.1 0.15 0.2 0.3 0.5]

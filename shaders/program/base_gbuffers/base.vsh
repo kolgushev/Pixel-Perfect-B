@@ -121,7 +121,7 @@ void main() {
         // Special thanks to https://cdn.discordapp.com/attachments/960320448594329630/960695935837548695/base150.zip
         // for providing a solution
 
-        const float LINE_WIDTH  = 4.0;
+        const float LINE_WIDTH  = 2.5;
         const float VIEW_SHRINK = 1.0 - (1.0 / 256.0);
         const mat4 VIEW_SCALE   = mat4(
             VIEW_SHRINK, 0.0, 0.0, 0.0,

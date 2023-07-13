@@ -261,18 +261,18 @@ void main() {
     #if defined g_line
         if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
             #if OUTLINE_COLOR == 0
-                albedo = vec4(0.01, 0.01, 0.01, 1);
+                albedo = vec4(0.01, 0.01, 0.01, OUTLINE_ALPHA);
             #elif OUTLINE_COLOR == 1
-                albedo = vec4(10, 10, 10, 1);
+                albedo = vec4(10, 10, 10, OUTLINE_ALPHA);
             #elif OUTLINE_COLOR == 2
-                albedo = vec4(10, 0, 0, 1);
+                albedo = vec4(10, 0, 0, OUTLINE_ALPHA);
             #elif OUTLINE_COLOR == 3
-                albedo = vec4(0, 10, 0, 1);
+                albedo = vec4(0, 10, 0, OUTLINE_ALPHA);
             #elif OUTLINE_COLOR == 4
-                albedo = vec4(0, 1, 10, 1);
+                albedo = vec4(0, 1, 10, OUTLINE_ALPHA);
             #elif OUTLINE_COLOR == 5
                 albedo.rgb = BASE_COLOR;
-                albedo.a = 1;
+                albedo.a = OUTLINE_ALPHA;
             #elif OUTLINE_COLOR == -1
                 albedo = vec4(-1, -1, -1, 1);
             #endif
