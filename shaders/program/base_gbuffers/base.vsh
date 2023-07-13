@@ -58,10 +58,7 @@ flat out int mcEntity;
         #define use_camera_position
     #endif
 
-    #if defined g_weather
-        #define use_rain_wind
-    #endif
-
+    #define use_rain_wind
 #endif
 
 #if defined DIM_END
@@ -223,7 +220,7 @@ void main() {
             const float rainUpper = 0.9;
             
             // normal wind
-            if(wetness <= rainUpper) {
+            if(wetness <= rainUpper || rainWind < 1.0) {
                 offset = getCalmWindProfile(absolutePosition.xz, time, fine) * WIND_STRENGTH_CONSTANT_CALM;
             }
 
@@ -235,7 +232,8 @@ void main() {
             }
             
             // mix the two winds depending on weather
-            offset = mix(offset, rainOffset, smoothstep(rainLower, rainUpper, wetness));
+            // in snowy biomes, rainOffset is nonexistent
+            offset = mix(offset, rainOffset, smoothstep(rainLower, rainUpper, wetness) * rainWind);
 
             #if !defined g_weather
                 if(isUpper) {
@@ -266,9 +264,11 @@ void main() {
                 } else {
                     offset *= 4.0;
                 }
-
+                
+                // stop waving in snowy areas
                 offset *= rainWind;
             #endif
+
             
             if(isStiff) {
                 offset *= 0.3;
@@ -290,7 +290,7 @@ void main() {
                     position.y += EPSILON;
                 }
                 #if !defined g_weather
-                    else if(!isFullWaving) {
+                    else {
                         // realistic value is * 2.0
                         if(isUpper) heightOffset *= 2.3;
                         position.y += sqrt(pow(heightOffset, 2) - pow(offset.x, 2) - pow(offset.y, 2)) - heightOffset;
