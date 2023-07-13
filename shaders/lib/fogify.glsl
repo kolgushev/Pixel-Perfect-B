@@ -120,7 +120,13 @@ vec4 fogify(in vec3 position, in vec3 positionOpaque, in vec4 transparency, in v
         }
     #endif
 
+    #if defined SECONDARY_FOG
+        float secondaryFog = smoothstep(SECONDARY_FOG_START, SECONDARY_FOG_END, length(position) * farRcp);
+        composite = mix(composite, atmosPhogColor * SECONDARY_FOG_COLOR_MULTIPLIER, secondaryFog);
+    #endif
+
     composite = mix(atmosPhogColor, composite, atmosPhog);
+
 
     return vec4(composite, fogTube);
 }

@@ -41,6 +41,40 @@ screen.LIGHTING=Lighting
 
     option.ATMOSPHERIC_FOG_DENSITY=Atmospheric Fog Density
 
+    option.SECONDARY_FOG=BDubs Fog
+        option.SECONDARY_FOG.comment=Adds a secondary layer of customizable fog, similar to the "Simple Fog Control" mod. Defaults are set to mimick the Simple Fog Control settings used by the youtuber BDoubleO100.
+        option.SECONDARY_FOG.true=On
+        option.SECONDARY_FOG.false=Off
+
+    option.SECONDARY_FOG_START=BDubs Fog Start
+        value.SECONDARY_FOG_START.0.0=0
+        value.SECONDARY_FOG_START.0.1=10
+        value.SECONDARY_FOG_START.0.2=20
+        value.SECONDARY_FOG_START.0.3=30
+        value.SECONDARY_FOG_START.0.4=40
+        value.SECONDARY_FOG_START.0.5=50
+        value.SECONDARY_FOG_START.0.6=60
+        value.SECONDARY_FOG_START.0.7=70
+        value.SECONDARY_FOG_START.0.8=80
+        value.SECONDARY_FOG_START.0.9=90
+        value.SECONDARY_FOG_START.1.0=100
+        suffix.SECONDARY_FOG_START=%
+
+    option.SECONDARY_FOG_END=BDubs Fog End
+        value.SECONDARY_FOG_END.0.9=90
+        value.SECONDARY_FOG_END.1.0=100
+        value.SECONDARY_FOG_END.1.1=110
+        value.SECONDARY_FOG_END.1.2=120
+        value.SECONDARY_FOG_END.1.3=130
+        value.SECONDARY_FOG_END.1.4=140
+        value.SECONDARY_FOG_END.1.5=150
+        value.SECONDARY_FOG_END.1.6=160
+        value.SECONDARY_FOG_END.1.7=170
+        value.SECONDARY_FOG_END.1.8=180
+        value.SECONDARY_FOG_END.1.9=190
+        value.SECONDARY_FOG_END.2.0=200
+        suffix.SECONDARY_FOG_END=%
+
     option.FAST_GI=Fake GI
         option.FAST_GI.comment=Fakes global illumination (raytracing) by applying a blurred version of the view image as "lighting".
         value.FAST_GI.true=On
