@@ -65,7 +65,7 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
         float shadow = mix(shadowSamples[0], shadowSamples[1], samplePositionWithinBounds.x);
     #endif
 
-    shadow = mix(shadow, 1, shadowCutoff);
+    shadow = mix(shadow, basicDirectShading(lightmapLight), shadowCutoff);
     shadow = mix(SHADOW_TRANSITION_MIXING, shadow, skyTransition);
 
     #if defined SHADOW_AFFECTED_BY_LIGHTMAP

@@ -324,10 +324,6 @@ uniform float blindnessSmooth;
 uniform float moonBrightness;
 #endif
 
-#if defined use_is_lightning_smooth
-uniform float isLightningSmooth;
-#endif
-
 #if defined use_is_lightning
 uniform float isLightning;
 #endif
@@ -338,6 +334,10 @@ uniform float rainWind;
 
 #if defined use_rain_wind_sharp
 uniform float rainWindSharp;
+#endif
+
+#if defined use_lightning_bolt_position
+uniform vec4 lightningBoltPosition;
 #endif
 
 #if defined use_in_sky

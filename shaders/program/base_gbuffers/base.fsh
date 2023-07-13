@@ -59,6 +59,7 @@ flat in int mcEntity;
     #define use_sample_noisetex
     #define use_lava_noise
     #define use_camera_position
+    #define use_basic_direct_shading
 
     // for changing the end sky rendering when fighting the dragon
     #if defined DIM_END

@@ -14,24 +14,12 @@ float normalLighting(in vec3 normal, in vec3 lightPos) {
     #endif
 }
 
-float basicDirectShading(in float skyLight) {
-    return pow(clamp((skyLight - 1.0 + RCP_3) * 3.0, 0.0, 1.0), 2.0);
-}
-
 float rainMultiplier(in float rain)  {
     return max(0.0, inversesqrt(rain + 1.0) * 3.4 - 2.4);
 }
 
 vec3 actualSkyColor(in float skyTransition) {
     return mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS), mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS), skyTransition);
-}
-
-vec3 lightningFlash(in float isLightning, in float rain) {
-    #if !defined DIM_NO_RAIN
-        return isLightning * rain * LIGHTNING_FLASHES * 25.0 * LIGHTNING_FLASH_TINT;
-    #else
-        return vec3(0);
-    #endif
 }
 
 // Input is not adjusted lightmap coordinates

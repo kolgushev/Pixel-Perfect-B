@@ -2,10 +2,14 @@
 #if defined use_anti_banding
 #endif
 
-// depends on: use_color_manipulation, use_to_viewspace
+#if defined use_basic_direct_shading
+#endif
+
+// depends on: use_color_manipulation, use_to_viewspace, use_lightning_flash
 #if defined use_calculate_lighting
 	#define use_color_manipulation
 	#define use_to_viewspace
+	#define use_lightning_flash
 #endif
 
 #if defined use_calculate_sky
@@ -27,9 +31,10 @@
 #if defined use_get_samples
 #endif
 
-// depends on: to_viewspace
+// depends on: to_viewspace, basic_diret_shading
 #if defined use_get_shadow
 	#define use_to_viewspace
+	#define use_basic_direct_shading
 #endif
 
 #if defined use_get_terrain_mask
@@ -41,6 +46,9 @@
 // depends on: use_sample_noisetex
 #if defined use_lava_noise
 	#define use_sample_noisetex
+#endif
+
+#if defined use_lightning_flash
 #endif
 
 #if defined use_linearize_depth
@@ -78,6 +86,9 @@
 #include "/lib/anti_banding.glsl"
 #endif
 
+#if defined use_basic_direct_shading
+#include "/lib/basic_direct_shading.glsl"
+#endif
 
 #if defined use_calculate_sky
 #include "/lib/calculate_sky.glsl"
@@ -85,6 +96,10 @@
 
 #if defined use_color_manipulation
 #include "/lib/color_manipulation.glsl"
+#endif
+
+#if defined use_lightning_flash
+#include "/lib/lightning_flash.glsl"
 #endif
 
 // depends on: use_color_manipulation, use_to_viewspace
