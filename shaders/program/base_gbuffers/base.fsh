@@ -90,6 +90,7 @@ flat in int mcEntity;
 
 #if defined g_weather
     #define use_sky_time
+    #define use_rain_wind_sharp
 
     #if defined NOISY_RAIN
         #define use_rain_wind
@@ -176,6 +177,7 @@ void main() {
         
         #if defined g_weather
             texcoordMod.x *= RAIN_THICKNESS;
+            texcoordMod.y *= mix(RAIN_THICKNESS, 1, rainWindSharp);
         #endif
 
         vec4 albedo = texture2D(texture, texcoordMod);

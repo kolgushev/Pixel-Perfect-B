@@ -336,6 +336,10 @@ uniform float isLightning;
 uniform float rainWind;
 #endif
 
+#if defined use_rain_wind_sharp
+uniform float rainWindSharp;
+#endif
+
 #if defined use_in_sky
 uniform float inSky;
 #endif
