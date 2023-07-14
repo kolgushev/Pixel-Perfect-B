@@ -701,7 +701,7 @@ const vec2 superSampleOffsets16[16] = vec2[16](
     #define ATMOSPHERIC_FOG_COLOR (gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg)
     #define ATMOSPHERIC_FOG_MULTIPLIER 0.35
 
-    #define SECONDARY_FOG_COLOR_MULTIPLIER 3.0
+    #define SECONDARY_FOG_COLOR_MULTIPLIER 3.5
 
     #define WEATHER_FOG_MULTIPLIER 10.0
     #define RAINY_SKY_COLOR (vec3(0.3, 0.305, 0.31))
