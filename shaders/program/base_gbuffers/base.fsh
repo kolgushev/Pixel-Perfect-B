@@ -43,6 +43,8 @@ flat in int mcEntity;
     #define use_darkness_light_factor
     #define use_is_spectator
     #define use_gbuffer_model_view
+    #define use_lightning_bolt_position
+    #define use_is_lightning
     #define use_direct_light_mult
     #define use_far
     #define use_view_width
@@ -60,6 +62,21 @@ flat in int mcEntity;
     #define use_lava_noise
     #define use_camera_position
     #define use_basic_direct_shading
+
+    #if defined SHADOWS_ENABLED
+        #define use_shadowtex1
+        #define use_noisetex
+        #define use_shadow_projection
+        #define use_shadow_model_view
+        
+
+        #define use_frame_counter
+        #define use_view_width
+        #define use_view_height
+
+        #define use_sample_noise
+        #define use_get_shadow
+    #endif
 
     // for changing the end sky rendering when fighting the dragon
     #if defined DIM_END
@@ -450,22 +467,45 @@ void main() {
         
         #if defined SHADOWS_ENABLED
             vec4 directLighting = opaque(lightColor[1]) * albedo;
-            #if defined g_clouds
-                albedo.rgb = lightColor[0];
-            #else
-                albedo.rgb *= lightColor[0];
+            
+            vec3 shadowPos = position;
+            vec3 pixelatedPosition = position;
+
+            #if PIXELATED_SHADOWS != 0
+                pixelatedPosition = ceil((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
+                shadowPos = mix(pixelatedPosition, position, ceil(abs(normal)));
             #endif
+
+            float shadow = getShadow(
+                shadowPos,
+                pixelatedPosition + cameraPosition,
+                shadowProjection,
+                shadowModelView,
+                texcoord,
+                shadowtex1,
+                noisetex,
+                lightmap.g,
+                skyTime);
         #else
             #if defined VANILLA_SHADOWS
                 float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;
             #else
                 float shadow = basicDirectShading(lightmap.g);
             #endif
-            #if defined g_clouds
-                albedo.rgb = lightColor[0];
-            #else
-                albedo.rgb *= lightColor[0] + lightColor[1] * shadow;
-            #endif
+
+        #endif
+        
+        vec3 lightningColor = vec3(0.0);
+
+        if(lightningBoltPosition.w == 1.0) {
+            lightningColor = lightningFlash(1, rainStrength) / (pow(distance(position.xz, lightningBoltPosition.xz), 2) + 1.0);
+            lightningColor *= DIRECT_LIGHTNING_STRENGTH;
+        }
+
+        #if defined g_clouds
+            albedo.rgb = lightColor[0] + lightningColor;
+        #else
+            albedo.rgb *= lightColor[0] + (lightColor[1] + lightningColor) * shadow;
         #endif
 
         vec3 positionOpaque = position;
