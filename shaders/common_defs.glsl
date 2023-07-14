@@ -278,6 +278,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef BOSS_BATTLE_COLORS
 #endif
 
+#define TEXTURE_FILTERING
+#ifdef TEXTURE_FILTERING
+#endif
+
 // output mapping: 0:none 1:8bit
 #define DITHERING_MODE 1 // [0 1]
 
@@ -415,7 +419,6 @@ const float entityShadowDistanceMul = 0.3; // [0.1 0.2 0.3 0.4]
 
 
 // "temporary" hardcoding
-const bool noisetexNearest = false;
 
 #if VANILLA_LIGHTING != 2
     const float sunPathRotation = 0.0;
@@ -771,7 +774,7 @@ const vec2 superSampleOffsets16[16] = vec2[16](
 // #endif
 
 // inverse of TEX_RES
-#define TEXELS_PER_BLOCK (1 / TEX_RES)
+#define TEXELS_PER_BLOCK (1.0 / TEX_RES)
 
 
 // optifine setup

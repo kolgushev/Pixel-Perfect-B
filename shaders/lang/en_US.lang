@@ -510,6 +510,11 @@ screen.ADVANCED=Advanced
     option.INVISIBILITY_DISTORT_STRENGTH=Invisibility Distortion Strength
         option.INVISIBILITY_DISTORT_STRENGTH.comment=Controls the intensity of the "Distort Screen When Invisible" option.
 
+    option.TEXTURE_FILTERING=Texture Filtering
+        option.TEXTURE_FILTERING.comment=Like antialiasing, but for the edges of texture pixels rather than geometry. Full credit to youtuber @t3ssel8r for both the concept and implementation. Enabled ➤ Minimal performance hit.
+        value.TEXTURE_FILTERING.true=On
+        value.TEXTURE_FILTERING.false=Off
+
     screen.AUTO_ADDED=Automatic Settings
         screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work correctly, if at all.
 

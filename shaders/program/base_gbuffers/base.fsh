@@ -106,6 +106,10 @@ flat in int mcEntity;
     #define use_gbuffer_projection_inverse
     #define use_view_width
     #define use_view_height
+#else
+    #if defined TEXTURE_FILTERING
+        #define use_texture_filter
+    #endif
 #endif
 
 #if defined NEED_WEATHER_DATA
@@ -181,7 +185,13 @@ void main() {
             texcoordMod.y *= mix(RAIN_THICKNESS, 1, rainWindSharp);
         #endif
 
-        vec4 albedo = texture2D(texture, texcoordMod);
+        #if defined TEXTURE_FILTERING
+            vec4 albedo = vec4(textureFiltered(texture, texcoordMod, true).rgb, texture2D(texture, texcoordMod).a);
+        #else
+            vec4 albedo = texture2D(texture, texcoordMod);
+        #endif
+
+        
         vec3 uncoloredDiffuse = albedo.rgb;
 
         albedo.rgb *= color.rgb;

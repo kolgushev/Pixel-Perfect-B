@@ -16,6 +16,8 @@ const int shadowcolor1Format = RGBA16F;
 const bool shadowcolor1Clear = false;
 */
 
+const bool noisetexNearest = false;
+
 const bool generateShadowMipmap = false;
 const bool generateShadowColorMipmap = false;
 

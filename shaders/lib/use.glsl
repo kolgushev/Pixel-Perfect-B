@@ -5,6 +5,9 @@
 #if defined use_basic_direct_shading
 #endif
 
+#if defined use_bilinear_filter
+#endif
+
 // depends on: use_color_manipulation, use_to_viewspace, use_lightning_flash
 #if defined use_calculate_lighting
 	#define use_color_manipulation
@@ -43,7 +46,7 @@
 #if defined use_hdr_mapping
 #endif
 
-// depends on: use_sample_noisetex
+// depends on: sample_noisetex
 #if defined use_lava_noise
 	#define use_sample_noisetex
 #endif
@@ -54,7 +57,7 @@
 #if defined use_linearize_depth
 #endif
 
-// depends on: use_sample_noisetex
+// depends on: sample_noisetex
 #if defined use_sample_noise
 	#define use_sample_noisetex
 #endif
@@ -67,6 +70,10 @@
 #endif
 
 #if defined use_switch_fog_color
+#endif
+
+#if defined use_texture_filter
+	#define use_bilinear_filter
 #endif
 
 #if defined use_to_viewspace
@@ -88,6 +95,10 @@
 
 #if defined use_basic_direct_shading
 #include "/lib/basic_direct_shading.glsl"
+#endif
+
+#if defined use_bilinear_filter
+#include "/lib/bilinear_filter.glsl"
 #endif
 
 #if defined use_calculate_sky
@@ -146,6 +157,10 @@
 
 #if defined use_switch_fog_color
 #include "/lib/switch_fog_color.glsl"
+#endif
+
+#if defined use_texture_filter
+#include "/lib/texture_filter.glsl"
 #endif
 
 #if defined use_to_viewspace
