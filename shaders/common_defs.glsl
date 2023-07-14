@@ -182,7 +182,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 
 #define SECONDARY_FOG_START 0.3 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8]
-#define SECONDARY_FOG_END 1.7 // [1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0]
+#define SECONDARY_FOG_END 1.7 // [1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 2.2 2.4 2.6 2.8 3.0 3.5 4.0 4.5 5.0]
 
 // #define FOG_ENABLED_USER
 #ifdef FOG_ENABLED_USER
@@ -704,7 +704,7 @@ const vec2 superSampleOffsets16[16] = vec2[16](
     #define ATMOSPHERIC_FOG_COLOR (gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg)
     #define ATMOSPHERIC_FOG_MULTIPLIER 0.35
 
-    #define SECONDARY_FOG_COLOR_MULTIPLIER 3.5
+    #define SECONDARY_FOG_COLOR_MULTIPLIER 2.0
 
     #define WEATHER_FOG_MULTIPLIER 10.0
     #define RAINY_SKY_COLOR (vec3(0.3, 0.305, 0.31))
