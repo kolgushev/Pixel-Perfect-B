@@ -35,7 +35,7 @@ defer1: combine passes and fog, manually clear albedo.rgba
 gbuffers transparent:
     0.rgb - composited albedo (+ transparent w/indirect lighting)
     0.a - 
-    1.rgba - transparent direct lighting (additive)
+    1.rgba - 
     2.rg - transparent lightmap
     2.b - [if vanilla AO] transparent AO
     2.a - 

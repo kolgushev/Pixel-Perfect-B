@@ -445,7 +445,7 @@ void main() {
                 vec3(1),
                 vec3(0)
             );
-        #else
+        #elif WATER_MIX_MODE != 1 || defined gc_transparent_mixed
             mat2x3 lightColor = getLightColor(
                 lightmap,
                 normal,
@@ -465,46 +465,47 @@ void main() {
             lightColor *= albedo.a;
         #endif
         
-        #if defined SHADOWS_ENABLED
-            vec4 directLighting = opaque(lightColor[1]) * albedo;
-            
-            vec3 shadowPos = position;
-            vec3 pixelatedPosition = position;
+        #if WATER_MIX_MODE != 1 || defined gc_transparent_mixed
+            #if defined SHADOWS_ENABLED
+                vec3 shadowPos = position;
+                vec3 pixelatedPosition = position;
 
-            #if PIXELATED_SHADOWS != 0
-                pixelatedPosition = ceil((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
-                shadowPos = mix(pixelatedPosition, position, ceil(abs(normal)));
-            #endif
+                #if PIXELATED_SHADOWS != 0
+                    pixelatedPosition = ceil((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
+                    shadowPos = mix(pixelatedPosition, position, ceil(abs(normal)));
+                #endif
 
-            float shadow = getShadow(
-                shadowPos,
-                pixelatedPosition + cameraPosition,
-                shadowProjection,
-                shadowModelView,
-                texcoord,
-                shadowtex1,
-                noisetex,
-                lightmap.g,
-                skyTime);
-        #else
-            #if defined VANILLA_SHADOWS
-                float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;
+                float shadow = getShadow(
+                    shadowPos,
+                    pixelatedPosition + cameraPosition,
+                    shadowProjection,
+                    shadowModelView,
+                    texcoord,
+                    shadowtex1,
+                    noisetex,
+                    lightmap.g,
+                    skyTime);
             #else
-                float shadow = basicDirectShading(lightmap.g);
+                #if defined VANILLA_SHADOWS
+                    float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;
+                #else
+                    float shadow = basicDirectShading(lightmap.g);
+                #endif
+
             #endif
+
+            vec3 lightningColor = vec3(0.0);
+
+            if(lightningBoltPosition.w == 1.0) {
+                lightningColor = lightningFlash(1, rainStrength) / (pow(distance(position.xz, lightningBoltPosition.xz), 2) + 1.0);
+                lightningColor *= DIRECT_LIGHTNING_STRENGTH;
+            }
 
         #endif
-        
-        vec3 lightningColor = vec3(0.0);
-
-        if(lightningBoltPosition.w == 1.0) {
-            lightningColor = lightningFlash(1, rainStrength) / (pow(distance(position.xz, lightningBoltPosition.xz), 2) + 1.0);
-            lightningColor *= DIRECT_LIGHTNING_STRENGTH;
-        }
 
         #if defined g_clouds
             albedo.rgb = lightColor[0] + lightningColor;
-        #else
+        #elif WATER_MIX_MODE != 1 || defined gc_transparent_mixed
             albedo.rgb *= lightColor[0] + (lightColor[1] + lightningColor) * shadow;
         #endif
 
@@ -549,15 +550,19 @@ void main() {
             float fogWeatherSkyProcessed = fogWeatherSky;
         #endif
 
-        vec4 fogged = fogify(position, positionOpaque, albedo, diffuse, far, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+        vec4 fogged = fogify(position, position, albedo, diffuse, far, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;
-        #if defined SHADOWS_ENABLED
-            directLighting.a *= 1 - fogged.a;
-        #endif
 
-        // TODO: find out why water lighting is being inherited from opaque geometry
+        #if defined WATER_FOG_FROM_OUTSIDE
+            float atmosPhogWater = 0.0;
+            if(isEyeInWater != 1) {
+                atmosPhogWater = distance(position, positionOpaque) * ATMOSPHERIC_FOG_DENSITY_WATER;
+                atmosPhogWater = 1 - exp(-atmosPhogWater);
+            }
+            vec4 overlay = vec4(ATMOSPHERIC_FOG_BRIGHTNESS_WATER * ATMOSPHERIC_FOG_COLOR_WATER, atmosPhogWater);
+        #endif
     #endif
 
     #if defined gc_sky
@@ -577,11 +582,15 @@ void main() {
         b0 = albedo;
         b1 = vec4(0, 0, 0, 0);
     #elif defined gc_transparent
-        b0 = albedo;
-        #if defined SHADOWS_ENABLED
-            b1 = directLighting;
+        #if defined gc_transparent_mixed
+            // clouds are always mixed instead of multiplied
+            b0 = albedo;
+        #else
+            #if defined WATER_FOG_FROM_OUTSIDE
+                b0 = overlay;
+            #endif
+            b1 = albedo;
         #endif
-    
     #elif OUTLINE_COLOR == -1 && defined g_line
         if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
             b0 = albedo;
