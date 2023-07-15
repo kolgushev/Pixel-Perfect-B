@@ -177,8 +177,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define CLOUD_EXTENSION 1.0 // [0.1 0.35 0.4 0.55 0.6 0.7 0.8 0.9 1.0 1.1 1.3]
 
 // 0: all mix, 1: all multiply, 2: mix-multiply combo
-#define WATER_MIX_MODE 1
-#define WATER_MIX_STRENGTH 1.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define WATER_MIX_MODE 0 // [0 1 2]
+#define WATER_MULT_STRENGTH 0.5 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
 // #define SECONDARY_FOG
 #ifdef SECONDARY_FOG

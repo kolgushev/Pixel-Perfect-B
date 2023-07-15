@@ -110,10 +110,19 @@ void main() {
     #endif
 
     vec4 transparency = texture(colortex1, texcoord);
+    #if WATER_MIX_MODE != 0
+        vec3 multiplied = composite * mix(vec3(1), saturateRGB(3.0) * transparency.rgb, transparency.a);
+    #endif
+    #if WATER_MIX_MODE != 1
+        vec3 mixed = mix(composite, transparency.rgb, transparency.a);
+    #endif
+
     #if WATER_MIX_MODE == 1
-        composite *= mix(vec3(1), transparency.rgb, transparency.a);
+        composite = multiplied;
+    #elif WATER_MIX_MODE == 0
+        composite = mixed;
     #else
-        composite = mix(composite, transparency.rgb, transparency.a);
+        composite = mix(mixed, multiplied, WATER_MULT_STRENGTH);
     #endif
 
     #if defined FAST_GI || defined DYNAMIC_EXPOSURE_LIGHTING

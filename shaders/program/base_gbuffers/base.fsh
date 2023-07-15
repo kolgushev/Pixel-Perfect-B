@@ -505,8 +505,10 @@ void main() {
 
         #if defined g_clouds
             albedo.rgb = lightColor[0] + lightningColor;
-        #elif WATER_MIX_MODE != 1 || defined gc_transparent_mixed
+        #elif WATER_MIX_MODE == 0 || defined gc_transparent_mixed
             albedo.rgb *= lightColor[0] + (lightColor[1] + lightningColor) * shadow;
+        #elif WATER_MIX_MODE == 2
+            albedo.rgb *= mix(lightColor[0] + (lightColor[1] + lightningColor) * shadow, vec3(1.0), WATER_MULT_STRENGTH);
         #endif
 
         vec3 positionOpaque = position;
