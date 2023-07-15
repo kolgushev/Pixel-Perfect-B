@@ -84,14 +84,14 @@ void main() {
         b1 = vec4(1.0, 1.0, 1.0, 0.0);
     #elif WATER_MIX_MODE == 0
         // only clear alpha, keep color for proper mixing
-        b1 = vec4(albedo.rgb, 0.0);
+        b1 = vec4(composite, 0.0);
     #else
-        b1 = vec4(mix(albedo.rgb, vec3(1.0), WATER_MULT_STRENGTH), 0.0);
+        b1 = vec4(mix(composite, vec3(1.0), WATER_MULT_STRENGTH), 0.0);
     #endif
 
     #ifdef DEBUG_VIEW
         b0 = albedo;
     #else
-        b0 = vec4(composite, fog);
+        b0 = opaque(composite);
     #endif
 }

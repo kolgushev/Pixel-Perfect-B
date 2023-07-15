@@ -25,7 +25,7 @@ defer1: combine passes and fog, manually clear albedo.rgba
     REQUIRES transparent.rgba
 
     0.rgb - composited albedo
-    0.a - fog
+    0.a - 
     1.rgba - vec4(0)
     3.rgba - vec4(0)
     4.rgba - vec4(0)

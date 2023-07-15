@@ -22,6 +22,7 @@ flat in int mcEntity;
 
 #define use_texture
 #define use_shadowcolor0
+
 #define use_entity_color
 #define use_is_eye_in_water
 #define use_night_vision
@@ -559,8 +560,12 @@ void main() {
 
         #if defined WATER_FOG_FROM_OUTSIDE
             float atmosPhogWater = 0.0;
-            if(isEyeInWater != 1) {
-                atmosPhogWater = distance(position, positionOpaque) * ATMOSPHERIC_FOG_DENSITY_WATER;
+            float opaqueFog = 1.0;
+            if(isEyeInWater == 0) {
+                opaqueFog = fogifyDistanceOnly(positionOpaque, far, blindnessSmooth, 1/far);
+                atmosPhogWater = distance(position, positionOpaque);
+                atmosPhogWater = mix(atmosPhogWater, far, opaqueFog) * ATMOSPHERIC_FOG_DENSITY_WATER;
+                // atmosPhogWater = min(atmosPhogWater, 1);
                 atmosPhogWater = 1 - exp(-atmosPhogWater);
             }
             vec4 overlay = vec4(ATMOSPHERIC_FOG_BRIGHTNESS_WATER * ATMOSPHERIC_FOG_COLOR_WATER, atmosPhogWater * (1 - fogged.a));
