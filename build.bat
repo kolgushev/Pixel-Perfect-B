@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
 REM Set the original folder path
 set "original_folder=%~dp0"
@@ -17,30 +17,46 @@ set "timestamp=%date:/=-%_%time::=-%"
 set "timestamp=%timestamp: =0%"
 set "timestamp=%timestamp:.=_%"
 
-REM Set the zip file
-set "zip_file=%build_directory%Pixel-Perfect-%timestamp%.zip"
+for /l %%i in (1,1,2) do (
+	if %%i equ 1 (
+		set "suffix="
+		set "branch=main"
+	) else (
+		set "suffix=-cc"
+		set "branch=content-creators"
+	)
 
-REM Create the zip file
-tar.exe -a -c -f %zip_file% -X exclude_from_build.txt LICENSE shaders
+	REM Switch to the necessary git branch
+	git checkout !branch!
 
-echo Created zip file from "%unzipped_directory%"
+	echo Switched to !branch!
 
-REM Replace the latest build file with current build
-copy "%zip_file%" "%original_folder%..\Pixel-Perfect-Latest.zip" /b /y
+	REM Set the zip file
+	set "zip_file=%build_directory%Pixel-Perfect!suffix!-%timestamp%.zip"
 
-echo Replaced latest build
+	REM Create the zip file
+	tar.exe -a -c -f !zip_file! -X exclude_from_build.txt LICENSE shaders
 
-REM Delete the unzipped directory
-rmdir "%unzipped_directory%" /s /q
-echo Deleted "%unzipped_directory%"
+	echo Created !zip_file!
+
+	REM Replace the latest build file with current build
+	copy "!zip_file!" "%original_folder%..\Pixel-Perfect-Latest!suffix!.zip" /b /y
+
+	echo Replaced latest build
+
+	if not "%~1"=="/k" (
+		REM Delete the original zip file
+		del "!zip_file!"
+		echo Deleted "!zip_file!"
+	) else (
+		echo Kept "!zip_file!"
+	)
+)
+
+git checkout main
 
 if not "%~1"=="/k" (
-	REM Delete the original zip file
-	del "%zip_file%"
-	echo Deleted "%zip_file%"
-	echo You can use /k if you want to keep the zip file in the build folder after the program is done
-) else (
-	echo Kept "%zip_file%"
+	echo You can use /k if you want to keep the zip file in the build folder after the program is done.
 )
 
 echo Build completed.

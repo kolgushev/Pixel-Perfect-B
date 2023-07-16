@@ -167,12 +167,15 @@ void main() {
     #if (defined g_terrain || (defined g_weather && defined WAVING_RAIN_ENABLED) || (defined g_water && defined WAVING_WATER_ENABLED)) && defined WAVING_ENABLED && !defined DIM_NO_WIND
         #if !defined g_weather
             bool isTopPart = at_midBlock.y < 10;
+            if(mc_Entity.x == WAVING_CUTOUTS_LOW) {
+                isTopPart = at_midBlock.y < 30;
+            }
             bool isFullWaving = mc_Entity.x == WAVING || mc_Entity.x == WAVING_STIFF;
             bool isWater = mc_Entity.x == WATER;
 
             bool allowWaving = 
                 (
-                    (mc_Entity.x == WAVING_CUTOUTS_BOTTOM || mc_Entity.x == WAVING_CUTOUTS_BOTTOM_STIFF || mc_Entity.x == WAVING_CUTOUTS_BOTTOM_LIT)
+                    (mc_Entity.x == WAVING_CUTOUTS_LOW || mc_Entity.x == WAVING_CUTOUTS_BOTTOM || mc_Entity.x == WAVING_CUTOUTS_BOTTOM_STIFF || mc_Entity.x == WAVING_CUTOUTS_BOTTOM_LIT)
                     &&
                     isTopPart
                 )
@@ -188,10 +191,12 @@ void main() {
         if(allowWaving) {
             #if !defined g_weather
                 bool isUpper = (mc_Entity.x == WAVING_CUTOUTS_TOP || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF) && isTopPart;
-                bool isStiff = mc_Entity.x == WAVING_CUTOUTS_BOTTOM_STIFF || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF || mc_Entity.x == WAVING_STIFF;
+                bool isStiff = mc_Entity.x == WAVING_CUTOUTS_BOTTOM_STIFF || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF || mc_Entity.x == WAVING_STIFF || mc_Entity.x == WAVING_CUTOUTS_LOW;
+                bool isSuperStiff = mc_Entity.x == WAVING_CUTOUTS_LOW;
             #else
                 bool isUpper = position.y > 3;
                 bool isStiff = false;
+                bool isSuperStiff = false;
             #endif
 
             float fine = 1;
@@ -272,6 +277,12 @@ void main() {
             
             if(isStiff) {
                 offset *= 0.3;
+            } else if (isFullWaving) {
+                offset *= 0.5;
+            }
+
+            if(isSuperStiff) {
+                offset *= 0.5;
             }
 
             if(isWater) {
