@@ -86,8 +86,8 @@ void main() {
     #endif
     #if WATER_MIX_MODE != 1
         // divide by alpha since color is darker than usual due to transparency buffer being cleared to 0
-        // vec3 mixed = mix(composite, transparency.rgb / max(transparency.a, EPSILON), transparency.a);
-        vec3 mixed = composite;
+        // vec3 mixed = composite;
+        vec3 mixed = mix(composite, transparency.rgb / max(transparency.a, EPSILON), transparency.a);
     #endif
 
     #if WATER_MIX_MODE == 1
