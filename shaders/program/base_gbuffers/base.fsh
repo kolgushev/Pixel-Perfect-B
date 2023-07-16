@@ -145,6 +145,9 @@ void main() {
         vec3 lightmap = vec3(0, 1, 1);
     #else
         vec3 lightmap = vec3(light, color.a);
+        if(mcEntity == LIT_PROBLEMATIC) {
+            lightmap.rg = vec2(10, 0);
+        }
     #endif
 
     vec3 customFogColor = mix(fogColor, skyColor, SKY_COLOR_BLEND);
