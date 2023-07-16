@@ -68,21 +68,13 @@ void main() {
 
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
 
-    #if defined HAS_SKYLIGHT
-        float inSkyProcessed = inSky;
-        float eyeBrightnessProcessed = eyeBrightnessSmoothFloat;
-    #else
-        float inSkyProcessed = 1;
-        float eyeBrightnessProcessed = 1;
-    #endif
-
     #if defined HAS_SKYLIGHT && defined WEATHER_FOG_IN_SKY_ONLY
         float fogWeatherSkyProcessed = fogWeatherSky;
     #else
         float fogWeatherSkyProcessed = fogWeather;
     #endif
 
-    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessSmoothFloatProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
     composite = fogged.rgb;
     float fog = fogged.a;
 

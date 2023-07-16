@@ -72,7 +72,7 @@ void main() {
             atmosPhog *= ATMOSPHERIC_FOG_SPECTATOR_MULT_WATER;
         }
 
-        atmosPhog = length(positionWater) * atmosPhog * (1 - nightVision * NIGHT_VISION_AFFECTS_FOG_WATER);
+        atmosPhog = min(length(positionWater), far) * atmosPhog * (1 - nightVision * NIGHT_VISION_AFFECTS_FOG_WATER);
 
         atmosPhog = exp(-atmosPhog);
 
@@ -86,7 +86,8 @@ void main() {
     #endif
     #if WATER_MIX_MODE != 1
         // divide by alpha since color is darker than usual due to transparency buffer being cleared to 0
-        vec3 mixed = mix(composite, transparency.rgb / max(transparency.a, EPSILON), transparency.a);
+        // vec3 mixed = mix(composite, transparency.rgb / max(transparency.a, EPSILON), transparency.a);
+        vec3 mixed = composite;
     #endif
 
     #if WATER_MIX_MODE == 1

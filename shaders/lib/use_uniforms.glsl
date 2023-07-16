@@ -342,6 +342,11 @@ uniform vec4 lightningBoltPosition;
 
 #if defined use_in_sky
 uniform float inSky;
+	#if defined HAS_SKYLIGHT
+		float inSkyProcessed = inSky;
+	#else
+		float inSkyProcessed = 1;
+	#endif
 #endif
 
 #if defined use_fog_weather
@@ -358,6 +363,11 @@ uniform float directLightMult;
 
 #if defined use_eye_brightness_smooth_float
 uniform float eyeBrightnessSmoothFloat;
+	#if defined HAS_SKYLIGHT
+		float eyeBrightnessSmoothFloatProcessed = eyeBrightnessSmoothFloat;
+	#else
+		float eyeBrightnessSmoothFloatProcessed = 1;
+	#endif
 #endif
 
 #if defined use_sky_time

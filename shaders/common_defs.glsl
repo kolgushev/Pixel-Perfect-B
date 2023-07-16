@@ -731,7 +731,7 @@ const vec2 superSampleOffsets16[16] = vec2[16](
 
 #define ATMOSPHERIC_FOG_DENSITY_WATER 0.02
 #define ATMOSPHERIC_FOG_COLOR_WATER (vec3(0.03, 0.2, 0.7))
-#define ATMOSPHERIC_FOG_BRIGHTNESS_WATER (mix(eyeBrightnessSmoothFloat, 1, 0.2))
+#define ATMOSPHERIC_FOG_BRIGHTNESS_WATER (mix(eyeBrightnessSmoothFloatProcessed, 1, 0.2))
 // #define OVERLAY_COLOR_WATER (vec3(0.7, 0.8, 1.0))
 #define OVERLAY_COLOR_WATER (vec3(1.0))
 
