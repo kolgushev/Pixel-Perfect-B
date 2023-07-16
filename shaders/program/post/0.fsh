@@ -1,3 +1,5 @@
+#define use_atmospheric_fog_brightness_water
+
 #include "/common_defs.glsl"
 
 /* DRAWBUFFERS:01 */
