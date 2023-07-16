@@ -122,3 +122,6 @@ const float drynessHalflife = 70.0;
 #if defined DIM_USES_SKYBOX && defined g_skytextured
     #define gc_skybox
 #endif
+#if defined g_particles || defined g_particles_translucent
+    #define gc_particles
+#endif

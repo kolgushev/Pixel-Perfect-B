@@ -27,8 +27,6 @@ float fogifyDistanceOnly(in vec3 position, in float far, in float blindness, in 
 
 vec4 fogify(in vec3 position, in vec3 positionWater, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in bool isSpectator, in float fogWeather, in float inSky, in float eyeBrightnessSmoothFloat, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
     vec3 composite = diffuse.rgb;
-    vec3 fogColorWater = ATMOSPHERIC_FOG_BRIGHTNESS_WATER * ATMOSPHERIC_FOG_COLOR_WATER;
-
     float farRcp = 1 / far;
     float fogTube = fogifyDistanceOnly(position, far, blindnessEffect, farRcp);
 
@@ -61,17 +59,10 @@ vec4 fogify(in vec3 position, in vec3 positionWater, in vec4 transparency, in ve
         #endif
     }
     #if defined WATER_FOG
-        else {
+        else if (isEyeInWater != 1) {
             // hijack atmospheric fog calculations for underwater
             switch(isEyeInWater) {
-                case 1:
-                    atmosPhog = ATMOSPHERIC_FOG_DENSITY_WATER;
-                    atmosPhogColor = fogColorWater;
-                    nightVisionVisibility = NIGHT_VISION_AFFECTS_FOG_WATER;
-                    if(isSpectator) {
-                        atmosPhog *= ATMOSPHERIC_FOG_SPECTATOR_MULT_WATER;
-                    }
-                    break;
+                // water fog will be added in post layer
                 case 2:
                     atmosPhog = ATMOSPHERIC_FOG_DENSITY_LAVA;
                     atmosPhogColor = ATMOSPHERIC_FOG_COLOR_LAVA * lavaNoise;

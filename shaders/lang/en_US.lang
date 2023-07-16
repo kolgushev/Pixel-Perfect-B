@@ -515,6 +515,11 @@ screen.ADVANCED=Advanced
         value.TEXTURE_FILTERING.true=On
         value.TEXTURE_FILTERING.false=Off
 
+    option.TEXTURE_FILTER_EVERYTHING=Filter Everything
+        option.TEXTURE_FILTER_EVERYTHING.comment=By default, texture filtering only applies to terrain. This option allows you to apply it to everything.
+        value.TEXTURE_FILTER_EVERYTHING.true=On
+        value.TEXTURE_FILTER_EVERYTHING.false=Off
+
     screen.AUTO_ADDED=Automatic Settings
         screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work correctly, if at all.
 

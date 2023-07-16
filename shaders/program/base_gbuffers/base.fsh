@@ -203,8 +203,21 @@ void main() {
             texcoordMod.y *= mix(RAIN_THICKNESS, 1, rainWindSharp);
         #endif
 
-        #if defined TEXTURE_FILTERING
-            vec4 albedo = vec4(textureFiltered(texture, texcoordMod, true).rgb, texture2D(texture, texcoordMod).a);
+        #if defined gc_skybox && !defined DIM_END
+            #define FILTER_SKYBOX
+        #endif
+
+        #if defined TEXTURE_FILTERING && (defined TEXTURE_FILTER_EVERYTHING || defined gc_terrain || defined g_particles_translucent || defined g_weather || defined g_beaconbeam || defined FILTER_SKYBOX)
+            #if defined gc_transparent || defined g_beaconbeam
+                #if defined gc_terrain
+                    #define IS_FILTERED true
+                #else
+                    #define IS_FILTERED false
+                #endif
+                vec4 albedo = textureFiltered(texture, texcoordMod, IS_FILTERED);
+            #else
+                vec4 albedo = vec4(textureFiltered(texture, texcoordMod, true).rgb, texture2D(texture, texcoordMod).a);
+            #endif
         #else
             vec4 albedo = texture2D(texture, texcoordMod);
         #endif
@@ -316,11 +329,6 @@ void main() {
 
     #if defined g_skybasic
         albedo.rgb += lightningFlash(isLightning, rain) * 0.1;
-
-        if(isEyeInWater == 1) {
-            float farFog = exp(-far * ATMOSPHERIC_FOG_DENSITY_WATER);
-            albedo.rgb = mix(ATMOSPHERIC_FOG_COLOR_WATER, albedo.rgb, farFog);
-        }
     #endif
 
     #if defined g_skytextured
@@ -558,7 +566,7 @@ void main() {
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;
 
-        #if defined WATER_FOG_FROM_OUTSIDE
+        #if defined WATER_FOG_FROM_OUTSIDE && defined g_water
             float atmosPhogWater = 0.0;
             float opaqueFog = 1.0;
             if(isEyeInWater == 0) {
@@ -568,6 +576,7 @@ void main() {
                 // atmosPhogWater = min(atmosPhogWater, 1);
                 atmosPhogWater = 1 - exp(-atmosPhogWater);
             }
+
             vec4 overlay = vec4(ATMOSPHERIC_FOG_BRIGHTNESS_WATER * ATMOSPHERIC_FOG_COLOR_WATER, atmosPhogWater * (1 - fogged.a));
         #endif
     #endif
@@ -593,7 +602,7 @@ void main() {
             // clouds are always mixed instead of multiplied
             b0 = albedo;
         #else
-            #if defined WATER_FOG_FROM_OUTSIDE
+            #if defined WATER_FOG_FROM_OUTSIDE && defined g_water
                 b0 = overlay;
             #endif
             b1 = albedo;

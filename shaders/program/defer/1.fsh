@@ -67,7 +67,67 @@ void main() {
     vec3 composite = albedo.rgb;
 
     vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
-    float fog = fogifyDistanceOnly(position, far, blindnessSmooth, 1 / far);
+
+    #if defined HAS_SKYLIGHT
+        float inSkyProcessed = inSky;
+        float eyeBrightnessProcessed = eyeBrightnessSmoothFloat;
+    #else
+        float inSkyProcessed = 1;
+        float eyeBrightnessProcessed = 1;
+    #endif
+
+    #if defined HAS_SKYLIGHT && defined WEATHER_FOG_IN_SKY_ONLY
+        float fogWeatherSkyProcessed = fogWeatherSky;
+    #else
+        float fogWeatherSkyProcessed = fogWeather;
+    #endif
+
+    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+    composite = fogged.rgb;
+    float fog = fogged.a;
+
+    #if defined RIMLIGHT_ENABLED
+        float dist = length(position);
+
+        float maxBacklight = 0;
+
+        vec2 sampleRadius = (RIMLIGHT_PIXEL_RADIUS + 0.1) / vec2(viewWidth, viewHeight);
+        #if defined RIMLIGHT_DYNAMIC_RADIUS
+            sampleRadius += 0.01 / (dist * vec2(aspectRatio, 1));
+        #endif
+        for(int i = 1; i < superSampleOffsetsCross.length; i++) {
+            vec2 samplePoint = texcoord + superSampleOffsetsCross[i].xy * sampleRadius;
+            float sampledDepth = texture(depthtex1, samplePoint).r;
+
+            vec3 sampledPosition = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, sampledDepth).xyz;
+
+            bool isRimlit = sampledDepth > depth;
+
+            #if defined RIMLIGHT_OUTLINE
+                vec3 normal = texture(colortex3, texcoord).rgb;
+                vec3 sampledNormal = texture(colortex3, samplePoint).rgb;
+
+                bool isOutlined = distance(normal, sampledNormal) > 0.1;
+                isRimlit = isRimlit || isOutlined;
+            #endif
+
+            if(!hand(depth) && isRimlit) {
+                float backlight = smoothstep(0.25 * RIMLIGHT_DIST, RIMLIGHT_DIST, length(position - sampledPosition));
+
+                #if defined RIMLIGHT_OUTLINE
+                    backlight = isOutlined ? 1 : backlight;
+                #endif
+                if(maxBacklight < backlight) {
+                    maxBacklight = backlight;
+                }
+            }
+        }
+
+        float rimlightRaw = mix(0, maxBacklight * RIMLIGHT_MULT, clamp(clamp(50 / dist, 0.0, 1.0) - fog, 0.0, 1.0));
+        float luma = luminance(composite);
+        float lumaNew = (luma + 0.1) * rimlightRaw + luma;
+        composite = changeLuminance(composite, luma, lumaNew);
+    #endif
 
     // fade out around edges of world
     composite = isSky ? skyColorProcessed : mix(composite, skyColorProcessed, fog);
@@ -83,10 +143,9 @@ void main() {
     #if WATER_MIX_MODE == 1
         b1 = vec4(1.0, 1.0, 1.0, 0.0);
     #elif WATER_MIX_MODE == 0
-        // only clear alpha, keep color for proper mixing
-        b1 = vec4(composite, 0.0);
+        b1 = vec4(0.0);
     #else
-        b1 = vec4(mix(composite, vec3(1.0), WATER_MULT_STRENGTH), 0.0);
+        b1 = vec4(mix(vec3(0.0), vec3(1.0), WATER_MULT_STRENGTH), 0.0);
     #endif
 
     #ifdef DEBUG_VIEW
