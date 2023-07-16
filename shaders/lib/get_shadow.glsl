@@ -18,7 +18,7 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
 
     float skyTransition = abs(skyTime * 2 - 1);
     float dist = length(positionMod);
-    float shadowCutoff = clamp((dist / (shadowDistance * SHADOW_CUTOFF)) * 10.0 - 9.0, 0.0, 1.0);
+    float shadowCutoff = smoothstep(0.9, 1.0, dist / (shadowDistance * SHADOW_CUTOFF));
 
     vec3 shadowPosition = toViewspace(shadowProjection, shadowModelView, positionMod).xyz;
 
