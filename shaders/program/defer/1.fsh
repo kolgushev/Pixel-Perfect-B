@@ -35,6 +35,18 @@ in vec2 texcoord;
 #define use_to_viewspace
 #define use_lava_noise
 
+#if defined RIMLIGHT_ENABLED
+    #define use_colortex3
+
+    #define use_near
+    #define use_aspect_ratio
+    #define use_view_width
+    #define use_view_height
+
+    #define use_linearize_depth
+    #define use_tonemapping
+#endif
+
 #include "/lib/use.glsl"
 
 void main() {

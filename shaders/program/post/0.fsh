@@ -40,18 +40,6 @@ in vec2 texcoord;
     #define use_boss_battle
 #endif
 
-#if defined RIMLIGHT_ENABLED
-    #define use_colortex3
-
-    #define use_near
-    #define use_aspect_ratio
-    #define use_view_width
-    #define use_view_height
-
-    #define use_linearize_depth
-    #define use_tonemapping
-#endif
-
 #define use_fogify
 #define use_to_viewspace
 
