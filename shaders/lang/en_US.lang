@@ -449,48 +449,6 @@ screen.MISC=Extras
 
 screen.ADVANCED=Advanced
 
-    option.DEBUG_VIEW=Debug View
-        option.DEBUG_VIEW.comment=Disables all existing albedo writes to allow the developer (and you, within license restrictions) to create their own for debugging purposes.
-        value.DEBUG_VIEW.true=On
-        value.DEBUG_VIEW.false=Off
-
-    option.SHADOW_DEBUG=Debug Shadows
-        option.SHADOW_DEBUG.comment=Overrides the albedo with the shadow texture in the final pass.
-        value.SHADOW_DEBUG.true=On
-        value.SHADOW_DEBUG.false=Off
-
-    option.ISOLATE_RENDER_STAGE=Isolate
-        option.ISOLATE_RENDER_STAGE.comment=§cIsolating red items is considered cheating!. §cUsing this on servers may get you banned!
-        value.ISOLATE_RENDER_STAGE.-1=Off
-        value.ISOLATE_RENDER_STAGE.0=Unknown
-        value.ISOLATE_RENDER_STAGE.1=Sky
-        value.ISOLATE_RENDER_STAGE.2=Sunset
-        value.ISOLATE_RENDER_STAGE.3=Custom Sky
-        value.ISOLATE_RENDER_STAGE.4=Sun
-        value.ISOLATE_RENDER_STAGE.5=Moon
-        value.ISOLATE_RENDER_STAGE.6=Stars
-        value.ISOLATE_RENDER_STAGE.7=Void
-        value.ISOLATE_RENDER_STAGE.8=Solid Terrain
-        value.ISOLATE_RENDER_STAGE.9=Cutout Mipped Terrain
-        value.ISOLATE_RENDER_STAGE.10=Cutout Terrain
-        value.ISOLATE_RENDER_STAGE.11=§cEntities
-        value.ISOLATE_RENDER_STAGE.12=§cBlock Entities
-        value.ISOLATE_RENDER_STAGE.13=Block Break Animation
-        value.ISOLATE_RENDER_STAGE.14=Block Select Outline
-        value.ISOLATE_RENDER_STAGE.15=Debug Outlines
-        value.ISOLATE_RENDER_STAGE.16=Opaque Held Item
-        value.ISOLATE_RENDER_STAGE.17=Transparent Terrain
-        value.ISOLATE_RENDER_STAGE.18=Tripwire
-        value.ISOLATE_RENDER_STAGE.19=Particles
-        value.ISOLATE_RENDER_STAGE.20=Clouds
-        value.ISOLATE_RENDER_STAGE.21=Weather
-        value.ISOLATE_RENDER_STAGE.22=World Border
-        value.ISOLATE_RENDER_STAGE.23=Transparent Held Item
-
-    option.WATER_FOG=Water Fog
-        value.WATER_FOG.true=On
-        value.WATER_FOG.false=Off
-
     option.SHADOW_TRANSITION_MIXING=Sunset Shadow Mixing
         option.SHADOW_TRANSITION_MIXING.comment=To increase performance, shadows are only calculated for the sun §oor§r moon, never both. To prevent an awkward "pop-in" effect as the shadows are switched from sun to moon and vice versa, the lighting is briefly switched to its shadowless version during sunset. This setting controls whether the terrain looks like it's in shadow (Shadowed) during this period.
         value.SHADOW_TRANSITION_MIXING.1=Unshadowed
@@ -519,6 +477,56 @@ screen.ADVANCED=Advanced
         option.TEXTURE_FILTER_EVERYTHING.comment=By default, texture filtering only applies to terrain. This option allows you to apply it to everything.
         value.TEXTURE_FILTER_EVERYTHING.true=On
         value.TEXTURE_FILTER_EVERYTHING.false=Off
+
+
+    screen.DEBUG=Debug
+        screen.DEBUG.comment=Viewing modifications made specifically for debugging
+
+        option.DEBUG_VIEW=Debug View
+            option.DEBUG_VIEW.comment=Disables all existing albedo writes to allow the developer (and you, within license restrictions) to create their own for debugging purposes.
+            value.DEBUG_VIEW.true=On
+            value.DEBUG_VIEW.false=Off
+
+        option.SHADOW_DEBUG=Debug Shadows
+            option.SHADOW_DEBUG.comment=Overrides the albedo with the shadow texture in the final pass.
+            value.SHADOW_DEBUG.true=On
+            value.SHADOW_DEBUG.false=Off
+
+        option.ISOLATE_RENDER_STAGE=Isolate
+            option.ISOLATE_RENDER_STAGE.comment=§cIsolating red items is considered cheating!. §cUsing this on servers may get you banned!
+            value.ISOLATE_RENDER_STAGE.-1=Off
+            value.ISOLATE_RENDER_STAGE.0=Unknown
+            value.ISOLATE_RENDER_STAGE.1=Sky
+            value.ISOLATE_RENDER_STAGE.2=Sunset
+            value.ISOLATE_RENDER_STAGE.3=Custom Sky
+            value.ISOLATE_RENDER_STAGE.4=Sun
+            value.ISOLATE_RENDER_STAGE.5=Moon
+            value.ISOLATE_RENDER_STAGE.6=Stars
+            value.ISOLATE_RENDER_STAGE.7=Void
+            value.ISOLATE_RENDER_STAGE.8=Solid Terrain
+            value.ISOLATE_RENDER_STAGE.9=Cutout Mipped Terrain
+            value.ISOLATE_RENDER_STAGE.10=Cutout Terrain
+            value.ISOLATE_RENDER_STAGE.11=§cEntities
+            value.ISOLATE_RENDER_STAGE.12=§cBlock Entities
+            value.ISOLATE_RENDER_STAGE.13=Block Break Animation
+            value.ISOLATE_RENDER_STAGE.14=Block Select Outline
+            value.ISOLATE_RENDER_STAGE.15=Debug Outlines
+            value.ISOLATE_RENDER_STAGE.16=Opaque Held Item
+            value.ISOLATE_RENDER_STAGE.17=Transparent Terrain
+            value.ISOLATE_RENDER_STAGE.18=Tripwire
+            value.ISOLATE_RENDER_STAGE.19=Particles
+            value.ISOLATE_RENDER_STAGE.20=Clouds
+            value.ISOLATE_RENDER_STAGE.21=Weather
+            value.ISOLATE_RENDER_STAGE.22=World Border
+            value.ISOLATE_RENDER_STAGE.23=Transparent Held Item
+
+        option.DISABLE_WATER=Disable Transparent Rendering
+            option.DISABLE_WATER.comment=Removes mixing of transparent layer.
+
+        option.WATER_FOG=Water Fog
+            value.WATER_FOG.true=On
+            value.WATER_FOG.false=Off
+
 
     screen.AUTO_ADDED=Automatic Settings
         screen.AUTO_ADDED.comment=Settings automatically added by Optifine/Iris. Most of these aren't guaranteed to work correctly, if at all.

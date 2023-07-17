@@ -70,14 +70,19 @@ void main() {
     }
 
 
-    vec4 transparency = texture(colortex1, texcoord);
-    #if WATER_MIX_MODE != 0
-        vec3 multiplied = composite * mix(vec3(1), saturateRGB(3.0) * transparency.rgb, transparency.a);
-    #endif
-    #if WATER_MIX_MODE != 1
+    #if defined DISABLE_WATER
         // divide by alpha since color is darker than usual due to transparency buffer being cleared to 0
-        // vec3 mixed = composite;
-        vec3 mixed = mix(composite, transparency.rgb / max(transparency.a, EPSILON), transparency.a);
+        vec3 mixed = composite;
+        vec3 multiplied = composite;
+    #else
+        vec4 transparency = texture(colortex1, texcoord);
+
+        #if WATER_MIX_MODE != 0
+            vec3 multiplied = composite * mix(vec3(1), saturateRGB(3.0) * transparency.rgb, transparency.a);
+        #endif
+        #if WATER_MIX_MODE != 1
+            vec3 mixed = mix(composite, transparency.rgb / max(transparency.a, EPSILON), transparency.a);
+        #endif
     #endif
 
     #if WATER_MIX_MODE == 1
