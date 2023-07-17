@@ -112,6 +112,7 @@ flat in int mcEntity;
 #if defined g_weather
     #define use_sky_time
     #define use_rain_wind_sharp
+    #define use_rain_wind
 
     #if defined NOISY_RAIN
         #define use_rain_wind
