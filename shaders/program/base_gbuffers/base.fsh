@@ -180,7 +180,7 @@ void main() {
         #endif
 
 
-        if(noiseToSurpass > smoothstep(0.45 * FADE_OUT_RADIUS, 0.55 * FADE_OUT_RADIUS, length(position))) discard;
+        if(noiseToSurpass > smoothstep(0.47 * FADE_OUT_RADIUS, 0.6 * FADE_OUT_RADIUS, length(position))) discard;
     #endif
 
     #if defined NEED_WEATHER_DATA
