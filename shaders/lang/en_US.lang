@@ -375,6 +375,23 @@ screen.MISC=Extras
         value.WATER_STYLE.0=Vanilla
         value.WATER_STYLE.1=Clear
 
+    screen.FADEOUT=Fade Close Objects
+        screen.FADEOUT.comment=Fade out entities and particles that are too close to the camera.
+    
+        option.CLOSE_FADE_OUT=Enabled
+            option.CLOSE_FADE_OUT.comment=Fade out entities and particles that are too close to the camera.
+            value.CLOSE_FADE_OUT.true=On
+            value.CLOSE_FADE_OUT.false=Off
+
+        option.CLOSE_FADE_OUT_FULL=Fade completely
+            option.CLOSE_FADE_OUT_FULL.comment=Instead of only partially fading out objects, make them completely invisible.
+            value.CLOSE_FADE_OUT_FULL.true=On
+            value.CLOSE_FADE_OUT_FULL.false=Off
+
+        option.FADE_OUT_RADIUS=Fade Radius
+            option.FADE_OUT_RADIUS.comment=How far objects have to be from the camera before they fade out.
+            suffix.FADE_OUT_RADIUS=×
+
     screen.WEATHER=Weather
 
         screen.WIND=Wind

@@ -307,7 +307,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef NO_SHADING
 #endif
 
-#define CLOSE_FADE_OUT
+// #define CLOSE_FADE_OUT
 #ifdef CLOSE_FADE_OUT
 #endif
 
