@@ -307,6 +307,16 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef NO_SHADING
 #endif
 
+#define CLOSE_FADE_OUT
+#ifdef CLOSE_FADE_OUT
+#endif
+
+// #define CLOSE_FADE_OUT_FULL
+#ifdef CLOSE_FADE_OUT_FULL
+#endif
+
+#define FADE_OUT_RADIUS 1.0 // [0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+
 #define AO_RADIUS 1.2 // [0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6]
 #define TEMPORAL_UPDATE_SPEED_AO 0.0026 // [0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1]
 #define AO_SAMPLES 9 // [1 2 4 6 9 12 16 20 25 30 36 42 49 56]

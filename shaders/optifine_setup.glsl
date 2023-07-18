@@ -126,3 +126,7 @@ const float drynessHalflife = 70.0;
 #if defined g_particles || defined g_particles_translucent
     #define gc_particles
 #endif
+
+#if defined gc_entities
+    #define gc_fades_out
+#endif

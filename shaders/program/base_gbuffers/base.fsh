@@ -20,6 +20,11 @@ flat in int mcEntity;
 #endif
 
 
+
+#if defined CLOSE_FADE_OUT && (defined gc_fades_out || defined gc_particles)
+    #define fade_out_items
+#endif
+
 // uniforms
 
 #define use_texture
@@ -38,6 +43,14 @@ flat in int mcEntity;
 #define use_tonemapping
 #define use_calculate_sky
 #define use_hdr_mapping
+
+#if defined fade_out_items
+    #define use_sample_noise
+
+    #define use_view_width
+    #define use_view_height
+    #define use_gbuffer_model_view
+#endif
 
 #if defined gc_transparent
     #define use_sun_position
@@ -155,6 +168,21 @@ flat in int mcEntity;
 #include "/lib/use.glsl"
 
 void main() {
+    // discard if too close
+    #if defined fade_out_items
+        // sample noise texture
+        float noiseToSurpass = sampleNoise(gl_FragCoord.xy / vec2(viewWidth, viewHeight), 0, vec2(1,1), true).r;
+
+        #if defined CLOSE_FADE_OUT_FULL
+            noiseToSurpass = noiseToSurpass * (1 - EPSILON) + EPSILON;
+        #else
+            noiseToSurpass = noiseToSurpass * 1.5 - 0.5;
+        #endif
+
+
+        if(noiseToSurpass > smoothstep(0.45 * FADE_OUT_RADIUS, 0.55 * FADE_OUT_RADIUS, length(position))) discard;
+    #endif
+
     #if defined NEED_WEATHER_DATA
         #if defined DIM_NO_RAIN
             float rain = 0;
@@ -214,15 +242,17 @@ void main() {
         #endif
 
         #if defined TEXTURE_FILTERING && (defined TEXTURE_FILTER_EVERYTHING || defined gc_terrain || defined g_particles_translucent || defined g_weather || defined g_beaconbeam || defined FILTER_SKYBOX)
-            #if defined gc_transparent || defined g_beaconbeam
-                #if defined gc_terrain
-                    #define IS_FILTERED true
-                #else
-                    #define IS_FILTERED false
-                #endif
-                vec4 albedo = textureFiltered(texture, texcoordMod, IS_FILTERED);
+            #if defined gc_terrain
+                #define IS_FILTERED true
             #else
-                vec4 albedo = vec4(textureFiltered(texture, texcoordMod, true).rgb, texture2D(texture, texcoordMod).a);
+                #define IS_FILTERED false
+            #endif
+            
+            vec4 albedo = textureFiltered(texture, texcoordMod, IS_FILTERED);
+            
+            #if !(defined gc_transparent || defined g_beaconbeam)
+                // fix for transparency losing color
+                if(albedo.a < 1) albedo = texture2D(texture, texcoordMod);
             #endif
         #else
             vec4 albedo = texture2D(texture, texcoordMod);
