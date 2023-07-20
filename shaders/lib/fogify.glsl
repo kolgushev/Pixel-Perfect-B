@@ -35,7 +35,10 @@ vec4 fogify(in vec3 position, in vec3 positionWater, in vec4 transparency, in ve
     float nightVisionVisibility = 0;
     if(isEyeInWater == 0) {
         #if defined ATMOSPHERIC_FOG || defined FOG_ENABLED
-            atmosPhog = length(position) * ATMOSPHERIC_FOG_DENSITY * ATMOSPHERIC_FOG_MULTIPLIER;
+            float densityWater = RAIN_ADDER;
+            float densityTotal = ATMOSPHERIC_FOG_DENSITY * ATMOSPHERIC_FOG_MULTIPLIER + densityWater;
+
+            atmosPhog = length(position) * densityTotal;
             #if defined FOG_ENABLED
                 float mult = fogWeather * WEATHER_FOG_MULTIPLIER;
                 #if defined ATMOSPHERIC_FOG
@@ -49,7 +52,7 @@ vec4 fogify(in vec3 position, in vec3 positionWater, in vec4 transparency, in ve
             #elif defined ATMOSPHERIC_FOG_IN_SKY_ONLY
                 atmosPhog *= inSky;
             #endif
-            atmosPhogColor = ATMOSPHERIC_FOG_COLOR;
+            atmosPhogColor = mix(ATMOSPHERIC_FOG_COLOR, ATMOSPHERIC_FOG_COLOR_RAIN, densityWater / densityTotal);
             #if defined DIM_END
                 if(bossBattle == 2) {
                     atmosPhogColor = BOSS_BATTLE_ATMOSPHERIC_FOG_COLOR;

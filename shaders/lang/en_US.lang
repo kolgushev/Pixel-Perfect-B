@@ -443,6 +443,11 @@ screen.MISC=Extras
                 value.FOG_ENABLED_USER.true=On
                 value.FOG_ENABLED_USER.false=Off
 
+            option.RAIN_FOG=Rain Fog
+                option.RAIN_FOG.comment=Simulates the absorption effect of faraway raindrops, making the terrain slightly foggier in the distance.
+                value.RAIN_FOG.true=On
+                value.RAIN_FOG.false=Off
+
 
         screen.DIMENSION_WEATHER=Per-Dimension Weather Controls
             screen.DIMENSION_WEATHER.comment=Change weather settings in each vanilla dimension. Currently this only includes nether weather

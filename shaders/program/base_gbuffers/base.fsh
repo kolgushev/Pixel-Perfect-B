@@ -205,21 +205,33 @@ void main() {
         }
     #endif
 
-    vec3 customFogColor = mix(fogColor, skyColor, SKY_COLOR_BLEND);
 
     #if defined g_skybasic
         // TODO: make a proper sunset
         if(renderStage == MC_RENDER_STAGE_SUNSET) discard;
 
-        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(calcSkyColor(normalize(position), skyColor, customFogColor));
+        vec3 customSkyColor = skyColor;
+        vec3 customFogColor = mix(fogColor, skyColor, SKY_COLOR_BLEND);
+        
+        float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
+        customSkyColor = mix(customSkyColor, RAINY_SKY_COLOR, mixFactor);
+        customFogColor = mix(customFogColor, RAINY_SKY_COLOR, mixFactor);
+
+        vec3 rainColor = gammaCorrection(ATMOSPHERIC_FOG_COLOR_RAIN, RCP_GAMMA) * ACEScg_to_RGB;
+        rainColor = rainColor * mix(skyTime, 1, 0.65);
+
+        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(calcSkyColor(normalize(position), customSkyColor, customFogColor, rainColor));
         /*  The sky is rendered using a cylinder-like shape at the top and a flat shape at the bottom.
             For some reason the vaPosition for the flat shape translates to the same as texcoord when
             mapped to clipspace, so we need to detect that and set it to the fog color
             instead of evaluating the gradient.
         */
+
+        #if defined RAIN_FOG
+            customFogColor = mix(customFogColor, rainColor, rainStrength);
+        #endif
         if(distance(color.rgb, fogColor) < EPSILON) albedo = opaque(customFogColor);
 
-        albedo.rgb = mix(albedo.rgb, RAINY_SKY_COLOR, smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime);
     #else
         #if defined g_weather
             vec3 absolutePosition = position + cameraPosition;

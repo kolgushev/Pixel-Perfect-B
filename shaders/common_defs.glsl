@@ -350,8 +350,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #endif
 #define ATMOSPHERIC_FOG_DENSITY 0.0015 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
 
-// #define DISABLE_WATER
-#ifdef DISABLE_WATER
+#define RAIN_FOG
+#ifdef RAIN_FOG
 #endif
 
 #define WATER_FOG
@@ -360,6 +360,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define WATER_FOG_FROM_OUTSIDE
 #ifdef WATER_FOG_FROM_OUTSIDE
+#endif
+
+// #define DISABLE_WATER
+#ifdef DISABLE_WATER
 #endif
 
 #define WATER_STYLE 0 // [0 1]
@@ -743,8 +747,18 @@ const vec2 superSampleOffsets16[16] = vec2[16](
     #define SHADOWS_ENABLED
 #endif
 
+#define ATMOSPHERIC_FOG_DENSITY_RAIN 0.005
+#define ATMOSPHERIC_FOG_COLOR_RAIN (vec3(0.03, 0.1, 0.3) * 0.35)
+
 #define ATMOSPHERIC_FOG_DENSITY_WATER 0.02
 #define ATMOSPHERIC_FOG_COLOR_WATER (vec3(0.03, 0.2, 0.7))
+
+#if defined RAIN_FOG
+    #define RAIN_ADDER ATMOSPHERIC_FOG_DENSITY_RAIN * rainStrength
+#else
+    #define RAIN_ADDER 0
+#endif
+
 #if defined use_atmospheric_fog_brightness_water
     #define use_sky_time
     #define use_eye_brightness_smooth_float

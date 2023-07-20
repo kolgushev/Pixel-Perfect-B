@@ -1,4 +1,4 @@
-// lib dependency defs - imports are above their dependencies
+// lib dependency defs
 #if defined use_anti_banding
 #endif
 
@@ -16,6 +16,7 @@
 #endif
 
 #if defined use_calculate_sky
+	#define use_rain_strength
 #endif
 
 #if defined use_color_manipulation
@@ -26,6 +27,7 @@
 
 #if defined use_fogify
 	#define use_boss_battle
+	#define use_rain_strength
 #endif
 
 #if defined use_generate_wind
@@ -122,6 +124,7 @@
 #include "/lib/distortion.glsl"
 #endif
 
+// depends on: rain_strength
 #if defined use_fogify
 #include "/lib/fogify.glsl"
 #endif
@@ -167,7 +170,6 @@
 #include "/lib/to_viewspace.glsl"
 #endif
 
-// depends on: to_viewspace
 #if defined use_get_shadow
 #include "/lib/get_shadow.glsl"
 #endif
