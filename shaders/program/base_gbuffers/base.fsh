@@ -213,12 +213,16 @@ void main() {
         vec3 customSkyColor = skyColor;
         vec3 customFogColor = mix(fogColor, skyColor, SKY_COLOR_BLEND);
         
-        float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
-        customSkyColor = mix(customSkyColor, RAINY_SKY_COLOR, mixFactor);
-        customFogColor = mix(customFogColor, RAINY_SKY_COLOR, mixFactor);
+        #if defined RAIN_FOG
+            float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
+            customSkyColor = mix(customSkyColor, RAINY_SKY_COLOR, mixFactor);
+            customFogColor = mix(customFogColor, RAINY_SKY_COLOR, mixFactor);
 
-        vec3 rainColor = gammaCorrection(ATMOSPHERIC_FOG_COLOR_RAIN, RCP_GAMMA) * ACEScg_to_RGB;
-        rainColor = rainColor * mix(skyTime, 1, 0.65);
+            vec3 rainColor = gammaCorrection(ATMOSPHERIC_FOG_COLOR_RAIN, RCP_GAMMA) * ACEScg_to_RGB;
+            rainColor = rainColor * mix(skyTime, 1, 0.65);
+        #else
+            vec3 rainColor = vec3(0.0);
+        #endif
 
         vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(calcSkyColor(normalize(position), customSkyColor, customFogColor, rainColor));
         /*  The sky is rendered using a cylinder-like shape at the top and a flat shape at the bottom.
