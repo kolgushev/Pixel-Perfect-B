@@ -1,2 +1,0 @@
-Credit to Christoph Peters for the blue noise generation
-http://momentsingraphics.de/BlueNoise.html

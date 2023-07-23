@@ -37,7 +37,6 @@ in vec2 texcoord;
 
 #if defined SHADOWS_ENABLED
     #define use_shadowtex1
-    #define use_noisetex
     #define use_shadow_projection
     #define use_shadow_model_view
     
@@ -77,7 +76,6 @@ void main() {
             shadowModelView,
             texcoord,
             shadowtex1,
-            noisetex,
             lightmap.g,
             skyTime);
     #else

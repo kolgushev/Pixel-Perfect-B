@@ -38,8 +38,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define RCP_GAMMA 0.45454545455
 
 #define LIGHT_MATRIX mat4(vec4(0.00390625, 0.0, 0.0, 0.0), vec4(0.0, 0.00390625, 0.0, 0.0), vec4(0.0, 0.0, 0.00390625, 0.0), vec4(0.03125, 0.03125, 0.03125, 1.0))
-#define NOISETEX_TILES_RES 512
-#define NOISETEX_TILES_WIDTH 2
 
 // utils
 
@@ -284,6 +282,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define TEXTURE_FILTERING
 #ifdef TEXTURE_FILTERING
+#endif
+
+// #define TEXTURE_FILTER_EVERYTHING
+#ifdef TEXTURE_FILTER_EVERYTHING
 #endif
 
 // output mapping: 0:none 1:8bit

@@ -81,7 +81,6 @@ flat in int mcEntity;
 
     #if defined SHADOWS_ENABLED
         #define use_shadowtex1
-        #define use_noisetex
         #define use_shadow_projection
         #define use_shadow_model_view
         
@@ -171,7 +170,7 @@ void main() {
     // discard if too close
     #if defined fade_out_items
         // sample noise texture
-        float noiseToSurpass = sampleNoise(gl_FragCoord.xy / vec2(viewWidth, viewHeight), 0, vec2(1,1), true).r;
+        float noiseToSurpass = sampleNoise(gl_FragCoord.xy / vec2(viewWidth, viewHeight), 0, NOISE_CHECKERBOARD_1D, true).r;
 
         #if defined CLOSE_FADE_OUT_FULL
             noiseToSurpass = noiseToSurpass * (1 - EPSILON) + EPSILON;
@@ -239,13 +238,13 @@ void main() {
     #else
         #if defined g_weather
             vec3 absolutePosition = position + cameraPosition;
-            vec2 positionMod = tile(absolutePosition.xz + frameTimeCounter * 4, vec2(1, 0), false).xy;
+            vec2 positionMod = tile(absolutePosition.xz + frameTimeCounter * 4, NOISE_PERLIN_4D, false).xy;
         #endif
         
         vec2 texcoordMod = texcoord;
         
         #if defined DIM_END && defined g_skytextured
-            texcoordMod = tile(texcoordMod * END_SKY_RESOLUTION, vec2(1, 1), true).rg;
+            texcoordMod = tile(texcoordMod * END_SKY_RESOLUTION, NOISE_BLUE_2D, true).rg;
         #endif
         
         #if defined g_weather
@@ -289,7 +288,7 @@ void main() {
         #elif defined g_weather
             float rainMask;
             #if defined NOISY_RAIN
-                rainMask = tile((frameTimeCounter * 12 + absolutePosition.y) * 3 + positionMod * 200 + absolutePosition.xz * 4, vec2(1, 0), false).r;
+                rainMask = tile((frameTimeCounter * 12 + absolutePosition.y) * 3 + positionMod * 200 + absolutePosition.xz * 4, NOISE_PERLIN_4D, false).r;
 
                 rainMask = smoothstep(RAIN_AMOUNT, RAIN_AMOUNT + RAIN_CONSTRAINT, rainMask);
 
@@ -543,7 +542,6 @@ void main() {
                     shadowModelView,
                     texcoord,
                     shadowtex1,
-                    noisetex,
                     lightmap.g,
                     skyTime);
             #else

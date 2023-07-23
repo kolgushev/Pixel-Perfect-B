@@ -1,10 +1,24 @@
-vec4 tile(in vec2 texcoord, in vec2 id, in bool sharp) {
+#include "/tex/noise/noise_meta.glsl"
 
-	if(sharp)
-		texcoord = floor(texcoord) + 0.5;
+#define NOISE_BLUE_1D 0
+#define NOISE_BLUE_2D 1
+#define NOISE_BLUE_3D 2
+#define NOISE_BLUE_4D 3
 
-	// map texcoord to a 0-tilewidth range
-	vec2 texcoordInRange = (mod(texcoord, vec2(NOISETEX_TILES_RES)) + id * NOISETEX_TILES_RES) / (NOISETEX_TILES_RES * NOISETEX_TILES_WIDTH);
+#define NOISE_PERLIN_4D 4
+#define NOISE_CHECKERBOARD_1D 5
+#define NOISE_WHITE_4D 6
 
-	return texture2D(noisetex, removeBorder(texcoordInRange, 1 / (NOISETEX_TILES_RES * NOISETEX_TILES_WIDTH)));
+vec4 tile(in vec2 texcoord, in int id, in bool sharp) {
+
+
+	if(sharp) {
+		texcoord = floor(texcoord);
+		texcoord /= NOISETEX_TILES_RES;
+		texcoord = removeBorder(texcoord, 1.0 / float(NOISETEX_TILES_RES));
+	} else {
+		texcoord /= NOISETEX_TILES_RES;
+	}
+	
+	return texture3D(noisetex, vec3(texcoord, removeBorder(float(id) / float(NOISE_LAYER_COUNT - 1), 1.0 / float(NOISE_LAYER_COUNT))));
 }

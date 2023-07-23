@@ -64,7 +64,6 @@ flat out int mcEntity;
 #if defined DIM_END
     #define use_camera_position
 
-    #define use_noisetex
     #define use_sample_noisetex
 #endif
 
@@ -321,7 +320,7 @@ void main() {
 
 
         if(END_WARPING > 0.0) {
-            float displacement = tile((position.xz + cameraPosition.xz + EPSILON) * 0.1, vec2(1, 0), false).x - 0.5;
+            float displacement = tile((position.xz + cameraPosition.xz + EPSILON) * 0.1, NOISE_PERLIN_4D, false).x - 0.5;
             position.y *= pow(pow(position.x, 2) + pow(position.z, 2), 0.02 * END_WARPING);
             position.y += displacement * (length(position.xz) * 0.2) * END_WARPING;
         }

@@ -22,7 +22,6 @@ in vec2 texcoord;
 #endif
 
 #if DITHERING_MODE != 0
-    #define use_noisetex
 
     #define use_view_width
     #define use_view_height
@@ -206,7 +205,7 @@ void main() {
 
         colorCorrected = colorCorrected + inverseMult;
 
-        vec3 noiseToSurpass = sampleNoise(texcoord, 0, vec2(0,1), true).rgb;
+        vec3 noiseToSurpass = sampleNoise(texcoord, 0, NOISE_BLUE_3D, true).rgb;
 
         // noiseToSurpass = gammaCorrection(noiseToSurpass, RCP_GAMMA);
         

@@ -13,7 +13,6 @@ in vec2 texcoord;
 #define use_colortex1
 #define use_colortex2
 #define use_depthtex1
-#define use_noisetex
 
 #define use_gbuffer_projection_inverse
 #define use_gbuffer_model_view_inverse

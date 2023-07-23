@@ -102,9 +102,10 @@ if len(file_names) >= 1:
         with open(PROPS_FILE_DIR, 'r') as props_file:
             text = props_file.read()
 
-        text = re.sub(r'texture\.(\w+\.\w+ *)=( *[\w\.\/]+) +TEXTURE_\dD +\w+ \w+ \w+ \w+ \w+ \w+',
-            fr'texture.\g<1>=\g<2> TEXTURE_{meta_dimensions}D RGB16F {meta_size} {meta_size} {meta_size} RGB FLOAT',
+        text = re.sub(r'texture\.(\w+\.\w+(?:\.\d)? *)= *\/LUTs\/lut.dat +TEXTURE_\dD +\w+ \w+ \w+ \w+ \w+ \w+',
+            fr'texture.\g<1>=/LUTs/lut.dat TEXTURE_{meta_dimensions}D RGB16F {meta_size} {meta_size} {meta_size} RGB FLOAT',
             text)
+        
         with open(PROPS_FILE_DIR, 'w') as props_file:
             props_file.write(text)
 

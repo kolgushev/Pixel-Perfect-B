@@ -11,7 +11,7 @@ float lavaNoise(in vec2 position, in float t) {
 		#define LAVA_SCALE 2
 	#endif
 
-	vec4 noise = tile(position * LAVA_SCALE, vec2(1, 0), sharpLava);
+	vec4 noise = tile(position * LAVA_SCALE, NOISE_PERLIN_4D, sharpLava);
 	
 	#if NOISY_LAVA == 2
 		noise = noise - 0.35;

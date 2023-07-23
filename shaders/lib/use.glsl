@@ -1,4 +1,4 @@
-// lib dependency defs
+// lib dependency defs - imports are above their dependencies
 #if defined use_anti_banding
 #endif
 
@@ -36,8 +36,9 @@
 #if defined use_get_samples
 #endif
 
-// depends on: to_viewspace, basic_diret_shading
+// depends on: sample_noise, to_viewspace, basic_direct_shading
 #if defined use_get_shadow
+	#define use_sample_noise
 	#define use_to_viewspace
 	#define use_basic_direct_shading
 #endif
@@ -62,10 +63,12 @@
 // depends on: sample_noisetex
 #if defined use_sample_noise
 	#define use_sample_noisetex
+	#define use_view_width
+	#define use_view_height
 #endif
 
 #if defined use_sample_noisetex
-	#define use_noisetex
+	#define use_noisetex_3d
 #endif
 
 #if defined use_sampling_algorithms
