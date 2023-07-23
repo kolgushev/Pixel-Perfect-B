@@ -1,5 +1,3 @@
-#include "/tex/noise/noise_meta.glsl"
-
 #define NOISE_BLUE_1D 0
 #define NOISE_BLUE_2D 1
 #define NOISE_BLUE_3D 2

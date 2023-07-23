@@ -1,5 +1,3 @@
-#include "/lib/distortion.glsl"
-
 float shadowSample(in vec3 positionViewSpace, in sampler2D shadowtex) {
     vec3 shadowPosition = positionViewSpace;
     
@@ -32,11 +30,17 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
 
         for(int i = 0; i < SHADOW_FILTERING_SAMPLES; i++) {
             vec2 sampleCoord = texcoord;
+
+            int iMod = i;
+            #if AA_MODE == 1
+                iMod += frameCounter * SHADOW_FILTERING_SAMPLES;
+            #endif
+
             #if PIXELATED_SHADOWS != 0
                 sampleCoord = absolutePosition.xz + absolutePosition.y * 100;
             #endif
 
-            noise = sampleNoise(sampleCoord, i, NOISE_BLUE_3D, true).rgb * 2 - 1;
+            noise = sampleNoise(sampleCoord, iMod, NOISE_BLUE_3D, true).rgb * 2 - 1;
 
             shadowOffset = noise / shadowDistance * 0.5 * SHADOW_FILTERING_RADIUS;
 

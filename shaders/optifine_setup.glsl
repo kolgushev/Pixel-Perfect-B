@@ -9,7 +9,7 @@ const int colortex2Format = RGB8;
 const int colortex3Format = RGB8_SNORM;
 const bool colortex3Clear = false;
 
-const int colortex4Format = RGB8_SNORM;
+const int colortex4Format = RGB16F;
 const bool colortex4Clear = false;
 
 const int shadowcolor1Format = RGBA16F;

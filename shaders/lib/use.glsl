@@ -22,9 +22,6 @@
 #if defined use_color_manipulation
 #endif
 
-#if defined use_distortion
-#endif
-
 #if defined use_fogify
 	#define use_boss_battle
 	#define use_rain_strength
@@ -36,11 +33,17 @@
 #if defined use_get_samples
 #endif
 
-// depends on: sample_noise, to_viewspace, basic_direct_shading
+// depends on: sample_noise, to_viewspace, basic_direct_shading, distortion
 #if defined use_get_shadow
+	#define use_frame_counter
+
 	#define use_sample_noise
 	#define use_to_viewspace
 	#define use_basic_direct_shading
+	#define use_distortion
+#endif
+
+#if defined use_distortion
 #endif
 
 #if defined use_get_terrain_mask

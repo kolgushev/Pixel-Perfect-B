@@ -9,6 +9,7 @@ gbuffers opaque:
     3.rgb - opaque normal
     3.a - 
     4.rgb - previous frame
+    4.a -
 
 
 defer0: lighting
@@ -28,8 +29,6 @@ defer1: combine passes and fog, manually clear albedo.rgba
     0.a - 
     1.rgba - vec4(0)
     3.rgba - vec4(0)
-    4.rgba - vec4(0)
-    5.rgba - vec4(0)
 
 
 gbuffers transparent:
@@ -65,5 +64,5 @@ comp1: Fast GI and bloom
 comp2: apply color
     REQUIRES albedo.rgb
 
-    0.rgb - colorgraded albedo
-    0.a -
+    4.rgb - colorgraded albedo
+    4.a -

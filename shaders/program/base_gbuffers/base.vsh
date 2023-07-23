@@ -67,6 +67,12 @@ flat out int mcEntity;
     #define use_sample_noisetex
 #endif
 
+#if AA_MODE == 1
+    #define use_frame_counter
+    #define use_view_width
+    #define use_view_height
+#endif
+
 #include "/lib/use.glsl"
 
 // TODO: world-space coordinates for everything not terrain
@@ -364,7 +370,11 @@ void main() {
         }
     #endif
 
-    
+    // apply jittering
+    #if AA_MODE == 1
+        glPos.xy += temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] * glPos.w / vec2(viewWidth, viewHeight);
+    #endif
+
     gl_Position = glPos;
 
     #if defined g_skybasic
