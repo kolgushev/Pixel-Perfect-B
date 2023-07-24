@@ -75,7 +75,7 @@ void main() {
 
 			prevFrame = clamp(prevFrame, minFrame, maxFrame);
 
-			colored = mix(colored, prevFrame, frameCounter == 1 ? 0.0 : 0.9);
+			colored = mix(colored, prevFrame, 0.9);
 		}
 		
 		b4 = colored;
