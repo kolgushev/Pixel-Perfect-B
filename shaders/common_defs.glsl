@@ -292,6 +292,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // 0: none 1:TAA
 #define AA_MODE 1 // [0 1]
 
+#if AA_MODE == 1
+    #define TAA_ENABLED
+#endif
+
 // output mapping: 0:none 1:8bit
 #define DITHERING_MODE 1 // [0 1]
 
@@ -499,7 +503,7 @@ const vec2 superSampleOffsets16[16] = vec2[16](
         vec2(0.25, -0.25)
     );
 
-#if AA_MODE == 1
+#if defined TAA_ENABLED
     #define TAA_OFFSET_LEN 16
     const vec2 temporalAAOffsets[16] = vec2[16](
         vec2(0.16407393408806126, 0.3774324646270857),

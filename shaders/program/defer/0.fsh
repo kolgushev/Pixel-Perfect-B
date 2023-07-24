@@ -61,7 +61,7 @@ void main() {
 
     #if defined SHADOWS_ENABLED
         float depth = texture(depthtex1, texcoord).r;
-        #if AA_MODE == 1
+        #if defined TAA_ENABLED
             vec2 texcoordJittered = texcoord - temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] / vec2(viewWidth, viewHeight);
         #else
             vec2 texcoordJittered = texcoord;

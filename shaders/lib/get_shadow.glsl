@@ -32,7 +32,7 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
             vec2 sampleCoord = texcoord;
 
             int iMod = i;
-            #if AA_MODE == 1
+            #if defined TAA_ENABLED
                 iMod += frameCounter * SHADOW_FILTERING_SAMPLES;
             #endif
 

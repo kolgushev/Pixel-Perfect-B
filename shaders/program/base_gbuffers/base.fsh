@@ -15,7 +15,7 @@ in vec2 light;
 in vec3 position;
 in vec3 normal;
 flat in int mcEntity;
-#if AA_MODE == 1
+#if defined TAA_ENABLED
     in vec2 screencoord;
     in vec3 velocity;
 #endif
@@ -167,7 +167,7 @@ flat in int mcEntity;
     #define use_sample_noisetex
 #endif
 
-#if AA_MODE == 1
+#if defined TAA_ENABLED
     #define use_camera_position
     #define use_previous_camera_position
     #define use_view_width
@@ -197,7 +197,7 @@ void main() {
         if(noiseToSurpass > smoothstep(0.47 * FADE_OUT_RADIUS, 0.6 * FADE_OUT_RADIUS, length(position))) discard;
     #endif
 
-    #if AA_MODE == 1
+    #if defined TAA_ENABLED
         // Camera positions are subtracted in parentheses in order to reduce floating-point inaccuracies
         vec4 prevClip = toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position - velocity + (cameraPosition - previousCameraPosition));
         vec4 unjitteredClip = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);

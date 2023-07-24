@@ -6,7 +6,7 @@ out vec2 light;
 out vec3 position;
 out vec3 normal;
 flat out int mcEntity;
-#if AA_MODE == 1
+#if defined TAA_ENABLED
     out vec2 screencoord;
     out vec3 velocity;
 #endif
@@ -72,7 +72,7 @@ in vec3 at_velocity;
     #define use_sample_noisetex
 #endif
 
-#if AA_MODE == 1
+#if defined TAA_ENABLED
     #define use_frame_counter
     #define use_view_width
     #define use_view_height
@@ -82,7 +82,9 @@ in vec3 at_velocity;
 
 // TODO: world-space coordinates for everything not terrain
 void main() {
-    velocity = at_velocity;
+    #if defined TAA_ENABLED
+        velocity = at_velocity;
+    #endif
 
     #if defined gc_terrain
         mcEntity = int(mc_Entity.x);
@@ -379,7 +381,7 @@ void main() {
     #endif
 
     // apply jittering
-    #if AA_MODE == 1
+    #if defined TAA_ENABLED
         glPos.xy += temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] * glPos.w / vec2(viewWidth, viewHeight);
     #endif
 

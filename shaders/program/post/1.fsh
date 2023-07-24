@@ -2,7 +2,7 @@
 
 /* DRAWBUFFERS:04 */
 layout(location = 0) out vec4 b0;
-#if AA_MODE == 1
+#if defined TAA_ENABLED
     layout(location = 1) out vec3 b4;
 #endif
 
@@ -37,7 +37,7 @@ in vec2 texcoord;
 	#define use_tonemapping
 #endif
 
-#if AA_MODE == 1
+#if defined TAA_ENABLED
 	#define use_colortex4
 	#define use_colortex5
 
@@ -57,7 +57,7 @@ void main() {
 	vec3 diffuse = texture(colortex0, texcoord).rgb;
 	vec3 colored = diffuse;
 
-    #if AA_MODE == 1
+    #if defined TAA_ENABLED
         vec2 texcoordPrev = texcoord + texture2D(colortex5, texcoord).xy;
 
 		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev) {
