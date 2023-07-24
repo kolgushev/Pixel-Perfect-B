@@ -2,13 +2,10 @@
 
 #include "/common_defs.glsl"
 
-/* DRAWBUFFERS:014 */
+/* DRAWBUFFERS:01 */
 layout(location = 0) out vec4 b0;
 #if defined FAST_GI || defined DYNAMIC_EXPOSURE_LIGHTING
     layout(location = 1) out vec4 b1;
-#endif
-#if AA_MODE == 1
-    layout(location = 2) out vec3 b4;
 #endif
 
 
@@ -45,15 +42,6 @@ in vec2 texcoord;
 
 #if defined DIM_END
     #define use_boss_battle
-#endif
-
-#if AA_MODE == 1
-	#define use_colortex4
-	#define use_colortex5
-
-    #define use_frame_counter
-    #define use_view_width
-    #define use_view_height
 #endif
 
 #include "/lib/use.glsl"
@@ -105,27 +93,6 @@ void main() {
         composite = mixed;
     #else
         composite = mix(mixed, multiplied, WATER_MULT_STRENGTH);
-    #endif
-
-    #if AA_MODE == 1
-        vec2 texcoordPrev = texcoord + texture2D(colortex5, texcoord).xy;
-
-        // write the diffuse color
-        vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
-
-        vec3 minFrame = composite;
-        vec3 maxFrame = composite;
-
-        for(int i = 0; i < 4; i++) {
-            vec3 neighborSample = texture2D(colortex0, texcoord + superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight)).rgb;
-            minFrame = min(minFrame, neighborSample);
-            maxFrame = max(maxFrame, neighborSample);
-        }
-
-        prevFrame = clamp(prevFrame, minFrame, maxFrame);
-
-        composite = mix(composite, prevFrame, frameCounter == 1 ? 0.0 : 0.9);
-        b4 = composite;
     #endif
 
 

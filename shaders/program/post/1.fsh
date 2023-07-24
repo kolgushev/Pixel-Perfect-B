@@ -1,7 +1,10 @@
 #include "/common_defs.glsl"
 
-/* DRAWBUFFERS:0 */
+/* DRAWBUFFERS:04 */
 layout(location = 0) out vec4 b0;
+#if AA_MODE == 1
+    layout(location = 1) out vec3 b4;
+#endif
 
 in vec2 texcoord;
 
@@ -34,6 +37,15 @@ in vec2 texcoord;
 	#define use_tonemapping
 #endif
 
+#if AA_MODE == 1
+	#define use_colortex4
+	#define use_colortex5
+
+    #define use_frame_counter
+    #define use_view_width
+    #define use_view_height
+#endif
+
 #include "/lib/use.glsl"
 
 /*
@@ -44,6 +56,27 @@ void main() {
 	float depth = texture(depthtex0, texcoord).r;
 	vec3 diffuse = texture(colortex0, texcoord).rgb;
 	vec3 colored = diffuse;
+
+    #if AA_MODE == 1
+        vec2 texcoordPrev = texcoord + texture2D(colortex5, texcoord).xy;
+
+        // write the diffuse color
+        vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
+
+        vec3 minFrame = colored;
+        vec3 maxFrame = colored;
+
+        for(int i = 0; i < 4; i++) {
+            vec3 neighborSample = texture2D(colortex0, texcoord + superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight)).rgb;
+            minFrame = min(minFrame, neighborSample);
+            maxFrame = max(maxFrame, neighborSample);
+        }
+
+        prevFrame = clamp(prevFrame, minFrame, maxFrame);
+
+        colored = mix(colored, prevFrame, frameCounter == 1 ? 0.0 : 0.9);
+        b4 = colored;
+    #endif
 
 	#if defined FAST_GI
 		// check for sky
