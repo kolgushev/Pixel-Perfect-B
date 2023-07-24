@@ -7,7 +7,7 @@ out vec3 position;
 out vec3 normal;
 flat out int mcEntity;
 #if defined TAA_ENABLED
-    out vec2 screencoord;
+    out vec2 offset;
     out vec3 velocity;
 #endif
 #if defined g_skybasic
@@ -382,7 +382,8 @@ void main() {
 
     // apply jittering
     #if defined TAA_ENABLED
-        glPos.xy += temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] * glPos.w / vec2(viewWidth, viewHeight);
+        offset = temporalAAOffsets[frameCounter % TAA_OFFSET_LEN];
+        glPos.xy += offset * glPos.w / vec2(viewWidth, viewHeight);
     #endif
 
     gl_Position = glPos;

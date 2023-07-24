@@ -16,7 +16,7 @@ in vec3 position;
 in vec3 normal;
 flat in int mcEntity;
 #if defined TAA_ENABLED
-    in vec2 screencoord;
+    in vec2 offset;
     in vec3 velocity;
 #endif
 #if defined g_skybasic
