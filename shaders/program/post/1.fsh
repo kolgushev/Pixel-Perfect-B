@@ -60,22 +60,25 @@ void main() {
     #if AA_MODE == 1
         vec2 texcoordPrev = texcoord + texture2D(colortex5, texcoord).xy;
 
-        // write the diffuse color
-        vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
+		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev) {
+			// write the diffuse color
+			vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
 
-        vec3 minFrame = colored;
-        vec3 maxFrame = colored;
+			vec3 minFrame = colored;
+			vec3 maxFrame = colored;
 
-        for(int i = 0; i < 4; i++) {
-            vec3 neighborSample = texture2D(colortex0, texcoord + superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight)).rgb;
-            minFrame = min(minFrame, neighborSample);
-            maxFrame = max(maxFrame, neighborSample);
-        }
+			for(int i = 0; i < 4; i++) {
+				vec3 neighborSample = texture2D(colortex0, texcoord + superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight)).rgb;
+				minFrame = min(minFrame, neighborSample);
+				maxFrame = max(maxFrame, neighborSample);
+			}
 
-        prevFrame = clamp(prevFrame, minFrame, maxFrame);
+			prevFrame = clamp(prevFrame, minFrame, maxFrame);
 
-        colored = mix(colored, prevFrame, frameCounter == 1 ? 0.0 : 0.9);
-        b4 = colored;
+			colored = mix(colored, prevFrame, frameCounter == 1 ? 0.0 : 0.9);
+		}
+		
+		b4 = colored;
     #endif
 
 	#if defined FAST_GI
