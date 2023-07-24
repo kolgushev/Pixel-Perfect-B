@@ -8,8 +8,10 @@ gbuffers opaque:
     2.a - 
     3.rgb - opaque normal
     3.a - 
-    4.rgb - previous frame
-    4.a -
+
+    5.rg - screenspace motion vector (velocity in clipspace)
+    5.b - 
+    5.a -
 
 
 defer0: lighting
@@ -29,7 +31,7 @@ defer1: combine passes and fog, manually clear albedo.rgba
     0.a - 
     1.rgba - vec4(0)
     3.rgba - vec4(0)
-
+    4.rgb - previous frame
 
 gbuffers transparent:
     0.rgb - composited albedo (+ transparent w/indirect lighting)
@@ -51,7 +53,8 @@ comp0: transparency shadows
     0.a - 
     1.rgb - no-hand albedo.rgb (and potentially light-limited)
     1.a - if light-limited, multiplier for light (for bloom)
-
+    4.rgb - previous frame
+    4.a -
 
 
 comp1: Fast GI and bloom
@@ -61,8 +64,9 @@ comp1: Fast GI and bloom
     0.rgb - albedo with bloom and GI
     0.a - 
 
+
 comp2: apply color
     REQUIRES albedo.rgb
 
-    4.rgb - colorgraded albedo
-    4.a -
+    0.rgb - colorgraded albedo
+    0.a -

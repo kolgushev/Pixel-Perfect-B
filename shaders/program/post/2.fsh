@@ -1,13 +1,11 @@
 #include "/common_defs.glsl"
 
-/* DRAWBUFFERS:04 */
+/* DRAWBUFFERS:0 */
 layout(location = 0) out vec4 b0;
-layout(location = 4) out vec4 b4;
 
 in vec2 texcoord;
 
 #define use_colortex0
-#define use_colortex4
 
 #define use_near
 #define use_far
@@ -27,10 +25,6 @@ in vec2 texcoord;
     #define use_view_height
 
     #define use_sample_noise
-#endif
-
-#if AA_MODE == 1
-    #define use_frame_counter
 #endif
 
 
@@ -227,13 +221,7 @@ void main() {
         colorCorrected = mix(colorCorrected - vec3(inverseMult), colorCorrected, factor);
     #endif
 
-    // write the diffuse color
-    vec3 prevFrame = texture2D(colortex4, texcoord).rgb;
-    #if AA_MODE == 1
-        vec4 finalColor = opaque(mix(colorCorrected, prevFrame, frameCounter == 0 ? 0.0 : 0.9));
-    #else
-        vec4 finalColor = opaque(colorCorrected);
-    #endif
+    vec4 finalColor = opaque(colorCorrected);
 
     #ifdef DEBUG_VIEW
         b0 = albedo;

@@ -1,7 +1,7 @@
 #include "/common_defs.glsl"
 
-/* DRAWBUFFERS:01 */
-layout(location = 1) out vec4 b1;
+/* DRAWBUFFERS:1 */
+layout(location = 0) out vec4 b1;
 
 in vec2 texcoord;
 
@@ -62,11 +62,11 @@ void main() {
     #if defined SHADOWS_ENABLED
         float depth = texture(depthtex1, texcoord).r;
         #if AA_MODE == 1
-            vec2 texcoordJittered = texcoord + temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] / vec2(viewWidth, viewHeight);
+            vec2 texcoordJittered = texcoord - temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] / vec2(viewWidth, viewHeight);
         #else
             vec2 texcoordJittered = texcoord;
         #endif
-        
+
         vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoordJittered, depth).xyz;
         vec3 pixelatedPosition = position;
 

@@ -2,11 +2,12 @@
 
 #include "/common_defs.glsl"
 
-/* DRAWBUFFERS:0123 */
-layout(location = 0) out vec4 b0;
-layout(location = 1) out vec4 b1;
-layout(location = 2) out vec4 b2;
-layout(location = 3) out vec4 b3;
+/* DRAWBUFFERS:01235 */
+layout(location = 0) out vec4 b0; // sky, near plane
+layout(location = 1) out vec4 b1; // far plane
+layout(location = 2) out vec4 b2; // light
+layout(location = 3) out vec4 b3; // normal
+layout(location = 4) out vec2 b5; // motion
 
 in vec2 texcoord;
 in vec4 color;
@@ -14,7 +15,10 @@ in vec2 light;
 in vec3 position;
 in vec3 normal;
 flat in int mcEntity;
-
+#if AA_MODE == 1
+    in vec2 screencoord;
+    in vec3 velocity;
+#endif
 #if defined g_skybasic
     in vec2 stars;
 #endif
@@ -163,6 +167,17 @@ flat in int mcEntity;
     #define use_sample_noisetex
 #endif
 
+#if AA_MODE == 1
+    #define use_camera_position
+    #define use_previous_camera_position
+    #define use_view_width
+    #define use_view_height
+    #define use_gbuffer_previous_projection
+    #define use_gbuffer_previous_model_view
+
+    #define use_to_viewspace
+#endif
+
 
 #include "/lib/use.glsl"
 
@@ -180,6 +195,14 @@ void main() {
 
 
         if(noiseToSurpass > smoothstep(0.47 * FADE_OUT_RADIUS, 0.6 * FADE_OUT_RADIUS, length(position))) discard;
+    #endif
+
+    #if AA_MODE == 1
+        vec4 prevClip = toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position - velocity + cameraPosition - previousCameraPosition);
+        vec4 unjitteredClip = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
+        vec2 prevTexcoord = (prevClip.xy / prevClip.w) * 0.5 + 0.5;
+        vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.w) * 0.5 + 0.5;
+        b5 = prevTexcoord - unjitteredTexcoord;
     #endif
 
     #if defined NEED_WEATHER_DATA
@@ -663,6 +686,7 @@ void main() {
         }
     #else
         b1 = albedo;
+        // b1 = vec4((b5).rg * 0.5 + 0.5, 0, 1);
     #endif
 
     if(albedo.a > 0.5 || renderStage == MC_RENDER_STAGE_TERRAIN_CUTOUT_MIPPED || renderStage == MC_RENDER_STAGE_TERRAIN_SOLID) {

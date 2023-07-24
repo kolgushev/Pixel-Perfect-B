@@ -2,11 +2,15 @@
 
 #include "/common_defs.glsl"
 
-/* DRAWBUFFERS:01 */
+/* DRAWBUFFERS:014 */
 layout(location = 0) out vec4 b0;
 #if defined FAST_GI || defined DYNAMIC_EXPOSURE_LIGHTING
     layout(location = 1) out vec4 b1;
 #endif
+#if AA_MODE == 1
+    layout(location = 2) out vec3 b4;
+#endif
+
 
 in vec2 texcoord;
 
@@ -36,17 +40,25 @@ in vec2 texcoord;
 #define use_eye_brightness_smooth_float
 #define use_fog_weather_sky
 
+#define use_fogify
+#define use_to_viewspace
+
 #if defined DIM_END
     #define use_boss_battle
 #endif
 
-#define use_fogify
-#define use_to_viewspace
+#if AA_MODE == 1
+	#define use_colortex4
+	#define use_colortex5
+
+    #define use_frame_counter
+#endif
 
 #include "/lib/use.glsl"
 
 void main() {
-    vec3 composite = texture(colortex0, texcoord).rgb;
+    vec3 albedo = texture(colortex0, texcoord).rgb;
+    vec3 composite = albedo;
 
     float depth = texture(depthtex1, texcoord).r;
     float depthWater = texture(depthtex0, texcoord).r;
@@ -92,6 +104,18 @@ void main() {
     #else
         composite = mix(mixed, multiplied, WATER_MULT_STRENGTH);
     #endif
+
+    #if AA_MODE == 1
+        vec2 texcoordPrev = texcoord + texture2D(colortex5, texcoord).xy;
+        // vec2 texcoordPrev = texcoord;
+
+        // write the diffuse color
+        vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
+
+        composite = mix(composite, prevFrame, frameCounter == 1 ? 0.0 : 0.9);
+        b4 = composite;
+    #endif
+
 
     #if defined FAST_GI || defined DYNAMIC_EXPOSURE_LIGHTING
         b1 = opaque(composite);

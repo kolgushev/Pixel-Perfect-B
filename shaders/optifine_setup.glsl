@@ -12,6 +12,9 @@ const bool colortex3Clear = false;
 const int colortex4Format = RGB16F;
 const bool colortex4Clear = false;
 
+const int colortex5Format = RG16F;
+const bool colortex5Clear = false;
+
 const int shadowcolor1Format = RGBA16F;
 const bool shadowcolor1Clear = false;
 */

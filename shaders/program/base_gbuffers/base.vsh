@@ -5,12 +5,17 @@ out vec4 color;
 out vec2 light;
 out vec3 position;
 out vec3 normal;
-
+flat out int mcEntity;
+#if AA_MODE == 1
+    out vec2 screencoord;
+    out vec3 velocity;
+#endif
 #if defined g_skybasic
     out vec2 stars;
 #endif
 
-flat out int mcEntity;
+
+in vec3 at_velocity;
 
 #if defined gc_terrain
     in vec2 mc_Entity;
@@ -77,6 +82,8 @@ flat out int mcEntity;
 
 // TODO: world-space coordinates for everything not terrain
 void main() {
+    velocity = at_velocity;
+
     #if defined gc_terrain
         mcEntity = int(mc_Entity.x);
     #elif defined gc_emissive
@@ -333,6 +340,7 @@ void main() {
     #endif
 
     #if (PANORAMIC_WORLD == 1 || PANORAMIC_WORLD == 2) && !defined gc_skybox && !defined g_skybasic
+        // TODO: fix compatibility with TAA
         vec4 glPos = mul_m4_v3(gl_ModelViewMatrix, position);
         float yaw = atan(glPos.x, -glPos.z);
         float absYaw = abs(yaw);
@@ -343,7 +351,7 @@ void main() {
         #elif PANORAMIC_WORLD == 1
             yaw = mix(absYaw, 0.5 * absYaw + 0.3, smoothstep(0.5, 2.4, absYaw)) * sign(yaw);
         #endif
-        
+
         glPos.xz = vec2(sin(yaw), -cos(yaw)) * length(glPos.xz);
 
         #if PANORAMIC_WORLD == 2
