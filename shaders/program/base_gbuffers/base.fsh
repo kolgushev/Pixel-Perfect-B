@@ -198,7 +198,8 @@ void main() {
     #endif
 
     #if AA_MODE == 1
-        vec4 prevClip = toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position - velocity + cameraPosition - previousCameraPosition);
+        // Camera positions are subtracted in parentheses in order to reduce floating-point inaccuracies
+        vec4 prevClip = toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position - velocity + (cameraPosition - previousCameraPosition));
         vec4 unjitteredClip = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
         vec2 prevTexcoord = (prevClip.xy / prevClip.w) * 0.5 + 0.5;
         vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.w) * 0.5 + 0.5;

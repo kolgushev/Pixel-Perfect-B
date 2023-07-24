@@ -52,6 +52,8 @@ in vec2 texcoord;
 	#define use_colortex5
 
     #define use_frame_counter
+    #define use_view_width
+    #define use_view_height
 #endif
 
 #include "/lib/use.glsl"
@@ -107,10 +109,20 @@ void main() {
 
     #if AA_MODE == 1
         vec2 texcoordPrev = texcoord + texture2D(colortex5, texcoord).xy;
-        // vec2 texcoordPrev = texcoord;
 
         // write the diffuse color
         vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
+
+        vec3 minFrame = composite;
+        vec3 maxFrame = composite;
+
+        for(int i = 0; i < 4; i++) {
+            vec3 neighborSample = texture2D(colortex0, texcoord + superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight)).rgb;
+            minFrame = min(minFrame, neighborSample);
+            maxFrame = max(maxFrame, neighborSample);
+        }
+
+        prevFrame = clamp(prevFrame, minFrame, maxFrame);
 
         composite = mix(composite, prevFrame, frameCounter == 1 ? 0.0 : 0.9);
         b4 = composite;
