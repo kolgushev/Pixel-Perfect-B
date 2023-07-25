@@ -7,7 +7,7 @@ layout(location = 0) out vec4 b0; // sky, near plane
 layout(location = 1) out vec4 b1; // far plane
 layout(location = 2) out vec4 b2; // light
 layout(location = 3) out vec4 b3; // normal
-layout(location = 4) out vec2 b5; // motion
+layout(location = 4) out vec3 b5; // motion
 
 in vec2 texcoord;
 in vec4 color;
@@ -205,7 +205,13 @@ void main() {
         vec4 unjitteredClip = toViewspace(gbufferProjection, gbufferModelView, position);
         vec2 prevTexcoord = (prevClip.xy / prevClip.w) * 0.5 + 0.5;
         vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.w) * 0.5 + 0.5;
-        b5 = prevTexcoord - unjitteredTexcoord;
+        b5.rg = prevTexcoord - unjitteredTexcoord;
+    #endif
+
+    #if defined AA_HYBRID
+        b5.b = 0.0;
+    #else
+        b5.b = 1.0;
     #endif
 
     #if defined NEED_WEATHER_DATA
@@ -289,14 +295,50 @@ void main() {
                 #define IS_FILTERED false
             #endif
             
+            #if defined AA_HYBRID
+                vec2 offsetMod = 0.5 * offset;
+
+                #if IS_FILTERED == true
+                    vec2 texSize = textureSize(texture, 0);
+                #endif
+
+                vec2 ddx = dFdx(texcoordMod);
+                vec2 ddy = dFdy(texcoordMod);
+
+                #if IS_FILTERED == true
+                    vec2 texcoordPrev = texcoordMod;
+                    vec2 offsetScaled = (abs(ddx) + abs(ddy) * 2.0) * texSize * TEXELS_PER_BLOCK;
+                    vec2 texcoordScaled = texcoordMod * texSize * TEXELS_PER_BLOCK;
+
+                    if(floor(texcoordScaled + offsetScaled) != floor(texcoordScaled) || ceil(texcoordScaled - offsetScaled) != ceil(texcoordScaled)) {
+                        // mark for AA
+                        b5.b = 1;
+                    } else {
+                        texcoordMod += offsetMod.x * ddx + offsetMod.y * ddy;
+                    }
+                #endif
+            #endif
+
             vec4 albedo = textureFiltered(texture, texcoordMod, IS_FILTERED);
-            
+
             #if !(defined gc_transparent || defined g_beaconbeam)
+                #if defined AA_HYBRID
+                    vec4 unfilteredTex = texture2D(texture, texcoordPrev);
+                #else
+                    vec4 unfilteredTex = texture2D(texture, texcoordMod);
+                #endif
+                
                 // fix for transparency losing color
-                if(albedo.a < 1) albedo = texture2D(texture, texcoordMod);
+                if(albedo.a < 1 || unfilteredTex.a < 1) {
+                    albedo = unfilteredTex;
+                    // mark for AA
+                    b5.b = 1;
+                }
             #endif
         #else
             vec4 albedo = texture2D(texture, texcoordMod);
+            // mark for AA
+            b5.b = 1;
         #endif
 
         
@@ -690,6 +732,7 @@ void main() {
     #else
         b1 = albedo;
         // b1 = vec4((b5).rg * 0.5 + 0.5, 0, 1);
+        // b1 = opaque1(b5.b);
     #endif
 
     if(albedo.a > 0.5 || renderStage == MC_RENDER_STAGE_TERRAIN_CUTOUT_MIPPED || renderStage == MC_RENDER_STAGE_TERRAIN_SOLID) {

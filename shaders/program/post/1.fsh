@@ -58,10 +58,17 @@ void main() {
 	vec3 colored = diffuse;
 
     #if defined TAA_ENABLED
+
 		#if TAA_RESOLVE_METHOD == 0
-			vec2 velocity = texture2D(colortex5, texcoord).xy;
+			vec3 colortexSample = texture2D(colortex5, texcoord).rgb;
+			vec2 velocity = colortexSample.xy;
+		
+			float shouldTAA = colortexSample.b;
+
 			vec2 texcoordPrev = texcoord + velocity;
 		#elif TAA_RESOLVE_METHOD == 1
+			float shouldTAA = texture2D(colortex5, texcoord).b;
+			
 			float closestDist = depth;
 			vec2 closestOffset = vec2(0);
 			for(int i = 0; i < 4; i++) {
@@ -72,12 +79,12 @@ void main() {
 					closestOffset = currentOffset;
 				}
 			}
-
 			vec2 velocity = texture2D(colortex5, texcoord + closestOffset).xy;
 			vec2 texcoordPrev = texcoord + velocity;
 		#endif
 
-		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev) {
+
+		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev && shouldTAA > 0.5) {
 			// write the diffuse color
 			vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
 
