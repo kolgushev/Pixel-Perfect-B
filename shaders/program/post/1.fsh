@@ -100,12 +100,13 @@ void main() {
 				avgFrame *= 0.25;
 			#endif
 
+			float velocityLen = length(velocity * vec2(viewWidth, viewHeight));
 			#if TAA_RESOLVE_METHOD == 0
 				prevFrame = clamp(prevFrame, minFrame, maxFrame);
 
 				// Update fast-moving pixels sooner
 				// Updates at a rate of 0.02 during standstill, 0.5 when moving at 10px/frame
-				float mixingFactor = smoothstep(0.0, 10.0, length(velocity * vec2(viewWidth, viewHeight))) * 0.48 + 0.02;
+				float mixingFactor = smoothstep(0.0, 10.0, velocityLen) * 0.48 + 0.02;
 			#else
 				// perform clipping similar to https://twvideo01.ubm-us.net/o1/vault/gdc2016/Presentations/Pedersen_LasseJonFuglsang_TemporalReprojectionAntiAliasing.pdf
 
@@ -131,12 +132,12 @@ void main() {
 					prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
 				} 
 
-				float mixingFactor = 0.05;
+				float mixingFactor = smoothstep(0.0, 0.2, velocityLen) * 0.07 + 0.02;
 			#endif
 
 			// TAA Sharpening
 			#if defined TAA_SHARP_ENABLED
-				float sharpeningFactor = smoothstep(0.0, TAA_SHARP_PIXEL_THRESHOLD, length(velocity * vec2(viewWidth, viewHeight))) * TAA_SHARP_SPEED_WEIGHT + 1.0;
+				float sharpeningFactor = smoothstep(0.0, TAA_SHARP_PIXEL_THRESHOLD, velocityLen) * TAA_SHARP_SPEED_WEIGHT + 1.0;
 				colored = (colored - avgFrame) * sharpeningFactor * TAA_SHARP_WEIGHT + avgFrame;
 				colored = max(colored, 0.0);
 			#endif
