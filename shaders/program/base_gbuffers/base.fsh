@@ -49,11 +49,11 @@ flat in int mcEntity;
 #define use_hdr_mapping
 
 #if defined fade_out_items
-    #define use_sample_noise
-
     #define use_view_width
     #define use_view_height
     #define use_gbuffer_model_view
+
+    #define use_sample_noise
 #endif
 
 #if defined gc_transparent
