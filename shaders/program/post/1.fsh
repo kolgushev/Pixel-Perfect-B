@@ -127,7 +127,7 @@ void main() {
 				float MAUnit = max(aUnit.x, max(aUnit.y, aUnit.z));
 
 				if(MAUnit > 1.0) {
-					prevC = coloredClip + vClip / MAUnit;
+					prevC = coloredClip + vClip / max(MAUnit, EPSILON);
 					prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
 				} 
 
