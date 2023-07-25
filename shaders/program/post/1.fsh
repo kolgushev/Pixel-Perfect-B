@@ -131,7 +131,7 @@ void main() {
 					prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
 				} 
 
-				float mixingFactor = 0.1;
+				float mixingFactor = 0.05;
 			#endif
 
 			// TAA Sharpening

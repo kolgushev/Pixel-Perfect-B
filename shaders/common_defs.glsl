@@ -310,7 +310,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define TAA_SHARP_WEIGHT 1.2
 #define TAA_SHARP_SPEED_WEIGHT 1.35
-#define TAA_SHARP_PIXEL_THRESHOLD 0.4
+#define TAA_SHARP_PIXEL_THRESHOLD 0.3
 
 // output mapping: 0:none 1:8bit
 #define DITHERING_MODE 1 // [0 1]
