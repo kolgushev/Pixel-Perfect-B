@@ -7,7 +7,7 @@ vec4 textureFiltered(in sampler2D tex, in vec2 uv, in bool clamping) {
 	vec2 texelOffset = smoothstep(1 - boxSize, vec2(1.0), fract(texelCoord));
 	vec2 bilinearSamplePos = (floor(texelCoord) + 0.5 + texelOffset) / resolution;
 	
-	vec2[5] sampleLocations = bilinearCoordinateShift(tex, bilinearSamplePos, clamping);
+	vec2[5] sampleLocations = bilinearCoordinateShift(tex, bilinearSamplePos, resolution, clamping);
 
 	// Initialize an array to store the samples
     vec4 samples[4] = vec4[4](vec4(0), vec4(0), vec4(0), vec4(0));

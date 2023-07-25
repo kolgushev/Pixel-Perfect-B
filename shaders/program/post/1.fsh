@@ -58,9 +58,15 @@ void main() {
 	vec3 colored = diffuse;
 
     #if defined TAA_ENABLED
-        vec2 texcoordPrev = texcoord + texture2D(colortex5, texcoord).xy;
+		vec3 colortexSample = texture2D(colortex5, texcoord).rgb;
+        vec2 texcoordPrev = texcoord + colortexSample.rg;
+		#if defined AA_HYBRID
+			float shouldTAA = colortexSample.b;
+		#else
+			float shouldTAA = 1.0;
+		#endif
 
-		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev) {
+		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev && shouldTAA > 0.5) {
 			// write the diffuse color
 			vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
 

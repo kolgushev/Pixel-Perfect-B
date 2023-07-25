@@ -1,6 +1,5 @@
 // returns [alignedPos1, alignedPos2, alignedPos3, alignedPos4, mixingGradient]
-vec2[5] bilinearCoordinateShift(in sampler2D tex, in vec2 uv, in bool clamping) {
-    vec2 resolution = textureSize(tex, 0);
+vec2[5] bilinearCoordinateShift(in sampler2D tex, in vec2 uv, in vec2 resolution, in bool clamping) {
     vec2 texResolution = resolution * TEXELS_PER_BLOCK;
 
     vec2 minSampleCoords = floor(uv * texResolution) / texResolution;
@@ -34,7 +33,7 @@ vec2[5] bilinearCoordinateShift(in sampler2D tex, in vec2 uv, in bool clamping) 
 }
 
 vec4 textureBilinear(in sampler2D tex, in vec2 uv, in bool clamping) {
-    vec2 sampleLocations[5] = bilinearCoordinateShift(tex, uv, clamping);
+    vec2 sampleLocations[5] = bilinearCoordinateShift(tex, uv, textureSize(tex, 0), clamping);
 
     // Initialize an array to store the samples
     vec4 samples[4] = vec4[4](vec4(0), vec4(0), vec4(0), vec4(0));
