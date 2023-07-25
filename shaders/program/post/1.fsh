@@ -58,8 +58,24 @@ void main() {
 	vec3 colored = diffuse;
 
     #if defined TAA_ENABLED
-		vec2 velocity = texture2D(colortex5, texcoord).xy;
-        vec2 texcoordPrev = texcoord + velocity;
+		#if TAA_RESOLVE_METHOD == 0
+			vec2 velocity = texture2D(colortex5, texcoord).xy;
+			vec2 texcoordPrev = texcoord + velocity;
+		#elif TAA_RESOLVE_METHOD == 1
+			float closestDist = depth;
+			vec2 closestOffset = vec2(0);
+			for(int i = 0; i < 4; i++) {
+				vec2 currentOffset = superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight);
+				float neighborSample = texture2D(depthtex0, texcoord + currentOffset).r;
+				if(neighborSample < closestDist) {
+					closestDist = neighborSample;
+					closestOffset = currentOffset;
+				}
+			}
+
+			vec2 velocity = texture2D(colortex5, texcoord + closestOffset).xy;
+			vec2 texcoordPrev = texcoord + velocity;
+		#endif
 
 		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev) {
 			// write the diffuse color
@@ -74,11 +90,39 @@ void main() {
 				maxFrame = max(maxFrame, neighborSample);
 			}
 
-			prevFrame = clamp(prevFrame, minFrame, maxFrame);
+			#if TAA_RESOLVE_METHOD == 0
+				prevFrame = clamp(prevFrame, minFrame, maxFrame);
 
-			// Update fast-moving pixels sooner
-			// Updates at a rate of 0.02 during standstill, 0.5 when moving at 10px/frame
-			float mixingFactor = smoothstep(0.0, 10.0, length(velocity * vec2(viewWidth, viewHeight))) * 0.48 + 0.02;
+				// Update fast-moving pixels sooner
+				// Updates at a rate of 0.02 during standstill, 0.5 when moving at 10px/frame
+				float mixingFactor = smoothstep(0.0, 10.0, length(velocity * vec2(viewWidth, viewHeight))) * 0.48 + 0.02;
+			#else
+				// perform clipping similar to https://twvideo01.ubm-us.net/o1/vault/gdc2016/Presentations/Pedersen_LasseJonFuglsang_TemporalReprojectionAntiAliasing.pdf
+
+				// convert to YCoCg colorspace
+				#define Y_CO_CG_TRANSFORM mat3(0.25, 0.5, 0.25, 0.5, 0.0, -0.5, -0.25, 0.5, -0.25)
+				#define Y_CO_CG_TRANSFORM_INV mat3(1.0, 1.0, -1.0, 1.0, 0.0, 1.0, 1.0, -1.0, -1.0)
+
+				vec3 maxFrameC = Y_CO_CG_TRANSFORM * maxFrame;
+				vec3 minFrameC = Y_CO_CG_TRANSFORM * minFrame;
+				vec3 prevC = Y_CO_CG_TRANSFORM * prevFrame;
+
+
+				vec3 coloredClip = 0.5 * (maxFrameC + minFrameC);
+				vec3 eClip = 0.5 * (maxFrameC - minFrameC);
+
+				vec3 vClip = prevC - coloredClip;
+				vec3 vUnit = vClip.xyz / eClip;
+				vec3 aUnit = abs(vUnit);
+				float MAUnit = max(aUnit.x, max(aUnit.y, aUnit.z));
+
+				if(MAUnit > 1.0) {
+					prevC = coloredClip + vClip / MAUnit;
+					prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
+				} 
+
+				float mixingFactor = 0.1;
+			#endif
 
 			colored = mix(prevFrame, colored, mixingFactor);
 		}

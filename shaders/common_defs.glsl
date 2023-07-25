@@ -304,6 +304,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
     #define AA_HYBRID
 #endif
 
+// 0: simple neighbor clamping 1: closest depthbuffer
+#define TAA_RESOLVE_METHOD 1 // [0 1]
+
 // output mapping: 0:none 1:8bit
 #define DITHERING_MODE 1 // [0 1]
 
