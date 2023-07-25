@@ -290,7 +290,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #endif
 
 // 0: none 1:TAA
-#define AA_MODE 1 // [0 1 2]
+#define AA_MODE 2 // [0 1 2]
 
 #if AA_MODE != 0
     #define AA_ENABLED
