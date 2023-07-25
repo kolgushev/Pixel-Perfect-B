@@ -187,7 +187,7 @@ void main() {
     // discard if too close
     #if defined fade_out_items
         // sample noise texture
-        float noiseToSurpass = sampleNoise(gl_FragCoord.xy / vec2(viewWidth, viewHeight), 0, NOISE_CHECKERBOARD_1D, true).r;
+        float noiseToSurpass = tile(gl_FragCoord.xy, NOISE_CHECKERBOARD_1D, true).r;
 
         #if defined CLOSE_FADE_OUT_FULL
             noiseToSurpass = noiseToSurpass * (1 - EPSILON) + EPSILON;

@@ -11,9 +11,8 @@ vec4 tile(in vec2 texcoord, in int id, in bool sharp) {
 
 
 	if(sharp) {
-		texcoord = floor(texcoord);
+		texcoord = floor(texcoord) + 0.5;
 		texcoord /= NOISETEX_TILES_RES;
-		texcoord = removeBorder(texcoord, 1.0 / float(NOISETEX_TILES_RES));
 	} else {
 		texcoord /= NOISETEX_TILES_RES;
 	}

@@ -58,24 +58,19 @@ void main() {
 	vec3 colored = diffuse;
 
     #if defined TAA_ENABLED
-		#if TAA_RESOLVE_METHOD == 0
-			vec2 velocity = texture2D(colortex5, texcoord).xy;
-			vec2 texcoordPrev = texcoord + velocity;
-		#elif TAA_RESOLVE_METHOD == 1
-			float closestDist = depth;
-			vec2 closestOffset = vec2(0);
-			for(int i = 0; i < 4; i++) {
-				vec2 currentOffset = superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight);
-				float neighborSample = texture2D(depthtex0, texcoord + currentOffset).r;
-				if(neighborSample < closestDist) {
-					closestDist = neighborSample;
-					closestOffset = currentOffset;
-				}
+		float closestDist = depth;
+		vec2 closestOffset = vec2(0);
+		for(int i = 0; i < 4; i++) {
+			vec2 currentOffset = superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight);
+			float neighborSample = texture2D(depthtex0, texcoord + currentOffset).r;
+			if(neighborSample < closestDist) {
+				closestDist = neighborSample;
+				closestOffset = currentOffset;
 			}
+		}
 
-			vec2 velocity = texture2D(colortex5, texcoord + closestOffset).xy;
-			vec2 texcoordPrev = texcoord + velocity;
-		#endif
+		vec2 velocity = texture2D(colortex5, texcoord + closestOffset).xy;
+		vec2 texcoordPrev = texcoord + velocity;
 
 		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev) {
 			// write the diffuse color
@@ -96,44 +91,47 @@ void main() {
 				#endif
 			}
 
+			#if defined TAA_CORNER_CLAMPING
+				// edges
+				for(int i = 1; i < 5; i++) {
+					vec3 neighborSample = texture2D(colortex0, texcoord + superSampleOffsetsCross[i].xy * 2 / vec2(viewWidth, viewHeight)).rgb;
+					minFrame = min(minFrame, neighborSample);
+					maxFrame = max(maxFrame, neighborSample);
+				}
+			#endif
+
 			#if defined TAA_SHARP_ENABLED
 				avgFrame *= 0.25;
 			#endif
 
 			float velocityLen = length(velocity * vec2(viewWidth, viewHeight));
-			#if TAA_RESOLVE_METHOD == 0
-				prevFrame = clamp(prevFrame, minFrame, maxFrame);
-
-				// Update fast-moving pixels sooner
-				// Updates at a rate of 0.02 during standstill, 0.5 when moving at 10px/frame
-				float mixingFactor = smoothstep(0.0, 10.0, velocityLen) * 0.48 + 0.02;
-			#else
-				// perform clipping similar to https://twvideo01.ubm-us.net/o1/vault/gdc2016/Presentations/Pedersen_LasseJonFuglsang_TemporalReprojectionAntiAliasing.pdf
-
-				// convert to YCoCg colorspace
-				#define Y_CO_CG_TRANSFORM mat3(0.25, 0.5, 0.25, 0.5, 0.0, -0.5, -0.25, 0.5, -0.25)
-				#define Y_CO_CG_TRANSFORM_INV mat3(1.0, 1.0, -1.0, 1.0, 0.0, 1.0, 1.0, -1.0, -1.0)
-
-				vec3 maxFrameC = Y_CO_CG_TRANSFORM * maxFrame;
-				vec3 minFrameC = Y_CO_CG_TRANSFORM * minFrame;
-				vec3 prevC = Y_CO_CG_TRANSFORM * prevFrame;
 
 
-				vec3 coloredClip = 0.5 * (maxFrameC + minFrameC);
-				vec3 eClip = 0.5 * (maxFrameC - minFrameC);
+			// perform clipping similar to https://twvideo01.ubm-us.net/o1/vault/gdc2016/Presentations/Pedersen_LasseJonFuglsang_TemporalReprojectionAntiAliasing.pdf
 
-				vec3 vClip = prevC - coloredClip;
-				vec3 vUnit = vClip.xyz / eClip;
-				vec3 aUnit = abs(vUnit);
-				float MAUnit = max(aUnit.x, max(aUnit.y, aUnit.z));
+			// convert to YCoCg colorspace
+			#define Y_CO_CG_TRANSFORM mat3(0.25, 0.5, 0.25, 0.5, 0.0, -0.5, -0.25, 0.5, -0.25)
+			#define Y_CO_CG_TRANSFORM_INV mat3(1.0, 1.0, -1.0, 1.0, 0.0, 1.0, 1.0, -1.0, -1.0)
 
-				if(MAUnit > 1.0) {
-					prevC = coloredClip + vClip / max(MAUnit, EPSILON);
-					prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
-				} 
+			vec3 maxFrameC = Y_CO_CG_TRANSFORM * maxFrame;
+			vec3 minFrameC = Y_CO_CG_TRANSFORM * minFrame;
+			vec3 prevC = Y_CO_CG_TRANSFORM * prevFrame;
 
-				float mixingFactor = smoothstep(0.0, 0.2, velocityLen) * 0.07 + 0.02;
-			#endif
+
+			vec3 coloredClip = 0.5 * (maxFrameC + minFrameC);
+			vec3 eClip = 0.5 * (maxFrameC - minFrameC);
+
+			vec3 vClip = prevC - coloredClip;
+			vec3 vUnit = vClip.xyz / eClip;
+			vec3 aUnit = abs(vUnit);
+			float MAUnit = max(aUnit.x, max(aUnit.y, aUnit.z));
+
+			if(MAUnit > 1.0) {
+				prevC = coloredClip + vClip / max(MAUnit, EPSILON);
+				prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
+			} 
+
+			float mixingFactor = smoothstep(0.0, 0.2, velocityLen) * 0.07 + 0.02;
 
 			// TAA Sharpening
 			#if defined TAA_SHARP_ENABLED
