@@ -298,14 +298,19 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #if AA_MODE == 1 || AA_MODE == 2
     #define TAA_ENABLED
+    #define TAA_SHARP_ENABLED
 #endif
 
 #if AA_MODE == 2
     #define AA_HYBRID
 #endif
 
-// 0: simple neighbor clamping 1: closest depthbuffer
+// 0: simple neighbor clamping 1: closest depthbuffer + neighbor clipping
 #define TAA_RESOLVE_METHOD 1 // [0 1]
+
+#define TAA_SHARP_WEIGHT 1.2
+#define TAA_SHARP_SPEED_WEIGHT 1.4
+#define TAA_SHARP_PIXEL_THRESHOLD 0.5
 
 // output mapping: 0:none 1:8bit
 #define DITHERING_MODE 1 // [0 1]

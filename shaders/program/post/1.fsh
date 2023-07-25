@@ -83,12 +83,22 @@ void main() {
 
 			vec3 minFrame = colored;
 			vec3 maxFrame = colored;
+			#if defined TAA_SHARP_ENABLED
+				vec3 avgFrame = vec3(0);
+			#endif
 
 			for(int i = 0; i < 4; i++) {
 				vec3 neighborSample = texture2D(colortex0, texcoord + superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight)).rgb;
 				minFrame = min(minFrame, neighborSample);
 				maxFrame = max(maxFrame, neighborSample);
+				#if defined TAA_SHARP_ENABLED
+					avgFrame += neighborSample;
+				#endif
 			}
+
+			#if defined TAA_SHARP_ENABLED
+				avgFrame *= 0.25;
+			#endif
 
 			#if TAA_RESOLVE_METHOD == 0
 				prevFrame = clamp(prevFrame, minFrame, maxFrame);
@@ -124,10 +134,21 @@ void main() {
 				float mixingFactor = 0.1;
 			#endif
 
+			// TAA Sharpening
+			#if defined TAA_SHARP_ENABLED
+				float sharpeningFactor = smoothstep(0.0, TAA_SHARP_PIXEL_THRESHOLD, length(velocity * vec2(viewWidth, viewHeight))) * TAA_SHARP_SPEED_WEIGHT + 1.0;
+				colored = (colored - avgFrame) * sharpeningFactor * TAA_SHARP_WEIGHT + avgFrame;
+				colored = max(colored, 0.0);
+			#endif
+
 			colored = mix(prevFrame, colored, mixingFactor);
+			
+			b4 = colored;
+		} else {
+			b4 = colored;
 		}
 		
-		b4 = colored;
+
     #endif
 
 	#if defined FAST_GI
