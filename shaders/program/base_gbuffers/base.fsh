@@ -174,6 +174,8 @@ flat in int mcEntity;
     #define use_view_height
     #define use_gbuffer_previous_projection
     #define use_gbuffer_previous_model_view
+    #define use_gbuffer_projection
+    #define use_gbuffer_model_view
 
     #define use_to_viewspace
 #endif
@@ -200,7 +202,7 @@ void main() {
     #if defined TAA_ENABLED
         // Camera positions are subtracted in parentheses in order to reduce floating-point inaccuracies
         vec4 prevClip = toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position - velocity + (cameraPosition - previousCameraPosition));
-        vec4 unjitteredClip = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
+        vec4 unjitteredClip = toViewspace(gbufferProjection, gbufferModelView, position);
         vec2 prevTexcoord = (prevClip.xy / prevClip.w) * 0.5 + 0.5;
         vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.w) * 0.5 + 0.5;
         b5.rg = prevTexcoord - unjitteredTexcoord;
