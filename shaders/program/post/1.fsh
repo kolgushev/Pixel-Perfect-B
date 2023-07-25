@@ -77,9 +77,10 @@ void main() {
 			prevFrame = clamp(prevFrame, minFrame, maxFrame);
 
 			// Update fast-moving pixels sooner
-			float mixingFactor = 0.95 / (1.0 + length(velocity * vec2(viewWidth, viewHeight)) * 0.25);
+			// Updates at a rate of 0.02 during standstill, 0.5 when moving at 10px/frame
+			float mixingFactor = smoothstep(0.0, 10.0, length(velocity * vec2(viewWidth, viewHeight))) * 0.48 + 0.02;
 
-			colored = mix(colored, prevFrame, mixingFactor);
+			colored = mix(prevFrame, colored, mixingFactor);
 		}
 		
 		b4 = colored;
