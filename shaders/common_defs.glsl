@@ -865,3 +865,7 @@ const vec2 superSampleOffsets16[16] = vec2[16](
 
 // optifine setup
 #include "/optifine_setup.glsl"
+
+#if defined gc_skybox && defined DIM_END
+    #define NO_AA
+#endif

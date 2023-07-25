@@ -381,7 +381,7 @@ void main() {
     #endif
 
     // apply jittering
-    #if defined TAA_ENABLED
+    #if defined TAA_ENABLED && !defined NO_AA
         offset = temporalAAOffsets[frameCounter % TAA_OFFSET_LEN];
         glPos.xy += offset * glPos.w / vec2(viewWidth, viewHeight);
     #endif
