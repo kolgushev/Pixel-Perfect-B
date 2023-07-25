@@ -58,7 +58,8 @@ void main() {
 	vec3 colored = diffuse;
 
     #if defined TAA_ENABLED
-        vec2 texcoordPrev = texcoord + texture2D(colortex5, texcoord).xy;
+		vec2 velocity = texture2D(colortex5, texcoord).xy;
+        vec2 texcoordPrev = texcoord + velocity;
 
 		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev) {
 			// write the diffuse color
@@ -75,7 +76,10 @@ void main() {
 
 			prevFrame = clamp(prevFrame, minFrame, maxFrame);
 
-			colored = mix(colored, prevFrame, 0.9);
+			// Update fast-moving pixels sooner
+			float mixingFactor = 0.95 / (1.0 + length(velocity * vec2(viewWidth, viewHeight)) * 0.25);
+
+			colored = mix(colored, prevFrame, mixingFactor);
 		}
 		
 		b4 = colored;

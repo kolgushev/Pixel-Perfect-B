@@ -20,8 +20,13 @@ screen.POST_PROCESSING=Post Processing
     option.POST_SATURATION=Vibrance
         option.POST_SATURATION.comment=Also known as saturation. Increases the strength of colors in your world.
 
+    option.AA_MODE=Anti-Aliasing
+        option.AA_MODE.comment=Reduces jagged edges on geometry edges and (when texture filtering is off) on textures. Enabled ➤ Small performance hit.
+        value.AA_MODE.0=§cOff
+        value.AA_MODE.1=TAA
+
     option.DITHERING_MODE=Dithering
-        option.DITHERING_MODE.comment=Slightly randomizes pixel colors to get rid of ugly bands of color (for instance, ones visible in the sky) that form because your monitor can't display color precisely enough. Does not work with Render Quality > 1x.  On ➤ Minimal performance hit.
+        option.DITHERING_MODE.comment=Slightly randomizes pixel colors to get rid of ugly bands of color (for instance, ones visible in the sky) that form when your monitor can't display color precisely enough. Does not work when Render Quality is greater than 1x.  On ➤ Minimal performance hit.
         value.DITHERING_MODE.0=§cOff
         value.DITHERING_MODE.1=On
 
