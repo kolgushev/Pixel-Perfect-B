@@ -58,16 +58,18 @@ void main() {
 	vec3 colored = diffuse;
 
     #if defined TAA_ENABLED
-		float closestDist = depth;
 		vec2 closestOffset = vec2(0);
-		for(int i = 0; i < 4; i++) {
-			vec2 currentOffset = superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight);
-			float neighborSample = texture2D(depthtex0, texcoord + currentOffset).r;
-			if(neighborSample < closestDist) {
-				closestDist = neighborSample;
-				closestOffset = currentOffset;
+		#if defined TAA_CLOSEST_MOTION_VECTOR
+			float closestDist = depth;
+			for(int i = 0; i < 4; i++) {
+				vec2 currentOffset = superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight);
+				float neighborSample = texture2D(depthtex0, texcoord + currentOffset).r;
+				if(neighborSample < closestDist) {
+					closestDist = neighborSample;
+					closestOffset = currentOffset;
+				}
 			}
-		}
+		#endif
 
 		vec2 velocity = texture2D(colortex5, texcoord + closestOffset).xy;
 		vec2 texcoordPrev = texcoord + velocity;
@@ -126,10 +128,10 @@ void main() {
 			vec3 aUnit = abs(vUnit);
 			float MAUnit = max(aUnit.x, max(aUnit.y, aUnit.z));
 
-			if(MAUnit > 1.0) {
-				prevC = coloredClip + vClip / max(MAUnit, EPSILON);
-				prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
-			} 
+			// if(MAUnit > 1.0) {
+			// 	prevC = coloredClip + vClip / max(MAUnit, EPSILON);
+			// 	prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
+			// } 
 
 			float mixingFactor = smoothstep(0.0, 0.2, velocityLen) * 0.07 + 0.02;
 
