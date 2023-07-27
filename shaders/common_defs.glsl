@@ -305,8 +305,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #endif
 
 
-// #define TAA_CLOSEST_MOTION_VECTOR
+#define TAA_CLOSEST_MOTION_VECTOR
 #define TAA_SHARP_ENABLED
+
 #define TAA_SHARP_WEIGHT 1.2
 #define TAA_SHARP_SPEED_WEIGHT 0.7
 #define TAA_SHARP_PIXEL_THRESHOLD 0.3
