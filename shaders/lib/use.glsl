@@ -74,9 +74,6 @@
 	#define use_noisetex_3d
 #endif
 
-#if defined use_sampling_algorithms
-#endif
-
 #if defined use_switch_fog_color
 #endif
 
@@ -158,10 +155,6 @@
 // depends on: use_sample_noisetex
 #if defined use_sample_noise
 #include "/lib/sample_noise.glsl"
-#endif
-
-#if defined use_sampling_algorithms
-#include "/lib/sampling_algorithms.glsl"
 #endif
 
 #if defined use_switch_fog_color
