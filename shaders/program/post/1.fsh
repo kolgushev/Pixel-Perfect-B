@@ -128,10 +128,10 @@ void main() {
 			vec3 aUnit = abs(vUnit);
 			float MAUnit = max(aUnit.x, max(aUnit.y, aUnit.z));
 
-			// if(MAUnit > 1.0) {
-			// 	prevC = coloredClip + vClip / max(MAUnit, EPSILON);
-			// 	prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
-			// } 
+			if(MAUnit > 1.0) {
+				prevC = coloredClip + vClip / max(MAUnit, EPSILON);
+				prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
+			} 
 
 			float mixingFactor = smoothstep(0.0, 0.2, velocityLen) * 0.07 + 0.02;
 
