@@ -1,6 +1,8 @@
 // sample a bilinearly-interpolated texture as if it were bicubic
 // https://vec3.ca/bicubic-filtering-in-fewer-taps/
 
+#define SIMPLIFY_BICUBIC_SAMPLING
+
 vec4 textureBicubic(in sampler2D tex, in vec2 uv) {
 	vec2 resolution = textureSize(tex, 0);
 
@@ -39,12 +41,16 @@ vec4 textureBicubic(in sampler2D tex, in vec2 uv) {
 	// (3 coords) ^ 2 = 9 sample points
 
 	return 
-		texture2D(tex, vec2(tc0.x, tc0.y)) * w0.x * w0.y +
-		texture2D(tex, vec2(tc3.x, tc0.y)) * w3.x * w0.y +
+		#if !defined SIMPLIFY_BICUBIC_SAMPLING
+			// four corner samples
+			texture2D(tex, vec2(tc0.x, tc0.y)) * w0.x * w0.y +
+			texture2D(tex, vec2(tc3.x, tc0.y)) * w3.x * w0.y +
+			texture2D(tex, vec2(tc0.x, tc3.y)) * w0.x * w3.y +
+			texture2D(tex, vec2(tc3.x, tc3.y)) * w3.x * w3.y +
+		#endif
+
 		texture2D(tex, vec2(tc1_2.x, tc0.y)) * s1.x * w0.y +
 
-		texture2D(tex, vec2(tc0.x, tc3.y)) * w0.x * w3.y +
-		texture2D(tex, vec2(tc3.x, tc3.y)) * w3.x * w3.y +
 		texture2D(tex, vec2(tc1_2.x, tc3.y)) * s1.x * w3.y +
 
 		texture2D(tex, vec2(tc0.x, tc1_2.y)) * w0.x * s1.y +

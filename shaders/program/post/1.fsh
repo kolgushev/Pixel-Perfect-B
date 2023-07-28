@@ -81,6 +81,9 @@ void main() {
 		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev) {
 			// write the diffuse color
 			#if defined TAA_USE_BICUBIC
+				// Use bicubic sampling to reduce blur as suggested in
+				// https://research.activision.com/publications/2020-03/dynamic-temporal-antialiasing-and-upsampling-in-call-of-duty
+				// TODO: optimize further
 				vec3 prevFrame = textureBicubic(colortex4, texcoordPrev).rgb;
 			#else
 				vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
