@@ -281,27 +281,15 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef BOSS_BATTLE_COLORS
 #endif
 
-// #define TEXTURE_FILTERING
-#ifdef TEXTURE_FILTERING
-#endif
+// 0: none 1: texture filtering 2:TAA
+#define AA_MODE 2 // [0 1 2]
 
-// #define TEXTURE_FILTER_EVERYTHING
-#ifdef TEXTURE_FILTER_EVERYTHING
-#endif
-
-// 0: none 1:TAA
-#define AA_MODE 1 // [0 1]
-
-#if AA_MODE != 0
+#if AA_MODE == 2
     #define AA_ENABLED
 #endif
 
-#if AA_MODE == 1 || AA_MODE == 2
-    #define TAA_ENABLED
-#endif
-
 #if AA_MODE == 2
-    #define AA_HYBRID
+    #define TAA_ENABLED
 #endif
 
 #define TAA_CLOSEST_MOTION_VECTOR
@@ -314,6 +302,14 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 // #define TAA_CORNER_CLAMPING
 #ifdef TAA_CORNER_CLAMPING
+#endif
+
+#if AA_MODE == 1
+    #define TEXTURE_FILTERING
+#endif
+
+// #define TEXTURE_FILTER_EVERYTHING
+#ifdef TEXTURE_FILTER_EVERYTHING
 #endif
 
 // output mapping: 0:none 1:8bit
