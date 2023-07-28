@@ -200,8 +200,14 @@ void main() {
     #endif
 
     #if defined TAA_ENABLED
+        #if defined gc_sky
+            vec3 cameraDiff = vec3(0.0);
+        #else
+            vec3 cameraDiff = (cameraPosition - previousCameraPosition);
+        #endif
+
         // Camera positions are subtracted in parentheses in order to reduce floating-point inaccuracies
-        vec4 prevClip = toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position - velocity + (cameraPosition - previousCameraPosition));
+        vec4 prevClip = toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position - velocity + cameraDiff);
         vec4 unjitteredClip = toViewspace(gbufferProjection, gbufferModelView, position);
         vec2 prevTexcoord = (prevClip.xy / prevClip.w) * 0.5 + 0.5;
         vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.w) * 0.5 + 0.5;
