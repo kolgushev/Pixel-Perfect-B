@@ -5,6 +5,9 @@
 #if defined use_basic_direct_shading
 #endif
 
+#if defined use_bicubic_filter
+#endif
+
 #if defined use_bilinear_filter
 #endif
 
@@ -104,6 +107,10 @@
 
 #if defined use_bilinear_filter
 #include "/lib/bilinear_filter.glsl"
+#endif
+
+#if defined use_bicubic_filter
+#include "/lib/bicubic_filter.glsl"
 #endif
 
 #if defined use_calculate_sky

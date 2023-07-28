@@ -44,6 +44,10 @@ in vec2 texcoord;
     #define use_frame_counter
     #define use_view_width
     #define use_view_height
+
+	#if defined TAA_USE_BICUBIC
+		#define use_bicubic_filter
+	#endif
 #endif
 
 #include "/lib/use.glsl"
@@ -76,7 +80,11 @@ void main() {
 
 		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev) {
 			// write the diffuse color
-			vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
+			#if defined TAA_USE_BICUBIC
+				vec3 prevFrame = textureBicubic(colortex4, texcoordPrev).rgb;
+			#else
+				vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
+			#endif
 
 			vec3 minFrame = colored;
 			vec3 maxFrame = colored;
@@ -134,6 +142,7 @@ void main() {
 			} 
 
 			float mixingFactor = smoothstep(0.0, 0.2, velocityLen) * 0.07 + 0.02;
+			// float mixingFactor = 0.0;
 
 			// TAA Sharpening
 			#if defined TAA_SHARP_ENABLED
