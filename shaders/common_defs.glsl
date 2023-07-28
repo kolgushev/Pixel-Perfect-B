@@ -305,7 +305,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #endif
 
 // since it's an 8bit value, higher max velocity reduces precision
-// a max velocity of 32.0 has the precision of 1/4 of a pixel
+// a max velocity of 16 pixels has the precision of 1/8 of a pixel
 #define MAX_VELOCITY 16.0
 #define MAX_VELOCITY_RCP RCP_16
 
