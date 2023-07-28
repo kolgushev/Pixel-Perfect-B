@@ -383,21 +383,25 @@ void main() {
     #endif
 
     // apply jittering
-    #if defined TAA_ENABLED && !defined NO_AA
-        glPos.xy += temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] * glPos.w / vec2(viewWidth, viewHeight);
+    #if defined TAA_ENABLED
+    
+        #if !defined NO_AA
+            // jitter
+            glPos.xy += temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] * glPos.w / vec2(viewWidth, viewHeight);
+        #endif
+
+        // Calculate clip-space for motion vectors in here since it's more efficient
+
+        // Camera positions are subtracted in parentheses in order to reduce floating-point inaccuracies
+        #if defined gc_sky
+            vec3 cameraDiff = vec3(0.0);
+        #else
+            vec3 cameraDiff = (cameraPosition - previousCameraPosition);
+        #endif
+
+        prevClip = toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position - at_velocity + cameraDiff).xyw;
+        unjitteredClip = toViewspace(gbufferProjection, gbufferModelView, position).xyw;
     #endif
-
-    // Calculate clip-space for motion vectors in here since it's more efficient
-
-    // Camera positions are subtracted in parentheses in order to reduce floating-point inaccuracies
-    #if defined gc_sky
-        vec3 cameraDiff = vec3(0.0);
-    #else
-        vec3 cameraDiff = (cameraPosition - previousCameraPosition);
-    #endif
-
-    prevClip = toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position - at_velocity + cameraDiff).xyw;
-    unjitteredClip = toViewspace(gbufferProjection, gbufferModelView, position).xyw;
 
     gl_Position = glPos;
 
