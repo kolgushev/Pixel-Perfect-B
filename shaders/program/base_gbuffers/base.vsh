@@ -7,8 +7,8 @@ out vec3 position;
 out vec3 normal;
 flat out int mcEntity;
 #if defined TAA_ENABLED
-    out vec2 offset;
-    out vec3 velocity;
+    out vec3 prevClip;
+    out vec3 unjitteredClip;
 #endif
 #if defined g_skybasic
     out vec2 stars;
@@ -73,6 +73,12 @@ in vec3 at_velocity;
 #endif
 
 #if defined TAA_ENABLED
+    #define use_camera_position
+    #define use_previous_camera_position
+    #define use_gbuffer_previous_projection
+    #define use_gbuffer_previous_model_view
+    #define use_gbuffer_projection
+    #define use_gbuffer_model_view
     #define use_frame_counter
     #define use_view_width
     #define use_view_height
@@ -82,10 +88,6 @@ in vec3 at_velocity;
 
 // TODO: world-space coordinates for everything not terrain
 void main() {
-    #if defined TAA_ENABLED
-        velocity = at_velocity;
-    #endif
-
     #if defined gc_terrain
         mcEntity = int(mc_Entity.x);
     #elif defined gc_emissive
@@ -382,9 +384,20 @@ void main() {
 
     // apply jittering
     #if defined TAA_ENABLED && !defined NO_AA
-        offset = temporalAAOffsets[frameCounter % TAA_OFFSET_LEN];
-        glPos.xy += offset * glPos.w / vec2(viewWidth, viewHeight);
+        glPos.xy += temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] * glPos.w / vec2(viewWidth, viewHeight);
     #endif
+
+    // Calculate clip-space for motion vectors in here since it's more efficient
+
+    // Camera positions are subtracted in parentheses in order to reduce floating-point inaccuracies
+    #if defined gc_sky
+        vec3 cameraDiff = vec3(0.0);
+    #else
+        vec3 cameraDiff = (cameraPosition - previousCameraPosition);
+    #endif
+
+    prevClip = toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position - at_velocity + cameraDiff).xyw;
+    unjitteredClip = toViewspace(gbufferProjection, gbufferModelView, position).xyw;
 
     gl_Position = glPos;
 

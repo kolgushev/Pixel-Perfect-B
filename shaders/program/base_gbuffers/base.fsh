@@ -16,8 +16,8 @@ in vec3 position;
 in vec3 normal;
 flat in int mcEntity;
 #if defined TAA_ENABLED
-    in vec2 offset;
-    in vec3 velocity;
+    in vec3 prevClip;
+    in vec3 unjitteredClip;
 #endif
 #if defined g_skybasic
     in vec2 stars;
@@ -173,14 +173,8 @@ flat in int mcEntity;
 #endif
 
 #if defined TAA_ENABLED
-    #define use_camera_position
-    #define use_previous_camera_position
     #define use_view_width
     #define use_view_height
-    #define use_gbuffer_previous_projection
-    #define use_gbuffer_previous_model_view
-    #define use_gbuffer_projection
-    #define use_gbuffer_model_view
 
     #define use_to_viewspace
 #endif
@@ -209,17 +203,8 @@ void main() {
     #endif
 
     #if defined TAA_ENABLED && !defined gc_entities
-        #if defined gc_sky
-            vec3 cameraDiff = vec3(0.0);
-        #else
-            vec3 cameraDiff = (cameraPosition - previousCameraPosition);
-        #endif
-
-        // Camera positions are subtracted in parentheses in order to reduce floating-point inaccuracies
-        vec4 prevClip = toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position - velocity + cameraDiff);
-        vec4 unjitteredClip = toViewspace(gbufferProjection, gbufferModelView, position);
-        vec2 prevTexcoord = (prevClip.xy / prevClip.w) * 0.5 + 0.5;
-        vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.w) * 0.5 + 0.5;
+        vec2 prevTexcoord = (prevClip.xy / prevClip.z) * 0.5 + 0.5;
+        vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.z) * 0.5 + 0.5;
         b5 = prevTexcoord - unjitteredTexcoord;
     #elif defined TAA_ENABLED
         b5 = vec2(0.0);
