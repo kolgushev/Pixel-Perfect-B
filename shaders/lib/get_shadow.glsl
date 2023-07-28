@@ -40,7 +40,7 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
                 sampleCoord = absolutePosition.xz + absolutePosition.y * 100;
             #endif
 
-            noise = sampleNoise(sampleCoord, iMod, NOISE_BLUE_3D, true).rgb * 2 - 1;
+            noise = sampleNoise(sampleCoord * vec2(viewWidth, viewHeight), iMod, NOISE_BLUE_3D, true).rgb * 2 - 1;
 
             shadowOffset = noise / shadowDistance * 0.5 * SHADOW_FILTERING_RADIUS;
 

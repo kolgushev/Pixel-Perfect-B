@@ -8,8 +8,6 @@
 #define NOISE_WHITE_4D 6
 
 vec4 tile(in vec2 texcoord, in int id, in bool sharp) {
-
-
 	if(sharp) {
 		texcoord = floor(texcoord) + 0.5;
 		texcoord /= NOISETEX_TILES_RES;

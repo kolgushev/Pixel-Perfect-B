@@ -204,7 +204,7 @@ void main() {
 
         colorCorrected = colorCorrected + inverseMult;
 
-        vec3 noiseToSurpass = sampleNoise(texcoord, 0, NOISE_BLUE_3D, true).rgb;
+        vec3 noiseToSurpass = sampleNoise(texcoord * vec2(viewWidth, viewHeight), 0, NOISE_BLUE_3D, true).rgb;
 
         // noiseToSurpass = gammaCorrection(noiseToSurpass, RCP_GAMMA);
         

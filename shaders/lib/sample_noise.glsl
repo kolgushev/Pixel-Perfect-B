@@ -3,7 +3,7 @@ vec2 getCoords(in vec2 texcoord, in int id) {
 	// noise() doesn't work for whatever reason
 	vec2 offset = tile(vec2(id % NOISETEX_TILES_RES, id / NOISETEX_TILES_RES), NOISE_WHITE_4D, true).rg;
 
-	vec2 originalCoords = (texcoord * vec2(viewWidth, viewHeight) / noiseTextureResolution);
+	vec2 originalCoords = (texcoord / noiseTextureResolution);
 
 	return mod(originalCoords + offset, 1) * NOISETEX_TILES_RES;
 }

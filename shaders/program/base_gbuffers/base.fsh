@@ -53,7 +53,12 @@ flat in int mcEntity;
     #define use_view_height
     #define use_gbuffer_model_view
 
-    #define use_sample_noise
+    #if defined TAA_ENABLED
+        #define use_frame_counter
+        #define use_sample_noise
+    #else
+        #define use_sample_noisetex
+    #endif
 #endif
 
 #if defined gc_transparent
@@ -187,7 +192,11 @@ void main() {
     // discard if too close
     #if defined fade_out_items
         // sample noise texture
-        float noiseToSurpass = tile(gl_FragCoord.xy, NOISE_CHECKERBOARD_1D, true).r;
+        #if defined TAA_ENABLED
+            float noiseToSurpass = sampleNoise(gl_FragCoord.xy, frameCounter, NOISE_BLUE_2D, true).r;
+        #else
+            float noiseToSurpass = tile(gl_FragCoord.xy, NOISE_CHECKERBOARD_1D, true).r;
+        #endif
 
         #if defined CLOSE_FADE_OUT_FULL
             noiseToSurpass = noiseToSurpass * (1 - EPSILON) + EPSILON;
@@ -199,7 +208,7 @@ void main() {
         if(noiseToSurpass > smoothstep(0.47 * FADE_OUT_RADIUS, 0.6 * FADE_OUT_RADIUS, length(position))) discard;
     #endif
 
-    #if defined TAA_ENABLED
+    #if defined TAA_ENABLED && !defined gc_entities
         #if defined gc_sky
             vec3 cameraDiff = vec3(0.0);
         #else
@@ -212,6 +221,8 @@ void main() {
         vec2 prevTexcoord = (prevClip.xy / prevClip.w) * 0.5 + 0.5;
         vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.w) * 0.5 + 0.5;
         b5 = prevTexcoord - unjitteredTexcoord;
+    #elif defined TAA_ENABLED
+        b5 = vec2(0.0);
     #endif
 
     #if defined NEED_WEATHER_DATA
