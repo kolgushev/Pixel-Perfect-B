@@ -9,10 +9,12 @@ const int colortex2Format = RGB8;
 const int colortex3Format = RGB8_SNORM;
 const bool colortex3Clear = false;
 
+Previous frame
 const int colortex4Format = RGB16F;
 const bool colortex4Clear = false;
 
-const int colortex5Format = RG16_SNORM;
+Velocity data
+const int colortex5Format = RG8_SNORM;
 
 const int shadowcolor1Format = R16F;
 const bool shadowcolor1Clear = false;

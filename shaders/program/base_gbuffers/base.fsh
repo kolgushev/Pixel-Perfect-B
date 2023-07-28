@@ -211,7 +211,9 @@ void main() {
         vec4 unjitteredClip = toViewspace(gbufferProjection, gbufferModelView, position);
         vec2 prevTexcoord = (prevClip.xy / prevClip.w) * 0.5 + 0.5;
         vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.w) * 0.5 + 0.5;
-        b5 = prevTexcoord - unjitteredTexcoord;
+        // need to convert to 8bit int
+        prevTexcoord = (prevTexcoord - unjitteredTexcoord) * vec2(viewWidth, viewHeight) * MAX_VELOCITY_RCP;
+        b5 = prevTexcoord;
     #endif
 
     #if defined NEED_WEATHER_DATA

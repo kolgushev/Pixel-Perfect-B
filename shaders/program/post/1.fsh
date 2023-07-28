@@ -75,10 +75,13 @@ void main() {
 			}
 		#endif
 
-		vec2 velocity = texture2D(colortex5, texcoord + closestOffset).xy;
-		vec2 texcoordPrev = texcoord + velocity;
+		vec2 velocity = texture2D(colortex5, texcoord + closestOffset).xy * MAX_VELOCITY;
+		vec2 texcoordPrev = texcoord + velocity / vec2(viewWidth, viewHeight);
 
-		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev) {
+		// Texcoord out-of-bounds check and max velocity check should have high uniformity
+		// so this if-statement shouldn't be too inefficient
+		// (texcoord-out-of-bounds applies to large chunks of screen, max velocity applies to entire screen if camera moves)
+		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev && max(abs(velocity.x), abs(velocity.y)) < MAX_VELOCITY) {
 			// write the diffuse color
 			#if defined TAA_USE_BICUBIC
 				// Use bicubic sampling to reduce blur as suggested in
@@ -117,7 +120,7 @@ void main() {
 				avgFrame *= 0.25;
 			#endif
 
-			float velocityLen = length(velocity * vec2(viewWidth, viewHeight));
+			float velocityLen = length(velocity);
 
 
 			// perform clipping similar to https://twvideo01.ubm-us.net/o1/vault/gdc2016/Presentations/Pedersen_LasseJonFuglsang_TemporalReprojectionAntiAliasing.pdf
