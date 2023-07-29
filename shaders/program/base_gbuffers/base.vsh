@@ -63,6 +63,11 @@ in vec3 at_velocity;
         #define use_camera_position
     #endif
 
+    #if defined g_terrain
+        #define use_camera_diff_smooth
+        #define use_frame_time
+    #endif
+
     #define use_rain_wind
 #endif
 
@@ -275,7 +280,22 @@ void main() {
                 offset *= pow(light.y, 2);
             #endif
 
-            offset = sign(offset) * (0.5 - 0.5 / (abs(2 * offset) + 1));
+            #if defined g_terrain && defined LEAVE_WAVING_WAKE
+                // center of the block relative to player feet
+                vec3 positionFromWake = position - vec3(0.0, -1.0, 0.0) + at_midBlock * RCP_64 * vec3(1.0, 0.0, 1.0);
+                // position slightly behind player
+                positionFromWake += cameraDiffSmooth * 0.25;
+                // make the wake oval-ish instead of a circle
+                positionFromWake *= 1.0 - smoothstep(0.0, 20.0, abs(cameraDiffSmooth)) * 1.7;
+
+                // color.rgb = vec3(1.0 - smoothstep(0.0, 2.5, length(positionFromWake))) * 5;
+                // color.rgb = max(vec3(EPSILON), color.rgb);
+
+                offset += cameraDiffSmooth.xz * 0.3 * (1.0 - smoothstep(0.0, 2.5, length(positionFromWake)));
+            #endif
+
+            #define N 0.5
+            offset = sign(offset) * (N - N / (abs(2.0 * offset) + 1));
             
             #if !defined g_weather
                 if(isUpper) {

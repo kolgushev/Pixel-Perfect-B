@@ -431,6 +431,9 @@ screen.MISC=Extras
             option.WAVE_STRENGTH_CONSTANT_USER=Wave Strength
                 option.WAVE_STRENGTH_CONSTANT_USER.comment=Changes how much the wind causes waves.
 
+            option.LEAVE_WAVING_WAKE=Movements Affect Wind
+                option.LEAVE_WAVING_WAKE.comment=When enabled, the player will cause a slight wind behind them when they run.
+
         screen.RAIN=Rain
 
             option.NOISY_RAIN=Scattered Rain

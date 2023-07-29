@@ -147,6 +147,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef WAVING_ENABLED
 #endif
 
+#define LEAVE_WAVING_WAKE
+#ifdef LEAVE_WAVING_WAKE
+#endif
+
 // #define WAVING_FULL_BLOCKS_ENABLED
 #ifdef WAVING_FULL_BLOCKS_ENABLED
 #endif

@@ -312,12 +312,17 @@ uniform float darknessLightFactor;
 	#endif
 
 // custom uniforms
-#if defined use_invisibility
-uniform float invisibility;
-#endif
 
 #if defined use_blindness_smooth
 uniform float blindnessSmooth;
+#endif
+
+#if defined use_camera_diff_smooth
+	uniform vec3 cameraDiffSmooth;
+#endif
+
+#if defined use_invisibility
+uniform float invisibility;
 #endif
 
 #if defined use_moon_brightness
