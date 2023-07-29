@@ -296,6 +296,12 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define TAA_USE_BICUBIC
 #define TAA_SHARP_ENABLED
 
+// not enabled because high levels of atmospheric fog
+// (ex. underwater or foggy weather) cause artifacting
+// #define SIMPLIFY_BICUBIC_SAMPLING
+#ifdef SIMPLIFY_BICUBIC_SAMPLING
+#endif
+
 #define TAA_SHARP_WEIGHT 1.2
 #define TAA_SHARP_SPEED_WEIGHT 0.1
 #define TAA_SHARP_PIXEL_THRESHOLD 0.3

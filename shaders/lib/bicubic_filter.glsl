@@ -1,8 +1,6 @@
 // sample a bilinearly-interpolated texture as if it were bicubic
 // https://vec3.ca/bicubic-filtering-in-fewer-taps/
 
-#define SIMPLIFY_BICUBIC_SAMPLING
-
 vec4 textureBicubic(in sampler2D tex, in vec2 uv) {
 	vec2 resolution = textureSize(tex, 0);
 
