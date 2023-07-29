@@ -288,7 +288,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
     #define TEXTURE_FILTERING
 #endif
 
-#if AA_MODE == 2
+#if AA_MODE != 0 && AA_MODE != 1
     #define AA_ENABLED
 #endif
 
@@ -312,6 +312,12 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
     #define TAA_NO_CLIPPING_WHEN_STILL
 #endif
 
+// #define TAA_ONLY_CLIP_EDGES
+
+#if defined TAA_ONLY_CLIP_EDGES || defined TAA_NO_CLIPPING_WHEN_STILL
+    #define TAA_NO_CLIPPING_POSSIBLE
+#endif
+
 // not enabled because high levels of atmospheric fog
 // (ex. underwater or foggy weather) cause artifacting
 // #define SIMPLIFY_BICUBIC_SAMPLING
@@ -319,7 +325,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #endif
 
 #define TAA_SHARP_WEIGHT 1.2
-#define TAA_SHARP_SPEED_WEIGHT 0.1
 #define TAA_SHARP_PIXEL_THRESHOLD 0.3
 
 // #define TEXTURE_FILTER_EVERYTHING

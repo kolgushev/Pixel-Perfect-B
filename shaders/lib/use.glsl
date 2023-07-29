@@ -66,6 +66,8 @@
 #endif
 
 #if defined use_linearize_depth
+	#define use_far
+	#define use_near
 #endif
 
 // depends on: sample_noisetex
