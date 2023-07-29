@@ -281,8 +281,12 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef BOSS_BATTLE_COLORS
 #endif
 
-// 0: none 1: texture filtering 2:TAA
-#define AA_MODE 2 // [0 1 2]
+// 0: none 1: texture filtering 2:TAA 3:DITAA (Double-Image TAA)
+#define AA_MODE 3 // [0 1 3 4 2]
+
+#if AA_MODE == 1
+    #define TEXTURE_FILTERING
+#endif
 
 #if AA_MODE == 2
     #define AA_ENABLED
@@ -290,11 +294,23 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #if AA_MODE == 2
     #define TAA_ENABLED
+    #define FULL_TAA_ENABLED
+
+    #define TAA_CLOSEST_MOTION_VECTOR
+    #define TAA_USE_BICUBIC
+    #define TAA_SHARP_ENABLED
+    #define TAA_DO_CLIPPING
 #endif
 
-#define TAA_CLOSEST_MOTION_VECTOR
-#define TAA_USE_BICUBIC
-#define TAA_SHARP_ENABLED
+#if AA_MODE == 3 || AA_MODE == 4
+    #define TAA_ENABLED
+    #define DITAA_ENABLED
+
+    #define TAA_DO_CLIPPING
+    #define TAA_CORNER_CLAMPING
+
+    #define TAA_NO_CLIPPING_WHEN_STILL
+#endif
 
 // not enabled because high levels of atmospheric fog
 // (ex. underwater or foggy weather) cause artifacting
@@ -305,14 +321,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define TAA_SHARP_WEIGHT 1.2
 #define TAA_SHARP_SPEED_WEIGHT 0.1
 #define TAA_SHARP_PIXEL_THRESHOLD 0.3
-
-// #define TAA_CORNER_CLAMPING
-#ifdef TAA_CORNER_CLAMPING
-#endif
-
-#if AA_MODE == 1
-    #define TEXTURE_FILTERING
-#endif
 
 // #define TEXTURE_FILTER_EVERYTHING
 #ifdef TEXTURE_FILTER_EVERYTHING
@@ -491,70 +499,12 @@ const float shadowIntervalSize = 8.0;
     const bool shadowcolor1Nearest = true;
 #endif
 
-const vec3 superSampleOffsetsCross[5] = vec3[5](
-    vec3(0, 0, 1),
-    vec3(-0.5, -0.5, ISQRT_2),
-    vec3(-0.5, 0.5, ISQRT_2),
-    vec3(0.5, -0.5, ISQRT_2),
-    vec3(0.5, 0.5, ISQRT_2)
-);
-
-const vec2 superSampleOffsets4[4] = vec2[4](
-        vec2(-0.5, -0.5),
-        vec2(-0.5, 0.5),
-        vec2(0.5, -0.5),
-        vec2(0.5, 0.5)
-    );
-
-const vec2 superSampleOffsets16[16] = vec2[16](
-        vec2(-0.25, -0.25),
-        vec2(0.75, 0.75),
-        vec2(-0.75, 0.75),
-        vec2(0.75, -0.75),
-        vec2(-0.75, -0.75),
-        vec2(0.75, -0.25),
-        vec2(-0.25, 0.25),
-        vec2(0.25, -0.75),
-        vec2(-0.25, 0.75),
-        vec2(0.25, 0.25),
-        vec2(-0.75, -0.25),
-        vec2(0.75, 0.25),
-        vec2(-0.25, -0.75),
-        vec2(0.25, 0.75),
-        vec2(-0.75, 0.25),
-        vec2(0.25, -0.25)
-    );
-
-#if defined TAA_ENABLED
-    #define TAA_OFFSET_LEN 16
-    const vec2 temporalAAOffsets[16] = vec2[16](
-        vec2(0.16407393408806126, 0.3774324646270857),
-        vec2(-0.8359260659119387, -0.28923420203958106),
-        vec2(0.6640739340880613, -0.9559008687062476),
-        vec2(-0.33592606591193874, 0.599654686849308),
-        vec2(0.41407393408806126, -0.06701197981735885),
-        vec2(-0.5859260659119387, -0.7336786464840254),
-        vec2(0.9140739340880613, 0.8218769090715303),
-        vec2(-0.08592606591193874, 0.1552102424048638),
-        vec2(0.03907393408806126, -0.5114564242618032),
-        vec2(-0.9609260659119387, 0.525580612775234),
-        vec2(0.5390739340880613, -0.14108605389143292),
-        vec2(-0.46092606591193874, -0.8077527205580993),
-        vec2(0.28907393408806126, 0.7478028349974559),
-        vec2(-0.7109260659119387, 0.0811361683307894),
-        vec2(0.7890739340880613, -0.5855304983358772),
-        vec2(-0.21092606591193874, 0.9700250572196782)
-    );
-#endif
-
 #if SHADOW_SUPERSAMPLE == 1
     #define SHADOW_RES_MULT 2.0
     #define SHADOW_RES_MULT_RCP 0.5
-    const vec2 superSampleOffsets[4] = superSampleOffsets4;
 #elif SHADOW_SUPERSAMPLE == 2
     #define SHADOW_RES_MULT 4.0
     #define SHADOW_RES_MULT_RCP 0.25
-    const vec2 superSampleOffsets[16] = superSampleOffsets16;
 #endif
 
 #if VANILLA_LIGHTING == 2

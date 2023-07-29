@@ -49,6 +49,10 @@ in vec2 texcoord;
     #define use_get_shadow
 #endif
 
+#if defined TAA_ENABLED
+    #define use_temporal_AA_offsets
+#endif
+
 #include "/lib/use.glsl"
 
 void main() {

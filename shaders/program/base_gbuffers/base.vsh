@@ -82,6 +82,8 @@ in vec3 at_velocity;
     #define use_frame_counter
     #define use_view_width
     #define use_view_height
+
+    #define use_temporal_AA_offsets
 #endif
 
 #include "/lib/use.glsl"

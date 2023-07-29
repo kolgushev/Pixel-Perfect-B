@@ -27,6 +27,8 @@ in vec2 texcoord;
 	#define use_gbuffer_projection_inverse
 	#define use_gbuffer_model_view_inverse
 
+	#define use_super_sample_offsets_cross
+
 	#define use_linearize_depth
 	#define use_fogify
 	#define use_tonemapping
@@ -45,9 +47,16 @@ in vec2 texcoord;
     #define use_view_width
     #define use_view_height
 
+	#define use_super_sample_offsets_4
+
+	#if defined TAA_CORNER_CLAMPING
+		#define use_super_sample_offsets_cross
+	#endif
+
 	#if defined TAA_USE_BICUBIC
 		#define use_bicubic_filter
 	#endif
+
 #endif
 
 #include "/lib/use.glsl"
@@ -120,32 +129,45 @@ void main() {
 			float velocityLen = length(velocity * vec2(viewWidth, viewHeight));
 
 
-			// perform clipping similar to https://twvideo01.ubm-us.net/o1/vault/gdc2016/Presentations/Pedersen_LasseJonFuglsang_TemporalReprojectionAntiAliasing.pdf
+			#if defined TAA_DO_CLIPPING
+				#if defined TAA_NO_CLIPPING_WHEN_STILL
+					if(velocityLen != 0.0 || depth == 1.0) {
+				#endif
 
-			// convert to YCoCg colorspace
-			#define Y_CO_CG_TRANSFORM mat3(0.25, 0.5, 0.25, 0.5, 0.0, -0.5, -0.25, 0.5, -0.25)
-			#define Y_CO_CG_TRANSFORM_INV mat3(1.0, 1.0, -1.0, 1.0, 0.0, 1.0, 1.0, -1.0, -1.0)
+				// perform clipping similar to https://twvideo01.ubm-us.net/o1/vault/gdc2016/Presentations/Pedersen_LasseJonFuglsang_TemporalReprojectionAntiAliasing.pdf
 
-			vec3 maxFrameC = Y_CO_CG_TRANSFORM * maxFrame;
-			vec3 minFrameC = Y_CO_CG_TRANSFORM * minFrame;
-			vec3 prevC = Y_CO_CG_TRANSFORM * prevFrame;
+				// convert to YCoCg colorspace
+				#define Y_CO_CG_TRANSFORM mat3(0.25, 0.5, 0.25, 0.5, 0.0, -0.5, -0.25, 0.5, -0.25)
+				#define Y_CO_CG_TRANSFORM_INV mat3(1.0, 1.0, -1.0, 1.0, 0.0, 1.0, 1.0, -1.0, -1.0)
+
+				vec3 maxFrameC = Y_CO_CG_TRANSFORM * maxFrame;
+				vec3 minFrameC = Y_CO_CG_TRANSFORM * minFrame;
+				vec3 prevC = Y_CO_CG_TRANSFORM * prevFrame;
 
 
-			vec3 coloredClip = 0.5 * (maxFrameC + minFrameC);
-			vec3 eClip = 0.5 * (maxFrameC - minFrameC);
+				vec3 coloredClip = 0.5 * (maxFrameC + minFrameC);
+				vec3 eClip = 0.5 * (maxFrameC - minFrameC);
 
-			vec3 vClip = prevC - coloredClip;
-			vec3 vUnit = vClip.xyz / eClip;
-			vec3 aUnit = abs(vUnit);
-			float MAUnit = max(aUnit.x, max(aUnit.y, aUnit.z));
+				vec3 vClip = prevC - coloredClip;
+				vec3 vUnit = vClip.xyz / eClip;
+				vec3 aUnit = abs(vUnit);
+				float MAUnit = max(aUnit.x, max(aUnit.y, aUnit.z));
 
-			if(MAUnit > 1.0) {
-				prevC = coloredClip + vClip / max(MAUnit, EPSILON);
-				prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
-			} 
+				if(MAUnit > 1.0) {
+					prevC = coloredClip + vClip / max(MAUnit, EPSILON);
+					prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
+				}
 
-			float mixingFactor = smoothstep(0.0, 0.2, velocityLen) * 0.07 + 0.02;
-			// float mixingFactor = 0.0;
+				#if defined TAA_NO_CLIPPING_WHEN_STILL
+					}
+				#endif
+			#endif
+
+			#if defined DITAA_ENABLED
+				float mixingFactor = 0.5;
+			#else
+				float mixingFactor = smoothstep(0.0, 0.2, velocityLen) * 0.07 + 0.02;
+			#endif
 
 			// TAA Sharpening
 			#if defined TAA_SHARP_ENABLED
@@ -154,14 +176,18 @@ void main() {
 				colored = max(colored, 0.0);
 			#endif
 
+			#if defined DITAA_ENABLED
+				b4 = colored;
+			#endif
+
 			colored = mix(prevFrame, colored, mixingFactor);
 			
-			b4 = colored;
+			#if !defined DITAA_ENABLED
+				b4 = colored;
+			#endif
 		} else {
 			b4 = colored;
 		}
-		
-
     #endif
 
 	#if defined FAST_GI

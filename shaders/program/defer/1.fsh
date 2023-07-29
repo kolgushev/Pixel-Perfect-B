@@ -42,6 +42,8 @@ in vec2 texcoord;
     #define use_view_width
     #define use_view_height
 
+    #define use_super_sample_offsets_cross
+
     #define use_linearize_depth
     #define use_tonemapping
 #endif

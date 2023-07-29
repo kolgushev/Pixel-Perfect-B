@@ -8,9 +8,6 @@
 #if defined use_bicubic_filter
 #endif
 
-#if defined use_bilinear_filter
-#endif
-
 // depends on: use_color_manipulation, use_to_viewspace, use_lightning_flash
 #if defined use_calculate_lighting
 	#define use_color_manipulation
@@ -44,9 +41,14 @@
 	#define use_to_viewspace
 	#define use_basic_direct_shading
 	#define use_distortion
+
+	#if SHADOW_FILTERING == 4 || SHADOW_FILTERING == 5
+		#define use_super_sample_offsets_4
+	#endif
 #endif
 
 #if defined use_distortion
+	#define use_shadow_offsets
 #endif
 
 #if defined use_get_terrain_mask
@@ -84,6 +86,10 @@
 	#define use_bilinear_filter
 #endif
 
+#if defined use_bilinear_filter
+	#define use_super_sample_offsets_4
+#endif
+
 #if defined use_to_viewspace
 #endif
 
@@ -91,9 +97,11 @@
 #endif
 
 
+// use custom values
+#include "/lib/use_custom_values.glsl"
+
 // use uniforms
 #include "/lib/use_uniforms.glsl"
-
 
 
 // libs - imports are below their dependencies
