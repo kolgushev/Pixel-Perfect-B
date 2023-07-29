@@ -281,18 +281,25 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef BOSS_BATTLE_COLORS
 #endif
 
-// 0: none 1: texture filtering 2:TAA 3:DITAA (Double-Image TAA)
-#define AA_MODE 3 // [0 1 3 4 2]
-
-#if AA_MODE == 1
-    #define TEXTURE_FILTERING
+// #define TEXTURE_FILTERING
+#ifdef TEXTURE_FILTERING
 #endif
 
-#if AA_MODE != 0 && AA_MODE != 1
+// #define TEXTURE_FILTER_EVERYTHING
+#ifdef TEXTURE_FILTER_EVERYTHING
+#endif
+
+// 0: none 1:DITAA (Double-Image TAA) 2: full TAA
+#define TAA_MODE 2 // [0 1 2]
+
+#if TAA_MODE == 1
+#endif
+
+#if TAA_MODE != 0
     #define AA_ENABLED
 #endif
 
-#if AA_MODE == 2
+#if TAA_MODE == 2
     #define TAA_ENABLED
     #define FULL_TAA_ENABLED
 
@@ -302,7 +309,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
     #define TAA_DO_CLIPPING
 #endif
 
-#if AA_MODE == 3 || AA_MODE == 4
+#if TAA_MODE == 1
     #define TAA_ENABLED
     #define DITAA_ENABLED
 
@@ -326,10 +333,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define TAA_SHARP_WEIGHT 1.2
 #define TAA_SHARP_PIXEL_THRESHOLD 0.3
-
-// #define TEXTURE_FILTER_EVERYTHING
-#ifdef TEXTURE_FILTER_EVERYTHING
-#endif
 
 // output mapping: 0:none 1:8bit
 #define DITHERING_MODE 1 // [0 1]

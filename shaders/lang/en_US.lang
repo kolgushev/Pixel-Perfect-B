@@ -8,6 +8,19 @@ profile.CONTENT_THREE=§fStreamer §b+++
 screen.POST_PROCESSING=Post Processing
     screen.POST_PROCESSING.comment=Any effects that are applied after the image has been rendered.
 
+    screen.AA_BUFFET=Antialiasing Buffet
+
+        option.TAA_MODE=TAA
+            option.TAA_MODE.comment=Reduces jagged pixels on all sharp edges.  Enabled ➤ Small performance hit.
+            value.TAA_MODE.0=§cOff
+            value.TAA_MODE.1=Fast
+            value.TAA_MODE.2=Fancy
+
+        option.TEXTURE_FILTERING=Texture Filtering
+            option.TEXTURE_FILTERING.comment=Like antialiasing, but only reduces jaggedness on textures instead of geometry like blocks or mobs. Credit to youtuber @t3ssel8r for the concept and implementation. Enabled ➤ Minimal performance hit.
+            value.TEXTURE_FILTERING.true=On
+            value.TEXTURE_FILTERING.false=Off
+
     option.CONTRAST=Contrast
         option.CONTRAST.comment=Higher contrast intensifies colors and white/black levels, while lower contrast decreases them. Too much contrast may cause color clipping, while too little may make everything look grayed out. No performance impact.
 
@@ -19,12 +32,6 @@ screen.POST_PROCESSING=Post Processing
 
     option.POST_SATURATION=Vibrance
         option.POST_SATURATION.comment=Also known as saturation. Increases the strength of colors in your world.
-
-    option.AA_MODE=Anti-Aliasing
-        option.AA_MODE.comment=Texture filtering reduces jagged pixels in block textures. Antialiasing (TAA) reduces jagged pixels on all sharp edges. Credit to youtuber @t3ssel8r for the concept and implementation of texture filtering. Enabled ➤ Small performance hit.
-        value.AA_MODE.0=§cOff
-        value.AA_MODE.1=Texture Filtering
-        value.AA_MODE.2=TAA
 
     option.DITHERING_MODE=Dithering
         option.DITHERING_MODE.comment=Slightly randomizes pixel colors to get rid of ugly bands of color (for instance, ones visible in the sky) that form when your monitor can't display color precisely enough. Does not work when Render Quality is greater than 1x.  On ➤ Minimal performance hit.
@@ -496,12 +503,7 @@ screen.ADVANCED=Advanced
     option.INVISIBILITY_DISTORT_STRENGTH=Invisibility Distortion Strength
         option.INVISIBILITY_DISTORT_STRENGTH.comment=Controls the intensity of the "Distort Screen When Invisible" option.
 
-    option.TEXTURE_FILTERING=Texture Filtering
-        option.TEXTURE_FILTERING.comment=Like antialiasing, but for the edges of texture pixels rather than geometry. Full credit to youtuber @t3ssel8r for both the concept and implementation. Enabled ➤ Minimal performance hit.
-        value.TEXTURE_FILTERING.true=On
-        value.TEXTURE_FILTERING.false=Off
-
-    option.TEXTURE_FILTER_EVERYTHING=Filter Everything
+    option.TEXTURE_FILTER_EVERYTHING=Texture Filter Everything
         option.TEXTURE_FILTER_EVERYTHING.comment=By default, texture filtering only applies to terrain. This option allows you to apply it to everything.
         value.TEXTURE_FILTER_EVERYTHING.true=On
         value.TEXTURE_FILTER_EVERYTHING.false=Off
