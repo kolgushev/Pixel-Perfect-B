@@ -72,7 +72,8 @@ void main() {
 
     #if defined TAA_ENABLED
 		vec2 closestOffset = vec2(0);
-		#if defined TAA_CLOSEST_MOTION_VECTOR
+		// Force-enable in end dimension to fix aliasing of edges near border between geometry and end sky without apply AA to sky
+		#if defined TAA_CLOSEST_MOTION_VECTOR || defined DIM_END
 			float closestDist = depth;
 			for(int i = 0; i < 4; i++) {
 				vec2 currentOffset = superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight);
@@ -87,7 +88,13 @@ void main() {
 		vec2 velocity = texture2D(colortex5, texcoord + closestOffset).xy;
 		vec2 texcoordPrev = texcoord + velocity;
 
-		if(clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev) {
+		bool doAA = clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev;
+
+		#if defined DIM_END
+			doAA = doAA && closestDist != 1.0;
+		#endif
+
+		if(doAA) {
 			// write the diffuse color
 			#if defined TAA_USE_BICUBIC
 				// Use bicubic sampling to reduce blur as suggested in
