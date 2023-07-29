@@ -171,8 +171,7 @@ void main() {
 
 			// TAA Sharpening
 			#if defined TAA_SHARP_ENABLED
-				float sharpeningFactor = smoothstep(0.0, TAA_SHARP_PIXEL_THRESHOLD, velocityLen) * TAA_SHARP_SPEED_WEIGHT + 1.0;
-				colored = (colored - avgFrame) * sharpeningFactor * TAA_SHARP_WEIGHT + avgFrame;
+				colored = (colored - avgFrame) * TAA_SHARP_WEIGHT + avgFrame;
 				colored = max(colored, 0.0);
 			#endif
 
