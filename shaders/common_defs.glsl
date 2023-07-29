@@ -307,7 +307,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
     #define DITAA_ENABLED
 
     #define TAA_DO_CLIPPING
-    #define TAA_CORNER_CLAMPING
+    // #define TAA_CORNER_CLAMPING
 
     #define TAA_NO_CLIPPING_WHEN_STILL
 #endif
