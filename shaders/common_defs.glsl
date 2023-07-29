@@ -151,6 +151,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef LEAVE_WAVING_WAKE
 #endif
 
+#define FLATTEN_GRASS
+#ifdef FLATTEN_GRASS
+#endif
+
 // #define WAVING_FULL_BLOCKS_ENABLED
 #ifdef WAVING_FULL_BLOCKS_ENABLED
 #endif

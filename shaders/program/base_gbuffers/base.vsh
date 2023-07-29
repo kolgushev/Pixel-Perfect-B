@@ -280,18 +280,28 @@ void main() {
                 offset *= pow(light.y, 2);
             #endif
 
-            #if defined g_terrain && defined LEAVE_WAVING_WAKE
+            #if defined g_terrain && (defined LEAVE_WAVING_WAKE || defined FLATTEN_GRASS)
                 // center of the block relative to player feet
-                vec3 positionFromWake = position - vec3(0.0, -1.0, 0.0) + at_midBlock * RCP_64 * vec3(1.0, 0.0, 1.0);
-                // position slightly behind player
-                positionFromWake += cameraDiffSmooth * 0.25;
-                // make the wake oval-ish instead of a circle
-                positionFromWake *= 1.0 - smoothstep(0.0, 20.0, abs(cameraDiffSmooth)) * 1.7;
+                vec3 centeredPos = position + vec3(0.0, 1.0, 0.0) + at_midBlock * RCP_64 * vec3(1.0, 0.0, 1.0);
+            #endif
 
-                // color.rgb = vec3(1.0 - smoothstep(0.0, 2.5, length(positionFromWake))) * 5;
+            #if defined g_terrain && defined LEAVE_WAVING_WAKE
+                // position slightly behind player
+                vec3 positionFromWake = centeredPos + cameraDiffSmooth * 0.3;
+                // make the wake oval-ish instead of a circle
+                positionFromWake /= smoothstep(0.0, 10.0, abs(cameraDiffSmooth)) * 1.8
+                    // make the wake fan out behind player
+                    + smoothstep(0.0, 8.0, length(centeredPos)) * 1.5
+                    + 0.7;
+
+                float wakeEffect = 1.0 - smoothstep(0.0, 2.5, length(positionFromWake));
+                wakeEffect *= wakeEffect;
+                wakeEffect /= length(centeredPos) + 0.4;
+
+                // color.rgb = vec3(wakeEffect) * 5;
                 // color.rgb = max(vec3(EPSILON), color.rgb);
 
-                offset += cameraDiffSmooth.xz * 0.3 * (1.0 - smoothstep(0.0, 2.5, length(positionFromWake)));
+                offset += cameraDiffSmooth.xz * 0.3 * wakeEffect;
             #endif
 
             #define N 0.5
@@ -331,6 +341,15 @@ void main() {
                 offset1D *= modAbsPos * RCP_7 * 8;
                 position.y += min(offset1D * WAVE_STRENGTH_CONSTANT_USER, 0.112);
             } else {
+                #if defined g_terrain && defined FLATTEN_GRASS
+                    if(!isFullWaving) {
+                        float squashFactor = 1.0 - smoothstep(0.0, 1.0, length(centeredPos * vec3(1.0, 0.4, 1.0)));
+                        squashFactor *= smoothstep(0.0, 3.0, length(cameraDiffSmooth));
+                        position.y -= squashFactor * 0.5;
+                        offset *= squashFactor * 0.5 + 1.0;
+                    }
+                #endif
+
                 position.xz += offset;
                 // realistic value is 1.0
                 float heightOffset = 0.8;

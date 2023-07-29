@@ -32,20 +32,10 @@ flat in int mcEntity;
 // uniforms
 
 #define use_texture
-#define use_shadowcolor0
 
-#define use_entity_color
-#define use_is_eye_in_water
-#define use_night_vision
-#define use_blindness_smooth
-#define use_fog_color
-#define use_sky_color
-#define use_is_lightning
 #define use_render_stage
 #define use_alpha_test_ref
 
-#define use_tonemapping
-#define use_calculate_sky
 #define use_hdr_mapping
 
 #if defined fade_out_items
@@ -62,11 +52,14 @@ flat in int mcEntity;
 #endif
 
 #if defined gc_transparent
+    #define use_shadowcolor0
+
     #define use_sun_position
     #define use_moon_position
     #define use_darkness_factor
     #define use_darkness_light_factor
     #define use_is_spectator
+    #define use_is_eye_in_water
     #define use_gbuffer_model_view
     #define use_lightning_bolt_position
     #define use_is_lightning
@@ -80,6 +73,9 @@ flat in int mcEntity;
     #define use_depthtex1
     #define use_sky_time
     #define use_frame_time_counter
+    #define use_night_vision
+    #define use_blindness_smooth
+    #define use_fog_color
 
     #define use_fogify
     #define use_to_viewspace
@@ -110,6 +106,10 @@ flat in int mcEntity;
     #define NEED_WEATHER_DATA
 #endif
 
+#if defined g_water
+    #define use_tonemapping
+#endif
+
 #if defined g_terrain
     #define use_frame_time_counter
     #define use_sample_noisetex
@@ -120,6 +120,8 @@ flat in int mcEntity;
 #if defined gc_sky
     #define use_far
     #define use_sky_time
+    #define use_is_eye_in_water
+    #define use_blindness_smooth
 
     #if defined DIM_END
         #define use_boss_battle
@@ -148,7 +150,14 @@ flat in int mcEntity;
     #define use_gbuffer_projection_inverse
     #define use_view_width
     #define use_view_height
+    #define use_fog_color
+    #define use_sky_color
+    #define use_is_lightning
+    
+    #define use_calculate_sky
 #else
+    #define use_entity_color
+
     #if defined TEXTURE_FILTERING
         #define use_texture_filter
     #endif
