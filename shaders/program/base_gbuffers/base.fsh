@@ -196,7 +196,7 @@ void main() {
             #else
                 float offset = 0.0;
             #endif
-            float noiseToSurpass = tile(gl_FragCoord.xy + vec2(offset, 0.0), NOISE_CHECKERBOARD_1D, true).r;
+            float noiseToSurpass = tile(gl_FragCoord.xy + offset, NOISE_CHECKERBOARD_1D, true).r;
         #endif
 
         #if defined CLOSE_FADE_OUT_FULL
