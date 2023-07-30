@@ -294,17 +294,8 @@ screen.RESOURCEPACK=Resourcepack Settings
         value.TEX_RENDER.false=Off
     
     option.TEX_RES=Resource Pack Resolution
-        option.TEX_RES.comment=Anything above 1024×1024 is near-identical to just turning off the Pixel Perfect setting
-        value.TEX_RES.4=4×4
-        value.TEX_RES.8=8×8
-        value.TEX_RES.16=16×16
-        value.TEX_RES.32=32×32
-        value.TEX_RES.64=64×64
-        value.TEX_RES.128=128×128
-        value.TEX_RES.256=256×256
-        value.TEX_RES.512=512×512
-        value.TEX_RES.1024=1024×1024
-
+        suffix.TEX_RES=×
+        
 screen.MISC=Extras
 
     screen.STREAMER_SETTINGS=Streamer Settings

@@ -438,7 +438,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // #define TEX_RENDER
 #ifdef TEX_RENDER
 #endif
-#define TEX_RES 16 // [4 8 16 32 64 128 256 512 1024]
+#define TEX_RES 16 // [4 8 16 32 64 128 256 512 1024 2048 4096]
 
 #define SHADOWS_ENABLED_USER
 #ifdef SHADOWS_ENABLED_USER
@@ -832,7 +832,7 @@ const float shadowIntervalSize = 8.0;
 // #endif
 
 // inverse of TEX_RES
-#define TEXELS_PER_BLOCK (1.0 / TEX_RES)
+#define TEXELS_PER_BLOCK (1.0 / float(TEX_RES))
 
 
 // optifine setup
