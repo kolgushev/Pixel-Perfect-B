@@ -181,13 +181,6 @@ flat in int mcEntity;
     #define use_sample_noisetex
 #endif
 
-#if defined TAA_ENABLED
-    #define use_view_width
-    #define use_view_height
-
-    #define use_to_viewspace
-#endif
-
 
 #include "/lib/use.glsl"
 
@@ -198,7 +191,12 @@ void main() {
         #if defined FULL_TAA_ENABLED
             float noiseToSurpass = sampleNoise(gl_FragCoord.xy, frameCounter, NOISE_BLUE_2D, true).r;
         #else
-            float noiseToSurpass = tile(gl_FragCoord.xy, NOISE_CHECKERBOARD_1D, true).r;
+            #if defined TAA_ENABLED
+                float offset = frameCounter % 2;
+            #else
+                float offset = 0.0;
+            #endif
+            float noiseToSurpass = tile(gl_FragCoord.xy + vec2(offset, 0.0), NOISE_CHECKERBOARD_1D, true).r;
         #endif
 
         #if defined CLOSE_FADE_OUT_FULL
