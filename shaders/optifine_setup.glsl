@@ -89,6 +89,7 @@ const float drynessHalflife = 70.0;
 #define WATER 16
 #define LAVA 17
 #define WAVING_CUTOUTS_BOTTOM_LIT 18
+#define WAVING_ON_WATER 20
 
 // g stands for gbuffers
 // gc stands for gbuffers category

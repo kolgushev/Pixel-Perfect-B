@@ -189,12 +189,9 @@ void main() {
 
     #if (defined g_terrain || (defined g_weather && defined WAVING_RAIN_ENABLED) || (defined g_water && defined WAVING_WATER_ENABLED)) && defined WAVING_ENABLED && !defined DIM_NO_WIND
         #if !defined g_weather
-            bool isTopPart = at_midBlock.y < 10;
-            if(mc_Entity.x == WAVING_CUTOUTS_LOW) {
-                isTopPart = at_midBlock.y < 30;
-            }
+            bool isTopPart = at_midBlock.y < 10 || (mc_Entity.x == WAVING_CUTOUTS_LOW && at_midBlock.y < 30) || (mc_Entity.x == WAVING_ON_WATER);
             bool isFullWaving = mc_Entity.x == WAVING || mc_Entity.x == WAVING_STIFF;
-            bool isWater = mc_Entity.x == WATER;
+            bool isWater = mc_Entity.x == WATER || mc_Entity.x == WAVING_ON_WATER;
 
             bool allowWaving = 
                 (
@@ -333,24 +330,26 @@ void main() {
                 offset *= 0.5;
             }
 
+            #if defined g_terrain && defined FLATTEN_GRASS
+                if(!isFullWaving) {
+                    float squashFactor = 1.0 - smoothstep(0.0, 1.0, length(centeredPos * vec3(1.0, 0.4, 1.0)));
+                    squashFactor *= smoothstep(0.0, 3.0, length(cameraDiffSmooth));
+                    if(isSuperStiff) squashFactor *= 0.12;
+                    position.y -= squashFactor * 0.5;
+                    offset *= squashFactor * 0.5 + 1.0;
+                }
+            #endif
+
             if(isWater) {
                 float offset1D = length(offset) * 0.4 - (smoothstep(rainLower, rainUpper, wetness) * 0.3 * WIND_STRENGTH_CONSTANT + 0.07);
                 float modAbsPos = mod(absolutePosition.y, 1);
-                if(modAbsPos > 1 - 0.01) offset1D = 0;
+                if(!isTopPart) {
+                    offset1D = modAbsPos > 1 - 0.01 ? 0.0 : offset1D;
 
-                offset1D *= modAbsPos * RCP_7 * 8;
+                    offset1D *= modAbsPos * RCP_7 * 8;
+                }
                 position.y += min(offset1D * WAVE_STRENGTH_CONSTANT_USER, 0.112);
             } else {
-                #if defined g_terrain && defined FLATTEN_GRASS
-                    if(!isFullWaving) {
-                        float squashFactor = 1.0 - smoothstep(0.0, 1.0, length(centeredPos * vec3(1.0, 0.4, 1.0)));
-                        squashFactor *= smoothstep(0.0, 3.0, length(cameraDiffSmooth));
-                        if(isSuperStiff) squashFactor *= 0.12;
-                        position.y -= squashFactor * 0.5;
-                        offset *= squashFactor * 0.5 + 1.0;
-                    }
-                #endif
-
                 position.xz += offset;
                 // realistic value is 1.0
                 float heightOffset = 0.8;
