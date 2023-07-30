@@ -39,11 +39,6 @@ in vec2 texcoord;
     #define use_shadowtex1
     #define use_shadow_projection
     #define use_shadow_model_view
-    
-
-    #define use_frame_counter
-    #define use_view_width
-    #define use_view_height
 
     #define use_sample_noise
     #define use_get_shadow
@@ -51,7 +46,12 @@ in vec2 texcoord;
 
 #if defined TAA_ENABLED
     #define use_temporal_AA_offsets
+
+    #define use_frame_counter
+    #define use_view_width
+    #define use_view_height
 #endif
+
 
 #include "/lib/use.glsl"
 
@@ -63,15 +63,16 @@ void main() {
     vec3 normal = texture(colortex3, texcoord).rgb;
     vec3 normalViewspace = view(normal);
 
-    #if defined SHADOWS_ENABLED
-        float depth = texture(depthtex1, texcoord).r;
-        #if defined TAA_ENABLED
-            vec2 texcoordJittered = texcoord - temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] / vec2(viewWidth, viewHeight);
-        #else
-            vec2 texcoordJittered = texcoord;
-        #endif
+    float depth = texture(depthtex1, texcoord).r;
+    #if defined TAA_ENABLED
+        vec2 texcoordJittered = texcoord - temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] / vec2(viewWidth, viewHeight);
+    #else
+        vec2 texcoordJittered = texcoord;
+    #endif
 
-        vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoordJittered, depth).xyz;
+    vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoordJittered, depth).xyz;
+
+    #if defined SHADOWS_ENABLED
         vec3 pixelatedPosition = position;
 
         #if PIXELATED_SHADOWS != 0
@@ -98,6 +99,7 @@ void main() {
 
     mat2x3 lightColor = getLightColor(lightmap,
     normal,
+    normalize(position),
     normalViewspace,
     sunPosition,
     moonPosition,
@@ -109,7 +111,8 @@ void main() {
     darknessFactor,
     darknessLightFactor,
     isLightning,
-    shadowcolor0);
+    shadowcolor0
+    );
 
     vec3 lightningColor = vec3(0.0);
 

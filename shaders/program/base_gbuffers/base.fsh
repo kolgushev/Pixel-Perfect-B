@@ -510,6 +510,7 @@ void main() {
                 mat2x3 lightColor = getLightColor(
                     lightmap,
                     normalMod,
+                    normalize(position),
                     view(normalMod),
                     sunPosition,
                     moonPosition,
@@ -544,6 +545,7 @@ void main() {
             mat2x3 lightColor = getLightColor(
                 lightmap,
                 normal,
+                normalize(position),
                 view(normal),
                 sunPosition,
                 moonPosition,
