@@ -289,7 +289,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef BOSS_BATTLE_COLORS
 #endif
 
-// #define TEXTURE_FILTERING
+#define TEXTURE_FILTERING
 #ifdef TEXTURE_FILTERING
 #endif
 
