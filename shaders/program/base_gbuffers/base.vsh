@@ -298,7 +298,7 @@ void main() {
                 // color.rgb = vec3(wakeEffect) * 5;
                 // color.rgb = max(vec3(EPSILON), color.rgb);
 
-                offset = cameraDiffSmooth.xz * 0.3 * wakeEffect;
+                offset += cameraDiffSmooth.xz * 0.3 * wakeEffect;
             #endif
 
             #define N 0.5
