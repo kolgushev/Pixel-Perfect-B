@@ -28,7 +28,7 @@ screen.POST_PROCESSING=Post Processing
         option.LUMINANCE_CONTRAST.comment=Higher contrast intensifies white and black levels, while lower contrast decreases them. Too much contrast may cause color clipping, while too little may make everything look grayed out. No performance impact.
 
     option.EXPOSURE=Exposure
-        option.EXPOSURE.comment=Increases the brightness of the image while preserving dark areas. You can also control this setting through the vanilla "Brightness" slider. No performance impact.
+        option.EXPOSURE.comment=Increases the brightness of the image while preserving dark areas. No performance impact.
 
     option.POST_SATURATION=Vibrance
         option.POST_SATURATION.comment=Also known as saturation. Increases the strength of colors in your world.
@@ -295,7 +295,7 @@ screen.RESOURCEPACK=Resourcepack Settings
     
     option.TEX_RES=Resource Pack Resolution
         suffix.TEX_RES=×
-        
+
 screen.MISC=Extras
 
     screen.STREAMER_SETTINGS=Streamer Settings
