@@ -57,6 +57,9 @@
 #if defined use_hdr_mapping
 #endif
 
+#if defined use_hosek_wilkie_sky
+#endif
+
 // depends on: sample_noisetex
 #if defined use_lava_noise
 	#define use_sample_noisetex
@@ -159,6 +162,10 @@
 
 #if defined use_hdr_mapping
 #include "/lib/hdr_mapping.glsl"
+#endif
+
+#if defined use_hosek_wilkie_sky
+	#include "/lib/atmospherics/hosek_wilkie_sky.glsl"
 #endif
 
 #if defined use_linearize_depth

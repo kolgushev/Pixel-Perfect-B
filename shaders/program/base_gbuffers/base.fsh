@@ -153,8 +153,11 @@ flat in int mcEntity;
     #define use_fog_color
     #define use_sky_color
     #define use_is_lightning
-    
-    #define use_calculate_sky
+    #define use_sun_position
+    #define use_gbuffer_model_view_inverse
+
+    // #define use_calculate_sky
+    #define use_hosek_wilkie_sky
 #else
     #define use_entity_color
 
@@ -258,7 +261,7 @@ void main() {
             vec3 rainColor = vec3(0.0);
         #endif
 
-        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(calcSkyColor(normalize(position), customSkyColor, customFogColor, rainColor));
+        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(hosek_wilkie_sky_rgb(normalize(position), normalize(viewInverse(sunPosition))) * 0.05);
         /*  The sky is rendered using a cylinder-like shape at the top and a flat shape at the bottom.
             For some reason the vaPosition for the flat shape translates to the same as texcoord when
             mapped to clipspace, so we need to detect that and set it to the fog color
@@ -369,7 +372,9 @@ void main() {
         #endif
     #endif
 
-    albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
+    #if !defined g_skybasic
+        albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
+    #endif
 
     #if defined g_skybasic
         // saturate

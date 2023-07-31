@@ -564,7 +564,7 @@ const float shadowIntervalSize = 8.0;
 #define MIN_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
 #define AMBIENT_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
 
-#define EXPOSURE_BIAS 0.5
+#define EXPOSURE_WEIGHT 0.4
 
 #if defined USE_LUT
     #if defined LUT_OVERRIDE_GAMMA_CORRECT && defined LUT_GAMMA_CORRECT

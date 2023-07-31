@@ -103,11 +103,11 @@ void main() {
 
     // this is personal taste, but Hable has some desaturated/dark colors, so compensate for that through post-processing
     #if LMT_MODE == 3
-        #define LMT_MODE_EXPOSURE_WEIGHT 0.96
-        #define LMT_MODE_EXPOSURE_WEIGHT 0.96
+        #define LMT_MODE_EXPOSURE_WEIGHT 1.2
+        #define LMT_MODE_EXPOSURE_WEIGHT 1.2
         #define LMT_MODE_CONTRAST_BIAS 0.1
     #else
-        #define LMT_MODE_EXPOSURE_WEIGHT 0.8
+        #define LMT_MODE_EXPOSURE_WEIGHT 1.0
         #define LMT_MODE_CONTRAST_BIAS 0.0
     #endif
 
@@ -116,7 +116,7 @@ void main() {
     tonemapped *= EXPOSURE * LMT_MODE_EXPOSURE_WEIGHT;
 
     #if !defined DYNAMIC_EXPOSURE_LIGHTING
-        tonemapped *= EXPOSURE_BIAS;
+        tonemapped *= EXPOSURE_WEIGHT;
     #endif
 
     // tonemap image

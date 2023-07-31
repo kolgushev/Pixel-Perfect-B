@@ -23,7 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // UNIFORMS ---------------------------------------------------------
 // ------------------------------------------------------------------
 
-uniform vec3 A, B, C, D, E, F, G, H, I, Z;
+uniform vec3 skyA, skyB, skyC, skyD, skyE, skyF, skyG, skyH, skyI, skyZ;
 
 // ------------------------------------------------------------------
 // FUNCTIONS --------------------------------------------------------
@@ -31,9 +31,10 @@ uniform vec3 A, B, C, D, E, F, G, H, I, Z;
 
 vec3 hosek_wilkie(float cos_theta, float gamma, float cos_gamma)
 {
-	vec3 chi = (1 + cos_gamma * cos_gamma) / pow(1 + H * H - 2 * cos_gamma * H, vec3(1.5));
-    return (1 + A * exp(B / (cos_theta + 0.01))) * (C + D * exp(E * gamma) + F * (cos_gamma * cos_gamma) + G * chi + I * sqrt(cos_theta));
+	vec3 chi = (1 + cos_gamma * cos_gamma) / pow(1 + skyH * skyH - 2 * cos_gamma * skyH, vec3(1.5));
+	return (1 + skyA * exp(skyB / (cos_theta + 0.01))) * (skyC + skyD * exp(skyE * gamma) + skyF * (cos_gamma * cos_gamma) + skyG * chi + skyI * sqrt(cos_theta));
 }
+
 
 // ------------------------------------------------------------------
 
@@ -43,7 +44,7 @@ vec3 hosek_wilkie_sky_rgb(vec3 v, vec3 sun_dir)
 	float cos_gamma = clamp(dot(v, sun_dir), 0, 1);
 	float gamma_ = acos(cos_gamma);
 
-	vec3 R = Z * hosek_wilkie(cos_theta, gamma_, cos_gamma);
+	vec3 R = skyZ * hosek_wilkie(cos_theta, gamma_, cos_gamma);
     return R;
 }
 
