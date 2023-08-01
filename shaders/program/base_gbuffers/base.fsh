@@ -363,23 +363,22 @@ void main() {
 
     #if !defined g_skybasic
         albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
-    #endif
 
-    #if defined g_skybasic
-        // saturate
-        albedo.rgb = max(vec3(0), saturateRGB(SKY_SATURATION) * albedo.rgb);
-    #endif
+        #if INPUT_COLORSPACE == 0
+            albedo.rgb *= RGB_to_ACEScg;
+        #elif INPUT_COLORSPACE == 2
+            albedo.rgb = clamp(albedo.rgb * ACES2065_1_to_ACEScg, vec3(0), vec3(1));
+        #endif
 
-    #if INPUT_COLORSPACE == 0
-        albedo.rgb *= RGB_to_ACEScg;
-    #elif INPUT_COLORSPACE == 2
-        albedo.rgb = clamp(albedo.rgb * ACES2065_1_to_ACEScg, vec3(0), vec3(1));
-    #endif
 
-    #if HDR_TEX_STANDARD == 1
-        albedo.rgb = uncharted2_filmic_inverse(albedo.rgb * ACEScg_to_RGB) * RGB_to_ACEScg;
-    #elif HDR_TEX_STANDARD == 2
-        albedo.rgb = aces_fitted_inverse(albedo.rgb);
+        #if HDR_TEX_STANDARD == 1
+            albedo.rgb = uncharted2_filmic_inverse(albedo.rgb * ACEScg_to_RGB) * RGB_to_ACEScg;
+        #elif HDR_TEX_STANDARD == 2
+            albedo.rgb = aces_fitted_inverse(albedo.rgb);
+        #endif
+
+    #else
+        albedo.rgb *= XYZ_to_ACEScg;
     #endif
 
     #if defined g_line
