@@ -262,17 +262,6 @@ void main() {
         #endif
 
         vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(hosek_wilkie_sky_rgb(normalize(position), normalize(viewInverse(sunPosition))) * 0.02);
-        /*  The sky is rendered using a cylinder-like shape at the top and a flat shape at the bottom.
-            For some reason the vaPosition for the flat shape translates to the same as texcoord when
-            mapped to clipspace, so we need to detect that and set it to the fog color
-            instead of evaluating the gradient.
-        */
-
-        #if defined RAIN_FOG
-            customFogColor = mix(customFogColor, rainColor, rainStrength);
-        #endif
-        if(distance(color.rgb, fogColor) < EPSILON) albedo = opaque(customFogColor);
-
     #else
         #if defined g_weather
             vec3 absolutePosition = position + cameraPosition;

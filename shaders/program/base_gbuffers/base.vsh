@@ -343,11 +343,11 @@ void main() {
             if(isWater) {
                 float offset1D = length(offset) * 0.4 - (smoothstep(rainLower, rainUpper, wetness) * 0.3 * WIND_STRENGTH_CONSTANT + 0.07);
                 float modAbsPos = mod(absolutePosition.y, 1);
-                if(!isTopPart) {
+                #if defined g_water
                     offset1D = modAbsPos > 1 - 0.01 ? 0.0 : offset1D;
 
                     offset1D *= modAbsPos * RCP_7 * 8;
-                }
+                #endif
                 position.y += min(offset1D * WAVE_STRENGTH_CONSTANT_USER, 0.112);
             } else {
                 position.xz += offset;
