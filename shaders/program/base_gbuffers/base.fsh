@@ -261,7 +261,7 @@ void main() {
             vec3 rainColor = vec3(0.0);
         #endif
 
-        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(hosek_wilkie_sky_rgb(normalize(position), normalize(viewInverse(sunPosition))) * 0.02);
+        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(hosek_wilkie_sky_rgb(normalize(position), normalize(viewInverse(sunPosition))) * 0.1);
     #else
         #if defined g_weather
             vec3 absolutePosition = position + cameraPosition;
