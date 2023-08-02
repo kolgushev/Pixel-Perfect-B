@@ -1,9 +1,24 @@
 
 uniform vec3 skyAlbedo;
 vec3 pixelPerfectSkyVector(vec3 v, vec3 sun_dir, vec2 stars, float rain, float skyTime) {
-	float vy = v.y + 0.05;
-	vec3 vec = normalize(vec3(v.x, mix(0.03, vy, smoothstep(0.03, 0.1, vy)), v.z));
-	vec3 color = hosekWilkieSkyVector(vec, sun_dir);
+	vec3 vec = vec3(v.x, max(EXPAND_SKY, v.y + EXPAND_SKY), v.z);
+	vec3 vecSun = vec3(sun_dir.x, sun_dir.y, sun_dir.z);
+	vec3 color = hosekWilkieSkyVector(normalize(vec), normalize(vecSun));
+
+	if(v.y < 0) {
+		vec3 vec = vec3(v.x, max(EXPAND_SKY, -v.y + EXPAND_SKY), v.z);
+		vec3 vecSun = vec3(sun_dir.x, -sun_dir.y, sun_dir.z);
+		// use schlick approximation
+		float fresnelFactor = pow(1.0 - dot(v, UP), 5.0) * (1.0 - REFLECTANCE_WATER) + REFLECTANCE_WATER;
+
+		vec3 colorMod = vec3(0.05, 0.2, 1.0) + hosekWilkieSkyVector(normalize(vec), normalize(vecSun)) / fresnelFactor;
+
+		#define SKY_FOG_DENSITY 0.01
+		float fogFactor = exp(-SKY_FOG_DENSITY / (abs(v.y) + 0.01));
+		color = mix(color, colorMod, fogFactor);
+	}
+
+	// apply fresnel to mirror copy
 
 	float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
 	color = mix(color, RAINY_SKY_COLOR, mixFactor);

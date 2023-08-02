@@ -38,7 +38,13 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define GAMMA 2.2
 #define RCP_GAMMA 0.45454545455
 
+// approx. fresnel reflectances
+#define REFLECTANCE_PLASTIC 0.035
+#define REFLECTANCE_WATER 0.02
+
 #define LIGHT_MATRIX mat4(vec4(0.00390625, 0.0, 0.0, 0.0), vec4(0.0, 0.00390625, 0.0, 0.0), vec4(0.0, 0.0, 0.00390625, 0.0), vec4(0.03125, 0.03125, 0.03125, 1.0))
+
+#define UP vec3(0.0, 1.0, 0.0)
 
 // utils
 
@@ -201,6 +207,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // #define END_FOGGY_WEATHER
 #ifdef END_FOGGY_WEATHER
 #endif
+
+#define EXPAND_SKY 0.01
 
 #define SPIDEREYES_MULT 1.0
 
@@ -389,6 +397,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define SPECULAR_ENABLED
 #ifdef SPECULAR_ENABLED
+#endif
+
+#define REFLECTIVE_WATERR
+#ifdef REFLECTIVE_WATERR
 #endif
 
 // #define FAST_GI

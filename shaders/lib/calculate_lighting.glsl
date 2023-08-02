@@ -140,10 +140,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
             vec3 specular = mix(specularMoon, specularSun, skyTransition);
 
-            // using calculated reflectance close to that of plastic & air
-            #define REFLECTANCE 0.035
             // use schlick approximation
-            float fresnelFactor = pow(1.0 - dot(incident, normal), 5.0) * (1.0 - REFLECTANCE) + REFLECTANCE;
+            float fresnelFactor = pow(1.0 - dot(incident, normal), 5.0) * (1.0 - REFLECTANCE_PLASTIC) + REFLECTANCE_PLASTIC;
             // sample sky at reflected vector
             specular /= fresnelFactor;
 
