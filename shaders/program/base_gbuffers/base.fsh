@@ -157,7 +157,7 @@ flat in int mcEntity;
     #define use_gbuffer_model_view_inverse
 
     // #define use_calculate_sky
-    #define use_hosek_wilkie_sky
+    #define use_pixel_perfect_sky
 #else
     #define use_entity_color
 
@@ -247,7 +247,7 @@ void main() {
         // TODO: make a proper sunset
         if(renderStage == MC_RENDER_STAGE_SUNSET) discard;
 
-        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(hosekWilkieSkyVector(normalize(position), normalize(viewInverse(sunPosition))));
+        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(pixelPerfectSkyVector(normalize(position), normalize(viewInverse(sunPosition))));
 
         float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
         albedo.rgb = mix(albedo.rgb, RAINY_SKY_COLOR, mixFactor);

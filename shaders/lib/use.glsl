@@ -64,6 +64,10 @@
 #if defined use_hdr_mapping
 #endif
 
+#if defined pixel_perfect_sky
+	#define use_hosek_wilkie_sky
+#endif
+
 #if defined use_hosek_wilkie_sky
 #endif
 
@@ -147,6 +151,10 @@
 
 #if defined use_hosek_wilkie_sky
 	#include "/lib/atmospherics/hosek_wilkie_sky.glsl"
+#endif
+
+#if defined use_pixel_perfect_sky
+	#include "/lib/atmospherics/pixel_perfect_sky.glsl"
 #endif
 
 #if defined use_calculate_lighting

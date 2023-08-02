@@ -48,14 +48,4 @@ vec3 hosekWilkieSkyVector(vec3 v, vec3 sun_dir)
     return R * XYZ_to_ACEScg;
 }
 
-vec3 hosekWilkieSkyVector(vec3 v, vec3 sun_dir, vec2 offset) {
-	float theta = acos(v.y);
-	float gamma = acos(dot(v, sun_dir));
-	theta += offset.x;
-	gamma += offset.y;
-
-	vec3 R = skyZ * hosekWilkieFormula(cos(theta), gamma, cos(gamma));
-	return R * XYZ_to_ACEScg;
-}
-
 // ------------------------------------------------------------------

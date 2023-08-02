@@ -118,7 +118,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR;
 
         // // shade according to sky color
-        // vec3 skyColor = hosekWilkieSkyVector(normal, normalize(sunPosition));
+        // vec3 skyColor = pixelPerfectSkyVector(normal, normalize(sunPosition));
         // vec3 skyLighting = skyColor * lightmapAdjusted.y;
 
         vec3 skyColor = actualSkyColor(skyTransition) * mix(1 - rain, 1, THUNDER_BRIGHTNESS) + lightningFlash(isLightning, rain);
@@ -133,7 +133,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
             // blinn-phong specular highlights
             // sun specular
             #define ROUGHNESS_RCP 6.0
-            vec3 specular = pow(max(0.0, dot(normalize(normalize(sunPosition) - incident), normalViewspace)), ROUGHNESS_RCP) * SUN_COLOR;
+            vec3 specular = pow(max(0.0, dot(normalize(normalize(sunPosition) - incident), normal)), ROUGHNESS_RCP) * SUN_COLOR;
 
             // moon specular
             specular += pow(max(0.0, dot(normalize(normalize(moonPosition) - incident), normal)), ROUGHNESS_RCP) * MOON_COLOR;
@@ -163,5 +163,5 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         directSolarLighting *= adjustedAo;
     #endif
 
-    return mat2x3(indirectLighting, vec3(0));
+    return mat2x3(indirectLighting, directSolarLighting);
 }
