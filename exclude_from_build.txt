@@ -1,1 +1,2 @@
 shaders/LUTs/misc
+shaders/lib/tools
