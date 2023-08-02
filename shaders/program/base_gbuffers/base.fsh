@@ -247,21 +247,21 @@ void main() {
         // TODO: make a proper sunset
         if(renderStage == MC_RENDER_STAGE_SUNSET) discard;
 
-        vec3 customSkyColor = skyColor;
-        vec3 customFogColor = mix(fogColor, skyColor, SKY_COLOR_BLEND);
+        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(hosek_wilkie_sky_rgb(normalize(position), normalize(viewInverse(sunPosition))) * 0.1);
+
+        float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
+        albedo.rgb = mix(albedo.rgb, RAINY_SKY_COLOR * ACEScg_to_XYZ, mixFactor);
         
         #if defined RAIN_FOG
-            float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
-            customSkyColor = mix(customSkyColor, RAINY_SKY_COLOR, mixFactor);
-            customFogColor = mix(customFogColor, RAINY_SKY_COLOR, mixFactor);
 
-            vec3 rainColor = gammaCorrection(ATMOSPHERIC_FOG_COLOR_RAIN, RCP_GAMMA) * ACEScg_to_RGB;
+            vec3 rainColor = gammaCorrection(ATMOSPHERIC_FOG_COLOR_RAIN, RCP_GAMMA) * ACEScg_to_XYZ;
             rainColor = rainColor * mix(skyTime, 1, 0.65);
+
+            albedo.rgb = mix(albedo.rgb, rainColor, smoothstep(-1.0, -0.2, -normalize(position).y) * smoothstep(0.0, THUNDER_THRESHOLD, rain));
         #else
             vec3 rainColor = vec3(0.0);
         #endif
 
-        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(hosek_wilkie_sky_rgb(normalize(position), normalize(viewInverse(sunPosition))) * 0.1);
     #else
         #if defined g_weather
             vec3 absolutePosition = position + cameraPosition;
