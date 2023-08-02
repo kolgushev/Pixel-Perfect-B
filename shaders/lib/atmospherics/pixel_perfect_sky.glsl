@@ -1,9 +1,21 @@
-vec3 pixelPerfectSkyVector(vec3 v, vec3 sun_dir) {
+vec3 pixelPerfectSkyVector(vec3 v, vec3 sun_dir, vec2 stars, float rain, float skyTime) {
 	vec3 color = hosekWilkieSkyVector(v, sun_dir);
+
 	color = mix(vec3(0.025, 0.088, 0.29) * luminance(color), color, smoothstep(-0.02, 0.0, v.y));
 
-	color *= 0.07;
+	float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
+	color = mix(color, RAINY_SKY_COLOR, mixFactor);
+        
+	#if defined RAIN_FOG
+		vec3 rainColor = gammaCorrection(ATMOSPHERIC_FOG_COLOR_RAIN, RCP_GAMMA);
+		rainColor = rainColor * mix(skyTime, 1, 0.65);
 
+		color = mix(color, rainColor, smoothstep(-1.0, -0.2, -normalize(position).y) * smoothstep(0.0, THUNDER_THRESHOLD, rain));
+	#else
+		vec3 rainColor = vec3(0.0);
+	#endif
+
+	color *= 0.07;
 
 	return color;
 }

@@ -88,7 +88,7 @@ flat in int mcEntity;
         #define use_shadowtex1
         #define use_shadow_projection
         #define use_shadow_model_view
-        
+
 
         #define use_frame_counter
         #define use_view_width
@@ -244,35 +244,23 @@ void main() {
 
 
     #if defined g_skybasic
-        // TODO: make a proper sunset
         if(renderStage == MC_RENDER_STAGE_SUNSET) discard;
+        // TODO: re-add stars
+        if(stars.g > 0.5) discard;
 
-        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(pixelPerfectSkyVector(normalize(position), normalize(viewInverse(sunPosition))));
-
-        float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
-        albedo.rgb = mix(albedo.rgb, RAINY_SKY_COLOR, mixFactor);
-        
-        #if defined RAIN_FOG
-            vec3 rainColor = gammaCorrection(ATMOSPHERIC_FOG_COLOR_RAIN, RCP_GAMMA);
-            rainColor = rainColor * mix(skyTime, 1, 0.65);
-
-            albedo.rgb = mix(albedo.rgb, rainColor, smoothstep(-1.0, -0.2, -normalize(position).y) * smoothstep(0.0, THUNDER_THRESHOLD, rain));
-        #else
-            vec3 rainColor = vec3(0.0);
-        #endif
-
+        vec4 albedo = opaque(pixelPerfectSkyVector(normalize(position), normalize(viewInverse(sunPosition)), stars, rain, skyTime));
     #else
         #if defined g_weather
             vec3 absolutePosition = position + cameraPosition;
             vec2 positionMod = tile(absolutePosition.xz + frameTimeCounter * 4, NOISE_PERLIN_4D, false).xy;
         #endif
-        
+
         vec2 texcoordMod = texcoord;
-        
+
         #if defined DIM_END && defined g_skytextured
             texcoordMod = tile(texcoordMod * END_SKY_RESOLUTION, NOISE_BLUE_2D, true).rg;
         #endif
-        
+
         #if defined g_weather
             texcoordMod.x *= RAIN_THICKNESS;
             texcoordMod.y *= mix(RAIN_THICKNESS, 1, rainWindSharp);
@@ -288,9 +276,9 @@ void main() {
             #else
                 #define IS_FILTERED false
             #endif
-            
+
             vec4 albedo = textureFiltered(texture, texcoordMod, IS_FILTERED);
-            
+
             #if !(defined gc_transparent || defined g_beaconbeam)
                 // fix for transparency losing color
                 if(albedo.a < 1) albedo = texture2D(texture, texcoordMod);
@@ -299,7 +287,7 @@ void main() {
             vec4 albedo = texture2D(texture, texcoordMod);
         #endif
 
-        
+
         vec3 uncoloredDiffuse = albedo.rgb;
 
         albedo.rgb *= color.rgb;
@@ -326,7 +314,7 @@ void main() {
 
             albedo.a *= mix(SNOW_OPACITY, rainMask, rainWind);
         #endif
-        
+
         // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed
         albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a);
     #endif
@@ -349,7 +337,7 @@ void main() {
             albedo.a *= smoothstep(-THUNDER_THRESHOLD, 0, -rain);
         #endif
     #endif
-    
+
     #if !defined IS_IRIS
         if(albedo.a < alphaTestRef) discard;
     #else
@@ -418,8 +406,8 @@ void main() {
         albedo.a = max(0.15, albedo.a);
 
         albedo.a *= RAIN_TRANSPARENCY * smoothstep(0, THUNDER_THRESHOLD, rain);
-        
-        albedo.rgb *= 
+
+        albedo.rgb *=
             rainMultiplier(rain) * mix(moonBrightness * MOON_COLOR, SUN_COLOR, skyTransition)
             + actualSkyColor(skyTransition)
             + lightningFlash(isLightning, rain);
@@ -482,11 +470,11 @@ void main() {
             #else
                 float positionMod = normal.y;
             #endif
-            
+
             positionMod = mix(positionMod, 1, 0);
-            
+
             albedo.a *= 0.8;
-            
+
             positionMod = mix(positionMod * (1 - rain), 1, 0);
 
             #if VANILLA_LIGHTING == 2
@@ -550,7 +538,7 @@ void main() {
 
             lightColor *= albedo.a;
         #endif
-        
+
         #if WATER_MIX_MODE != 1 || defined gc_transparent_mixed
             #if defined SHADOWS_ENABLED
                 vec3 shadowPos = position;
@@ -664,7 +652,7 @@ void main() {
         #if defined FOG_ENABLED && (defined g_skybasic || defined gc_skybox)
             albedo.rgb = mix(ATMOSPHERIC_FOG_COLOR, albedo.rgb, exp(-fogWeather * far * ATMOSPHERIC_FOG_DENSITY * ATMOSPHERIC_FOG_MULTIPLIER * WEATHER_FOG_MULTIPLIER));
         #endif
-        
+
         albedo.rgb = mix(albedo.rgb, vec3(0), blindnessSmooth);
 
         #if defined FAST_GI
