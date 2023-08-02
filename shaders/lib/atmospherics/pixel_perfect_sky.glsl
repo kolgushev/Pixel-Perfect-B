@@ -17,7 +17,7 @@ vec3 pixelPerfectSkyVector(vec3 v, vec3 sun_dir, vec2 stars, float rain, float s
 		vec3 rainColor = vec3(0.0);
 	#endif
 
-	color *= 0.07;
+	color *= 0.05;
 
 	return color;
 }
