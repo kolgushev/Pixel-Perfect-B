@@ -1,4 +1,4 @@
-#version 330 compatibility
+#version 330
 #define DIM_TEST
 
 #include "/program/gbuffers/weather.vsh"
