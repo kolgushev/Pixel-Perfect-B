@@ -387,8 +387,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define HDR_TEX_STANDARD 0 // [0 1 2]
 
-#define FRESNEL_ENABLED
-#ifdef FRESNEL_ENABLED
+#define SPECULAR_ENABLED
+#ifdef SPECULAR_ENABLED
 #endif
 
 // #define FAST_GI

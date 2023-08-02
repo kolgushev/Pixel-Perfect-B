@@ -23,7 +23,7 @@ vec3 actualSkyColor(in float skyTransition) {
 }
 
 // Input is not adjusted lightmap coordinates
-mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 incident, in vec3 normalViewspace, in vec3 sunPosition, in vec3 moonPosition, in float moonBrightness, in float skyTransition, in float rain, in float directLightMult, in float nightVisionEffect, in float darknessEffect, in float darknessPulseEffect, in float isLightning, in sampler2D vanillaLightTex) {
+mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPosition, in vec3 sunPositionViewspace, in vec3 moonPosition, in vec3 moonPositionViewspace, in float moonBrightness, in float skyTransition, in float rain, in float directLightMult, in float nightVisionEffect, in float darknessEffect, in float darknessPulseEffect, in float isLightning, in sampler2D vanillaLightTex) {
 
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
@@ -42,32 +42,32 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 incident, in ve
 
         // using texture2D instead of texture since the Optifine-provided varying block atlas is also called texture
         vec3 indirectLighting = texture2D(vanillaLightTex, vec2(lightmap.r, mix(0.0313, lightmap.g, VANILLA_LIGHTING_SKY_BLEED))).rgb - VANILLA_NATURAL_AMBIENT_LIGHT;
-        vec3 directSkyLighting = texture2D(vanillaLightTex, lightmap).rgb - VANILLA_NATURAL_AMBIENT_LIGHT;
+        vec3 directSolarLighting = texture2D(vanillaLightTex, lightmap).rgb - VANILLA_NATURAL_AMBIENT_LIGHT;
 
         indirectLighting = max(indirectLighting, vec3(0));
-        directSkyLighting = max(directSkyLighting, vec3(0));
+        directSolarLighting = max(directSolarLighting, vec3(0));
 
-        directSkyLighting = gammaCorrection(directSkyLighting, GAMMA) * RGB_to_ACEScg * SKY_LIGHT_MULT;
+        directSolarLighting = gammaCorrection(directSolarLighting, GAMMA) * RGB_to_ACEScg * SKY_LIGHT_MULT;
         indirectLighting = gammaCorrection(indirectLighting, GAMMA) * RGB_to_ACEScg * BLOCK_LIGHT_MULT;
 
         #if VANILLA_LIGHTING == 1 && !defined gc_emissive
             float oldLighting = max((abs(normal.z) * 1.25 + (normal.y) * 2.75), -0.7) * ISQRT_5 + ISQRT_5;
-            directSkyLighting *= oldLighting;
+            directSolarLighting *= oldLighting;
         #endif
 
         /*
         Make sure to have accurate lighting - since indirectLighting
-        and directSkyLighting are added together when not in shadow.
+        and directSolarLighting are added together when not in shadow.
         */
-        directSkyLighting -= indirectLighting;
+        directSolarLighting -= indirectLighting;
 
         #if defined SHADOWS_ENABLED
-            float sunShading = normalLighting(normalViewspace, sunPosition);
-            float moonShading = normalLighting(normalViewspace, moonPosition);
+            float sunShading = normalLighting(normalViewspace, sunPositionViewspace);
+            float moonShading = normalLighting(normalViewspace, moonPositionViewspace);
 
             skyShading = mix(moonShading, sunShading, skyTransition);
 
-            directSkyLighting *= skyShading;
+            directSolarLighting *= skyShading;
         #endif
 
         vec3 ambientLight = AMBIENT_LIGHT_MULT * (1 - darknessEffect * 0.8) * max(1 - darknessPulseEffect * 3.0, 0.0) * AMBIENT_COLOR;
@@ -86,8 +86,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 incident, in ve
         float lightBoost = BLOCK_LIGHT_POWER + darknessEffect * 0.9 + darknessPulseEffect * 4 - nightVisionEffect * 0.5;
 
         // Compute dot product vertex shading from normals
-        float sunShading = normalLighting(normalViewspace, sunPosition);
-        float moonShading = normalLighting(normalViewspace, moonPosition);
+        float sunShading = normalLighting(normalViewspace, sunPositionViewspace);
+        float moonShading = normalLighting(normalViewspace, moonPositionViewspace);
 
 
         vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), VANILLA_COLORS);
@@ -98,12 +98,12 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 incident, in ve
 
         vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR;
         vec3 sunLighting = sunShading * SUN_COLOR;
-        vec3 directSkyLighting = mix(moonLighting, sunLighting, skyTransition);
+        vec3 directSolarLighting = mix(moonLighting, sunLighting, skyTransition);
 
         #if defined FOG_ENABLED
-            directSkyLighting *= directLightMult;
+            directSolarLighting *= directLightMult;
         #else
-            directSkyLighting *= rainMultiplier(rain);
+            directSolarLighting *= rainMultiplier(rain);
         #endif
 
         float hardcoreMult = inversesqrt(darknessEffect * 0.75 + 0.25) - 1;
@@ -117,14 +117,41 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 incident, in ve
 
         vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR;
 
+        // // shade according to sky color
+        // vec3 skyColor = hosekWilkieSkyVector(normal, normalize(sunPosition));
+        // vec3 skyLighting = skyColor * lightmapAdjusted.y;
+
         vec3 skyColor = actualSkyColor(skyTransition) * mix(1 - rain, 1, THUNDER_BRIGHTNESS) + lightningFlash(isLightning, rain);
         // technically the pow2 here isn't accurate, but it makes the falloff near the edges of the light look better
         vec3 skyLighting = skyColor * skyShading * lightmapAdjusted.y;
 
         // the 0.47 here is an artistic decision, anything below 0.5 represents bounce lighting reaching above the surface of a block
         float ambientSkyShading = (normal.y + 1) * -0.47 + 1.0;
-        vec3 ambientSkyLight = (directSkyLighting + skyColor) * ambientSkyShading * lightmapAdjusted.y * 0.6;
-        
+        vec3 ambientSkyLight = (directSolarLighting + skyColor) * ambientSkyShading * lightmapAdjusted.y * 0.6;
+
+        #if defined SPECULAR_ENABLED
+            // blinn-phong specular highlights
+            // sun specular
+            #define ROUGHNESS_RCP 6.0
+            vec3 specular = pow(max(0.0, dot(normalize(normalize(sunPosition) - incident), normalViewspace)), ROUGHNESS_RCP) * SUN_COLOR;
+
+            // moon specular
+            specular += pow(max(0.0, dot(normalize(normalize(moonPosition) - incident), normal)), ROUGHNESS_RCP) * MOON_COLOR;
+
+            // using calculated reflectance close to that of plastic & air
+            #define REFLECTANCE 0.035
+            // use schlick approximation
+            float fresnelFactor = pow(1.0 - dot(incident, normal), 5.0) * (1.0 - REFLECTANCE) + REFLECTANCE;
+            // sample sky at reflected vector
+            specular /= fresnelFactor;
+
+            // TODO: include blurred sky sample into specular
+        #else
+            vec3 specular = vec3(0);
+        #endif
+
+        directSolarLighting += specular;
+
         // Add the lighting togther to get the total contribution of the lightmap the final color.
         vec3 indirectLighting = max(vec3(minLight), ambientLight + torchLighting + skyLighting + ambientSkyLight);
     #endif
@@ -133,8 +160,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 incident, in ve
 
     indirectLighting *= adjustedAo;
     #if VANILLA_LIGHTING != 2
-        directSkyLighting *= adjustedAo;
+        directSolarLighting *= adjustedAo;
     #endif
 
-    return mat2x3(indirectLighting, directSkyLighting);
+    return mat2x3(indirectLighting, vec3(0));
 }

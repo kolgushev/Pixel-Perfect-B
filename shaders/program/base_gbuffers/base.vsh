@@ -185,6 +185,9 @@ void main() {
                 vec4(viewPosition, linePosStart.w)
                 )
             ).xyz;
+
+        // set normal to a realistic value
+        normal = (vec3(0.0, 1.0, 0.0));
     #endif
 
     #if (defined g_terrain || (defined g_weather && defined WAVING_RAIN_ENABLED) || (defined g_water && defined WAVING_WATER_ENABLED)) && defined WAVING_ENABLED && !defined DIM_NO_WIND

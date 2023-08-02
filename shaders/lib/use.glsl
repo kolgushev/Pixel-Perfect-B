@@ -8,11 +8,18 @@
 #if defined use_bicubic_filter
 #endif
 
-// depends on: use_color_manipulation, use_to_viewspace, use_lightning_flash
+// depends on: color_manipulation, to_viewspace, lightning_flash, hosek_wilkie_sky
 #if defined use_calculate_lighting
+	#define use_gbuffer_model_view_inverse
+
 	#define use_color_manipulation
 	#define use_to_viewspace
 	#define use_lightning_flash
+	#define use_hosek_wilkie_sky
+
+	#if defined SPECULAR_ENABLED
+		#define use_super_sample_offsets_cross
+	#endif
 #endif
 
 #if defined use_calculate_sky
@@ -138,7 +145,10 @@
 #include "/lib/lightning_flash.glsl"
 #endif
 
-// depends on: use_color_manipulation, use_to_viewspace
+#if defined use_hosek_wilkie_sky
+	#include "/lib/atmospherics/hosek_wilkie_sky.glsl"
+#endif
+
 #if defined use_calculate_lighting
 #include "/lib/calculate_lighting.glsl"
 #endif
@@ -162,10 +172,6 @@
 
 #if defined use_hdr_mapping
 #include "/lib/hdr_mapping.glsl"
-#endif
-
-#if defined use_hosek_wilkie_sky
-	#include "/lib/atmospherics/hosek_wilkie_sky.glsl"
 #endif
 
 #if defined use_linearize_depth

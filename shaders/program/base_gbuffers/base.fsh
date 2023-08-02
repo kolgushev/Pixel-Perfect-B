@@ -247,14 +247,13 @@ void main() {
         // TODO: make a proper sunset
         if(renderStage == MC_RENDER_STAGE_SUNSET) discard;
 
-        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(hosek_wilkie_sky_rgb(normalize(position), normalize(viewInverse(sunPosition))) * 0.1);
+        vec4 albedo = stars.g > 0.5 ? opaque1(stars.r) * NIGHT_SKY_LIGHT_MULT * STAR_WEIGHTS : opaque(hosekWilkieSkyVector(normalize(position), normalize(viewInverse(sunPosition))));
 
         float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
-        albedo.rgb = mix(albedo.rgb, RAINY_SKY_COLOR * ACEScg_to_XYZ, mixFactor);
+        albedo.rgb = mix(albedo.rgb, RAINY_SKY_COLOR, mixFactor);
         
         #if defined RAIN_FOG
-
-            vec3 rainColor = gammaCorrection(ATMOSPHERIC_FOG_COLOR_RAIN, RCP_GAMMA) * ACEScg_to_XYZ;
+            vec3 rainColor = gammaCorrection(ATMOSPHERIC_FOG_COLOR_RAIN, RCP_GAMMA);
             rainColor = rainColor * mix(skyTime, 1, 0.65);
 
             albedo.rgb = mix(albedo.rgb, rainColor, smoothstep(-1.0, -0.2, -normalize(position).y) * smoothstep(0.0, THUNDER_THRESHOLD, rain));
@@ -363,22 +362,14 @@ void main() {
 
     #if !defined g_skybasic
         albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
+    #endif
 
-        #if INPUT_COLORSPACE == 0
-            albedo.rgb *= RGB_to_ACEScg;
-        #elif INPUT_COLORSPACE == 2
-            albedo.rgb = clamp(albedo.rgb * ACES2065_1_to_ACEScg, vec3(0), vec3(1));
-        #endif
+    albedo.rgb *= RGB_to_ACEScg;
 
-
-        #if HDR_TEX_STANDARD == 1
-            albedo.rgb = uncharted2_filmic_inverse(albedo.rgb * ACEScg_to_RGB) * RGB_to_ACEScg;
-        #elif HDR_TEX_STANDARD == 2
-            albedo.rgb = aces_fitted_inverse(albedo.rgb);
-        #endif
-
-    #else
-        albedo.rgb *= XYZ_to_ACEScg;
+    #if HDR_TEX_STANDARD == 1
+        albedo.rgb = uncharted2_filmic_inverse(albedo.rgb * ACEScg_to_RGB) * RGB_to_ACEScg;
+    #elif HDR_TEX_STANDARD == 2
+        albedo.rgb = aces_fitted_inverse(albedo.rgb);
     #endif
 
     #if defined g_line
@@ -483,6 +474,7 @@ void main() {
     #endif
 
     #if defined gc_transparent
+        vec3 positionNormalized = normalize(position);
         // apply lighting here for transparent stuff
         #if defined g_clouds
             #if defined IS_IRIS
@@ -503,9 +495,11 @@ void main() {
                 mat2x3 lightColor = getLightColor(
                     lightmap,
                     normalMod,
-                    normalize(position),
                     view(normalMod),
+                    positionNormalized,
+                    viewInverse(sunPosition),
                     sunPosition,
+                    viewInverse(moonPosition),
                     moonPosition,
                     moonBrightness,
                     skyTime,
@@ -538,9 +532,11 @@ void main() {
             mat2x3 lightColor = getLightColor(
                 lightmap,
                 normal,
-                normalize(position),
                 view(normal),
+                positionNormalized,
+                viewInverse(sunPosition),
                 sunPosition,
+                viewInverse(moonPosition),
                 moonPosition,
                 moonBrightness,
                 skyTime,

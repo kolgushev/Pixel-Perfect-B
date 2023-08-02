@@ -97,11 +97,14 @@ void main() {
         #endif
     #endif
 
+    vec3 positionNormalized = normalize(position);
     mat2x3 lightColor = getLightColor(lightmap,
     normal,
-    normalize(position),
     normalViewspace,
+    positionNormalized,
+    viewInverse(sunPosition),
     sunPosition,
+    viewInverse(moonPosition),
     moonPosition,
     moonBrightness,
     skyTime,
