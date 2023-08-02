@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { eToNumber } from './lib/toStringParseable.js'
 
 import {datasetsXYZ, datasetsXYZRad} from './sky_gen_coeffs_XYZ.js'
 const datasets = datasetsXYZ
@@ -19,7 +20,7 @@ const letterNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'H', 'Z']
 
 for (const [channelId, channel] of datasets.entries()) {
 	const channelLetter = ['X', 'Y', 'Z'][channelId]
-	const letters = [
+	let letters = [
 
 	]
 
@@ -36,7 +37,11 @@ for (const [channelId, channel] of datasets.entries()) {
 
 	letters.push(datasetsRad[channelId])
 
-	letters.map(letter => letter.map(number => Math.floor(number) === number ? number.toFixed(1) : number.toString()))
+	letters = letters.map(letter => letter.map(number => {
+		const str = eToNumber(number.toString())
+		if(str.includes('e')) console.log(str)
+		return str.includes('.') ? str : str + '.0'
+	}))
 
 	for (const [letterId, letter] of letters.entries()) {
 		const letterName = letterNames[letterId]

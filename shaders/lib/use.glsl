@@ -12,6 +12,7 @@
 #if defined use_calculate_lighting
 	#define use_gbuffer_model_view_inverse
 
+	#define use_tonemapping
 	#define use_color_manipulation
 	#define use_to_viewspace
 	#define use_lightning_flash
@@ -149,6 +150,10 @@
 #include "/lib/lightning_flash.glsl"
 #endif
 
+#if defined use_tonemapping
+#include "/lib/tonemapping.glsl"
+#endif
+
 #if defined use_hosek_wilkie_sky
 	#include "/lib/atmospherics/hosek_wilkie_sky.glsl"
 #endif
@@ -209,10 +214,6 @@
 
 #if defined use_get_shadow
 #include "/lib/get_shadow.glsl"
-#endif
-
-#if defined use_tonemapping
-#include "/lib/tonemapping.glsl"
 #endif
 
 // depends on: use_sample_noisetex
