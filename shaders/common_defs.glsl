@@ -757,7 +757,7 @@ const float shadowIntervalSize = 8.0;
     #define SECONDARY_FOG_COLOR_MULTIPLIER 2.0
 
     #define WEATHER_FOG_MULTIPLIER 10.0
-    #define RAINY_SKY_COLOR (vec3(0.3, 0.305, 0.31))
+    #define RAINY_SKY_COLOR (vec3(0.3, 0.305, 0.31) * 0.5)
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
 
@@ -776,7 +776,7 @@ const float shadowIntervalSize = 8.0;
 #endif
 
 #define ATMOSPHERIC_FOG_DENSITY_RAIN 0.005
-#define ATMOSPHERIC_FOG_COLOR_RAIN (vec3(0.03, 0.1, 0.3) * 0.35)
+#define ATMOSPHERIC_FOG_COLOR_RAIN (vec3(0.03, 0.1, 0.3))
 
 #define ATMOSPHERIC_FOG_DENSITY_WATER 0.02
 #define ATMOSPHERIC_FOG_COLOR_WATER (vec3(0.03, 0.2, 0.7))
