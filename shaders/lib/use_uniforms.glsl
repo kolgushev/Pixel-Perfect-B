@@ -375,9 +375,14 @@ uniform float eyeBrightnessSmoothFloat;
 	#endif
 #endif
 
+#if defined use_sky_albedo
+uniform vec3 skyAlbedo;
+#endif
+
 #if defined use_sky_time
 uniform float skyTime;
 #endif
+
 
 // samplers
 #if defined use_texture

@@ -1,7 +1,9 @@
+
+uniform vec3 skyAlbedo;
 vec3 pixelPerfectSkyVector(vec3 v, vec3 sun_dir, vec2 stars, float rain, float skyTime) {
 	vec3 color = hosekWilkieSkyVector(v, sun_dir);
 
-	color = mix(vec3(0.025, 0.088, 0.29) * luminance(color), color, smoothstep(-0.02, 0.0, v.y));
+	color = mix(skyAlbedo * XYZ_to_ACEScg * color, color, smoothstep(-0.01, 0.01, v.y));
 
 	float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
 	color = mix(color, RAINY_SKY_COLOR, mixFactor);

@@ -129,14 +129,16 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         float ambientSkyShading = (normal.y + 1) * -0.47 + 1.0;
         vec3 ambientSkyLight = (directSolarLighting + skyColor) * ambientSkyShading * lightmapAdjusted.y * 0.6;
 
-        #if defined SPECULAR_ENABLED
+        #if defined SPECULAR_ENABLED && !defined gc_emissive && !defined g_clouds
             // blinn-phong specular highlights
             // sun specular
             #define ROUGHNESS_RCP 6.0
-            vec3 specular = pow(max(0.0, dot(normalize(normalize(sunPosition) - incident), normal)), ROUGHNESS_RCP) * SUN_COLOR;
+            vec3 specularSun = pow(max(0.0, dot(normalize(normalize(sunPosition) - incident), normal)), ROUGHNESS_RCP) * SUN_COLOR;
 
             // moon specular
-            specular += pow(max(0.0, dot(normalize(normalize(moonPosition) - incident), normal)), ROUGHNESS_RCP) * MOON_COLOR;
+            vec3 specularMoon = pow(max(0.0, dot(normalize(normalize(moonPosition) - incident), normal)), ROUGHNESS_RCP) * MOON_COLOR;
+
+            vec3 specular = mix(specularMoon, specularSun, skyTransition);
 
             // using calculated reflectance close to that of plastic & air
             #define REFLECTANCE 0.035

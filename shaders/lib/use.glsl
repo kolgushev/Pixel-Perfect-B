@@ -66,6 +66,8 @@
 #endif
 
 #if defined pixel_perfect_sky
+	#define use_sky_albedo
+
 	#define use_hosek_wilkie_sky
 #endif
 
