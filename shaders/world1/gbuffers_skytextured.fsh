@@ -1,4 +1,4 @@
-#version 330 compatibility
+#version 330
 #define DIM_END
 
 #include "/program/gbuffers/skytextured.fsh"
