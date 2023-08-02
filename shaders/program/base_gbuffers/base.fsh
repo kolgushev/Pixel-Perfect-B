@@ -350,9 +350,8 @@ void main() {
 
     #if !defined g_skybasic
         albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
+        albedo.rgb *= RGB_to_ACEScg;
     #endif
-
-    albedo.rgb *= RGB_to_ACEScg;
 
     #if HDR_TEX_STANDARD == 1
         albedo.rgb = uncharted2_filmic_inverse(albedo.rgb * ACEScg_to_RGB) * RGB_to_ACEScg;
