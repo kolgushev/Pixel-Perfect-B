@@ -100,6 +100,29 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         vec3 sunLighting = sunShading * SUN_COLOR;
         vec3 directSolarLighting = mix(moonLighting, sunLighting, skyTransition);
 
+
+        #if defined SPECULAR_ENABLED && !defined gc_emissive && !defined g_clouds
+            // blinn-phong specular highlights
+            // sun specular
+            #define ROUGHNESS_RCP 6.0
+            vec3 specularSun = pow(max(0.0, dot(normalize(normalize(sunPosition) - incident), normal)), ROUGHNESS_RCP) * SUN_COLOR;
+
+            // moon specular
+            vec3 specularMoon = pow(max(0.0, dot(normalize(normalize(moonPosition) - incident), normal)), ROUGHNESS_RCP) * MOON_COLOR;
+
+            vec3 specular = mix(specularMoon, specularSun, skyTransition) * directLightMult;
+
+            // use schlick approximation
+            float fresnelFactor = pow(1.0 - dot(incident, normal), 5.0) * (1.0 - REFLECTANCE_PLASTIC) + REFLECTANCE_PLASTIC;
+            // sample sky at reflected vector
+            specular /= fresnelFactor;
+
+            // TODO: include blurred sky sample into specular
+
+            directSolarLighting += specular;
+        #endif
+
+
         #if defined FOG_ENABLED
             directSolarLighting *= directLightMult;
         #else
@@ -128,29 +151,6 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         // the 0.47 here is an artistic decision, anything below 0.5 represents bounce lighting reaching above the surface of a block
         float ambientSkyShading = (normal.y + 1) * -0.47 + 1.0;
         vec3 ambientSkyLight = (directSolarLighting + skyColor) * ambientSkyShading * lightmapAdjusted.y * 0.6;
-
-        #if defined SPECULAR_ENABLED && !defined gc_emissive && !defined g_clouds
-            // blinn-phong specular highlights
-            // sun specular
-            #define ROUGHNESS_RCP 6.0
-            vec3 specularSun = pow(max(0.0, dot(normalize(normalize(sunPosition) - incident), normal)), ROUGHNESS_RCP) * SUN_COLOR;
-
-            // moon specular
-            vec3 specularMoon = pow(max(0.0, dot(normalize(normalize(moonPosition) - incident), normal)), ROUGHNESS_RCP) * MOON_COLOR;
-
-            vec3 specular = mix(specularMoon, specularSun, skyTransition);
-
-            // use schlick approximation
-            float fresnelFactor = pow(1.0 - dot(incident, normal), 5.0) * (1.0 - REFLECTANCE_PLASTIC) + REFLECTANCE_PLASTIC;
-            // sample sky at reflected vector
-            specular /= fresnelFactor;
-
-            // TODO: include blurred sky sample into specular
-        #else
-            vec3 specular = vec3(0);
-        #endif
-
-        directSolarLighting += specular;
 
         // Add the lighting togther to get the total contribution of the lightmap the final color.
         vec3 indirectLighting = max(vec3(minLight), ambientLight + torchLighting + skyLighting + ambientSkyLight);
