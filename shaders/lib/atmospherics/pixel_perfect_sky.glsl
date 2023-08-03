@@ -11,7 +11,13 @@ vec3 pixelPerfectSkyVector(vec3 v, vec3 sun_dir, vec2 stars, float rain, float s
 		// apply fresnel to mirror copy
 		float fresnelFactor = pow(1.0 - dot(v, UP), 5.0) * (1.0 - REFLECTANCE_WATER) + REFLECTANCE_WATER;
 
-		vec3 colorMod = vec3(0.05, 0.2, 1.0) + hosekWilkieSkyVector(normalize(vec), normalize(vecSun)) / fresnelFactor;
+		vec3 colorMod = vec3(0.1, 0.35, 1.5);
+		// vec3 colorMod = skyAlbedo * XYZ_to_ACEScg * 5;
+		float dt = dot(sun_dir, UP);
+		colorMod *= clamp(dt, 0.0, 1.0) * SUN_COLOR + clamp(-dt, 0.0, 1.0) * MOON_COLOR;
+
+		colorMod += hosekWilkieSkyVector(normalize(vec), normalize(vecSun)) / fresnelFactor;
+
 
 		#define SKY_FOG_DENSITY 0.01
 		float fogFactor = exp(-SKY_FOG_DENSITY / (abs(v.y) + 0.01));

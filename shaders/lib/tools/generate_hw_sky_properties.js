@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { eToNumber } from './lib/toStringParseable.js'
 
-import {datasetsXYZ, datasetsXYZRad} from './sky_gen_coeffs_XYZ.js'
+import {datasetsXYZ, datasetsXYZRad} from './datasets/sky_gen_coeffs_XYZ.js'
 const datasets = datasetsXYZ
 const datasetsRad = datasetsXYZRad
 
@@ -15,6 +15,7 @@ const albedoFn = [
 ]
 
 const finalVars = []
+const regex = []
 
 const letterNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'H', 'Z']
 
@@ -72,6 +73,7 @@ for (const [channelId, channel] of datasets.entries()) {
 
 		const varChannel = `${albedoFn[channelId]}`
 		finalVars.push(`variable.float.${channelLetter}_${letterName}=((${turbidities[0]}) * (1 - (${varChannel})) + (${turbidities[1]}) * (${varChannel}))`)
+		regex.push(RegExp(`variable\\.float\\.${channelLetter}_${letterName}=`))
 		// finalVars.push(`variable.float.${channelLetter}_${letterName}=((${splines[0]}) * (1 - ${varChannel}) + (${splines[10]}) * (${varChannel}))`)
 		// finalVars.push(`variable.float.${channelLetter}_${letterName}=${splines[0]}`)
 	}
@@ -79,6 +81,20 @@ for (const [channelId, channel] of datasets.entries()) {
 
 for(const letter of letterNames) {
 	finalVars.push(`uniform.vec3.sky${letter}=vec3(X_${letter}, Y_${letter}, Z_${letter})`)
+	regex.push(RegExp(`uniform\\.vec3\\.sky${letter}=`, ''))
 }
 
-fs.writeFileSync('./generated/hw_sky.properties', finalVars.join('\n'))
+const targetFilePath = '../../shaders.properties'
+
+const fileContent = fs.readFileSync(targetFilePath, 'utf8')
+const lines = fileContent.split('\n')
+
+for (let i = 0; i < lines.length; i++) {
+	for(let j = 0; j < regex.length; j++) {
+		if (regex[j].test(lines[i])) {
+			lines[i] = finalVars[j]
+		}
+	}
+}
+
+fs.writeFileSync(targetFilePath, lines.join('\n'))
