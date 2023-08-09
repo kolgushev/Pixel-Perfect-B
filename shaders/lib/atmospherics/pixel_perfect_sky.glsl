@@ -1,22 +1,20 @@
-
-uniform vec3 skyAlbedo;
 vec3 pixelPerfectSkyVector(vec3 v, vec3 sun_dir, vec2 stars, float rain, float skyTime) {
-	vec3 vec = vec3(v.x, max(EXPAND_SKY, v.y + EXPAND_SKY), v.z);
-	vec3 vecSun = vec3(sun_dir.x, sun_dir.y, sun_dir.z);
-	vec3 color = hosekWilkieSkyVector(normalize(vec), normalize(vecSun));
+	vec3 vecSun = normalize(sun_dir);
+	float expandSky = EXPAND_SKY * abs(vecSun.y);
+	vec3 vec = vec3(v.x, max(expandSky, v.y + expandSky), v.z);
+	vec3 color = hosekWilkieSkyVector(normalize(vec), vecSun);
 
 	if(v.y < 0) {
-		vec3 vec = vec3(v.x, max(EXPAND_SKY, -v.y + EXPAND_SKY), v.z);
-		vec3 vecSun = vec3(sun_dir.x, -sun_dir.y, sun_dir.z);
+		vec = vec3(v.x, max(expandSky, -v.y + expandSky), v.z);
+		vecSun = normalize(vec3(sun_dir.x, -sun_dir.y, sun_dir.z));
 		// apply fresnel to mirror copy
 		float fresnelFactor = pow(1.0 - dot(v, UP), 5.0) * (1.0 - REFLECTANCE_WATER) + REFLECTANCE_WATER;
 
 		vec3 colorMod = vec3(0.1, 0.35, 1.5);
-		// vec3 colorMod = skyAlbedo * XYZ_to_ACEScg * 5;
 		float dt = dot(sun_dir, UP);
 		colorMod *= clamp(dt, 0.0, 1.0) * SUN_COLOR + clamp(-dt, 0.0, 1.0) * MOON_COLOR;
 
-		colorMod += hosekWilkieSkyVector(normalize(vec), normalize(vecSun)) / fresnelFactor;
+		colorMod += hosekWilkieSkyVector(normalize(vec), vecSun) / fresnelFactor;
 
 
 		#define SKY_FOG_DENSITY 0.01

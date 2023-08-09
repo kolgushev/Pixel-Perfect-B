@@ -65,8 +65,8 @@
 #if defined use_hdr_mapping
 #endif
 
-#if defined pixel_perfect_sky
-	#define use_sky_albedo
+#if defined use_pixel_perfect_sky
+	#define use_direct_light_mult
 
 	#define use_hosek_wilkie_sky
 #endif

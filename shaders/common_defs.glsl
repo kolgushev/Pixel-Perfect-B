@@ -208,7 +208,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #ifdef END_FOGGY_WEATHER
 #endif
 
-#define EXPAND_SKY 0.01
+#define EXPAND_SKY 0.1
 
 #define SPIDEREYES_MULT 1.0
 
