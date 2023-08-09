@@ -18,12 +18,12 @@ float rainMultiplier(in float rain)  {
     return max(0.0, inversesqrt(rain + 1.0) * 3.4 - 2.4);
 }
 
-vec3 actualSkyColor(in float skyTransition) {
-    return mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS), mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS), skyTransition);
+vec3 actualSkyColor(in float skyTime) {
+    return mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS), mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS), skyTime);
 }
 
 // Input is not adjusted lightmap coordinates
-mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPosition, in vec3 sunPositionViewspace, in vec3 moonPosition, in vec3 moonPositionViewspace, in float moonBrightness, in float skyTransition, in float rain, in float directLightMult, in float nightVisionEffect, in float darknessEffect, in float darknessPulseEffect, in float isLightning, in sampler2D vanillaLightTex) {
+mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPositionWorld, in vec3 moonPositionWorld, in float rain, in sampler2D vanillaLightTex) {
 
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
@@ -62,20 +62,20 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         directSolarLighting -= indirectLighting;
 
         #if defined SHADOWS_ENABLED
-            float sunShading = normalLighting(normalViewspace, sunPositionViewspace);
-            float moonShading = normalLighting(normalViewspace, moonPositionViewspace);
+            float sunShading = normalLighting(normalViewspace, sunPosition);
+            float moonShading = normalLighting(normalViewspace, moonPosition);
 
-            skyShading = mix(moonShading, sunShading, skyTransition);
+            skyShading = mix(moonShading, sunShading, skyTime);
 
             directSolarLighting *= skyShading;
         #endif
 
-        vec3 ambientLight = AMBIENT_LIGHT_MULT * (1 - darknessEffect * 0.8) * max(1 - darknessPulseEffect * 3.0, 0.0) * AMBIENT_COLOR;
+        vec3 ambientLight = AMBIENT_LIGHT_MULT * (1 - darknessFactor * 0.8) * max(1 - darknessLightFactor * 3.0, 0.0) * AMBIENT_COLOR;
 
         #if STREAMER_MODE == -1
             ambientLight += vec3(0.8, 0.9, 1.0) * 2.0;
         #else
-            ambientLight += nightVisionEffect * NIGHT_VISION_COLOR;
+            ambientLight += nightVision * NIGHT_VISION_COLOR;
         #endif
 
         indirectLighting += ambientLight + lightningFlash(isLightning, rain) * skyShading * pow(max(lightmap.y - 0.0313, 0), 2);
@@ -83,11 +83,11 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
     #else
         vec2 lightmapAdjusted = lightmap * lightmap;
 
-        float lightBoost = BLOCK_LIGHT_POWER + darknessEffect * 0.9 + darknessPulseEffect * 4 - nightVisionEffect * 0.5;
+        float lightBoost = BLOCK_LIGHT_POWER + darknessFactor * 0.9 + darknessLightFactor * 4 - nightVision * 0.5;
 
         // Compute dot product vertex shading from normals
-        float sunShading = normalLighting(normalViewspace, sunPositionViewspace);
-        float moonShading = normalLighting(normalViewspace, moonPositionViewspace);
+        float sunShading = normalLighting(normalViewspace, sunPosition);
+        float moonShading = normalLighting(normalViewspace, moonPosition);
 
 
         vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), VANILLA_COLORS);
@@ -98,19 +98,19 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR;
         vec3 sunLighting = sunShading * SUN_COLOR;
-        vec3 directSolarLighting = mix(moonLighting, sunLighting, skyTransition);
+        vec3 directSolarLighting = mix(moonLighting, sunLighting, skyTime);
 
 
         #if defined SPECULAR_ENABLED && !defined gc_emissive && !defined g_clouds
             // blinn-phong specular highlights
             // sun specular
             #define ROUGHNESS_RCP 6.0
-            vec3 specularSun = pow(max(0.0, dot(normalize(normalize(sunPosition) - incident), normal)), ROUGHNESS_RCP) * SUN_COLOR;
+            vec3 specularSun = pow(max(0.0, dot(normalize(normalize(sunPositionWorld) - incident), normal)), ROUGHNESS_RCP) * SUN_COLOR;
 
             // moon specular
-            vec3 specularMoon = pow(max(0.0, dot(normalize(normalize(moonPosition) - incident), normal)), ROUGHNESS_RCP) * MOON_COLOR;
+            vec3 specularMoon = pow(max(0.0, dot(normalize(normalize(moonPositionWorld) - incident), normal)), ROUGHNESS_RCP) * MOON_COLOR;
 
-            vec3 specular = mix(specularMoon, specularSun, skyTransition) * directLightMult;
+            vec3 specular = mix(specularMoon, specularSun, skyTime) * directLightMult;
 
             // use schlick approximation
             float fresnelFactor = pow(1.0 - dot(incident, normal), 5.0) * (1.0 - REFLECTANCE_PLASTIC) + REFLECTANCE_PLASTIC;
@@ -129,22 +129,22 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
             directSolarLighting *= rainMultiplier(rain);
         #endif
 
-        float hardcoreMult = inversesqrt(darknessEffect * 0.75 + 0.25) - 1;
+        float hardcoreMult = inversesqrt(darknessFactor * 0.75 + 0.25) - 1;
         vec3 ambientLight = hardcoreMult * AMBIENT_LIGHT_MULT * AMBIENT_COLOR;
         ambientLight *= (1 - clamp(lightmap.y * 1.5, 0.0, 1.0));
         #if STREAMER_MODE == -1
             ambientLight += vec3(0.8, 0.9, 1.0) * 2.0;
         #else
-            ambientLight += nightVisionEffect * NIGHT_VISION_COLOR;
+            ambientLight += nightVision * NIGHT_VISION_COLOR;
         #endif
 
         vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR;
 
         // // shade according to sky color
-        // vec3 skyColor = pixelPerfectSkyVector(normal, normalize(sunPosition));
+        // vec3 skyColor = pixelPerfectSkyVector(normal, normalize(sunPositionWorld));
         // vec3 skyLighting = skyColor * lightmapAdjusted.y;
 
-        vec3 skyColor = actualSkyColor(skyTransition) * mix(1 - rain, 1, THUNDER_BRIGHTNESS) + lightningFlash(isLightning, rain);
+        vec3 skyColor = actualSkyColor(skyTime) * mix(1 - rain, 1, THUNDER_BRIGHTNESS) + lightningFlash(isLightning, rain);
         // technically the pow2 here isn't accurate, but it makes the falloff near the edges of the light look better
         vec3 skyLighting = skyColor * skyShading * lightmapAdjusted.y;
 

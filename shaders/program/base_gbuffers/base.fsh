@@ -485,17 +485,8 @@ void main() {
                     view(normalMod),
                     positionNormalized,
                     viewInverse(sunPosition),
-                    sunPosition,
                     viewInverse(moonPosition),
-                    moonPosition,
-                    moonBrightness,
-                    skyTime,
                     rain,
-                    directLightMult,
-                    nightVision,
-                    darknessFactor,
-                    darknessLightFactor,
-                    isLightning,
                     shadowcolor0);
             #else
                 vec3 skyColor = actualSkyColor(skyTime) + lightningFlash(isLightning, rain);
@@ -522,17 +513,8 @@ void main() {
                 view(normal),
                 positionNormalized,
                 viewInverse(sunPosition),
-                sunPosition,
                 viewInverse(moonPosition),
-                moonPosition,
-                moonBrightness,
-                skyTime,
                 rain,
-                directLightMult,
-                nightVision,
-                darknessFactor,
-                darknessLightFactor,
-                isLightning,
                 shadowcolor0);
 
             lightColor *= albedo.a;

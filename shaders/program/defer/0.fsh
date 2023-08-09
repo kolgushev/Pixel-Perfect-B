@@ -103,17 +103,8 @@ void main() {
     normalViewspace,
     positionNormalized,
     viewInverse(sunPosition),
-    sunPosition,
     viewInverse(moonPosition),
-    moonPosition,
-    moonBrightness,
-    skyTime,
     rainStrength,
-    directLightMult,
-    nightVision,
-    darknessFactor,
-    darknessLightFactor,
-    isLightning,
     shadowcolor0
     );
 

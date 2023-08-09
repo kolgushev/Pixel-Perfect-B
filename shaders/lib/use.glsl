@@ -17,6 +17,15 @@
 	#define use_to_viewspace
 	#define use_lightning_flash
 	#define use_hosek_wilkie_sky
+	#define use_sun_position
+	#define use_moon_position
+	#define use_sky_time
+	#define use_direct_light_mult
+	#define use_night_vision
+	#define use_darkness_factor
+	#define use_darkness_light_factor
+	#define use_is_lightning
+
 
 	#if defined SPECULAR_ENABLED
 		#define use_super_sample_offsets_cross
