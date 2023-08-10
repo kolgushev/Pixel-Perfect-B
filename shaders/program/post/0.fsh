@@ -50,7 +50,7 @@ void main() {
     float skyLightmap = texture(colortex2, texcoord).g;
     float depth = texture(depthtex0, texcoord).r;
     
-    vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
+    vec3 position = getWorldSpace(texcoord, depth);
 
     vec3 pixelatedPosition = position;
 

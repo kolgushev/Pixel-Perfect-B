@@ -17,6 +17,11 @@ out vec3 normal;
 #define use_to_viewspace
 #define use_distortion
 
+#define use_frame_counter
+
+#define use_to_viewspace
+#define use_distortion
+
 #include "/lib/use.glsl"
 
 void main() {

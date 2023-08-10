@@ -62,6 +62,8 @@
 #endif
 
 #if defined use_to_viewspace
+	#define use_gbuffer_model_view_inverse
+	#define use_gbuffer_projection_inverse
 #endif
 
 #if defined use_tonemapping

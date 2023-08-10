@@ -479,7 +479,7 @@ void main() {
                     // TODO: figure out a way to fix this
                     // diffuse = texture2D(colortex3, texcoordScreenspace).rgb;
                     // diffuse = vec3(1);
-                    positionOpaque = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoordScreenspace, depth).xyz;
+                    positionOpaque = getWorldSpace(texcoordScreenspace, depth);
                 #endif
             }
         #endif

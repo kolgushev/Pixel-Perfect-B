@@ -10,8 +10,6 @@ uniform vec3 shadowLightPosition;
 
 uniform sampler2D texture;
 
-uniform mat4 gbufferModelViewInverse;
-
 void main() {
     #if defined SHADOWS_ENABLED
         // sign of dot product determines sign of epsilon

@@ -59,7 +59,7 @@ void main() {
 
     #if defined SHADOWS_ENABLED
         float depth = texture(depthtex1, texcoord).r;
-        vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
+        vec3 position = getWorldSpace(texcoord, depth);
         vec3 pixelatedPosition = position;
 
         #if PIXELATED_SHADOWS != 0
