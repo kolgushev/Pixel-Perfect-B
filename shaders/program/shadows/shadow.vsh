@@ -4,12 +4,12 @@ out vec2 texcoord;
 out vec3 position;
 out vec3 normal;
 
-uniform mat4 shadowModelViewInverse;
-
 uniform int frameCounter;
 
-#include "/lib/to_viewspace.glsl"
-#include "/lib/distortion.glsl"
+#define use_to_viewspace
+#define use_distortion
+
+#include "/lib/use.glsl"
 
 void main() {
     #if defined SHADOWS_ENABLED

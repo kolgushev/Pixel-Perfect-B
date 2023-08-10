@@ -80,7 +80,7 @@ void main() {
         vec3 skyColorProcessed = sky.rgb;
     #endif
 
-    vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
+    vec3 position = getWorldSpace(texcoord, depth);
 
     #if defined HAS_SKYLIGHT
         float inSkyProcessed = inSky;
@@ -113,7 +113,7 @@ void main() {
             vec2 samplePoint = texcoord + superSampleOffsetsCross[i].xy * sampleRadius;
             float sampledDepth = texture(depthtex1, samplePoint).r;
 
-            vec3 sampledPosition = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, sampledDepth).xyz;
+            vec3 sampledPosition = getWorldSpace(texcoord, sampledDepth).xyz;
 
             bool isRimlit = sampledDepth > depth;
 
