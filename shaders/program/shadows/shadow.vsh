@@ -1,31 +1,23 @@
 #include "/common_defs.glsl"
 
-in vec3 vaPosition;
-in vec2 vaUV0;
-in vec3 vaNormal;
-
 out vec2 texcoord;
 out vec3 position;
 out vec3 normal;
 
-#define use_shadow_model_view
-#define use_shadow_projection
-#define use_shadow_model_view_inverse
-#define use_frame_counter
-#define use_chunk_offset
+uniform mat4 shadowModelViewInverse;
 
-#define use_to_viewspace
-#define use_distortion
+uniform int frameCounter;
 
-#include "/lib/use.glsl"
+#include "/lib/to_viewspace.glsl"
+#include "/lib/distortion.glsl"
 
 void main() {
     #if defined SHADOWS_ENABLED
         // check against position texture instead of depth
-        texcoord = (vaUV0).xy;
+        texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 
-        position = vaPosition + chunkOffset;
-        normal = vaNormal;
+        position = gl_Vertex.xyz;
+        normal = gl_Normal;
 
         // if within range
         // xz / range
@@ -51,7 +43,7 @@ void main() {
 
         // gl_Position = vec4(position, 1.0);
 
-        gl_Position = toViewspace(shadowProjection, shadowModelView, position);
+        gl_Position = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
         
         gl_Position.xy = distortShadow(gl_Position.xy);
         gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);

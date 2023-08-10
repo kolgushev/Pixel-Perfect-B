@@ -1,12 +1,5 @@
 #include "/common_defs.glsl"
 
-in vec3 vaPosition;
-in vec2 vaUV0;
-in ivec2 vaUV2;
-in vec4 vaColor;
-in vec3 vaNormal;
-
-
 out vec2 texcoord;
 out vec4 color;
 out vec2 light;
@@ -24,12 +17,14 @@ flat out int mcEntity;
     in vec3 at_midBlock;
 #endif
 
+#if defined g_line
+    in vec3 vaNormal;
+#endif
+
 
 // uniforms
 
 #define use_frame_time_counter
-#define use_model_view_matrix
-#define use_projection_matrix
 #define use_gbuffer_model_view_inverse
 #define use_render_stage
 
@@ -44,21 +39,13 @@ flat out int mcEntity;
 
 #define use_to_viewspace
 
+#if defined gc_terrain && defined USE_DOF
+    const int countInstances = 2;
+    #define use_instance_id
+#endif
+
 #if defined g_terrain
     #define use_get_terrain_mask
-#endif
-
-#if defined gc_terrain
-    #define use_chunk_offset
-
-    #if defined USE_DOF
-        const int countInstances = 2;
-        #define use_instance_id
-    #endif
-#endif
-
-#if defined g_clouds
-    #define use_camera_position
 #endif
 
 #if defined WAVING_ENABLED
@@ -96,15 +83,15 @@ void main() {
         mcEntity = -1;
     #endif
 
-    texcoord = vaUV0;
+    texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
     
-    color = vaColor;
+    color = gl_Color;
 
     #if defined g_weather
         color.a = 1;
     #endif
 
-    light = (LIGHT_MATRIX * vec4(vec2(vaUV2), 0.0, 0.0)).xy;
+    light = (LIGHT_MATRIX * gl_MultiTexCoord1).xy;
     /*
     The Optifine-provided lightmap is actually what is used to sample the
     vanilla lighting texture, so it isn't in a 0-1 range by default.
@@ -114,7 +101,7 @@ void main() {
     #endif
 
     #if defined gc_terrain || defined gc_textured || defined g_clouds || defined g_weather
-        normal = vaNormal;
+        normal = gl_Normal;
 
         #if defined g_terrain
             float fakeNormal = (getCutoutMask(mc_Entity.x) - 2) * CUTOUT_ALIGN_STRENGTH;
@@ -123,14 +110,10 @@ void main() {
     #elif defined g_line
         normal = vaNormal;
     #else
-        normal = viewInverse(vaNormal);
+        normal = viewInverse(gl_Normal);
     #endif
 
-    position = vaPosition;
-
-    #if defined gc_terrain
-        position += chunkOffset;
-    #endif
+    position = gl_Vertex.xyz;
 
     #if defined g_line
         // The line is given to us as a single point at the start with the offset being given via the normal
@@ -151,8 +134,8 @@ void main() {
         vec2 resolution = vec2(viewWidth, viewHeight);
 
         // Find the viewspace position of the line start and end
-        vec4 linePosStart = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition, 1.0)));
-        vec4 linePosEnd = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition + normal, 1.0)));
+        vec4 linePosStart = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(gl_Vertex.xyz, 1.0)));
+        vec4 linePosEnd = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(gl_Vertex.xyz + normal, 1.0)));
 
         // account for perspective
         vec3 ndc1 = linePosStart.xyz / linePosStart.w;
@@ -345,7 +328,7 @@ void main() {
     #endif
 
     #if (PANORAMIC_WORLD == 1 || PANORAMIC_WORLD == 2) && !defined gc_skybox && !defined g_skybasic
-        vec4 glPos = mul_m4_v3(modelViewMatrix, position);
+        vec4 glPos = mul_m4_v3(gl_ModelViewMatrix, position);
         float yaw = atan(glPos.x, -glPos.z);
         float absYaw = abs(yaw);
 
@@ -365,12 +348,12 @@ void main() {
             glPos.x *= glPos.z * n;
         #endif
 
-        glPos = (projectionMatrix * glPos);
+        glPos = (gl_ProjectionMatrix * glPos);
     #else
         #if defined gc_sky
-            vec4 glPos = toViewspace(projectionMatrix, modelViewMatrix, position);
+            vec4 glPos = toViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
         #else
-            vec4 glPos = toForcedViewspace(projectionMatrix, modelViewMatrix, position);
+            vec4 glPos = toForcedViewspace(gl_ProjectionMatrix, gl_ModelViewMatrix, position);
         #endif
     #endif
 
@@ -385,10 +368,6 @@ void main() {
     
     gl_Position = glPos;
 
-    #if defined g_skytextured
-        position = viewInverse(position);
-    #endif
-
     #if defined g_skybasic
         stars = vec2(color.r, color.r == color.g && color.g == color.b && color.r > 0.0);
     #endif
@@ -397,6 +376,10 @@ void main() {
         if(renderStage != ISOLATE_RENDER_STAGE) {
             gl_Position = vec4(0);
         }
+    #endif
+
+    #if defined g_skytextured
+        position = viewInverse(gl_Vertex.xyz);
     #endif
 
     #if defined NO_SHADING
