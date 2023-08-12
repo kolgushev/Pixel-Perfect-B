@@ -17,7 +17,7 @@ screen.POST_PROCESSING=Post Processing
             value.TAA_MODE.2=Fancy
 
         option.TEXTURE_FILTERING=Texture Filtering
-            option.TEXTURE_FILTERING.comment=Like antialiasing, but only reduces jaggedness on textures instead of geometry like blocks or mobs. Credit to youtuber @t3ssel8r for the concept and implementation. Enabled ➤ Minimal performance hit.
+            option.TEXTURE_FILTERING.comment=Like antialiasing, but only reduces jaggedness on textures instead of geometry. Credit to youtuber @t3ssel8r for the concept and implementation. Enabled ➤ Minimal performance hit.
             value.TEXTURE_FILTERING.true=On
             value.TEXTURE_FILTERING.false=Off
 
@@ -227,7 +227,7 @@ screen.COLORS=Colors
     option.STAR_WEIGHTS=Brighten Stars
         option.STAR_WEIGHTS.comment=Controls how bright stars in the night sky appear compared to everything else.
 
-    option.POST_TEMP=Color Temperature
+    option.POST_TEMP=Scene Temperature
         option.POST_TEMP.comment=Also known as White Balance. Higher values make the image cooler, while lower values make it warmer. Measured in Kelvin using a blackbody emission estimate.
         suffix.POST_TEMP=k
 
