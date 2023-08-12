@@ -189,7 +189,7 @@ void main() {
 			colored = mix(prevFrame, colored, mixingFactor);
 			
 			#if !defined DITAA_ENABLED
-				b4 = colored;
+				b4 = max(colored, 0.0);
 			#endif
 		} else {
 			b4 = colored;
