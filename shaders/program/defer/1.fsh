@@ -78,8 +78,7 @@ void main() {
     #endif
 
     vec3 composite = albedo.rgb;
-
-    vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
+    vec3 position = getWorldSpace(texcoord, depth);
 
     #if defined HAS_SKYLIGHT && defined WEATHER_FOG_IN_SKY_ONLY
         float fogWeatherSkyProcessed = fogWeatherSky;
@@ -104,7 +103,7 @@ void main() {
             vec2 samplePoint = texcoord + superSampleOffsetsCross[i].xy * sampleRadius;
             float sampledDepth = texture(depthtex1, samplePoint).r;
 
-            vec3 sampledPosition = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, sampledDepth).xyz;
+            vec3 sampledPosition = getWorldSpace(texcoord, sampledDepth).xyz;
 
             bool isRimlit = sampledDepth > depth;
 

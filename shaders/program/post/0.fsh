@@ -20,8 +20,6 @@ in vec2 texcoord;
 #define use_depthtex0
 #define use_depthtex1
 
-#define use_gbuffer_projection_inverse
-#define use_gbuffer_model_view_inverse
 #define use_fog_weather
 #define use_far
 #define use_is_eye_in_water
@@ -53,8 +51,8 @@ void main() {
     float depth = texture(depthtex1, texcoord).r;
     float depthWater = texture(depthtex0, texcoord).r;
 
-    vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
-    vec3 positionWater = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depthWater).xyz;
+    vec3 position = getWorldSpace(texcoord, depth);
+    vec3 positionWater = getWorldSpace(texcoord, depthWater);
 
     if(isEyeInWater == 1) {
         float atmosPhog = 1.0;

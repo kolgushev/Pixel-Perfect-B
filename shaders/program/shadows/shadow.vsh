@@ -8,11 +8,16 @@ out vec2 texcoord;
 out vec3 position;
 out vec3 normal;
 
-#define use_shadow_model_view
-#define use_shadow_projection
+#define use_projection_matrix
+#define use_model_view_matrix
 #define use_shadow_model_view_inverse
 #define use_frame_counter
 #define use_chunk_offset
+
+#define use_to_viewspace
+#define use_distortion
+
+#define use_frame_counter
 
 #define use_to_viewspace
 #define use_distortion
@@ -51,7 +56,7 @@ void main() {
 
         // gl_Position = vec4(position, 1.0);
 
-        gl_Position = toViewspace(shadowProjection, shadowModelView, position);
+        gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
         
         gl_Position.xy = distortShadow(gl_Position.xy);
         gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);

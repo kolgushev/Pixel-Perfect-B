@@ -70,7 +70,7 @@ void main() {
         vec2 texcoordJittered = texcoord;
     #endif
 
-    vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoordJittered, depth).xyz;
+    vec3 position = getWorldSpace(texcoordJittered, depth);
 
     #if defined SHADOWS_ENABLED
         vec3 pixelatedPosition = position;
@@ -113,7 +113,7 @@ void main() {
     if(lightningBoltPosition.w == 1.0) {
         #if !defined SHADOWS_ENABLED
             float depth = texture(depthtex1, texcoord).r;
-            vec3 position = getWorldSpace(gbufferProjectionInverse, gbufferModelViewInverse, texcoord, depth).xyz;
+            vec3 position = getWorldSpace(texcoord, depth);
         #endif
 
         lightningColor = lightningFlash(1, rainStrength) / (pow(distance(position.xz, lightningBoltPosition.xz), 2) + 1.0);
