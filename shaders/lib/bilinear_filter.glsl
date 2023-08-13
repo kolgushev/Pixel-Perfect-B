@@ -32,28 +32,3 @@ vec2[5] bilinearCoordinateShift(in sampler2D tex, in vec2 uv, in bool clamping) 
 
     return samples;
 }
-
-vec4 textureBilinear(in sampler2D tex, in vec2 uv, in bool clamping, in bool isSmooth) {
-    vec2 sampleLocations[5] = bilinearCoordinateShift(tex, uv, clamping);
-
-    // Initialize an array to store the samples
-    vec4 samples[4] = vec4[4](vec4(0), vec4(0), vec4(0), vec4(0));
-
-    // Sample the texture at four positions
-    for (int i = 0; i < 4; i++) {
-        samples[i] = texture2D(tex, sampleLocations[i]);
-    }
-
-    if(isSmooth) {
-        sampleLocations[4].xy = smoothstep(0.0, 1.0, sampleLocations[4].xy);
-    }
-
-    // Interpolate between the first two samples based on the y position
-    samples[0] = mix(samples[0], samples[1], sampleLocations[4].y);
-    // Interpolate between the last two samples based on the y position
-    samples[1] = mix(samples[2], samples[3], sampleLocations[4].y);
-
-    // Interpolate between the two interpolated samples based on the x position
-    vec4 result = mix(samples[0], samples[1], sampleLocations[4].x);
-    return result;
-}
