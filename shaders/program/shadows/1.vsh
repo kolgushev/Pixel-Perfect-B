@@ -5,9 +5,11 @@ in vec2 vaUV0;
 
 out vec2 texcoord;
 
-uniform int frameCounter;
+#define use_frame_counter
 
-#include "/lib/distortion.glsl"
+#define use_distortion
+
+#include "/lib/use.glsl"
 
 void main() {
 	// transform vertices

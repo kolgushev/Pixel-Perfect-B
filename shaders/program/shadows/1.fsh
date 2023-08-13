@@ -5,11 +5,12 @@ layout(location = 1) out float b1;
 
 in vec2 texcoord;
 
-uniform sampler2D shadowtex1;
+#define use_shadowtex1
+#define use_frame_counter
 
-uniform int frameCounter;
+#define use_distortion
 
-#include "/lib/distortion.glsl"
+#include "/lib/use.glsl"
 
 void main() {
 	float depth = texture(shadowtex1, texcoord).r;

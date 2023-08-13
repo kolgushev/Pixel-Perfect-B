@@ -6,9 +6,11 @@ in vec2 texcoord;
 in vec3 normal;
 in vec3 position;
 
-uniform vec3 shadowLightPosition;
+#define use_shadow_light_position
 
-uniform sampler2D texture;
+#define use_texture
+
+#include "/lib/use.glsl"
 
 void main() {
     #if defined SHADOWS_ENABLED

@@ -1,7 +1,4 @@
 // lib dependency defs - imports are above their dependencies
-#if defined use_anti_banding
-#endif
-
 #if defined use_basic_direct_shading
 #endif
 
@@ -152,36 +149,32 @@
 #include "/lib/space_conversion/gbuffer_conversion.glsl"
 #endif
 
-#if defined use_anti_banding
-#include "/lib/anti_banding.glsl"
-#endif
-
 #if defined use_basic_direct_shading
-#include "/lib/basic_direct_shading.glsl"
+#include "/lib/shading/basic_direct_shading.glsl"
 #endif
 
 #if defined use_bilinear_filter
-#include "/lib/bilinear_filter.glsl"
+#include "/lib/texture/bilinear_filter.glsl"
 #endif
 
 #if defined use_bicubic_filter
-#include "/lib/bicubic_filter.glsl"
+#include "/lib/texture/bicubic_filter.glsl"
 #endif
 
 #if defined use_calculate_sky
-#include "/lib/calculate_sky.glsl"
+#include "/lib/atmospherics/calculate_sky.glsl"
 #endif
 
 #if defined use_color_manipulation
-#include "/lib/color_manipulation.glsl"
+#include "/lib/color/color_manipulation.glsl"
 #endif
 
 #if defined use_lightning_flash
-#include "/lib/lightning_flash.glsl"
+#include "/lib/effects/lightning_flash.glsl"
 #endif
 
 #if defined use_tonemapping
-#include "/lib/tonemapping.glsl"
+#include "/lib/color/tonemapping.glsl"
 #endif
 
 #if defined use_hosek_wilkie_sky
@@ -193,60 +186,60 @@
 #endif
 
 #if defined use_calculate_lighting
-#include "/lib/calculate_lighting.glsl"
+#include "/lib/shading/calculate_lighting.glsl"
 #endif
 
 #if defined use_distortion
-#include "/lib/distortion.glsl"
+#include "/lib/space_conversion/distortion.glsl"
 #endif
 
 // depends on: rain_strength
 #if defined use_fogify
-#include "/lib/fogify.glsl"
+#include "/lib/atmospherics/fogify.glsl"
 #endif
 
 #if defined use_generate_wind
-#include "/lib/generate_wind.glsl"
+#include "/lib/effects/generate_wind.glsl"
 #endif
 
 #if defined use_get_terrain_mask
-#include "/lib/get_terrain_mask.glsl"
+#include "/lib/effects/get_terrain_mask.glsl"
 #endif
 
 #if defined use_hdr_mapping
-#include "/lib/hdr_mapping.glsl"
+#include "/lib/color/hdr_mapping.glsl"
 #endif
 
 #if defined use_linearize_depth
-#include "/lib/linearize_depth.glsl"
+#include "/lib/space_conversion/linearize_depth.glsl"
 #endif
 
 #if defined use_sample_noisetex
-#include "/lib/sample_noisetex.glsl"
+#include "/lib/texture/sample_noisetex.glsl"
 #endif
 
 // depends on: use_sample_noisetex
 #if defined use_sample_noise
-#include "/lib/sample_noise.glsl"
+#include "/lib/texture/sample_noise.glsl"
 #endif
 
 #if defined use_switch_fog_color
-#include "/lib/switch_fog_color.glsl"
+#include "/lib/atmospherics/switch_fog_color.glsl"
 #endif
 
 #if defined use_texture_filter
-#include "/lib/texture_filter.glsl"
+#include "/lib/texture/texture_filter.glsl"
 #endif
 
 #if defined use_to_viewspace
-#include "/lib/to_viewspace.glsl"
+#include "/lib/space_conversion/to_viewspace.glsl"
 #endif
 
 #if defined use_get_shadow
-#include "/lib/get_shadow.glsl"
+#include "/lib/shading/get_shadow.glsl"
 #endif
 
 // depends on: use_sample_noisetex
 #if defined use_lava_noise
-#include "/lib/lava_noise.glsl"
+#include "/lib/effects/lava_noise.glsl"
 #endif
