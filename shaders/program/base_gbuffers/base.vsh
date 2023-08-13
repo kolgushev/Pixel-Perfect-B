@@ -38,6 +38,8 @@ in vec3 at_velocity;
 #define use_gbuffer_model_view_inverse
 #define use_render_stage
 
+#define use_gbuffer_conversion
+
 #if defined g_line
     #define use_view_width
     #define use_view_height
@@ -146,11 +148,7 @@ void main() {
         normal = viewInverse(vaNormal);
     #endif
 
-    position = vaPosition;
-
-    #if defined gc_terrain
-        position += chunkOffset;
-    #endif
+    position = playerSpace(vaPosition);
 
     #if defined g_line
         // The line is given to us as a single point at the start with the offset being given via the normal
@@ -404,8 +402,10 @@ void main() {
         }
     #endif
 
+    // glPos is in viewspace
+    vec3 glPos = playerToView(position);
+
     #if (PANORAMIC_WORLD == 1 || PANORAMIC_WORLD == 2) && !defined gc_skybox && !defined g_skybasic
-        vec4 glPos = mul_m4_v3(modelViewMatrix, position);
         float yaw = atan(glPos.x, -glPos.z);
         float absYaw = abs(yaw);
 
@@ -424,14 +424,6 @@ void main() {
             glPos.x = mix(glPos.x * (1.5 - 0.5 * abs(glPos.x)), glPos.x, pow(glPos.x, 2));
             glPos.x *= glPos.z * n;
         #endif
-
-        glPos = (projectionMatrix * glPos);
-    #else
-        #if defined gc_sky
-            vec4 glPos = toViewspace(projectionMatrix, modelViewMatrix, position);
-        #else
-            vec4 glPos = toForcedViewspace(projectionMatrix, modelViewMatrix, position);
-        #endif
     #endif
 
     #if defined gc_basic
@@ -442,12 +434,14 @@ void main() {
         }
     #endif
 
+    vec4 glPosClip = viewToClip(glPos);
+
     // apply jittering
     #if defined TAA_ENABLED
     
         #if !defined NO_AA
             // jitter
-            glPos.xy += temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] * glPos.w / vec2(viewWidth, viewHeight);
+            glPosClip.xy += temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] * glPosClip.w / vec2(viewWidth, viewHeight);
         #endif
 
         // Calculate clip-space for motion vectors in here since it's more efficient
@@ -463,11 +457,7 @@ void main() {
         unjitteredClip = toViewspace(gbufferProjection, gbufferModelView, position).xyw;
     #endif
 
-    gl_Position = glPos;
-
-    #if defined g_skytextured
-        position = viewInverse(position);
-    #endif
+    gl_Position = glPosClip;
 
     #if defined g_skybasic
         stars = vec2(color.r, color.r == color.g && color.g == color.b && color.r > 0.0);

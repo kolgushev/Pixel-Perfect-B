@@ -126,6 +126,19 @@
 #if defined use_tonemapping
 #endif
 
+#if defined use_gbuffer_conversion
+	#define use_projection_matrix
+	#define use_gbuffer_model_view
+	#define use_gbuffer_projection
+
+	#if defined gc_terrain
+		#define use_chunk_offset
+	#else
+		#define use_model_view_matrix
+		#define use_gbuffer_model_view_inverse
+	#endif
+#endif
+
 
 // use custom values
 #include "/lib/use_custom_values.glsl"
@@ -135,6 +148,10 @@
 
 
 // libs - imports are below their dependencies
+#if defined use_gbuffer_conversion
+#include "/lib/space_conversion/gbuffer_conversion.glsl"
+#endif
+
 #if defined use_anti_banding
 #include "/lib/anti_banding.glsl"
 #endif
