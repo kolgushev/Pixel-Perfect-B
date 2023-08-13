@@ -212,12 +212,10 @@ void main() {
         if(noiseToSurpass > smoothstep(0.47 * FADE_OUT_RADIUS, 0.6 * FADE_OUT_RADIUS, length(position))) discard;
     #endif
 
-    #if defined TAA_ENABLED && !defined gc_entities
+    #if defined TAA_ENABLED
         vec2 prevTexcoord = (prevClip.xy / prevClip.z) * 0.5 + 0.5;
         vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.z) * 0.5 + 0.5;
         b5 = prevTexcoord - unjitteredTexcoord;
-    #elif defined TAA_ENABLED
-        b5 = vec2(0.0);
     #endif
 
     #if defined NEED_WEATHER_DATA

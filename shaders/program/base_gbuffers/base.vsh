@@ -453,8 +453,24 @@ void main() {
             vec3 cameraDiff = (cameraPosition - previousCameraPosition);
         #endif
 
-        prevClip = toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position - at_velocity + cameraDiff).xyw;
-        unjitteredClip = toViewspace(gbufferProjection, gbufferModelView, position).xyw;
+        vec3 unjitteredView = playerToView(position);
+        #define PREV_CLIP toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position + cameraDiff).xyw
+        // TODO: remove all this needless logic once Iris fixes block entities
+        #if defined gc_entities && (!defined IS_IRIS || !defined gc_block_entities)
+            #if defined IS_IRIS
+                bool hasMovement = at_velocity != vec3(0.0);
+            #else
+                bool hasMovement = true;
+            #endif
+            if(hasMovement) {
+                prevClip = viewToClip(unjitteredView - at_velocity).xyw;
+            } else {
+                prevClip = PREV_CLIP;
+            }
+        #else
+            prevClip = PREV_CLIP;
+        #endif
+        unjitteredClip = viewToClip(unjitteredView).xyw;
     #endif
 
     gl_Position = glPosClip;
