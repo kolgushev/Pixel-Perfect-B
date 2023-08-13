@@ -169,8 +169,8 @@ void main() {
         vec2 resolution = vec2(viewWidth, viewHeight);
 
         // Find the viewspace position of the line start and end
-        vec4 linePosStart = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition, 1.0)));
-        vec4 linePosEnd = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition + normal, 1.0)));
+        vec4 linePosStart = gbufferProjection * (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition, 1.0)));
+        vec4 linePosEnd = gbufferProjection * (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition + normal, 1.0)));
 
         // account for perspective
         vec3 ndc1 = linePosStart.xyz / linePosStart.w;
@@ -193,9 +193,9 @@ void main() {
         vec3 viewPosition = (ndc1 + vec3(lineOffset, 0.0)) * linePosStart.w;
 
         position = (
-            modelViewMatrixInverse
+            gbufferModelViewInverse
             * (
-                projectionMatrixInverse
+                gbufferProjectionInverse
                 *
                 vec4(viewPosition, linePosStart.w)
                 )
