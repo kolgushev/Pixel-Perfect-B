@@ -457,16 +457,11 @@ void main() {
         #define PREV_CLIP toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position + cameraDiff).xyw
         // TODO: remove all this needless logic once Iris fixes block entities
         #if defined gc_entities && (!defined IS_IRIS || !defined gc_block_entities)
-            #if defined IS_IRIS
-                bool hasMovement = at_velocity != vec3(0.0);
-            #else
-                bool hasMovement = true;
-            #endif
-            if(hasMovement) {
+            #if !defined IS_IRIS || defined IRIS_FEATURE_AT_VELOCITY
                 prevClip = viewToClip(unjitteredView - at_velocity).xyw;
-            } else {
+            #else
                 prevClip = PREV_CLIP;
-            }
+            #endif
         #else
             prevClip = PREV_CLIP;
         #endif
