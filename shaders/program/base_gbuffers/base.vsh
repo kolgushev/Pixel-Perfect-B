@@ -20,6 +20,9 @@ flat out int mcEntity;
 #if defined g_skybasic
     out vec2 stars;
 #endif
+#if defined g_clouds && defined IS_IRIS
+    out float cloudsVert;
+#endif
 
 
 in vec3 at_velocity;
@@ -110,6 +113,10 @@ in vec3 at_velocity;
 
 // TODO: world-space coordinates for everything not terrain
 void main() {
+    #if defined g_clouds && defined IS_IRIS
+        cloudsVert = vaPosition.y;
+    #endif
+
     #if defined gc_terrain
         mcEntity = int(mc_Entity.x);
     #elif defined gc_emissive

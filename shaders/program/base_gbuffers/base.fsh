@@ -22,6 +22,9 @@ flat in int mcEntity;
 #if defined g_skybasic
     in vec2 stars;
 #endif
+#if defined g_clouds && defined IS_IRIS
+    in float cloudsVert;
+#endif
 
 
 
@@ -463,7 +466,7 @@ void main() {
         // apply lighting here for transparent stuff
         #if defined g_clouds
             #if defined IS_IRIS
-                float positionMod = clamp(position.y * 0.25, 0.0, 1.0);
+                float positionMod = clamp(cloudsVert * 0.25, 0.0, 1.0);
             #else
                 float positionMod = normal.y;
             #endif
