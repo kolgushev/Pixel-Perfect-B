@@ -125,6 +125,7 @@
 
 #if defined use_gbuffer_conversion
 	#define use_projection_matrix
+	#define use_projection_matrix_inverse
 	#define use_gbuffer_model_view
 	#define use_gbuffer_projection
 

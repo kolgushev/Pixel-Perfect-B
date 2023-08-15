@@ -98,7 +98,8 @@ void main() {
     #endif
 
     vec3 positionNormalized = normalize(position);
-    mat2x3 lightColor = getLightColor(lightmap,
+    mat2x3 lightColor = getLightColor(
+    lightmap,
     normal,
     normalViewspace,
     positionNormalized,

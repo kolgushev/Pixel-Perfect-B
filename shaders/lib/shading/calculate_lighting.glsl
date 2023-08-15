@@ -86,8 +86,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         float lightBoost = BLOCK_LIGHT_POWER + darknessFactor * 0.9 + darknessLightFactor * 4 - nightVision * 0.5;
 
         // Compute dot product vertex shading from normals
-        float sunShading = normalLighting(normalViewspace, sunPosition);
-        float moonShading = normalLighting(normalViewspace, moonPosition);
+        float sunShading = normalLighting(normal, sunPositionWorld);
+        float moonShading = normalLighting(normal, moonPositionWorld);
 
 
         vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), VANILLA_COLORS);
