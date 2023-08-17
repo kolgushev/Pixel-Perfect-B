@@ -7,7 +7,7 @@ layout(location = 0) out vec4 b0; // sky, near plane
 layout(location = 1) out vec4 b1; // far plane
 layout(location = 2) out vec4 b2; // light
 layout(location = 3) out vec4 b3; // normal
-layout(location = 4) out vec2 b5; // motion
+layout(location = 4) out vec4 b5; // motion
 
 in vec2 texcoord;
 in vec4 color;
@@ -213,16 +213,6 @@ void main() {
 
 
         if(noiseToSurpass > smoothstep(0.47 * FADE_OUT_RADIUS, 0.6 * FADE_OUT_RADIUS, length(position))) discard;
-    #endif
-
-    #if defined TAA_ENABLED
-        #if defined IS_IRIS && defined g_hand
-            b5 = vec2(0);
-        #else
-            vec2 prevTexcoord = (prevClip.xy / prevClip.z) * 0.5 + 0.5;
-            vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.z) * 0.5 + 0.5;
-            b5 = prevTexcoord - unjitteredTexcoord;
-        #endif
     #endif
 
     #if defined NEED_WEATHER_DATA
@@ -628,6 +618,22 @@ void main() {
             }
 
             vec4 overlay = vec4(ATMOSPHERIC_FOG_BRIGHTNESS_WATER * ATMOSPHERIC_FOG_COLOR_WATER, atmosPhogWater * (1 - fogged.a));
+        #endif
+    #endif
+
+    #if defined TAA_ENABLED
+        #if defined IS_IRIS && defined g_hand
+            b5 = vec4(0);
+        #else
+            vec2 prevTexcoord = (prevClip.xy / prevClip.z) * 0.5 + 0.5;
+            vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.z) * 0.5 + 0.5;
+            #if defined gc_transparent && !defined g_clouds
+                if(albedo.a > 0.5) {
+            #endif
+                b5 = opaque2(prevTexcoord - unjitteredTexcoord);
+            #if defined gc_transparent && !defined g_clouds
+                }
+            #endif
         #endif
     #endif
 

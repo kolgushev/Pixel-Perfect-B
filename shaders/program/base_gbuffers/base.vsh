@@ -460,12 +460,8 @@ void main() {
             vec3 cameraDiff = (cameraPosition - previousCameraPosition);
         #endif
 
-        #if defined g_line
-            vec3 unjitteredView = viewPosition;
-        #else
-            vec3 unjitteredView = playerToView(position);
-        #endif
-        
+        vec3 unjitteredView = playerToView(position);
+
         #define PREV_CLIP toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position + cameraDiff).xyw
         // TODO: remove all this needless logic once Iris fixes block entities
         // TODO: add proper position evaluation for hand
