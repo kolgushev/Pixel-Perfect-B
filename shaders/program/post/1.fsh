@@ -48,6 +48,7 @@ in vec2 texcoord;
     #define use_view_height
 
 	#define use_super_sample_offsets_4
+	#define use_temporal_AA_offsets
 
 	#if defined TAA_CORNER_CLAMPING
 		#define use_super_sample_offsets_cross
@@ -173,7 +174,7 @@ void main() {
 			#if defined DITAA_ENABLED
 				float mixingFactor = 0.5;
 			#else
-				float mixingFactor = smoothstep(0.0, 0.07, velocityLen) * 0.1 + 0.04;
+				float mixingFactor = (smoothstep(0.0, 0.07, velocityLen) * 0.8 + 0.64) * TAA_OFFSET_LEN_RCP;
 			#endif
 
 			// TAA Sharpening

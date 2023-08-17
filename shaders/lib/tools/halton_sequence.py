@@ -6,7 +6,7 @@ def generate_coordinates():
     hal = Halton(2)
 
     # Generate a 2D Halton sequence of 16 points
-    seq = hal.random(n=16)
+    seq = hal.random(n=8)
 
     # Print the sequence
     for coords in seq:
