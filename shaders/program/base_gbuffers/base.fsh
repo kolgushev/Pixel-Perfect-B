@@ -628,7 +628,7 @@ void main() {
             vec2 prevTexcoord = (prevClip.xy / prevClip.z) * 0.5 + 0.5;
             vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.z) * 0.5 + 0.5;
             #if defined gc_transparent && !defined g_clouds
-                if(albedo.a > 0.5) {
+                if(albedo.a > 0.65) {
             #endif
                 b5 = opaque2(prevTexcoord - unjitteredTexcoord);
             #if defined gc_transparent && !defined g_clouds
