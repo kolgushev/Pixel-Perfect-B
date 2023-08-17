@@ -607,17 +607,20 @@ void main() {
         albedo.a *= 1 - fogged.a;
 
         #if defined WATER_FOG_FROM_OUTSIDE && defined g_water
-            float atmosPhogWater = 0.0;
-            float opaqueFog = 1.0;
-            if(isEyeInWater == 0) {
-                opaqueFog = fogifyDistanceOnly(positionOpaque, far, blindnessSmooth, 1/far);
-                atmosPhogWater = distance(position, positionOpaque);
-                atmosPhogWater = mix(atmosPhogWater, far, opaqueFog) * ATMOSPHERIC_FOG_DENSITY_WATER;
-                // atmosPhogWater = min(atmosPhogWater, 1);
-                atmosPhogWater = 1 - exp(-atmosPhogWater);
-            }
+            vec4 overlay = vec4(0);
+            if(mcEntity == WATER) {
+                float atmosPhogWater = 0.0;
+                float opaqueFog = 1.0;
+                if(isEyeInWater == 0) {
+                    opaqueFog = fogifyDistanceOnly(positionOpaque, far, blindnessSmooth, 1/far);
+                    atmosPhogWater = distance(position, positionOpaque);
+                    atmosPhogWater = mix(atmosPhogWater, far, opaqueFog) * ATMOSPHERIC_FOG_DENSITY_WATER;
+                    // atmosPhogWater = min(atmosPhogWater, 1);
+                    atmosPhogWater = 1 - exp(-atmosPhogWater);
+                }
 
-            vec4 overlay = vec4(ATMOSPHERIC_FOG_BRIGHTNESS_WATER * ATMOSPHERIC_FOG_COLOR_WATER, atmosPhogWater * (1 - fogged.a));
+                overlay = vec4(ATMOSPHERIC_FOG_BRIGHTNESS_WATER * ATMOSPHERIC_FOG_COLOR_WATER, atmosPhogWater * (1 - fogged.a));
+            }
         #endif
     #endif
 
