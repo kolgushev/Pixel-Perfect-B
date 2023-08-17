@@ -216,9 +216,13 @@ void main() {
     #endif
 
     #if defined TAA_ENABLED
-        vec2 prevTexcoord = (prevClip.xy / prevClip.z) * 0.5 + 0.5;
-        vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.z) * 0.5 + 0.5;
-        b5 = prevTexcoord - unjitteredTexcoord;
+        #if defined IS_IRIS && defined g_hand
+            b5 = vec2(0);
+        #else
+            vec2 prevTexcoord = (prevClip.xy / prevClip.z) * 0.5 + 0.5;
+            vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.z) * 0.5 + 0.5;
+            b5 = prevTexcoord - unjitteredTexcoord;
+        #endif
     #endif
 
     #if defined NEED_WEATHER_DATA

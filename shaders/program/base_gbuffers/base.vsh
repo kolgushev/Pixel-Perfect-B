@@ -463,7 +463,8 @@ void main() {
         vec3 unjitteredView = playerToView(position);
         #define PREV_CLIP toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position + cameraDiff).xyw
         // TODO: remove all this needless logic once Iris fixes block entities
-        #if defined gc_entities && (!defined IS_IRIS || !defined gc_block_entities)
+        // TODO: add proper position evaluation for hand
+        #if defined gc_entities && (!defined IS_IRIS || !defined gc_block_entities || !defined gc_hand)
             #if defined IS_IRIS
                 bool hasMovement = at_velocity != vec3(0.0);
             #else
