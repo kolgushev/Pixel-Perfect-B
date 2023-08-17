@@ -41,6 +41,7 @@
 #if defined use_temporal_AA_offsets
     #if defined DITAA_ENABLED
         #define TAA_OFFSET_LEN 2
+        #define TAA_OFFSET_LEN_RCP 0.5
         const vec2 temporalAAOffsets[TAA_OFFSET_LEN] = vec2[TAA_OFFSET_LEN](
             vec2(-0.5, -0.5),
             vec2(0.5, 0.5)
