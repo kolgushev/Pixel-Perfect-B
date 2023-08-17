@@ -185,9 +185,9 @@ void main() {
 			#endif
 
 			#if defined DITAA_ENABLED
-				float mixingFactor = 0.5;
+				float mixingFactor = TAA_OFFSET_LEN_RCP;
 			#else
-				float mixingFactor = (smoothstep(0.0, 0.07, velocityLen) * 0.8 + 0.64) * TAA_OFFSET_LEN_RCP;
+				float mixingFactor = 0.64 * TAA_OFFSET_LEN_RCP;
 			#endif
 
 			// TAA Sharpening
