@@ -58,6 +58,9 @@ in vec2 texcoord;
 		#define use_bicubic_filter
 	#endif
 
+	#if defined TAA_HYBRID_TONEMAP
+		#define use_tonemapping
+	#endif
 #endif
 
 #include "/lib/use.glsl"
@@ -96,9 +99,6 @@ void main() {
 		#endif
 
 		if(doAA) {
-			// TODO: hybrid tonemapping using a trick from UE4 TAA
-			// https://de45xmedrsdbp.cloudfront.net/Resources/files/TemporalAA_small-59732822.pdf#page=19
-
 			// write the diffuse color
 			#if defined TAA_USE_BICUBIC
 				// Use bicubic sampling to reduce blur as suggested in
@@ -151,10 +151,16 @@ void main() {
 				#define Y_CO_CG_TRANSFORM mat3(0.25, 0.5, 0.25, 0.5, 0.0, -0.5, -0.25, 0.5, -0.25)
 				#define Y_CO_CG_TRANSFORM_INV mat3(1.0, 1.0, -1.0, 1.0, 0.0, 1.0, 1.0, -1.0, -1.0)
 
-				vec3 maxFrameC = Y_CO_CG_TRANSFORM * maxFrame;
-				vec3 minFrameC = Y_CO_CG_TRANSFORM * minFrame;
-				vec3 prevC = Y_CO_CG_TRANSFORM * prevFrame;
-
+				// TODO: Using YCoCg should look better... am I using the wrong transform? Need to look into.
+				#if defined TAA_DO_CLIPPING_IN_Y_CO_CG
+					vec3 maxFrameC = Y_CO_CG_TRANSFORM * maxFrame;
+					vec3 minFrameC = Y_CO_CG_TRANSFORM * minFrame;
+					vec3 prevC = Y_CO_CG_TRANSFORM * prevFrame;
+				#else
+					vec3 maxFrameC = maxFrame;
+					vec3 minFrameC = minFrame;
+					vec3 prevC = prevFrame;
+				#endif
 
 				vec3 coloredClip = 0.5 * (maxFrameC + minFrameC);
 				vec3 eClip = 0.5 * (maxFrameC - minFrameC);
@@ -166,7 +172,11 @@ void main() {
 
 				if(MAUnit > 1.0) {
 					prevC = coloredClip + vClip / max(MAUnit, EPSILON);
-					prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
+					#if defined TAA_DO_CLIPPING_IN_Y_CO_CG
+						prevFrame = Y_CO_CG_TRANSFORM_INV * prevC;
+					#else
+						prevFrame = prevC;
+					#endif
 				}
 
 				#if defined TAA_NO_CLIPPING_WHEN_STILL
@@ -198,6 +208,10 @@ void main() {
 		} else {
 			b4 = colored;
 		}
+
+		#if defined TAA_HYBRID_TONEMAP
+			colored = reinhardInverse(colored);
+		#endif
     #endif
 
 	#if defined FAST_GI

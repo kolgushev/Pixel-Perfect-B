@@ -18,8 +18,9 @@ vec3 reinhard(in vec3 v) {
 }
 
 vec3 reinhardInverse(in vec3 v) {
-    // not actually the inverse in order to prevent overflow
-    return v / (1 + EPSILON - v);
+    float originalLum = luminance(v);
+    float newLum = originalLum / (1.0 - min(originalLum, 1.0 - EPSILON));
+    return changeLuminance(v, originalLum, newLum);
 }
 
 vec3 uncharted2_tonemap_partial(in vec3 x)

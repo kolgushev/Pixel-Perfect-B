@@ -315,6 +315,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
     #define TAA_USE_BICUBIC
     #define TAA_SHARP_ENABLED
     #define TAA_DO_CLIPPING
+    // #define TAA_DO_CLIPPING_IN_Y_CO_CG
 #endif
 
 #if TAA_MODE == 1
@@ -327,7 +328,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
     #define TAA_NO_CLIPPING_WHEN_STILL
 #endif
 
-// #define TAA_HYBRID_TONEMAP
+#define TAA_HYBRID_TONEMAP
 #ifdef TAA_HYBRID_TONEMAP
 #endif
 

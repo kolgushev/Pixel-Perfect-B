@@ -42,6 +42,10 @@ in vec2 texcoord;
     #define use_boss_battle
 #endif
 
+#if defined TAA_ENABLED && defined TAA_HYBRID_TONEMAP
+    #define use_tonemapping
+#endif
+
 #include "/lib/use.glsl"
 
 void main() {
@@ -93,6 +97,11 @@ void main() {
         composite = mix(mixed, multiplied, WATER_MULT_STRENGTH);
     #endif
 
+    // hybrid tonemapping using a trick from UE4 TAA
+    // https://de45xmedrsdbp.cloudfront.net/Resources/files/TemporalAA_small-59732822.pdf#page=19
+    #if defined TAA_ENABLED && defined TAA_HYBRID_TONEMAP
+        composite = reinhard(composite);
+    #endif
 
     #if defined FAST_GI || defined DYNAMIC_EXPOSURE_LIGHTING
         b1 = opaque(composite);
