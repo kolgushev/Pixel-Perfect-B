@@ -96,6 +96,9 @@ void main() {
 		#endif
 
 		if(doAA) {
+			// TODO: hybrid tonemapping using a trick from UE4 TAA
+			// https://de45xmedrsdbp.cloudfront.net/Resources/files/TemporalAA_small-59732822.pdf#page=19
+
 			// write the diffuse color
 			#if defined TAA_USE_BICUBIC
 				// Use bicubic sampling to reduce blur as suggested in
