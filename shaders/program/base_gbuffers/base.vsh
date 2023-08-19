@@ -366,6 +366,7 @@ void main() {
                 if(!isFullWaving) {
                     float squashFactor = 1.0 - smoothstep(0.0, 1.0, length((centeredPos + vec3(0.0, 0.5, 0.0)) * vec3(1.0, 0.4, 1.0)));
                     squashFactor *= smoothstep(0.0, 3.0, length(cameraDiffSmooth));
+                    if(isStiff) squashFactor *= 0.7;
                     if(isSuperStiff) squashFactor *= 0.12;
                     position.y -= squashFactor * 0.5;
                     offset *= squashFactor * 0.5 + 1.0;
