@@ -12,6 +12,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 // constants
 
 #define EPSILON 0.001
+#define EPSILON_2 0.0001
+#define EPSILON_3 0.00001
 #define E 2.7182818284
 #define PI 3.1415926538
 #define RCP_PI 0.318309886184
