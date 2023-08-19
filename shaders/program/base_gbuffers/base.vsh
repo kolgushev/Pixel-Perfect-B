@@ -104,13 +104,20 @@ void main() {
         color.a = 1;
     #endif
 
-    light = (LIGHT_MATRIX * vec4(vec2(vaUV2), 0.0, 0.0)).xy;
+    #if defined IS_IRIS
+        light = vec2(vaUV2) * RCP_256;
+    #else
+        light = (LIGHT_MATRIX * vec4(vec2(vaUV2), 0.0, 0.0)).xy;
+    #endif
+
     /*
     The Optifine-provided lightmap is actually what is used to sample the
     vanilla lighting texture, so it isn't in a 0-1 range by default.
     */
-    #if VANILLA_LIGHTING == 2
+    #if VANILLA_LIGHTING == 2 && !defined IS_IRIS
         light = max(light - 0.0313, 0) * 1.067;
+    #elif VANILLA_LIGHTING != 2 && defined IS_IRIS
+        light = light * 0.937 + 0.0313;
     #endif
 
     #if defined gc_terrain || defined gc_textured || defined g_clouds || defined g_weather
