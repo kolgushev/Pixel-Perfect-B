@@ -22,9 +22,6 @@ flat in int mcEntity;
 #if defined g_skybasic
     in vec2 stars;
 #endif
-#if defined g_clouds && defined IS_IRIS
-    in float cloudsVert;
-#endif
 
 
 
@@ -460,9 +457,13 @@ void main() {
         // apply lighting here for transparent stuff
         #if defined g_clouds
             #if defined IS_IRIS
-                float positionMod = clamp(cloudsVert * 0.25, 0.0, 1.0);
-            #else
-                float positionMod = normal.y;
+                // TODO: figure out a way for this to work dynamically with Optifine's configurable cloud height
+                #if defined DIM_TWILIGHT
+                    #define CLOUD_HEIGHT 128.36
+                #else
+                    #define CLOUD_HEIGHT 192.36
+                #endif
+                float positionMod = clamp((position.y + cameraPosition.y - CLOUD_HEIGHT) * 0.3, 0.0, 1.0);
             #endif
 
             positionMod = mix(positionMod, 1, 0);
