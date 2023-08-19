@@ -43,6 +43,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define REFLECTANCE_WATER 0.02
 
 #define LIGHT_MATRIX mat4(vec4(0.00390625, 0.0, 0.0, 0.0), vec4(0.0, 0.00390625, 0.0, 0.0), vec4(0.0, 0.0, 0.00390625, 0.0), vec4(0.03125, 0.03125, 0.03125, 1.0))
+#define IDENTITY_MATRIX mat4(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0)
 
 #define UP vec3(0.0, 1.0, 0.0)
 
@@ -734,6 +735,34 @@ const float shadowIntervalSize = 8.0;
     #define BOSS_BATTLE_ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
 
     #define FAST_GI_EXPOSURE_CORRECT_GRAY 0.5
+#elif defined DIM_TWILIGHT
+    #define HAS_ATMOSPHERIC_FOG
+    #define ATMOSPHERIC_FOG_IN_SKY_ONLY
+    #define WEATHER_FOG_IN_SKY_ONLY
+    // #define HAS_SKY
+    #define HAS_SKYLIGHT
+    #if defined TWILIGHT_FOGGY_WEATHER
+        #define DIM_HAS_FOGGY_WEATHER
+    #endif
+
+    #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_ACEScg)
+    #define AMBIENT_COLOR (BASE_COLOR * 1.0)
+    #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_ACEScg)
+    #define CLOUD_COLOR (vec3(0.97, 0.98, 1.0) * 0.8)
+    
+    #define ATMOSPHERIC_FOG_COLOR (gammaCorrection(fogColor, GAMMA) * RGB_to_ACEScg)
+    #define ATMOSPHERIC_FOG_MULTIPLIER 0.35
+
+    #define SECONDARY_FOG_COLOR_MULTIPLIER 2.0
+
+    #define WEATHER_FOG_MULTIPLIER 10.0
+    #define RAINY_SKY_COLOR (vec3(0.3, 0.305, 0.31) * 0.5)
+
+    #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
+
+    #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
+
+    #define FAST_GI_EXPOSURE_CORRECT_GRAY 0.3
 #else
     #define HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG_IN_SKY_ONLY
@@ -741,6 +770,8 @@ const float shadowIntervalSize = 8.0;
     #define HAS_DAYNIGHT_CYCLE
     #define HAS_SKY
     #define HAS_SKYLIGHT
+    #define HAS_SUN
+    #define HAS_SHADOWS
     #if defined OVERWORLD_FOGGY_WEATHER
         #define DIM_HAS_FOGGY_WEATHER
     #endif
@@ -764,13 +795,14 @@ const float shadowIntervalSize = 8.0;
 
     #define FAST_GI_EXPOSURE_CORRECT_GRAY 0.3
 #endif
+
 #if defined ATMOSPHERIC_FOG_USER && defined HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG
 #endif
 #if defined DIM_HAS_FOGGY_WEATHER && defined FOG_ENABLED_USER
     #define FOG_ENABLED
 #endif
-#if defined SHADOWS_ENABLED_USER && !defined VANILLA_SHADOWS && defined HAS_SKYLIGHT
+#if defined SHADOWS_ENABLED_USER && !defined VANILLA_SHADOWS && defined HAS_SUN && defined HAS_SKYLIGHT
     #define SHADOWS_ENABLED
 #endif
 

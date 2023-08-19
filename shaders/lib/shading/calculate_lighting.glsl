@@ -97,11 +97,15 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         vec3 torchLighting = gammaCorrection(lightmapAdjusted.x * torchColor, lightBoost) * BLOCK_LIGHT_MULT;
 
         vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR;
-        vec3 sunLighting = sunShading * SUN_COLOR;
+        #if defined HAS_SUN
+            vec3 sunLighting = sunShading * SUN_COLOR;
+        #else
+            vec3 sunLighting = vec3(0.0);
+        #endif
         vec3 directSolarLighting = mix(moonLighting, sunLighting, skyTime);
 
 
-        #if defined SPECULAR_ENABLED && !defined gc_emissive && !defined g_clouds
+        #if defined SPECULAR_ENABLED && defined HAS_SUN && !defined gc_emissive && !defined g_clouds
             // blinn-phong specular highlights
             // sun specular
             #define ROUGHNESS_RCP 6.0

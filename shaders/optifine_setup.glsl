@@ -1,6 +1,7 @@
 // use floats since they aren't capped at one (for easier color manipulation)
 /*
 const int colortex0Format = RGB16F;
+const vec4 colortex0ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
 
 const int colortex1Format = RGBA16F;
 

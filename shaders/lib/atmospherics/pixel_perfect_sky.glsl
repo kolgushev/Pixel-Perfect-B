@@ -1,4 +1,5 @@
-vec3 pixelPerfectSkyVector(vec3 v, vec3 sun_dir, vec2 stars, float rain, float skyTime) {
+vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float rain, in float skyTime) {
+	v = normalize(v);
 	vec3 vecSun = normalize(sun_dir);
 	float expandSky = EXPAND_SKY * abs(vecSun.y);
 	vec3 vec = vec3(v.x, max(expandSky, v.y + expandSky), v.z);
@@ -31,7 +32,7 @@ vec3 pixelPerfectSkyVector(vec3 v, vec3 sun_dir, vec2 stars, float rain, float s
 		vec3 rainColor = ATMOSPHERIC_FOG_COLOR_RAIN;
 		rainColor = rainColor * mix(skyTime, 1, 0.65);
 
-		color = mix(color, rainColor, smoothstep(-1.0, -0.0, -normalize(position).y) * smoothstep(0.0, THUNDER_THRESHOLD, rain));
+		color = mix(color, rainColor, smoothstep(-1.0, -0.0, -normalize(v).y) * smoothstep(0.0, THUNDER_THRESHOLD, rain));
 	#else
 		vec3 rainColor = vec3(0.0);
 	#endif

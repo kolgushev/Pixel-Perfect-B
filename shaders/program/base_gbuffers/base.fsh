@@ -243,7 +243,7 @@ void main() {
         // TODO: re-add stars
         if(stars.g > 0.5) discard;
 
-        vec4 albedo = opaque(pixelPerfectSkyVector(normalize(position), normalize(viewInverse(sunPosition)), stars, rain, skyTime));
+        vec4 albedo = opaque(pixelPerfectSkyVector(position, viewInverse(sunPosition), stars, rain, skyTime));
     #else
         #if defined g_weather
             vec3 absolutePosition = position + cameraPosition;

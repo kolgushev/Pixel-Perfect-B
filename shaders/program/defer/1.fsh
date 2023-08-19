@@ -48,6 +48,15 @@ in vec2 texcoord;
     #define use_tonemapping
 #endif
 
+#if defined DIM_TWILIGHT
+    #define use_gbuffer_projection_inverse
+    #define use_gbuffer_model_view_inverse
+
+    // #define use_calculate_sky
+    #define use_pixel_perfect_sky
+    #define use_linearize_depth
+#endif
+
 #include "/lib/use.glsl"
 
 void main() {
@@ -61,18 +70,22 @@ void main() {
         bool isOutline = sky.rgb == vec3(-1);
     #endif
 
-    // the nether doesn't render sky
+    // the nether & twilight forest don't render sky
     #if !defined HAS_SKY
-        #if defined ATMOSPHERIC_FOG
-            vec3 skyColorProcessed = ATMOSPHERIC_FOG_COLOR;
+        #if defined DIM_TWILIGHT
+            vec3 skyColorProcessed = pixelPerfectSkyVector(viewInverse(depthToView(texcoord, depth, gbufferProjectionInverse)), vec3(0.0, -1.0, 0.0), vec2(0.0), 0.0, 0.0);
         #else
-            vec3 skyColorProcessed = gammaCorrection(fogColor * 2, GAMMA) * RGB_to_ACEScg;
-            #if defined FOG_ENABLED
-                skyColorProcessed = mix(skyColorProcessed, ATMOSPHERIC_FOG_COLOR, fogWeather);
+            #if defined ATMOSPHERIC_FOG
+                vec3 skyColorProcessed = ATMOSPHERIC_FOG_COLOR;
+            #else
+                vec3 skyColorProcessed = gammaCorrection(fogColor * 2, GAMMA) * RGB_to_ACEScg;
+                #if defined FOG_ENABLED
+                    skyColorProcessed = mix(skyColorProcessed, ATMOSPHERIC_FOG_COLOR, fogWeather);
+                #endif
             #endif
-        #endif
 
-        skyColorProcessed = getFogColor(isEyeInWater, skyColorProcessed);
+            skyColorProcessed = getFogColor(isEyeInWater, skyColorProcessed);
+        #endif
     #else
         vec3 skyColorProcessed = sky.rgb;
     #endif
