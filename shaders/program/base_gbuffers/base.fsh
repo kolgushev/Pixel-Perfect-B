@@ -621,7 +621,6 @@ void main() {
             if(mcEntity == WATER || mcEntity == ICE) {
                 float atmosPhogWater = 0.0;
                 float opaqueFog = 1.0;
-                vec3 fogColor = ATMOSPHERIC_FOG_COLOR_WATER;
                 if(isEyeInWater == 0) {
                     opaqueFog = fogifyDistanceOnly(positionOpaque, far, blindnessSmooth, 1/far);
                     atmosPhogWater = distance(position, positionOpaque);
@@ -629,8 +628,6 @@ void main() {
                     atmosPhogWater = mix(atmosPhogWater, far, opaqueFog) * fogDensity;
                     // atmosPhogWater = min(atmosPhogWater, 1);
                     atmosPhogWater = 1 - exp(-atmosPhogWater);
-
-                    fogColor = mcEntity == WATER ? ATMOSPHERIC_FOG_COLOR_WATER : FOG_COLOR_ICE;
                 }
 
                 overlay = vec4(ATMOSPHERIC_FOG_BRIGHTNESS_WATER * ATMOSPHERIC_FOG_COLOR_WATER, atmosPhogWater * (1 - fogged.a));
