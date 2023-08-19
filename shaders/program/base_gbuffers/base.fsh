@@ -456,15 +456,13 @@ void main() {
         vec3 positionNormalized = normalize(position);
         // apply lighting here for transparent stuff
         #if defined g_clouds
-            #if defined IS_IRIS
-                // TODO: figure out a way for this to work dynamically with Optifine's configurable cloud height
-                #if defined DIM_TWILIGHT
-                    #define CLOUD_HEIGHT 128.36
-                #else
-                    #define CLOUD_HEIGHT 192.36
-                #endif
-                float positionMod = clamp((position.y + cameraPosition.y - CLOUD_HEIGHT) * 0.3, 0.0, 1.0);
+            // TODO: figure out a way for this to work dynamically with Optifine's configurable cloud height
+            #if defined DIM_TWILIGHT
+                #define CLOUD_HEIGHT 128.36
+            #else
+                #define CLOUD_HEIGHT 192.36
             #endif
+            float positionMod = clamp((position.y + cameraPosition.y - CLOUD_HEIGHT) * 0.3, 0.0, 1.0);
 
             positionMod = mix(positionMod, 1, 0);
 
