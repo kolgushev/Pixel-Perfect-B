@@ -37,6 +37,19 @@ vec2 getCalmWindProfile(in vec2 position, in float time, in float fine) {
 			windImpulse(0.40, 0.85 * 0.25, 0.212, 0.43, 1.0, position, time)
 			) * fine
 			;
+	#elif defined DIM_TWILIGHT
+		return 
+			windImpulse(1.0, 0.63 * 0.2, 0.903, 0.15, 0.5, position, time) +
+			windImpulse(0.8, 0.17 * 0.2, 0.606, 0.48, 0.5, position, time) +
+			windImpulse(0.7, 0.19 * 0.2, 0.697, 0.62, 0.5, position, time) +
+			windImpulse(0.6, 0.41 * 0.2, 0.741, 0.19, 0.5, position, time) +
+			windImpulse(0.5, 0.85 * 0.2, 0.624, 0.06, 0.5, position, time) +
+			(
+			windImpulse(0.82, 0.67 * 0.2, 0.714, 0.93, 1.0, position, time) +
+			windImpulse(0.50, 0.30 * 0.2, 0.113, 0.59, 1.0, position, time) +
+			windImpulse(0.40, 0.85 * 0.2, 0.212, 0.43, 1.0, position, time)
+			) * fine
+			;
 	#elif defined DIM_NETHER
 		return 
 			windImpulse(2.35 * 0.6, 0.63, 0.903, 0.15, 0.4, position, time) +
