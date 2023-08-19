@@ -20,6 +20,8 @@ in vec2 texcoord;
     #define use_bicubic_filter
 #endif
 
+#define use_tonemapping
+
 #include "/lib/use.glsl"
 
 void main() {

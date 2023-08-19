@@ -55,6 +55,24 @@ vec3 aces_approx(in vec3 v)
     return (v*(a*v+b))/(v*(c*v+d)+e);
 }
 
+vec3 linear_to_srgb(in vec3 v)
+{
+    bvec3 cutoff = lessThan(v, vec3(0.0031308));
+    vec3 higher = vec3(1.055)*pow(v, vec3(1.0/2.4)) - vec3(0.055);
+    vec3 lower = v * vec3(12.92);
+
+    return mix(higher, lower, cutoff);
+}
+
+vec3 srgb_to_linear(in vec3 v)
+{
+    bvec3 cutoff = lessThan(v, vec3(0.04045));
+    vec3 higher = pow((v + vec3(0.055)) / vec3(1.055), vec3(2.4));
+    vec3 lower = v / vec3(12.92);
+
+    return mix(higher, lower, cutoff);
+}
+
 // adapted for GLSL from https://github.com/TheRealMJP/BakingLab/blob/master/BakingLab/ACES.hlsl
 
 //=================================================================================================

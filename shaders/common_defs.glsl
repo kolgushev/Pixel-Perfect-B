@@ -278,8 +278,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 #define USER_OUTPUT_COLORSPACE 0 // [0 1 2]
 // output mapping: 0:none 1:divide by 16 2:reinhard 3:Hable 4:ACES/UE4 (default)
 #define USER_LMT_MODE 4 // [0 1 2 3 4]
-#define USER_GAMMA_CORRECT
-#ifdef USER_GAMMA_CORRECT
+
+#define CORRECT_TO_ACTUAL_SRGB
+#ifdef CORRECT_TO_ACTUAL_SRGB
 #endif
 
 // #define USE_NIGHT_EFFECT
@@ -575,7 +576,7 @@ const float shadowIntervalSize = 8.0;
 #if defined USE_LUT
     #if defined LUT_OVERRIDE_GAMMA_CORRECT && defined LUT_GAMMA_CORRECT
         #define GAMMA_CORRECT
-    #elif !defined LUT_OVERRIDE_GAMMA_CORRECT && defined USER_GAMMA_CORRECT
+    #elif !defined LUT_OVERRIDE_GAMMA_CORRECT
         #define GAMMA_CORRECT
     #endif
     
@@ -591,9 +592,7 @@ const float shadowIntervalSize = 8.0;
     #endif
 
 #else
-    #ifdef USER_GAMMA_CORRECT
-        #define GAMMA_CORRECT
-    #endif
+    #define GAMMA_CORRECT
     
     #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACE
     #define LMT_MODE USER_LMT_MODE
@@ -813,6 +812,9 @@ const float shadowIntervalSize = 8.0;
 
 #define ATMOSPHERIC_FOG_DENSITY_WATER 0.02
 #define ATMOSPHERIC_FOG_COLOR_WATER (vec3(0.03, 0.2, 0.7))
+
+#define FOG_DENSITY_ICE 0.1
+#define FOG_COLOR_ICE (vec3(0.03, 0.2, 0.7))
 
 #if defined RAIN_FOG
     #define RAIN_ADDER ATMOSPHERIC_FOG_DENSITY_RAIN * rainStrength

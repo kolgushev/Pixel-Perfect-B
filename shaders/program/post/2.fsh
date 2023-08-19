@@ -181,9 +181,13 @@ void main() {
         colorCorrected = saturateRGB(POST_SATURATION) * max(colorCorrected, vec3(0));
     }
 
-    // re-gamma-correct
+    // re-gamma-correct, this time to SRGB
     #if defined GAMMA_CORRECT
-        colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
+        #if defined CORRECT_TO_ACTUAL_SRGB
+            colorCorrected = linear_to_srgb(colorCorrected);
+        #else
+            colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
+        #endif
     #endif
 
 

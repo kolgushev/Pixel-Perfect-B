@@ -184,6 +184,10 @@ flat in int mcEntity;
     #define use_sample_noisetex
 #endif
 
+#if defined CORRECT_TO_ACTUAL_SRGB
+    #define use_tonemapping
+#endif
+
 
 #include "/lib/use.glsl"
 
@@ -341,7 +345,12 @@ void main() {
     #endif
 
     #if !defined g_skybasic
-        albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
+        #if defined CORRECT_TO_ACTUAL_SRGB
+            albedo.rgb = srgb_to_linear(albedo.rgb);
+        #else
+            albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
+        #endif
+
         albedo.rgb *= RGB_to_ACEScg;
     #endif
 
@@ -572,8 +581,10 @@ void main() {
                     luma = smoothstep(0.45, 1.0, luma);
                     albedo.rgb = mix(albedo.rgb, vec3(lightColor[0]), luma);
                 #endif
+            }
 
-                #if defined WATER_FOG_FROM_OUTSIDE
+            #if defined WATER_FOG_FROM_OUTSIDE
+                if(mcEntity == WATER || mcEntity == ICE) {
                     vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
 
                     float depth = texture2D(depthtex1, texcoordScreenspace).r;
@@ -581,8 +592,8 @@ void main() {
                     // diffuse = texture2D(colortex3, texcoordScreenspace).rgb;
                     // diffuse = vec3(1);
                     positionOpaque = getWorldSpace(texcoordScreenspace, depth);
-                #endif
-            }
+                }
+            #endif
         #endif
 
         // apply fog as well
@@ -607,15 +618,19 @@ void main() {
 
         #if defined WATER_FOG_FROM_OUTSIDE && defined g_water
             vec4 overlay = vec4(0);
-            if(mcEntity == WATER) {
+            if(mcEntity == WATER || mcEntity == ICE) {
                 float atmosPhogWater = 0.0;
                 float opaqueFog = 1.0;
+                vec3 fogColor = ATMOSPHERIC_FOG_COLOR_WATER;
                 if(isEyeInWater == 0) {
                     opaqueFog = fogifyDistanceOnly(positionOpaque, far, blindnessSmooth, 1/far);
                     atmosPhogWater = distance(position, positionOpaque);
-                    atmosPhogWater = mix(atmosPhogWater, far, opaqueFog) * ATMOSPHERIC_FOG_DENSITY_WATER;
+                    float fogDensity = mcEntity == WATER ? ATMOSPHERIC_FOG_DENSITY_WATER : FOG_DENSITY_ICE;
+                    atmosPhogWater = mix(atmosPhogWater, far, opaqueFog) * fogDensity;
                     // atmosPhogWater = min(atmosPhogWater, 1);
                     atmosPhogWater = 1 - exp(-atmosPhogWater);
+
+                    fogColor = mcEntity == WATER ? ATMOSPHERIC_FOG_COLOR_WATER : FOG_COLOR_ICE;
                 }
 
                 overlay = vec4(ATMOSPHERIC_FOG_BRIGHTNESS_WATER * ATMOSPHERIC_FOG_COLOR_WATER, atmosPhogWater * (1 - fogged.a));
