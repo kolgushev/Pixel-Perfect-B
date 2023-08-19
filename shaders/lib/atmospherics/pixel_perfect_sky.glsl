@@ -1,6 +1,7 @@
 vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float rain, in float skyTime) {
 	v = normalize(v);
 	vec3 vecSun = normalize(sun_dir);
+	float dt = dot(vecSun, UP);
 	float expandSky = EXPAND_SKY * abs(vecSun.y);
 	vec3 vec = vec3(v.x, max(expandSky, v.y + expandSky), v.z);
 	vec3 color = hosekWilkieSkyVector(normalize(vec), vecSun);
@@ -12,7 +13,6 @@ vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float r
 		float fresnelFactor = pow(1.0 - dot(v, UP), 5.0) * (1.0 - REFLECTANCE_WATER) + REFLECTANCE_WATER;
 
 		vec3 colorMod = vec3(0.1, 0.35, 1.5);
-		float dt = dot(sun_dir, UP);
 		colorMod *= clamp(dt, 0.0, 1.0) * SUN_COLOR + clamp(-dt, 0.0, 1.0) * MOON_COLOR;
 
 		colorMod += hosekWilkieSkyVector(normalize(vec), vecSun) / fresnelFactor;
