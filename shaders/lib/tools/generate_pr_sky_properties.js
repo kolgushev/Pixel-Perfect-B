@@ -97,11 +97,12 @@ for (const [id, letter] of pFn.entries()) {
     }
 }
 
-for (const [id, channel] of ['x', 'y'].entries()) {
-    const name = `p_${channel}_Z`
-    finalVars.push(`variable.float.${name}=(${zenithChromacity(zenithChromacityCoeffs[id][0], zenithChromacityCoeffs[id][1], zenithChromacityCoeffs[id][2])}) / (${perez(sunThetaFn, `p_${channel}_A`, `p_${channel}_B`, `p_${channel}_C`, `p_${channel}_D`, `p_${channel}_E`)})`)
-    regex.push(RegExp(`variable\\.float\\.${name}=`))
-}
+// Use calculations from https://github.com/andrewwillmott/sun-sky/blob/master/SunSky.cpp
+finalVars.push(`variable.float.p_x_Z=(0.00165 * sunThetaCubed - 0.00374 * sunThetaSquared + 0.00208 * ${sunThetaFn} + 0.00000) * ${turbidityFn} + (-0.02902 * sunThetaCubed + 0.06377 * sunThetaSquared - 0.03202 * ${sunThetaFn} + 0.00394) * ${turbidityFn} + ( 0.11693 * sunThetaCubed - 0.21196 * sunThetaSquared + 0.06052 * ${sunThetaFn} + 0.25885)`)
+regex.push(RegExp(`variable\\.float\\.p_x_Z=`))
+
+finalVars.push(`variable.float.p_y_Z=(0.00275 * sunThetaCubed - 0.00610 * sunThetaSquared + 0.00316 * ${sunThetaFn} + 0.00000) * ${turbidityFn} + (-0.04214 * sunThetaCubed + 0.08970 * sunThetaSquared - 0.04153 * ${sunThetaFn} + 0.00515) * ${turbidityFn} + ( 0.15346 * sunThetaCubed - 0.26756 * sunThetaSquared + 0.06669 * ${sunThetaFn} + 0.26688)`)
+regex.push(RegExp(`variable\\.float\\.p_y_Z=`))
 
 finalVars.push(`variable.float.p_Y_Z=(${zenithLuminance()}) * 1000.0 / (${perez(sunThetaFn, 'p_Y_A', 'p_Y_B', 'p_Y_C', 'p_Y_D', 'p_Y_E')})`)
 regex.push(RegExp(`variable\\.float\\.p_Y_Z=`))
