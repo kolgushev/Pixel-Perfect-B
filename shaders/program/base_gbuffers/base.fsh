@@ -644,7 +644,7 @@ void main() {
             #if defined gc_transparent && !defined g_clouds
                 if(albedo.a > 0.65) {
             #endif
-                b5 = opaque2(prevTexcoord - unjitteredTexcoord);
+                b5 = vec4(unjitteredTexcoord - prevTexcoord, unjitteredClip.z - prevClip.z, 1.0);
             #if defined gc_transparent && !defined g_clouds
                 }
             #endif

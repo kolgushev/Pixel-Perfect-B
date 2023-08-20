@@ -1,9 +1,14 @@
+#extension GL_ARB_derivative_control : enable
+
 #include "/common_defs.glsl"
 
-/* DRAWBUFFERS:04 */
+/* DRAWBUFFERS:046 */
 layout(location = 0) out vec4 b0;
 #if defined TAA_ENABLED
     layout(location = 1) out vec3 b4;
+	#if defined TAA_DO_DEPTH_REJECTION
+		layout(location = 2) out float b6;
+	#endif
 #endif
 
 in vec2 texcoord;
@@ -42,6 +47,7 @@ in vec2 texcoord;
 #if defined TAA_ENABLED
 	#define use_colortex4
 	#define use_colortex5
+	#define use_colortex6
 
     #define use_frame_counter
     #define use_view_width
@@ -61,6 +67,10 @@ in vec2 texcoord;
 	#if defined TAA_HYBRID_TONEMAP
 		#define use_tonemapping
 	#endif
+
+	#if defined TAA_DO_DEPTH_REJECTION
+		#define use_linearize_depth
+	#endif
 #endif
 
 #include "/lib/use.glsl"
@@ -77,20 +87,41 @@ void main() {
     #if defined TAA_ENABLED
 		vec2 closestOffset = vec2(0);
 		// Force-enable in end dimension to fix aliasing of edges near border between geometry and end sky without apply AA to sky
-		#if defined TAA_CLOSEST_MOTION_VECTOR || defined DIM_END
-			float closestDist = depth;
+		#if defined DIM_END && !defined TAA_CLOSEST_MOTION_VECTOR
+			#define TAA_CLOSEST_MOTION_VECTOR
+		#endif
+		#if defined TAA_CLOSEST_MOTION_VECTOR || defined TAA_DO_DEPTH_REJECTION
+			#define CHECK_DEPTH_NEIGHBORS
+		#endif
+
+		#if defined CHECK_DEPTH_NEIGHBORS
+			float depthNeighbors[4] = float[4](0.0, 0.0, 0.0, 0.0);
+			vec2 offsets[4] = vec2[4](
+				vec2(0.0),
+				vec2(0.0),
+				vec2(0.0),
+				vec2(0.0)
+			);
+
 			for(int i = 0; i < 4; i++) {
-				vec2 currentOffset = superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight);
-				float neighborSample = texture2D(depthtex0, texcoord + currentOffset).r;
-				if(neighborSample < closestDist) {
-					closestDist = neighborSample;
-					closestOffset = currentOffset;
+				offsets[i] = superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight);
+				depthNeighbors[i] = texture2D(depthtex0, texcoord + offsets[i]).r;
+			}
+		#endif
+
+		#if defined TAA_CLOSEST_MOTION_VECTOR
+			float closestDist = depth;
+		
+			for(int i = 0; i < 4; i++) {
+				if(depthNeighbors[i] < closestDist) {
+					closestDist = depthNeighbors[i];
+					closestOffset = offsets[i];
 				}
 			}
 		#endif
 
-		vec2 velocity = texture2D(colortex5, texcoord + closestOffset).xy;
-		vec2 texcoordPrev = texcoord + velocity;
+		vec3 velocity = texture2D(colortex5, texcoord + closestOffset).xyz;
+		vec2 texcoordPrev = texcoord - velocity.xy;
 
 		bool doAA = clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev;
 
@@ -98,16 +129,33 @@ void main() {
 			doAA = doAA && closestDist != 1.0;
 		#endif
 
+		// write the diffuse color
+		#if defined TAA_USE_BICUBIC
+			// Use bicubic sampling to reduce blur as suggested in
+			// https://research.activision.com/publications/2020-03/dynamic-temporal-antialiasing-and-upsampling-in-call-of-duty
+			// TODO: optimize further
+			vec3 prevFrame = textureBicubic(colortex4, texcoordPrev).rgb;
+		#else
+			vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
+		#endif
+
+		#if defined TAA_DO_DEPTH_REJECTION
+			float depthLinear = linearizeDepth(depth);
+			
+			float depthComparison = texture2D(colortex6, texcoordPrev).r + velocity.z;
+			float leastDiff = abs(depthLinear - depthComparison);
+			for(int i = 0; i < 4; i++) {
+				leastDiff = min(leastDiff, abs(linearizeDepth(depthNeighbors[i]) - depthComparison));
+			}
+
+			doAA = doAA && leastDiff < 1.0;
+		#endif
+
+		#if defined TAA_DO_DEPTH_REJECTION
+			b6 = depthLinear;
+		#endif
+
 		if(doAA) {
-			// write the diffuse color
-			#if defined TAA_USE_BICUBIC
-				// Use bicubic sampling to reduce blur as suggested in
-				// https://research.activision.com/publications/2020-03/dynamic-temporal-antialiasing-and-upsampling-in-call-of-duty
-				// TODO: optimize further
-				vec3 prevFrame = textureBicubic(colortex4, texcoordPrev).rgb;
-			#else
-				vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
-			#endif
 
 			vec3 minFrame = colored;
 			vec3 maxFrame = colored;
@@ -137,7 +185,7 @@ void main() {
 				avgFrame *= 0.25;
 			#endif
 
-			float velocityLen = length(velocity * vec2(viewWidth, viewHeight));
+			float velocityLen = length(velocity.xy * vec2(viewWidth, viewHeight));
 
 
 			#if defined TAA_DO_CLIPPING

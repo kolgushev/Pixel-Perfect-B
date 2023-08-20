@@ -11,6 +11,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 // constants
 
+#define EPSILON_0 0.01
 #define EPSILON 0.001
 #define EPSILON_2 0.0001
 #define EPSILON_3 0.00001
@@ -318,7 +319,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
     #define TAA_CLOSEST_MOTION_VECTOR
     #define TAA_USE_BICUBIC
     #define TAA_SHARP_ENABLED
-    #define TAA_DO_CLIPPING
+    #define TAA_DO_DEPTH_REJECTION
+    // #define TAA_DO_CLIPPING
     // #define TAA_DO_CLIPPING_IN_Y_CO_CG
 #endif
 
