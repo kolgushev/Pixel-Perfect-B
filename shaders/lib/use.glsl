@@ -37,6 +37,7 @@
 	#define use_direct_light_mult
 
 	#define use_hosek_wilkie_sky
+	#define use_preetham_sky
 	#define use_color_manipulation
 #endif
 
@@ -79,6 +80,9 @@
 #endif
 
 #if defined use_hosek_wilkie_sky
+#endif
+
+#if defined use_preetham_sky
 #endif
 
 // depends on: sample_noisetex
@@ -181,6 +185,10 @@
 
 #if defined use_hosek_wilkie_sky
 	#include "/lib/atmospherics/hosek_wilkie_sky.glsl"
+#endif
+
+#if defined use_preetham_sky
+	#include "/lib/atmospherics/preetham_sky.glsl"
 #endif
 
 #if defined use_pixel_perfect_sky

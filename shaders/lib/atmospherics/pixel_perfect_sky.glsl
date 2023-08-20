@@ -4,7 +4,8 @@ vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float r
 	float dt = dot(vecSun, UP);
 	float expandSky = EXPAND_SKY * abs(vecSun.y);
 	vec3 vec = vec3(v.x, max(expandSky, v.y + expandSky), v.z);
-	vec3 color = hosekWilkieSkyVector(normalize(vec), vecSun);
+	// vec3 color = hosekWilkieSkyVector(normalize(vec), vecSun);
+	vec3 color = preethamSkyVector(v, vecSun);
 
 	if(v.y < 0) {
 		vec = vec3(v.x, max(expandSky, -v.y + expandSky), v.z);
