@@ -331,7 +331,7 @@ void main() {
             }
         #elif !defined DIM_NO_HORIZON
             // prevent underground sun/moon, add virtual horizon
-            albedo.a = smoothstep(0.0, 0.05, normalize(position).y);
+            albedo.a = smoothstep(-0.005, 0.05, normalize(position).y);
 
             // prevent sun from showing during rain
             albedo.a *= smoothstep(-THUNDER_THRESHOLD, 0, -rain);
