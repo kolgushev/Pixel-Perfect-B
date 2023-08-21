@@ -380,7 +380,11 @@ uniform vec3 skyAlbedo;
 #endif
 
 #if defined use_sky_time
-uniform float skyTime;
+	#if defined DIM_TWILIGHT
+		const float skyTime = 0.1;
+	#else
+		uniform float skyTime;
+	#endif
 #endif
 
 

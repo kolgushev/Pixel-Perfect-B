@@ -95,8 +95,12 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         // Multiply each part of the light map with it's color
 
         vec3 torchLighting = gammaCorrection(lightmapAdjusted.x * torchColor, lightBoost) * BLOCK_LIGHT_MULT;
-
-        vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR;
+        #if defined HAS_MOON
+            vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR;
+        #else
+            vec3 moonLighting = vec3(0.0);
+        #endif
+        
         #if defined HAS_SUN
             vec3 sunLighting = sunShading * SUN_COLOR;
         #else

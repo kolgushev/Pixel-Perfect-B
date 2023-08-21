@@ -697,6 +697,12 @@ const float shadowIntervalSize = 8.0;
     #define WEATHER_FOG_MULTIPLIER 10.0
     #define RAINY_SKY_COLOR ATMOSPHERIC_FOG_COLOR
 
+    #define NIGHT_SKY_EDGE_COLOR ATMOSPHERIC_FOG_COLOR
+    #define NIGHT_SKY_TOP_COLOR ATMOSPHERIC_FOG_COLOR
+
+    #define DAY_SKY_COLOR ATMOSPHERIC_FOG_COLOR
+    #define NIGHT_SKY_COLOR ATMOSPHERIC_FOG_COLOR
+
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER)
     
     #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
@@ -732,6 +738,13 @@ const float shadowIntervalSize = 8.0;
     #define WEATHER_FOG_MULTIPLIER 10.0
     #define RAINY_SKY_COLOR ATMOSPHERIC_FOG_COLOR
 
+    #define NIGHT_SKY_EDGE_COLOR ATMOSPHERIC_FOG_COLOR
+    #define NIGHT_SKY_TOP_COLOR ATMOSPHERIC_FOG_COLOR
+
+    #define DAY_SKY_COLOR ATMOSPHERIC_FOG_COLOR
+    #define NIGHT_SKY_COLOR ATMOSPHERIC_FOG_COLOR
+
+
     #define BOSS_BATTLE_SKY_MULT 0.7
     #define BOSS_BATTLE_ATMOSPHERIC_FOG_COLOR (BASE_COLOR * 0.1)
 
@@ -759,6 +772,12 @@ const float shadowIntervalSize = 8.0;
     #define WEATHER_FOG_MULTIPLIER 10.0
     #define RAINY_SKY_COLOR (vec3(0.3, 0.305, 0.31) * 0.5)
 
+    #define NIGHT_SKY_EDGE_COLOR (vec3(0.4, 0.6, 0.7) * 4.7)
+    #define NIGHT_SKY_TOP_COLOR (vec3(0.05, 0.12, 0.4) * 3.0)
+
+    #define DAY_SKY_COLOR ((vec3(0.67, 0.83, 1.0) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
+    #define NIGHT_SKY_COLOR ((vec3(0.4, 0.4, 1.0) * RGB_to_ACEScg * 4.0) * NIGHT_SKY_LIGHT_MULT)
+
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
 
     #define PLANET_BRIGHTNESS (PLANET_BRIGHTNESS_USER)
@@ -772,6 +791,7 @@ const float shadowIntervalSize = 8.0;
     #define HAS_SKY
     #define HAS_SKYLIGHT
     #define HAS_SUN
+    #define HAS_MOON
     #define HAS_SHADOWS
     #if defined OVERWORLD_FOGGY_WEATHER
         #define DIM_HAS_FOGGY_WEATHER
@@ -789,6 +809,13 @@ const float shadowIntervalSize = 8.0;
 
     #define WEATHER_FOG_MULTIPLIER 10.0
     #define RAINY_SKY_COLOR (vec3(0.3, 0.305, 0.31) * 0.5)
+
+    #define NIGHT_SKY_EDGE_COLOR (vec3(0.0, 0.3, 0.7))
+    #define NIGHT_SKY_TOP_COLOR (vec3(0.1, 0.1, 0.1))
+
+    #define DAY_SKY_COLOR ((vec3(0.67, 0.83, 1.0) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
+    #define NIGHT_SKY_COLOR ((vec3(0.5, 0.6, 1.0) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
+
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
 
@@ -854,8 +881,6 @@ const float shadowIntervalSize = 8.0;
 
 #define NIGHT_VISION_COLOR ((vec3(0.7, 0.8, 1.0) * RGB_to_ACEScg))
 
-#define DAY_SKY_COLOR ((vec3(0.67, 0.83, 1.0) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
-#define NIGHT_SKY_COLOR ((vec3(0.5, 0.6, 1.0) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
 // #define NIGHT_SKY_COLOR ((vec3(1, 0.98, 0.95) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)
 #define DAY_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_ACEScg) * SKY_LIGHT_MULT)
 #define NIGHT_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_ACEScg) * NIGHT_SKY_LIGHT_MULT)

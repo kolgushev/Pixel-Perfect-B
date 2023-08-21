@@ -192,6 +192,10 @@ flat in int mcEntity;
 #include "/lib/use.glsl"
 
 void main() {
+    #if defined gc_sky && defined DIM_TWILIGHT
+        discard;
+    #endif
+
     // discard if too close
     #if defined fade_out_items
         // sample noise texture

@@ -1,12 +1,35 @@
+#if defined DIM_TWILIGHT
+	vec3 transitionSky(in float transition, in vec3 vec, in vec3 vecSun) {
+		vec3 daySky = hosekWilkieSkyVector(vec, vecSun);
+		vec3 nightSky = mix(NIGHT_SKY_EDGE_COLOR, NIGHT_SKY_TOP_COLOR, smoothstep(0.0, 0.33, vec.y));
+		return daySky * 0.7 + nightSky;
+	}
+#else
+	vec3 transitionSky(in float transition, in vec3 vec, in vec3 vecSun) {
+		vec3 daySky = vec3(0.0);
+		vec3 nightSky = vec3(0.0);
+
+		if(transition > 0.0) {
+			daySky = hosekWilkieSkyVector(vec, vecSun);
+		}
+		if(transition < 1.0) {
+			nightSky = mix(NIGHT_SKY_EDGE_COLOR, NIGHT_SKY_TOP_COLOR, clamp(vec.y, 0.0, 1.0));
+		}
+
+		return mix(nightSky, daySky, transition);
+	}
+#endif
+
 vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float rain, in float skyTime) {
 	v = normalize(v);
 	vec3 vecSun = normalize(sun_dir);
 	float dt = dot(vecSun, UP);
+	float transition = smoothstep(-0.2, 0.0, dt);
 	float expandSky = EXPAND_SKY * abs(vecSun.y);
 	vec3 vec = vec3(v.x, max(expandSky, v.y + expandSky), v.z);
-	vec3 color = hosekWilkieSkyVector(normalize(vec), vecSun);
+	vec3 color = transitionSky(transition, normalize(vec), vecSun);
 
-	if(v.y < 0) {
+	if(v.y < 0.0) {
 		vec = vec3(v.x, max(expandSky, -v.y + expandSky), v.z);
 		vecSun = normalize(vec3(sun_dir.x, -sun_dir.y, sun_dir.z));
 		// apply fresnel to mirror copy
@@ -15,7 +38,7 @@ vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float r
 		vec3 colorMod = vec3(0.1, 0.35, 1.5);
 		colorMod *= clamp(dt, 0.0, 1.0) * SUN_COLOR + clamp(-dt, 0.0, 1.0) * MOON_COLOR;
 
-		colorMod += hosekWilkieSkyVector(normalize(vec), vecSun) / fresnelFactor;
+		colorMod += transitionSky(transition, normalize(vec), vecSun) / fresnelFactor;
 
 
 		#define SKY_FOG_DENSITY 0.01
