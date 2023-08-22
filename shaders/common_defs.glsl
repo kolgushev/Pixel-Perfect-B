@@ -568,8 +568,8 @@ const float shadowIntervalSize = 8.0;
 #define VANILLA_NATURAL_AMBIENT_LIGHT 0.141
 
 // Removed from options intentionally, this is controlled through streamer mode option now
-#define MIN_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
-#define AMBIENT_LIGHT_MULT_USER 1.0 // [0.01 0.026 0.05 0.07 0.13 0.24 0.41 0.66 1.0]
+#define MIN_LIGHT_MULT_USER 5.0
+#define AMBIENT_LIGHT_MULT_USER 1.0
 
 #define EXPOSURE_WEIGHT 0.4
 
@@ -602,7 +602,7 @@ const float shadowIntervalSize = 8.0;
 #if LMT_MODE == 4
     #if !defined DYNAMIC_EXPOSURE_LIGHTING
         #if STREAMER_MODE == 0 || STREAMER_MODE == -1
-            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.4)
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.25)
             #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.55)
         #elif STREAMER_MODE == 1
             #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.05)
@@ -621,7 +621,7 @@ const float shadowIntervalSize = 8.0;
 #else
     #if !defined DYNAMIC_EXPOSURE_LIGHTING
         #if STREAMER_MODE == 0 || STREAMER_MODE == -1
-            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.16)
+            #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.1)
             #define AMBIENT_LIGHT_MULT (AMBIENT_LIGHT_MULT_USER * 0.22)
         #elif STREAMER_MODE == 1
             #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.02)

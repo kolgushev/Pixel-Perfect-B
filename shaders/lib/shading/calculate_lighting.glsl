@@ -161,7 +161,10 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         vec3 ambientSkyLight = (directSolarLighting + skyColor) * ambientSkyShading * lightmapAdjusted.y * 0.6;
 
         // Add the lighting togther to get the total contribution of the lightmap the final color.
-        vec3 indirectLighting = max(vec3(minLight), ambientLight + torchLighting + skyLighting + ambientSkyLight);
+        vec3 indirectLighting = ambientLight + torchLighting + skyLighting + ambientSkyLight;
+
+        // apply min lighting
+        indirectLighting = mix(0.5 * indirectLighting + minLight, indirectLighting, smoothstep(-minLight, 2.0 * minLight, indirectLighting));
     #endif
 
     float adjustedAo = 1 - clamp((1 - pow(ambientOcclusion, GAMMA)) * VANILLA_AO_INTENSITY, 0.0, 1.0);
