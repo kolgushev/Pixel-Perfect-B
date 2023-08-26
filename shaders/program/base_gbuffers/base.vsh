@@ -134,7 +134,7 @@ void main() {
     #endif
 
     #if defined IS_IRIS
-        light = vec2(vaUV2) * RCP_256;
+        light = vec2(vaUV2) * RCP_255;
     #else
         light = (LIGHT_MATRIX * vec4(vec2(vaUV2), 0.0, 0.0)).xy;
     #endif
@@ -145,8 +145,6 @@ void main() {
     */
     #if VANILLA_LIGHTING == 2
         light = max(light - 0.0313, 0) * 1.067;
-    #elif VANILLA_LIGHTING != 2
-        light = light * 0.937 + 0.0313;
     #endif
 
     #if defined gc_terrain || defined gc_textured || defined g_clouds || defined g_weather
