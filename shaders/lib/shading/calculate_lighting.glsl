@@ -40,6 +40,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
     #if VANILLA_LIGHTING != 2
 
+        lightmap = lightmap * 0.937 + 0.0313;
+
         // using texture2D instead of texture since the Optifine-provided varying block atlas is also called texture
         vec3 indirectLighting = texture2D(vanillaLightTex, vec2(lightmap.r, mix(0.0313, lightmap.g, VANILLA_LIGHTING_SKY_BLEED))).rgb - VANILLA_NATURAL_AMBIENT_LIGHT;
         vec3 directSolarLighting = texture2D(vanillaLightTex, lightmap).rgb - VANILLA_NATURAL_AMBIENT_LIGHT;
