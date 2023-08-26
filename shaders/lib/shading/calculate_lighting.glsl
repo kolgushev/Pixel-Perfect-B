@@ -19,7 +19,7 @@ float rainMultiplier(in float rain)  {
 }
 
 vec3 actualSkyColor(in float skyTime) {
-    return mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS), mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS), skyTime);
+    return mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS) * NIGHT_SKY_LIGHT_MULT, mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS) * SKY_LIGHT_MULT, skyTime);
 }
 
 // Input is not adjusted lightmap coordinates
