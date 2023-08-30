@@ -359,7 +359,7 @@ void main() {
     #if defined g_line
         if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
             #if OUTLINE_COLOR == 0
-                albedo = vec4(0.01, 0.01, 0.01, OUTLINE_ALPHA);
+                albedo = vec4(0.0, 0.0, 0.0, OUTLINE_ALPHA);
             #elif OUTLINE_COLOR == 1
                 albedo = vec4(10, 10, 10, OUTLINE_ALPHA);
             #elif OUTLINE_COLOR == 2
