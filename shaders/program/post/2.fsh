@@ -161,20 +161,22 @@ void main() {
 
     // Convert back to desired color primaries
     #if OUTPUT_COLORSPACE == 0
-        colorCorrected = colorCorrected * ACEScg_to_RGB;
+        colorCorrected = colorCorrected * AP1_to_RGB;
         colorCorrected = linear_to_srgb(colorCorrected);
     #elif OUTPUT_COLORSPACE == 1
-        colorCorrected = colorCorrected * ACEScg_to_RGB;
+        colorCorrected = colorCorrected * AP1_to_RGB;
     #elif OUTPUT_COLORSPACE == 2
-        colorCorrected = colorCorrected * ACEScg_to_RGB;
+        colorCorrected = colorCorrected * AP1_to_RGB;
         colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
     #elif OUTPUT_COLORSPACE == 4
         colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
     #elif OUTPUT_COLORSPACE == 5
-        colorCorrected = colorCorrected * ACEScg_to_ACES2065_1;
+        colorCorrected = colorCorrected * AP1_to_AP0;
     #elif OUTPUT_COLORSPACE == 6
-        colorCorrected = colorCorrected * ACEScg_to_ACES2065_1;
+        colorCorrected = colorCorrected * AP1_to_AP0;
         colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
+    #elif OUTPUT_COLORSPACE == 7
+        colorCorrected = colorCorrected * AP1_to_XYZ;
     #endif
 
     #if defined USE_LUT

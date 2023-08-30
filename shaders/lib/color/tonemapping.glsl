@@ -97,9 +97,9 @@ vec3 rtt_and_odt_fit(in vec3 v) {
 // Inputs and outputs have been transformed to operate on the CAT02 ACEScg colorspace
 vec3 aces_fitted(in vec3 v)
 {
-    v = v * ACEScg_to_RRT_SAT;
+    v = v * AP1_to_RRT_SAT;
     v = rtt_and_odt_fit(v);
-    return v * RRT_SAT_to_ACEScg;
+    return v * RRT_SAT_to_AP1;
 }
 
 // found courtesy of wolfram|alpha
@@ -114,11 +114,11 @@ vec3 rtt_and_odt_fit_inverse(in vec3 v) {
 
 // expects v to be in linear ACEScg (AP1 primaries)
 vec3 aces_fitted_inverse(in vec3 v) {
-    v = v * RRT_SAT_to_ACEScg_INVERSE;
+    v = v * RRT_SAT_to_AP1_INVERSE;
     // bring v into a range such that the output of rtt_and_odt_fit_inverse is between zero and one
     v *= 0.619 / 1.00007;
     v = rtt_and_odt_fit_inverse(v);
-    return v * ACEScg_to_RRT_SAT_INVERSE;
+    return v * AP1_to_RRT_SAT_INVERSE;
 }
 
 vec3 uncharted2_filmic_inverse(in vec3 y) {
