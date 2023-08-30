@@ -313,7 +313,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
     #define TAA_CLOSEST_MOTION_VECTOR
     #define TAA_USE_BICUBIC
-    #define TAA_SHARP_ENABLED
+    // #define TAA_SHARP_ENABLED
     #define TAA_DO_CLIPPING
     // #define TAA_DO_CLIPPING_IN_Y_CO_CG
 #endif
