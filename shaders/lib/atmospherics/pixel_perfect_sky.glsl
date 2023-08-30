@@ -57,7 +57,7 @@ vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float r
 		color = mix(color, colorMod, fogFactor);
 	}
 
-	color *= 0.05;
+	color *= 0.1;
 
 	float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
 	color = mix(color, RAINY_SKY_COLOR, mixFactor);
