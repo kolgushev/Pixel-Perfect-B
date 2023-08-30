@@ -277,7 +277,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define INPUT_COLORSPACE 0 // [0 1 2 3 4 5]
 #define USER_OUTPUT_COLORSPACE 0 // [0 1 2 3 5 7]
 // output mapping: 0:none 1:reinhard 2:Hable 3:ACES/UE4 4:Custom (default)
-#define USER_LMT_MODE 4 // [0 1 2 3 4]
+#define USER_LMT_MODE 5 // [0 1 2 3 4]
 
 // #define USE_NIGHT_EFFECT
 #ifdef USE_NIGHT_EFFECT

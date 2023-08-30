@@ -23,6 +23,25 @@ vec3 reinhardInverse(in vec3 v) {
     return changeLuminance(v, originalLum, newLum);
 }
 
+vec3 hlg(in vec3 v) {
+    // constants r, a, b, c referenced from https://en.wikipedia.org/wiki/Hybrid_log%E2%80%93gamma
+    const float r = 0.5;
+    const float a = 0.17883277;
+    // float b = 1.0 - 4.0 * a;
+    const float b = 0.28466892;
+    // float c = 0.5 - a * log(4.0 * a)
+    const float c = 0.55991073;
+    
+    bvec3 cutoff = greaterThan(v, vec3(1.0));
+    
+    vec3 e = clamp(v, 0.0, 12.0);
+
+    vec3 lower = r * sqrt(e);
+    vec3 upper = a * log(e - b) + c;
+
+    return mix(lower, upper, cutoff);
+}
+
 vec3 uncharted2_tonemap_partial(in vec3 x)
 {
     const float a = 0.15;

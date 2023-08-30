@@ -123,10 +123,12 @@ void main() {
     #if LMT_MODE == 1
         tonemapped = reinhard(tonemapped);
     #elif LMT_MODE == 2
-        tonemapped = uncharted2_filmic(tonemapped);
+        tonemapped = hlg(tonemapped);
     #elif LMT_MODE == 3
-        tonemapped = aces_fitted(tonemapped);
+        tonemapped = uncharted2_filmic(tonemapped);
     #elif LMT_MODE == 4
+        tonemapped = aces_fitted(tonemapped);
+    #elif LMT_MODE == 5
         tonemapped *= 4.0;
         bvec3 applyTone = greaterThan(tonemapped, vec3(0.1));
         vec3 tonemappedMod = 0.1 - tonemapped;

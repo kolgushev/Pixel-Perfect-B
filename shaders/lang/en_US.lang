@@ -286,9 +286,10 @@ screen.COLORS=Colors
                 option.USER_LMT_MODE.comment=Compresses the game's "realistic" light values into ones your monitor can display. (and does so in a way that looks nice). §cMay not work when "Use LUT" is enabled!
                 value.USER_LMT_MODE.0=§cNone (not recommended)
                 value.USER_LMT_MODE.1=§6Reinhard
-                value.USER_LMT_MODE.2=Hable (Uncharted 2)
-                value.USER_LMT_MODE.3=Hill ACES (Unreal Engine)
-                value.USER_LMT_MODE.4=Pixel Perfect (Modded Hill ACES)
+                value.USER_LMT_MODE.2=§6Hybrid Log-Gamma (HLG)
+                value.USER_LMT_MODE.3=Hable (Uncharted 2)
+                value.USER_LMT_MODE.4=Hill ACES (Unreal Engine)
+                value.USER_LMT_MODE.5=Pixel Perfect (Modded Hill ACES)
 
 screen.RESOURCEPACK=Resourcepack Settings
     screen.RESOURCEPACK.comment=Make sure to look at these settings if you have a resourcepack enabled.
