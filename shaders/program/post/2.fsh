@@ -121,44 +121,22 @@ void main() {
 
     // tonemap image
     #if LMT_MODE == 1
-        tonemapped = tonemapped * RCP_16;
-    #elif LMT_MODE == 2
         tonemapped = reinhard(tonemapped);
-    #elif LMT_MODE == 3
+    #elif LMT_MODE == 2
         tonemapped = uncharted2_filmic(tonemapped);
+    #elif LMT_MODE == 3
+        tonemapped = aces_fitted(tonemapped);
     #elif LMT_MODE == 4
+        tonemapped *= 5.0;
+        bvec3 applyTone = greaterThan(tonemapped, vec3(0.1));
+        vec3 tonemappedMod = 0.1 - tonemapped;
+        tonemapped = mix(200.0 * tonemapped * tonemappedMod * tonemappedMod + tonemapped, tonemapped, applyTone);
+        tonemapped *= 0.2;
         tonemapped = aces_fitted(tonemapped);
     #endif
 
-    // Convert back to desired colorspace
-    #if OUTPUT_COLORSPACE == 0
-        tonemapped = tonemapped * ACEScg_to_RGB;
-    #elif OUTPUT_COLORSPACE == 2
-        tonemapped = tonemapped * ACEScg_to_ACES2065_1;
-    #endif
-
-    // gamma correction
-    vec3 colorCorrected = tonemapped;
-    #if defined GAMMA_CORRECT
-        colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
-    #endif
-
-    #if defined USE_LUT
-        vec3 noBorder = removeBorder(colorCorrected, LUT_SIZE_RCP);
-
-        // vec3 lutApplied = texture(shadowcolor1, removeBorder(vec3(texcoord, 1.0))).rgb;
-        vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
-                
-        colorCorrected = vec3(lutApplied * LUT_RANGE_MULT);
-    #endif
-
-    // un-gamma-correct
-    #if defined GAMMA_CORRECT
-        colorCorrected = gammaCorrection(colorCorrected, GAMMA);
-    #endif
-
     // restrict colors to a 0-1 range to prevent weirdness with contrast/saturation formulas
-    colorCorrected = clamp(colorCorrected, vec3(0), vec3(1));
+    vec3 colorCorrected = clamp(tonemapped, vec3(0), vec3(1));
 
     // apply contrast
     if(ADJUSTED_CONTRAST != 0.0) {
@@ -181,14 +159,33 @@ void main() {
         colorCorrected = saturateRGB(POST_SATURATION) * max(colorCorrected, vec3(0));
     }
 
-    // re-gamma-correct, this time to SRGB
-    #if defined GAMMA_CORRECT
-        #if defined CORRECT_TO_ACTUAL_SRGB
-            colorCorrected = linear_to_srgb(colorCorrected);
-        #else
-            colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
-        #endif
+    // Convert back to desired color primaries
+    #if OUTPUT_COLORSPACE == 0
+        colorCorrected = colorCorrected * ACEScg_to_RGB;
+        colorCorrected = linear_to_srgb(colorCorrected);
+    #elif OUTPUT_COLORSPACE == 1
+        colorCorrected = colorCorrected * ACEScg_to_RGB;
+    #elif OUTPUT_COLORSPACE == 2
+        colorCorrected = colorCorrected * ACEScg_to_RGB;
+        colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
+    #elif OUTPUT_COLORSPACE == 4
+        colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
+    #elif OUTPUT_COLORSPACE == 5
+        colorCorrected = colorCorrected * ACEScg_to_ACES2065_1;
+    #elif OUTPUT_COLORSPACE == 6
+        colorCorrected = colorCorrected * ACEScg_to_ACES2065_1;
+        colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
     #endif
+
+    #if defined USE_LUT
+        vec3 noBorder = removeBorder(colorCorrected, LUT_SIZE_RCP);
+
+        // vec3 lutApplied = texture(shadowcolor1, removeBorder(vec3(texcoord, 1.0))).rgb;
+        vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
+                
+        colorCorrected = vec3(lutApplied * LUT_RANGE_MULT);
+    #endif
+
 
 
     // dithering

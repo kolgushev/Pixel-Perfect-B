@@ -36,6 +36,7 @@ flat in int mcEntity;
 #define use_render_stage
 #define use_alpha_test_ref
 
+#define use_tonemapping
 #define use_hdr_mapping
 
 #if defined fade_out_items
@@ -183,11 +184,6 @@ flat in int mcEntity;
 #if defined DIM_END && defined g_skytextured
     #define use_sample_noisetex
 #endif
-
-#if defined CORRECT_TO_ACTUAL_SRGB
-    #define use_tonemapping
-#endif
-
 
 #include "/lib/use.glsl"
 
@@ -350,12 +346,7 @@ void main() {
     #endif
 
     #if !defined g_skybasic
-        #if defined CORRECT_TO_ACTUAL_SRGB
-            albedo.rgb = srgb_to_linear(albedo.rgb);
-        #else
-            albedo.rgb = gammaCorrection(albedo.rgb, GAMMA);
-        #endif
-
+        albedo.rgb = srgb_to_linear(albedo.rgb);
         albedo.rgb *= RGB_to_ACEScg;
     #endif
 

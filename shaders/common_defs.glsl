@@ -116,6 +116,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define hand(h) ((h) < 0.558)
 #define removeBorder(n, r) (((n) - 0.5) * (1 - (r)) + 0.5)
+// use this for very simple gamma correction where accuracy doesn't matter (such as fog color)
 #define gammaCorrection(x, y) pow(x, vec3(y))
 
 // using cat02
@@ -273,15 +274,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AC
 
 #define POST_TEMP 6550 // [3500 4000 4500 5000 5500 6000 6550 8000 9000 10000 11000 12000 13000 14000 15000]
 
-// output mapping: 0:sRGB 1:ACEScg(raw) 2:ACES2065-1
-#define INPUT_COLORSPACE 0 // [0 1 2]
-#define USER_OUTPUT_COLORSPACE 0 // [0 1 2]
-// output mapping: 0:none 1:divide by 16 2:reinhard 3:Hable 4:ACES/UE4 (default)
+#define INPUT_COLORSPACE 0 // [0 1 2 3 4 5]
+#define USER_OUTPUT_COLORSPACE 0 // [0 1 2 3 4 5 6]
+// output mapping: 0:none 1:reinhard 2:Hable 3:ACES/UE4 4:Custom (default)
 #define USER_LMT_MODE 4 // [0 1 2 3 4]
-
-#define CORRECT_TO_ACTUAL_SRGB
-#ifdef CORRECT_TO_ACTUAL_SRGB
-#endif
 
 // #define USE_NIGHT_EFFECT
 #ifdef USE_NIGHT_EFFECT
@@ -573,13 +569,7 @@ const float shadowIntervalSize = 8.0;
 
 #define EXPOSURE_WEIGHT 0.4
 
-#if defined USE_LUT
-    #if defined LUT_OVERRIDE_GAMMA_CORRECT && defined LUT_GAMMA_CORRECT
-        #define GAMMA_CORRECT
-    #elif !defined LUT_OVERRIDE_GAMMA_CORRECT
-        #define GAMMA_CORRECT
-    #endif
-    
+#if defined USE_LUT    
     #ifdef LUT_OUTPUT_COLORSPACE
         #define OUTPUT_COLORSPACE LUT_OUTPUT_COLORSPACE
     #else
@@ -592,14 +582,12 @@ const float shadowIntervalSize = 8.0;
     #endif
 
 #else
-    #define GAMMA_CORRECT
-    
     #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACE
     #define LMT_MODE USER_LMT_MODE
 #endif
 
 // measuring face of stone block
-#if LMT_MODE == 4
+#if LMT_MODE == 4 || LMT_MODE == 5
     #if !defined DYNAMIC_EXPOSURE_LIGHTING
         #if STREAMER_MODE == 0 || STREAMER_MODE == -1
             #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.25)

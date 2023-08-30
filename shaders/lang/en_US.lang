@@ -272,18 +272,22 @@ screen.COLORS=Colors
             screen.ACES.comment=Academy Color Encoding System.
             
             option.USER_OUTPUT_COLORSPACE=Output Colorspace
-                option.USER_OUTPUT_COLORSPACE.comment=§cMay not work when "Use LUT" is enabled!
-                value.USER_OUTPUT_COLORSPACE.0=sRGB
-                value.USER_OUTPUT_COLORSPACE.1=ACEScg (raw)
-                value.USER_OUTPUT_COLORSPACE.2=ACES2065-1
+                option.USER_OUTPUT_COLORSPACE.comment=The color space to transform the screen to. Works separately from Iris's color space setting. Use sRGB if unsure. §cMay not work when "Use LUT" is enabled!
+                value.USER_OUTPUT_COLORSPACE.0=sRGB (default)
+                value.USER_OUTPUT_COLORSPACE.1=Linear RGB
+                value.USER_OUTPUT_COLORSPACE.2=Gamma 2.2 RGB
+                value.USER_OUTPUT_COLORSPACE.3=Linear ACEScg
+                value.USER_OUTPUT_COLORSPACE.4=Gamma 2.2 ACEScg
+                value.USER_OUTPUT_COLORSPACE.5=Linear ACES2065-1
+                value.USER_OUTPUT_COLORSPACE.6=Gamma 2.2 ACES2065-1
 
-            option.USER_LMT_MODE=LMT
+            option.USER_LMT_MODE=Tonemapper
                 option.USER_LMT_MODE.comment=Compresses the game's "realistic" light values into ones your monitor can display. (and does so in a way that looks nice). §cMay not work when "Use LUT" is enabled!
                 value.USER_LMT_MODE.0=§cNone (not recommended)
-                value.USER_LMT_MODE.1=§cDivide by 16 (not recommended)
-                value.USER_LMT_MODE.2=§6Reinhard
-                value.USER_LMT_MODE.3=Hable (Uncharted 2)
-                value.USER_LMT_MODE.4=Hill ACES (Unreal Engine)
+                value.USER_LMT_MODE.1=§6Reinhard
+                value.USER_LMT_MODE.2=Hable (Uncharted 2)
+                value.USER_LMT_MODE.3=Hill ACES (Unreal Engine)
+                value.USER_LMT_MODE.4=Pixel Perfect (Modded Hill ACES)
 
 screen.RESOURCEPACK=Resourcepack Settings
     screen.RESOURCEPACK.comment=Make sure to look at these settings if you have a resourcepack enabled.
