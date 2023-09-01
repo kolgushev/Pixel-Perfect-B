@@ -266,24 +266,7 @@ void main() {
             #define FILTER_SKYBOX
         #endif
 
-        #if defined TEXTURE_FILTERING && (defined TEXTURE_FILTER_EVERYTHING || defined gc_terrain || defined g_particles_translucent || defined g_weather || defined g_beaconbeam || defined FILTER_SKYBOX)
-            #if defined gc_terrain
-                #define IS_FILTERED true
-            #else
-                #define IS_FILTERED false
-            #endif
-
-            vec4 albedo = textureFiltered(texture, texcoordMod, IS_FILTERED);
-
-            #if !(defined gc_transparent || defined g_beaconbeam)
-                // fix for transparency losing color
-                if(albedo.a < 1) albedo = texture2D(texture, texcoordMod);
-            #endif
-        #else
-            vec4 albedo = texture2D(texture, texcoordMod);
-        #endif
-
-
+        vec4 albedo = texture2D(texture, texcoordMod);
         vec3 uncoloredDiffuse = albedo.rgb;
 
         albedo.rgb *= color.rgb;
@@ -583,9 +566,9 @@ void main() {
                 if(mcEntity == WATER || mcEntity == ICE) {
                     vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
 
-                    float depth = texture2D(depthtex1, texcoordScreenspace).r;
+                    float depth = texture(depthtex1, texcoordScreenspace).r;
                     // TODO: figure out a way to fix this
-                    // diffuse = texture2D(colortex3, texcoordScreenspace).rgb;
+                    // diffuse = texture(colortex3, texcoordScreenspace).rgb;
                     // diffuse = vec3(1);
                     positionOpaque = getWorldSpace(texcoordScreenspace, depth);
                 }

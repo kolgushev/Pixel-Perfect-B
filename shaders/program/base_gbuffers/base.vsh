@@ -143,7 +143,9 @@ void main() {
     The Optifine-provided lightmap is actually what is used to sample the
     vanilla lighting texture, so it isn't in a 0-1 range by default.
     */
-    light = max(light - 0.0313, 0) * 1.067;
+    #if VANILLA_LIGHTING == 2
+        light = max(light - 0.0313, 0) * 1.067;
+    #endif
 
     #if defined gc_terrain || defined gc_textured || defined g_clouds || defined g_weather
         normal = vaNormal;
