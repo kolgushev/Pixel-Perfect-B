@@ -362,7 +362,7 @@ uniform float skyTime;
 
 // samplers
 #if defined use_texture
-uniform sampler2D texture;
+uniform sampler2D gtexture;
 #endif
 
 #if defined use_colortex0

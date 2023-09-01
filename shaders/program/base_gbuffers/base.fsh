@@ -181,7 +181,7 @@ void main() {
             texcoordMod.x *= RAIN_THICKNESS;
         #endif
 
-        vec4 albedo = texture2D(texture, texcoordMod);
+        vec4 albedo = texture(gtexture, texcoordMod);
         vec3 uncoloredDiffuse = albedo.rgb;
 
         albedo.rgb *= color.rgb;
@@ -475,9 +475,9 @@ void main() {
                 #if defined WATER_FOG_FROM_OUTSIDE
                     vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
 
-                    float depth = texture2D(depthtex1, texcoordScreenspace).r;
+                    float depth = texture(depthtex1, texcoordScreenspace).r;
                     // TODO: figure out a way to fix this
-                    // diffuse = texture2D(colortex3, texcoordScreenspace).rgb;
+                    // diffuse = texture(colortex3, texcoordScreenspace).rgb;
                     // diffuse = vec3(1);
                     positionOpaque = getWorldSpace(texcoordScreenspace, depth);
                 #endif

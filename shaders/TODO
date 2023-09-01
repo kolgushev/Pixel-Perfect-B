@@ -19,15 +19,12 @@ Transfer all of this to the trello page (and link it here once the repo becomes 
 Different LUTs per dimension
 
 Geometry shaders to scale up block faces to fix shadow leak
-Render transparent shadows in gbuffers using texture2D instead of texture
 Use render stage uniform to detect before/after deferred
 Stop using mul_m4_v3
 Add in/out to all function declarations
 Shadow leak fix by sampling adjacent pixels
 Fix nametags
 Nighttime mask for blue grading
-Jitter everything in vsh for Temporal Super-Resolution
-Remove moon/sun when underground
 Dithering for color transitions, especially sky
 
 Idea: seasons?

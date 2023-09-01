@@ -197,8 +197,7 @@ void main() {
         const float inverseMult = RCP_256;
 
         /*
-            This dithering is unique, since it doesn't sample adjacent pixels.
-            Instead, it uses the current color and a noise texture to randomly
+            This dithering uses the current color and a noise texture to randomly
             decrease the color by one bit based on its proximity to either
             the original or decreased color.
             This happens per every color channel individually.
