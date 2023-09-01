@@ -29,33 +29,35 @@ vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float r
 	vec3 vec = vec3(v.x, max(expandSky, v.y + expandSky), v.z);
 	vec3 color = transitionSky(transition, normalize(vec), vecSun);
 
-	if(v.y < 0.0) {
-		vec = vec3(v.x, max(expandSky, -v.y + expandSky), v.z);
-		vecSun = normalize(vec3(sun_dir.x, -sun_dir.y, sun_dir.z));
-		// apply fresnel to mirror copy
-		float fresnelFactor = pow(1.0 - dot(v, UP), 5.0) * (1.0 - REFLECTANCE_WATER) + REFLECTANCE_WATER;
+	#if defined HORIZON_AS_OCEAN
+		if(v.y < 0.0) {
+			vec = vec3(v.x, max(expandSky, -v.y + expandSky), v.z);
+			vecSun = normalize(vec3(sun_dir.x, -sun_dir.y, sun_dir.z));
+			// apply fresnel to mirror copy
+			float fresnelFactor = pow(1.0 - dot(v, UP), 5.0) * (1.0 - REFLECTANCE_WATER) + REFLECTANCE_WATER;
 
-		vec3 colorMod = vec3(0.1, 0.35, 1.5);
-		colorMod *= clamp(dt, 0.0, 1.0) * SUN_COLOR + clamp(-dt, 0.0, 1.0) * MOON_COLOR;
+			vec3 colorMod = vec3(0.1, 0.35, 1.5);
+			colorMod *= clamp(dt, 0.0, 1.0) * SUN_COLOR + clamp(-dt, 0.0, 1.0) * MOON_COLOR;
 
-		vec3 specular = transitionSky(transition, normalize(vec), vecSun);
-		
-		// technically incorrect, but allows the sun to appear circular and not as a point
-		specular += (
-				pow(smoothstep(0.97, 1.0, dot(v, vecSun)), 8.0) * 0.9
-				+ pow(smoothstep(0.5, 1.0, dot(v, vecSun)), 2.0) * 0.1
-			)
-			* smoothstep(-0.1, 0.1, dt)
-			* SUN_COLOR * directLightMult;
+			vec3 specular = transitionSky(transition, normalize(vec), vecSun);
+			
+			// technically incorrect, but allows the sun to appear circular and not as a point
+			specular += (
+					pow(smoothstep(0.97, 1.0, dot(v, vecSun)), 8.0) * 0.9
+					+ pow(smoothstep(0.5, 1.0, dot(v, vecSun)), 2.0) * 0.1
+				)
+				* smoothstep(-0.1, 0.1, dt)
+				* SUN_COLOR * directLightMult;
 
-		colorMod += specular / fresnelFactor;
+			colorMod += specular / fresnelFactor;
 
 
-		#define SKY_FOG_DENSITY 0.01
-		float fogFactor = exp(-SKY_FOG_DENSITY / (abs(v.y) + 0.01));
-		fogFactor *= 1.0 - pow(1.0 - smoothstep(0.0, 0.05, -v.y), 10.0);
-		color = mix(color, colorMod, fogFactor);
-	}
+			#define SKY_FOG_DENSITY 0.01
+			float fogFactor = exp(-SKY_FOG_DENSITY / (abs(v.y) + 0.01));
+			fogFactor *= 1.0 - pow(1.0 - smoothstep(0.0, 0.05, -v.y), 10.0);
+			color = mix(color, colorMod, fogFactor);
+		}
+	#endif
 
 	color *= 0.1;
 

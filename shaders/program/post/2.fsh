@@ -104,14 +104,20 @@ void main() {
     // this is personal taste, but Hable has some desaturated/dark colors, so compensate for that through post-processing
     #if LMT_MODE == 3
         #define LMT_MODE_EXPOSURE_WEIGHT 1.2
-        #define LMT_MODE_EXPOSURE_WEIGHT 1.2
         #define LMT_MODE_CONTRAST_BIAS 0.1
+        #define LMT_MODE_LUMINANCE_CONTRAST_BIAS 0.0
+    #elif LMT_MODE == 5
+        #define LMT_MODE_EXPOSURE_WEIGHT 1.3
+        #define LMT_MODE_CONTRAST_BIAS 0.1
+        #define LMT_MODE_LUMINANCE_CONTRAST_BIAS 0.1
     #else
         #define LMT_MODE_EXPOSURE_WEIGHT 1.0
         #define LMT_MODE_CONTRAST_BIAS 0.0
+        #define LMT_MODE_LUMINANCE_CONTRAST_BIAS 0.0
     #endif
 
     #define ADJUSTED_CONTRAST (CONTRAST + LMT_MODE_CONTRAST_BIAS)
+    #define ADJUSTED_LUMINANCE_CONTRAST (LUMINANCE_CONTRAST + LMT_MODE_LUMINANCE_CONTRAST_BIAS)
 
     tonemapped *= EXPOSURE * LMT_MODE_EXPOSURE_WEIGHT;
 
@@ -150,11 +156,11 @@ void main() {
     }
 
     // apply luma contrast
-    if(LUMINANCE_CONTRAST != 0.0) {
+    if(ADJUSTED_LUMINANCE_CONTRAST != 0.0) {
         float luminance = luminance(colorCorrected);
 
         float b = 2 * luminance - 1;
-        colorCorrected = changeLuminance(colorCorrected, luminance, luminance + (1 - abs(b)) * b * LUMINANCE_CONTRAST);
+        colorCorrected = changeLuminance(colorCorrected, luminance, luminance + (1 - abs(b)) * b * ADJUSTED_LUMINANCE_CONTRAST);
     }
 
     if(POST_SATURATION != 1.0) {

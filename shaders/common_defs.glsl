@@ -211,6 +211,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #endif
 
 #define EXPAND_SKY 0.1
+#define HORIZON_AS_OCEAN
+#ifdef HORIZON_AS_OCEAN
+#endif
 
 #define SPIDEREYES_MULT 1.0
 
