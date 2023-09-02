@@ -48,6 +48,10 @@ in vec2 texcoord;
     #define use_tonemapping
 #endif
 
+#if OUTLINE_COLOR == -1
+    #define use_tonemapping
+#endif
+
 #if defined DIM_TWILIGHT
     #define use_gbuffer_projection_inverse
     #define use_gbuffer_model_view_inverse
@@ -151,8 +155,7 @@ void main() {
     
     #if OUTLINE_COLOR == -1
         if(isOutline) {
-            float luma = luminance(composite);
-            composite = changeLuminance(composite, luma, 1 - luma);
+            composite = 0.2 / (0.2 + composite);
         }
     #endif
 

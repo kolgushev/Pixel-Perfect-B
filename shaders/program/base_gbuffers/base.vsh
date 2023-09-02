@@ -442,7 +442,7 @@ void main() {
     #if defined gc_basic
         if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
             #if defined OUTLINE_THROUGH_BLOCKS
-                glPos.z *= 0.2;
+                glPos *= 0.2;
             #endif
         }
     #endif

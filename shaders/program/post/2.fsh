@@ -108,7 +108,7 @@ void main() {
         #define LMT_MODE_LUMINANCE_CONTRAST_BIAS 0.0
     #elif LMT_MODE == 5
         #define LMT_MODE_EXPOSURE_WEIGHT 1.3
-        #define LMT_MODE_CONTRAST_BIAS 0.1
+        #define LMT_MODE_CONTRAST_BIAS 0.0
         #define LMT_MODE_LUMINANCE_CONTRAST_BIAS 0.1
     #else
         #define LMT_MODE_EXPOSURE_WEIGHT 1.0
