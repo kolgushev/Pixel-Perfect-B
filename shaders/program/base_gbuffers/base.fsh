@@ -603,6 +603,7 @@ void main() {
                     atmosPhogWater = 1 - exp(-atmosPhogWater);
                 }
 
+                // apply fog to non-transparent objects
                 overlay = vec4(ATMOSPHERIC_FOG_BRIGHTNESS_WATER * ATMOSPHERIC_FOG_COLOR_WATER, atmosPhogWater * (1 - fogged.a));
             }
         #endif

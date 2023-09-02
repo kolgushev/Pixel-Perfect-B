@@ -135,11 +135,11 @@ void main() {
     #elif LMT_MODE == 4
         tonemapped = aces_fitted(tonemapped);
     #elif LMT_MODE == 5
-        tonemapped *= 4.0;
+        tonemapped *= 2.0;
         bvec3 applyTone = greaterThan(tonemapped, vec3(0.1));
         vec3 tonemappedMod = 0.1 - tonemapped;
         tonemapped = mix(100.0 * tonemapped * tonemappedMod * tonemappedMod + tonemapped, tonemapped, applyTone);
-        tonemapped *= 0.25;
+        tonemapped *= 0.5;
         tonemapped = aces_fitted(tonemapped);
     #endif
 
