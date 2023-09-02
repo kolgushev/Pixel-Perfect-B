@@ -268,9 +268,8 @@ void main() {
 
         vec4 albedo = texture(gtexture, texcoordMod);
 
-        vec3 uncoloredDiffuse = albedo.rgb;
-
         albedo.rgb *= color.rgb;
+
         #if defined g_clouds
             albedo.a *= step(0.1, albedo.a) * 0.6;
         #elif !defined gc_terrain
@@ -434,6 +433,9 @@ void main() {
     #if defined g_spidereyes
         albedo.rgb *= SPIDEREYES_MULT;
     #endif
+    if(renderStage == MC_RENDER_STAGE_WORLD_BORDER) {
+        albedo.rgb *= 100.0;
+    }
 
     #if defined g_terrain && NOISY_LAVA != 0
         if(mcEntity == LAVA) {
