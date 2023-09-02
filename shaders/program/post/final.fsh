@@ -25,7 +25,7 @@ in vec2 texcoord;
 #include "/lib/use.glsl"
 
 void main() {
-    vec4 albedo = texture2D(colortex0, texcoord);
+    vec4 albedo = texture(colortex0, texcoord);
     buffer0 = albedo;
 
     #if defined SHADOW_DEBUG

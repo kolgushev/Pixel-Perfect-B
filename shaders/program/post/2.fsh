@@ -44,7 +44,7 @@ void main() {
         vec3 magentaSample;
         vec3 cyanSample;
         vec3 yellowSample;
-        if(invisibility > 0) {
+        if(invisibility > 0.0) {
             vec2 texcoordNormalized = texcoord * 2 - 1;
             
             float distortion = invisibility * (pow(texcoordNormalized.x, 2) + pow(texcoordNormalized.y, 2));

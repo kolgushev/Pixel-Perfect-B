@@ -81,7 +81,7 @@ void main() {
 			float closestDist = depth;
 			for(int i = 0; i < 4; i++) {
 				vec2 currentOffset = superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight);
-				float neighborSample = texture2D(depthtex0, texcoord + currentOffset).r;
+				float neighborSample = texture(depthtex0, texcoord + currentOffset).r;
 				if(neighborSample < closestDist) {
 					closestDist = neighborSample;
 					closestOffset = currentOffset;
@@ -89,7 +89,7 @@ void main() {
 			}
 		#endif
 
-		vec2 velocity = texture2D(colortex5, texcoord + closestOffset).xy;
+		vec2 velocity = texture(colortex5, texcoord + closestOffset).xy;
 		vec2 texcoordPrev = texcoord + velocity;
 
 		bool doAA = clamp(texcoordPrev, 0.0, 1.0) == texcoordPrev;
@@ -106,7 +106,7 @@ void main() {
 				// TODO: optimize further
 				vec3 prevFrame = textureBicubic(colortex4, texcoordPrev).rgb;
 			#else
-				vec3 prevFrame = texture2D(colortex4, texcoordPrev).rgb;
+				vec3 prevFrame = texture(colortex4, texcoordPrev).rgb;
 			#endif
 
 			vec3 minFrame = colored;
@@ -116,7 +116,7 @@ void main() {
 			#endif
 
 			for(int i = 0; i < 4; i++) {
-				vec3 neighborSample = texture2D(colortex0, texcoord + superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight)).rgb;
+				vec3 neighborSample = texture(colortex0, texcoord + superSampleOffsets4[i].xy * 2 / vec2(viewWidth, viewHeight)).rgb;
 				minFrame = min(minFrame, neighborSample);
 				maxFrame = max(maxFrame, neighborSample);
 				#if defined TAA_SHARP_ENABLED
@@ -127,7 +127,7 @@ void main() {
 			#if defined TAA_CORNER_CLAMPING
 				// edges
 				for(int i = 1; i < 5; i++) {
-					vec3 neighborSample = texture2D(colortex0, texcoord + superSampleOffsetsCross[i].xy * 2 / vec2(viewWidth, viewHeight)).rgb;
+					vec3 neighborSample = texture(colortex0, texcoord + superSampleOffsetsCross[i].xy * 2 / vec2(viewWidth, viewHeight)).rgb;
 					minFrame = min(minFrame, neighborSample);
 					maxFrame = max(maxFrame, neighborSample);
 				}

@@ -266,7 +266,8 @@ void main() {
             #define FILTER_SKYBOX
         #endif
 
-        vec4 albedo = texture2D(gtexture, texcoordMod);
+        vec4 albedo = texture(gtexture, texcoordMod);
+
         vec3 uncoloredDiffuse = albedo.rgb;
 
         albedo.rgb *= color.rgb;
