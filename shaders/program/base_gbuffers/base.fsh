@@ -266,7 +266,7 @@ void main() {
             #define FILTER_SKYBOX
         #endif
 
-        vec4 albedo = texture2D(texture, texcoordMod);
+        vec4 albedo = texture2D(gtexture, texcoordMod);
         vec3 uncoloredDiffuse = albedo.rgb;
 
         albedo.rgb *= color.rgb;
@@ -575,22 +575,13 @@ void main() {
             #endif
         #endif
 
-        // apply fog as well
-        #if defined HAS_SKYLIGHT
-            float inSkyProcessed = inSky;
-            float eyeBrightnessProcessed = eyeBrightnessSmoothFloat;
-        #else
-            float inSkyProcessed = 1;
-            float eyeBrightnessProcessed = 1;
-        #endif
-
         #if defined HAS_SKYLIGHT && defined WEATHER_FOG_IN_SKY_ONLY
             float fogWeatherSkyProcessed = fogWeather;
         #else
             float fogWeatherSkyProcessed = fogWeatherSky;
         #endif
 
-        vec4 fogged = fogify(position, position, albedo, diffuse, far, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, inSkyProcessed, eyeBrightnessProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+        vec4 fogged = fogify(position, position, albedo, diffuse, far, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;

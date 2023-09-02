@@ -25,7 +25,7 @@ float fogifyDistanceOnly(in vec3 position, in float far, in float blindness, in 
     return fogTube;
 }
 
-vec4 fogify(in vec3 position, in vec3 positionWater, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in bool isSpectator, in float fogWeather, in float inSky, in float eyeBrightnessSmoothFloat, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
+vec4 fogify(in vec3 position, in vec3 positionWater, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in bool isSpectator, in float fogWeather, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
     vec3 composite = diffuse.rgb;
     float farRcp = 1 / far;
     float fogTube = fogifyDistanceOnly(position, far, blindnessEffect, farRcp);
@@ -43,14 +43,14 @@ vec4 fogify(in vec3 position, in vec3 positionWater, in vec4 transparency, in ve
                 float mult = fogWeather * WEATHER_FOG_MULTIPLIER;
                 #if defined ATMOSPHERIC_FOG
                     #if defined ATMOSPHERIC_FOG_IN_SKY_ONLY
-                        mult += inSky;
+                        mult += IN_SKY_PROCESSED;
                     #else
                         mult += 1;
                     #endif
                 #endif
                 atmosPhog *= mult;
             #elif defined ATMOSPHERIC_FOG_IN_SKY_ONLY
-                atmosPhog *= inSky;
+                atmosPhog *= IN_SKY_PROCESSED;
             #endif
             atmosPhogColor = mix(ATMOSPHERIC_FOG_COLOR, ATMOSPHERIC_FOG_COLOR_RAIN, densityWater / densityTotal);
             #if defined DIM_END

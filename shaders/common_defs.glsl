@@ -837,11 +837,9 @@ const float shadowIntervalSize = 8.0;
     #define RAIN_ADDER 0
 #endif
 
-#if defined use_atmospheric_fog_brightness_water
-    #define use_sky_time
-    #define use_eye_brightness_smooth_float
-    #define ATMOSPHERIC_FOG_BRIGHTNESS_WATER (mix(0.2, skyTime * 0.8 + 0.2, eyeBrightnessSmoothFloatProcessed))
-#endif
+
+#define ATMOSPHERIC_FOG_BRIGHTNESS_WATER (mix(0.2, skyTime * 0.8 + 0.2, EYE_BRIGHTNESS_SMOOTH_FLOAT_PROCESSED))
+
 // #define OVERLAY_COLOR_WATER (vec3(0.7, 0.8, 1.0))
 #define OVERLAY_COLOR_WATER (vec3(1.0))
 
