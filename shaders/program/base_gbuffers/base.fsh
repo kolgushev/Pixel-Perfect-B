@@ -241,10 +241,15 @@ void main() {
 
     #if defined g_skybasic
         if(renderStage == MC_RENDER_STAGE_SUNSET) discard;
-        // TODO: re-add stars
-        if(stars.g > 0.5) discard;
 
         vec4 albedo = opaque(pixelPerfectSkyVector(position, viewInverse(sunPosition), stars, rain, skyTime));
+
+        if(stars.g > 0.5) {
+            albedo = opaque1(stars.r);
+            if(position.y < 0) {
+                discard;
+            }
+        }
     #else
         #if defined g_weather
             vec3 absolutePosition = position + cameraPosition;

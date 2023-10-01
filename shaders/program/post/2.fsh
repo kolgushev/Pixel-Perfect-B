@@ -189,16 +189,6 @@ void main() {
         colorCorrected = colorCorrected * AP1_to_XYZ;
     #endif
 
-    // TODO: remaster LUT input/output colorspace controls
-    #if defined USE_LUT
-        vec3 noBorder = removeBorder(colorCorrected, LUT_SIZE_RCP);
-
-        // vec3 lutApplied = texture(shadowcolor1, removeBorder(vec3(texcoord, 1.0))).rgb;
-        vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
-                
-        colorCorrected = vec3(lutApplied * LUT_RANGE_MULT);
-    #endif
-
     #if defined GAMMA_TRANSFORM_SRGB
         #define gammaTransform(x) linear_to_srgb(x)
         #define gammaTransformInverse(x) srgb_to_linear(x)
@@ -209,6 +199,18 @@ void main() {
         #define gammaTransform(x) x
         #define gammaTransformInverse(x) x
     #endif
+
+    // TODO: remaster LUT input/output colorspace controls
+    #if defined USE_LUT
+        vec3 noBorder = removeBorder(colorCorrected, LUT_SIZE_RCP);
+
+        // vec3 lutApplied = texture(shadowcolor1, removeBorder(vec3(texcoord, 1.0))).rgb;
+        vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
+                
+        colorCorrected = vec3(lutApplied * LUT_RANGE_MULT);
+    #endif
+
+    colorCorrected = gammaTransform(colorCorrected);
 
     // dithering
     #if DITHERING_MODE != 0
@@ -240,8 +242,6 @@ void main() {
 
         colorCorrected = mix(colorCorrected - vec3(inverseMult), colorCorrected, factor);
     #endif
-
-    colorCorrected = gammaTransform(colorCorrected);
 
     vec4 finalColor = opaque(colorCorrected);
 
