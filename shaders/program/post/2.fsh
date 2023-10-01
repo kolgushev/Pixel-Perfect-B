@@ -167,26 +167,29 @@ void main() {
         colorCorrected = saturateRGB(POST_SATURATION) * max(colorCorrected, vec3(0));
     }
 
+    // colorCorrected = vec3(texcoord.x);
+
     // Convert back to desired color primaries
     #if OUTPUT_COLORSPACE == 0
         colorCorrected = colorCorrected * AP1_to_RGB;
-        colorCorrected = linear_to_srgb(colorCorrected);
+        #define GAMMA_TRANSFORM_SRGB
     #elif OUTPUT_COLORSPACE == 1
         colorCorrected = colorCorrected * AP1_to_RGB;
     #elif OUTPUT_COLORSPACE == 2
         colorCorrected = colorCorrected * AP1_to_RGB;
-        colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
+        #define GAMMA_TRANSFORM_REGULAR
     #elif OUTPUT_COLORSPACE == 4
-        colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
+        #define GAMMA_TRANSFORM_REGULAR
     #elif OUTPUT_COLORSPACE == 5
         colorCorrected = colorCorrected * AP1_to_AP0;
     #elif OUTPUT_COLORSPACE == 6
         colorCorrected = colorCorrected * AP1_to_AP0;
-        colorCorrected = gammaCorrection(colorCorrected, RCP_GAMMA);
+        #define GAMMA_TRANSFORM_REGULAR
     #elif OUTPUT_COLORSPACE == 7
         colorCorrected = colorCorrected * AP1_to_XYZ;
     #endif
 
+    // TODO: remaster LUT input/output colorspace controls
     #if defined USE_LUT
         vec3 noBorder = removeBorder(colorCorrected, LUT_SIZE_RCP);
 
@@ -196,7 +199,16 @@ void main() {
         colorCorrected = vec3(lutApplied * LUT_RANGE_MULT);
     #endif
 
-
+    #if defined GAMMA_TRANSFORM_SRGB
+        #define gammaTransform(x) linear_to_srgb(x)
+        #define gammaTransformInverse(x) srgb_to_linear(x)
+    #elif defined GAMMA_TRANSFORM_REGULAR
+        #define gammaTransform(x) gammaCorrection((x), RCP_GAMMA)
+        #define gammaTransformInverse(x) gammaCorrection((x), GAMMA)
+    #else
+        #define gammaTransform(x) x
+        #define gammaTransformInverse(x) x
+    #endif
 
     // dithering
     #if DITHERING_MODE != 0
@@ -215,8 +227,6 @@ void main() {
         colorCorrected = colorCorrected + inverseMult;
 
         vec3 noiseToSurpass = sampleNoise(texcoord * vec2(viewWidth, viewHeight), 0, NOISE_BLUE_3D, true).rgb;
-
-        // noiseToSurpass = gammaCorrection(noiseToSurpass, RCP_GAMMA);
         
         vec3 interPrecisionGradient = mod(colorCorrected * mult, vec3(1));
 
@@ -230,6 +240,8 @@ void main() {
 
         colorCorrected = mix(colorCorrected - vec3(inverseMult), colorCorrected, factor);
     #endif
+
+    colorCorrected = gammaTransform(colorCorrected);
 
     vec4 finalColor = opaque(colorCorrected);
 

@@ -536,7 +536,7 @@ const float shadowIntervalSize = 8.0;
         #define SUN_LIGHT_MULT (5.0 * SUN_LIGHT_MULT_USER)
         #define SKY_LIGHT_MULT (2.0 * SKY_LIGHT_MULT_USER)
         #define SKY_LIGHT_MULT_OVERCAST (2.0 * SKY_LIGHT_MULT_OVERCAST_USER)
-        #define MOON_LIGHT_MULT (1.2 * MOON_LIGHT_MULT_USER)
+        #define MOON_LIGHT_MULT (0.7 * MOON_LIGHT_MULT_USER)
         #define NIGHT_SKY_LIGHT_MULT (1.1 * NIGHT_SKY_LIGHT_MULT_USER)
         #define BLOCK_LIGHT_MULT (5.0 * BLOCK_LIGHT_MULT_USER)
     #else
