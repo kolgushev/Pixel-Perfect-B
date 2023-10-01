@@ -189,7 +189,11 @@ flat in int mcEntity;
 
 void main() {
     #if defined gc_sky && defined DIM_TWILIGHT
-        discard;
+        #if defined g_skybasic
+            if(stars.g <= 0.5) {
+                discard;
+            }
+        #endif
     #endif
 
     // discard if too close
