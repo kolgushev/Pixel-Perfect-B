@@ -246,7 +246,7 @@ void main() {
     #if defined g_skybasic
         if(renderStage == MC_RENDER_STAGE_SUNSET) discard;
 
-        vec4 albedo = opaque(pixelPerfectSkyVector(position, viewInverse(sunPosition), stars, rain));
+        vec4 albedo = opaque(pixelPerfectSkyVector(position, viewInverse(sunPosition), stars, rain, skyTime));
 
         if(stars.g > 0.5) {
             albedo = opaque1(stars.r);

@@ -20,7 +20,7 @@
 	}
 #endif
 
-vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float rain) {
+vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float rain, in float skyTime) {
 	v = normalize(v);
 	vec3 vecSun = normalize(sun_dir);
 	float dt = dot(vecSun, UP);
