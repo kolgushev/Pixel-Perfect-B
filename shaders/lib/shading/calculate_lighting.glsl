@@ -103,6 +103,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         #endif
         
         #if defined HAS_SUN
+            // TODO: modify sun color during sunset/sunrise
             vec3 sunLighting = sunShading * SUN_COLOR;
         #else
             vec3 sunLighting = vec3(0.0);
