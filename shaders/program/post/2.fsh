@@ -103,7 +103,7 @@ void main() {
 
     // this is personal taste, but Hable has some desaturated/dark colors, so compensate for that through post-processing
     #if LMT_MODE == 3
-        #define LMT_MODE_EXPOSURE_WEIGHT 1.2
+        #define LMT_MODE_EXPOSURE_WEIGHT 1.4
         #define LMT_MODE_CONTRAST_BIAS 0.1
         #define LMT_MODE_LUMINANCE_CONTRAST_BIAS 0.0
     #elif LMT_MODE == 5

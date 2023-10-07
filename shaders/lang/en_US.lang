@@ -55,7 +55,7 @@ screen.LIGHTING=Lighting
     option.ATMOSPHERIC_FOG_DENSITY=Atmospheric Fog Density
 
     option.SECONDARY_FOG=Secondary Fog
-        option.SECONDARY_FOG.comment=Adds a secondary layer of customizable fog, similar to the "Simple Fog Control" mod. Defaults are set to mimick the Simple Fog Control settings used by the youtuber BDoubleO100.
+        option.SECONDARY_FOG.comment=Adds a secondary layer of customizable fog, similar to the "Simple Fog Control" mod.
         option.SECONDARY_FOG.true=On
         option.SECONDARY_FOG.false=Off
 
