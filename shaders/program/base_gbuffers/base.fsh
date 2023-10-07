@@ -567,10 +567,10 @@ void main() {
                 #if WATER_STYLE == 1
                     diffuse = gammaCorrection(diffuse, GAMMA);
                     float luma = luminance(diffuse);
-                    albedo.a *= albedo.a * luma;
+                    albedo.a *= albedo.a * mix(luma, 1.0, 0.5);
                     albedo.a = clamp(albedo.a * 1.1, 0.0, 1.0);
-                    luma = smoothstep(0.45, 1.0, luma);
-                    albedo.rgb = mix(albedo.rgb, vec3(lightColor[0]), luma);
+                    luma = smoothstep(0.4, 1.0, luma);
+                    diffuse = mix(albedo.rgb, vec3(lightColor[0]), luma);
                 #endif
             }
 
