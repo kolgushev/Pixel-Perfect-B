@@ -107,8 +107,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         #else
             vec3 sunLighting = vec3(0.0);
         #endif
-        float moonIntensity = clamp(-skyTime, 0.0, 1.0);
-        float sunIntensity = clamp(skyTime, 0.0, 1.0);
+        float moonIntensity = clamp(-skyTime * 4.0, 0.0, 1.0);
+        float sunIntensity = clamp(skyTime * 4.0, 0.0, 1.0);
         vec3 directSolarLighting = moonLighting * moonIntensity + sunLighting * sunIntensity;
 
 
