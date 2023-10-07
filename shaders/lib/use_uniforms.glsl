@@ -252,6 +252,7 @@ uniform float moonBrightness;
 uniform float rainWind;
 uniform float rainWindSharp;
 uniform float skyTime;
+uniform float skyTimeMixing;
 uniform vec3 cameraDiffSmooth;
 uniform vec3 skyAlbedo;
 uniform vec3 skyA;

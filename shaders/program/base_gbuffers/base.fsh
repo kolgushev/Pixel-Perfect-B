@@ -246,7 +246,7 @@ void main() {
     #if defined g_skybasic
         if(renderStage == MC_RENDER_STAGE_SUNSET) discard;
 
-        vec4 albedo = opaque(pixelPerfectSkyVector(position, viewInverse(sunPosition), stars, rain, skyTime));
+        vec4 albedo = opaque(pixelPerfectSkyVector(position, viewInverse(sunPosition), stars, rain));
 
         if(stars.g > 0.5) {
             albedo = opaque1(stars.r);
@@ -380,7 +380,7 @@ void main() {
     #if defined g_skytextured
         #if defined HAS_DAYNIGHT_CYCLE
             // since we're using an advanced color pipeline it's safe to pump up the skytextured brightness
-            albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, skyTime);
+            albedo.rgb *= mix(MOON_LIGHT_MULT, SUN_LIGHT_MULT, clamp(skyTime * 8.0 + 0.5, 0.0, 1.0));
         #endif
         #if !defined DIM_USES_SKYBOX
             albedo.rgb *= PLANET_BRIGHTNESS;

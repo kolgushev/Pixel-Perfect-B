@@ -19,7 +19,7 @@ float rainMultiplier(in float rain)  {
 }
 
 vec3 actualSkyColor(in float skyTime) {
-    return mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS) * NIGHT_SKY_LIGHT_MULT, mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS) * SKY_LIGHT_MULT, skyTime);
+    return mix(mix(NIGHT_SKY_COLOR, NIGHT_SKY_COLOR_VANILLA, VANILLA_COLORS) * NIGHT_SKY_LIGHT_MULT, mix(DAY_SKY_COLOR, DAY_SKY_COLOR_VANILLA, VANILLA_COLORS) * SKY_LIGHT_MULT, skyTime * 0.5 + 0.5);
 }
 
 // Input is not adjusted lightmap coordinates
@@ -66,7 +66,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
             float sunShading = normalLighting(normalViewspace, sunPosition);
             float moonShading = normalLighting(normalViewspace, moonPosition);
 
-            skyShading = mix(moonShading, sunShading, skyTime);
+            skyShading = mix(moonShading, sunShading, clamp(skyTime * 8.0 + 0.5, 0.0, 1.0) * 0.5 + 0.5);
 
             directSolarLighting *= skyShading;
         #endif
@@ -107,7 +107,9 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
         #else
             vec3 sunLighting = vec3(0.0);
         #endif
-        vec3 directSolarLighting = mix(moonLighting, sunLighting, skyTime);
+        float moonIntensity = clamp(-skyTime, 0.0, 1.0);
+        float sunIntensity = clamp(skyTime, 0.0, 1.0);
+        vec3 directSolarLighting = moonLighting * moonIntensity + sunLighting * sunIntensity;
 
 
         #if defined SPECULAR_ENABLED && defined HAS_SUN && !defined gc_emissive && !defined g_clouds
@@ -119,7 +121,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
             // moon specular
             vec3 specularMoon = pow(max(0.0, dot(normalize(normalize(moonPositionWorld) - incident), normal)), ROUGHNESS_RCP) * MOON_COLOR;
 
-            vec3 specular = mix(specularMoon, specularSun, skyTime) * directLightMult;
+            vec3 specular = (specularMoon * moonIntensity + specularSun * sunIntensity) * directLightMult;
 
             // use schlick approximation
             float fresnelFactor = pow(1.0 - dot(incident, normal), 5.0) * (1.0 - REFLECTANCE_PLASTIC) + REFLECTANCE_PLASTIC;

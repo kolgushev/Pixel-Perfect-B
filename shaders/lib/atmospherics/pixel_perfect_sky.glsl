@@ -20,7 +20,7 @@
 	}
 #endif
 
-vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float rain, in float skyTime) {
+vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float rain) {
 	v = normalize(v);
 	vec3 vecSun = normalize(sun_dir);
 	float dt = dot(vecSun, UP);
@@ -61,12 +61,12 @@ vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float r
 
 	color *= 0.1;
 
-	float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * skyTime;
+	float mixFactor = smoothstep(THUNDER_THRESHOLD, 1, rain) * (skyTime * 0.5 + 0.5);
 	color = mix(color, RAINY_SKY_COLOR, mixFactor);
         
 	#if defined RAIN_FOG
 		vec3 rainColor = ATMOSPHERIC_FOG_COLOR_RAIN;
-		rainColor = rainColor * mix(skyTime, 1, 0.65);
+		rainColor = rainColor * mix(skyTime * 0.5 + 0.5, 1, 0.65);
 
 		color = mix(color, rainColor, smoothstep(-1.0, -0.0, -normalize(v).y) * smoothstep(0.0, THUNDER_THRESHOLD, rain));
 	#else

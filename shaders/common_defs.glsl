@@ -838,7 +838,7 @@ const float shadowIntervalSize = 8.0;
 #endif
 
 
-#define ATMOSPHERIC_FOG_BRIGHTNESS_WATER (mix(0.2, skyTime * 0.8 + 0.2, EYE_BRIGHTNESS_SMOOTH_FLOAT_PROCESSED))
+#define ATMOSPHERIC_FOG_BRIGHTNESS_WATER (mix(0.2, skyTime * 0.4 + 0.6, EYE_BRIGHTNESS_SMOOTH_FLOAT_PROCESSED))
 
 // #define OVERLAY_COLOR_WATER (vec3(0.7, 0.8, 1.0))
 #define OVERLAY_COLOR_WATER (vec3(1.0))
