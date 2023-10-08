@@ -27,7 +27,7 @@ tar.exe -a -c -f !zip_file! -X exclude_from_build.txt LICENSE shaders
 echo Created !zip_file!
 
 REM Replace the latest build file with current build
-copy "!zip_file!" "%original_folder%..\Pixel-Perfect-Latest!suffix!.zip" /b /y
+copy "!zip_file!" "%original_folder%..\Pixel-Perfect!suffix!.zip" /b /y
 
 echo Replaced latest build
 
