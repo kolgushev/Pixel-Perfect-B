@@ -3,6 +3,7 @@
 in vec3 vaPosition;
 in vec2 vaUV0;
 in vec3 vaNormal;
+in vec2 mc_Entity;
 
 out vec2 texcoord;
 out vec3 position;
@@ -26,41 +27,27 @@ out vec3 normal;
 
 void main() {
     #if defined SHADOWS_ENABLED
-        // check against position texture instead of depth
-        texcoord = (vaUV0).xy;
+        #if defined GRASS_CASTS_SHADOWS
+            #define IS_WAVY false
+        #else
+            #define IS_WAVY (mc_Entity.x == WAVING_CUTOUTS_LOW || mc_Entity.x == WAVING_CUTOUTS_BOTTOM || mc_Entity.x == WAVING_CUTOUTS_TOP || mc_Entity.x == WAVING_CUTOUTS_BOTTOM_STIFF || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF || mc_Entity.x == WAVING_CUTOUTS_BOTTOM_LIT)
+        #endif
 
-        position = vaPosition + chunkOffset;
-        normal = vaNormal;
+        if(IS_WAVY) {
+            gl_Position = vec4(0);
+        } else {
+            // check against position texture instead of depth
+            texcoord = (vaUV0).xy;
 
-        // if within range
-        // xz / range
-        // xz / sqrt(# layers)
-        // start.x = y % sqrt(# layers)
-        // start.z = floor(y / sqrt(# layers))
+            position = vaPosition + chunkOffset;
+            normal = vaNormal;
 
-        // xz += start
-
-        // float range = 10;
-        // float sqrtNumLayers = 10;
-        // // position.xz = distance(position.xz, vec2(0)) < range ? position.xz / range : vec2(0);
-        // position.xz = position.xz / range;
-        // position.xz /= sqrtNumLayers;
-
-        // vec2 startPos = vec2(0);
-        // startPos.x = int(position.y) % int(sqrtNumLayers);
-        // startPos.y = floor(position.y / sqrtNumLayers);
-
-        // position.xz += startPos;
-
-        // position.xyz = position.xzy;
-
-        // gl_Position = vec4(position, 1.0);
-
-        gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
-        
-        gl_Position.xy = distortShadow(gl_Position.xy);
-        gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);
-        gl_Position.xy = supersampleSubpixelShift(gl_Position.xy, frameCounter);
+            gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
+            
+            gl_Position.xy = distortShadow(gl_Position.xy);
+            gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);
+            gl_Position.xy = supersampleSubpixelShift(gl_Position.xy, frameCounter);
+        }
     #else
         gl_Position = vec4(0);
     #endif

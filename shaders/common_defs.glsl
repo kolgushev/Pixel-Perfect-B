@@ -452,6 +452,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #ifdef SHADOWS_ENABLED_USER
 #endif
 
+#define GRASS_CASTS_SHADOWS
+#ifdef GRASS_CASTS_SHADOWS
+#endif
+
 // #define VANILLA_SHADOWS
 #ifdef VANILLA_SHADOWS
 #endif
