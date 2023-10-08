@@ -130,6 +130,9 @@ void main() {
         tonemapped = reinhard(tonemapped);
     #elif LMT_MODE == 2
         tonemapped = hlg(tonemapped);
+        // bring it back into linear space (HLG doubles as gamma-correction, and we are 99% chance displaying the output on an SDR screen)
+        // and we will be applying a gamma-correction separately later
+        tonemapped = gammaCorrection(tonemapped, GAMMA);
     #elif LMT_MODE == 3
         tonemapped = uncharted2_filmic(tonemapped);
     #elif LMT_MODE == 4
