@@ -146,6 +146,16 @@ void main() {
     // restrict colors to a 0-1 range to prevent weirdness with contrast/saturation formulas
     vec3 colorCorrected = clamp(tonemapped, vec3(0), vec3(1));
 
+    // TODO: remaster LUT input/output colorspace controls
+    #if defined USE_LUT
+        vec3 noBorder = removeBorder(colorCorrected, LUT_SIZE_RCP);
+
+        // vec3 lutApplied = texture(shadowcolor1, removeBorder(vec3(texcoord, 1.0))).rgb;
+        vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
+                
+        colorCorrected = vec3(lutApplied * LUT_RANGE_MULT);
+    #endif
+
     // apply contrast
     if(ADJUSTED_CONTRAST != 0.0) {
         // equation for contrast is x+(1-|2x-1|)(2x-1)a
@@ -198,16 +208,6 @@ void main() {
     #else
         #define gammaTransform(x) x
         #define gammaTransformInverse(x) x
-    #endif
-
-    // TODO: remaster LUT input/output colorspace controls
-    #if defined USE_LUT
-        vec3 noBorder = removeBorder(colorCorrected, LUT_SIZE_RCP);
-
-        // vec3 lutApplied = texture(shadowcolor1, removeBorder(vec3(texcoord, 1.0))).rgb;
-        vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
-                
-        colorCorrected = vec3(lutApplied * LUT_RANGE_MULT);
     #endif
 
     colorCorrected = gammaTransform(colorCorrected);

@@ -1,5 +1,7 @@
 # How to use LUTs with this shader
 
+*Please note the LUT works specifically within Linear ACEScg, after tonemapping.*
+
 LUTs, short for LookUp Tables, can be used to store colorgrading profiles in a file. This shader contains a python script that allows you to add your own colorgrading to this shader. This tutorial assumes you know how to make and export colorgrading profiles as `.cube` files and are using Windows 10/11.
 
 Make sure you can see file extensions before following these steps. To see file extensions in Windows file explorer, click `View > Show > File name extensions`.
