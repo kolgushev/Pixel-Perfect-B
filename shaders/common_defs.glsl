@@ -399,10 +399,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #ifdef SPECULAR_ENABLED
 #endif
 
-#define REFLECTIVE_WATERR
-#ifdef REFLECTIVE_WATERR
-#endif
-
 // #define FAST_GI
 #ifdef FAST_GI
 #endif
