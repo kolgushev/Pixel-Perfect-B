@@ -196,6 +196,11 @@ screen.SHADOWS=Shadows
     option.SHADOW_FILTERING_SAMPLES=Number of Samples
         option.SHADOW_FILTERING_SAMPLES.comment=More samples make the shadow blur less grainy (if filtering is enabled). Increased ➤ Large performance hit.
         
+    option.GRASS_CASTS_SHADOWS=Grass Shadows
+        option.GRASS_CASTS_SHADOWS.comment=Controls whether grass casts shadows. Enabled ➤ No performance impact.
+        value.GRASS_CASTS_SHADOWS.true=On
+        value.GRASS_CASTS_SHADOWS.false=Off
+
     option.SHADOW_AFFECTED_BY_LIGHTMAP=Vanilla Lighting Affects Shadows
         option.SHADOW_AFFECTED_BY_LIGHTMAP.comment=To avoid "shadow leaking" and to simulate light being absorbed by stuff like water or tinted glass, increase shadows based on the vanilla sky light level. No performance impact.
         value.SHADOW_AFFECTED_BY_LIGHTMAP.true=On
