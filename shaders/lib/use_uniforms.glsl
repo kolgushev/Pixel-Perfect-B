@@ -251,6 +251,7 @@ uniform float isLightning;
 uniform float moonBrightness;
 uniform float rainWind;
 uniform float rainWindSharp;
+uniform float rainStrengthFiltered;
 uniform float skyTime;
 uniform float skyTimeMixing;
 uniform vec3 cameraDiffSmooth;

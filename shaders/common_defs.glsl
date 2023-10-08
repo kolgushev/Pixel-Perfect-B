@@ -832,7 +832,7 @@ const float shadowIntervalSize = 8.0;
 #define FOG_DENSITY_ICE 0.1
 
 #if defined RAIN_FOG
-    #define RAIN_ADDER ATMOSPHERIC_FOG_DENSITY_RAIN * rainStrength
+    #define RAIN_ADDER ATMOSPHERIC_FOG_DENSITY_RAIN * rainStrengthFiltered
 #else
     #define RAIN_ADDER 0
 #endif

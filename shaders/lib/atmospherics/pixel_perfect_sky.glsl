@@ -68,7 +68,7 @@ vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float r
 		vec3 rainColor = ATMOSPHERIC_FOG_COLOR_RAIN;
 		rainColor = rainColor * mix(skyTime * 0.5 + 0.5, 1, 0.65);
 
-		color = mix(color, rainColor, smoothstep(-1.0, -0.0, -normalize(v).y) * smoothstep(0.0, THUNDER_THRESHOLD, rain));
+		color = mix(color, rainColor, smoothstep(-1.0, -0.0, -normalize(v).y) * smoothstep(0.0, THUNDER_THRESHOLD, rainStrengthFiltered));
 	#else
 		vec3 rainColor = vec3(0.0);
 	#endif
