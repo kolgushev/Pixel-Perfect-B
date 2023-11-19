@@ -1,3 +1,4 @@
 shaders/LUTs/misc
 shaders/lib/tools
 shaders/tex/noise/constituents
+shaders/enable_content_creator_presets.bat
