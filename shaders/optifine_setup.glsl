@@ -85,6 +85,9 @@ const float drynessHalflife = 70.0;
     #define WAVING (-2)
     #define WAVING_STIFF (-2)
 #endif
+#define TRANSLUSCENT 14
+#define TRANSLUSCENT_STIFF 15
+
 #define WATER 16
 #define LAVA 17
 #define WAVING_CUTOUTS_BOTTOM_LIT 18

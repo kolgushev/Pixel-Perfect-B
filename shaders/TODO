@@ -1,6 +1,15 @@
+Blocky shadows based on texture coordinates instead of worldspace coords
+Allow disabling wavy grass (but keep wavy water)
+
+Remove all the #define use_stuff
+
 Add bedrockLevel-based void fog
 
-Make the noise texture a 3D file
+create script to set block mappings based on features
+(eg.
+#define isCutout(x) (x == 1 || x == 2)
+#define isWavy(x) (x==1 || x==3)
+)
 
 allow LUTs to output in any colorspace
 add rec.2100 PQ colorspaces

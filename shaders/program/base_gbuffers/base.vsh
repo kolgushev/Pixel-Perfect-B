@@ -109,6 +109,10 @@ in vec3 at_velocity;
     #define use_temporal_AA_offsets
 #endif
 
+#if defined SUBSURFACE_SCATTERING
+    #define use_sun_position
+#endif
+
 #include "/lib/use.glsl"
 
 // TODO: world-space coordinates for everything not terrain
@@ -151,8 +155,18 @@ void main() {
         normal = vaNormal;
 
         #if defined g_terrain
+            // make grass have up normal (and down-facing cutout stuff have down normal)
             float fakeNormal = (getCutoutMask(mc_Entity.x) - 2) * CUTOUT_ALIGN_STRENGTH;
             normal = mix(normal, vec3(0, sign(fakeNormal), 0), abs(fakeNormal));
+
+            // transluscency
+            #if defined SUBSURFACE_SCATTERING
+                if(mc_Entity.x == TRANSLUSCENT || mc_Entity.x == TRANSLUSCENT_STIFF) {
+                    // make sure normal always faces the sun
+                    // a bit hacky, but better than facing it upwards and more performant than storing mcEntity in a buffer + manually shading in post
+                    normal *= sign(dot(normal, viewInverse(sunPosition)));
+                }
+            #endif
         #endif
     #elif defined g_line
         normal = vaNormal;
