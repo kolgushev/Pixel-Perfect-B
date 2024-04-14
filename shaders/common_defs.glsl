@@ -377,7 +377,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define TEMPORAL_UPDATE_SPEED_AO 0.0026 // [0.001 0.0026 0.0063 0.013 0.024 0.041 0.066 0.1]
 #define AO_SAMPLES 9 // [1 2 4 6 9 12 16 20 25 30 36 42 49 56]
 
-#define SUBSURFACE_SCATTERING
+// #define SUBSURFACE_SCATTERING
 #ifdef SUBSURFACE_SCATTERING
 #endif
 
