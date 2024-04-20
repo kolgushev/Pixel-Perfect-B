@@ -151,8 +151,12 @@ void main() {
     #endif
 
     // fade out around edges of world
-    composite = isSky ? skyColorProcessed : mix(composite, skyColorProcessed, fog);
-    
+    #if defined BORDER_FOG
+        composite = isSky ? skyColorProcessed : mix(composite, skyColorProcessed, fog);
+    #else
+        composite = isSky ? skyColorProcessed : composite;
+    #endif
+
     #if OUTLINE_COLOR == -1
         if(isOutline) {
             composite = 0.2 / (0.2 + composite);

@@ -48,6 +48,11 @@ screen.LIGHTING=Lighting
     option.CUTOUT_ALIGN_STRENGTH=Grass Transluscency
         option.CUTOUT_ALIGN_STRENGTH.comment=Makes grass shading less harsh and more like vanilla. No performance impact.
 
+    option.BORDER_FOG=Border Fog
+        option.BORDER_FOG.comment=Toggles fog that hides chunk borders. No performance impact.
+        value.BORDER_FOG.true=On
+        value.BORDER_FOG.false=Off
+
     option.ATMOSPHERIC_FOG_USER=Atmospheric Fog
         value.ATMOSPHERIC_FOG_USER.true=On
         value.ATMOSPHERIC_FOG_USER.false=Off
@@ -86,6 +91,21 @@ screen.LIGHTING=Lighting
         value.SECONDARY_FOG_END.1.8=180
         value.SECONDARY_FOG_END.1.9=190
         value.SECONDARY_FOG_END.2.0=200
+        value.SECONDARY_FOG_END.2.1=210
+        value.SECONDARY_FOG_END.2.2=220
+        value.SECONDARY_FOG_END.2.3=230
+        value.SECONDARY_FOG_END.2.4=240
+        value.SECONDARY_FOG_END.2.5=250
+        value.SECONDARY_FOG_END.2.6=260
+        value.SECONDARY_FOG_END.2.7=270
+        value.SECONDARY_FOG_END.2.8=280
+        value.SECONDARY_FOG_END.2.9=290
+        value.SECONDARY_FOG_END.3.0=300
+        value.SECONDARY_FOG_END.3.5=350
+        value.SECONDARY_FOG_END.4.0=400
+        value.SECONDARY_FOG_END.4.5=450
+        value.SECONDARY_FOG_END.5.0=500
+
         suffix.SECONDARY_FOG_END=%
 
     option.FAST_GI=Fake GI

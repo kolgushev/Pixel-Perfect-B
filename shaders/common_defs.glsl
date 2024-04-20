@@ -188,6 +188,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define WATER_MIX_MODE 0 // [0 1 2]
 #define WATER_MULT_STRENGTH 0.5 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
+#define BORDER_FOG
+#ifdef BORDER_FOG
+#endif
+
 // #define SECONDARY_FOG
 #ifdef SECONDARY_FOG
 #endif
