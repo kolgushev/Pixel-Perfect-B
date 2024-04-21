@@ -1,4 +1,4 @@
-#version 330
+#version 140
 #define DIM_OVERWORLD
 
-// #include "/program/gbuffers/dh_water.fsh"
+#include "/program/gbuffers/dh_water.fsh"
