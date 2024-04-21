@@ -105,13 +105,13 @@ const float drynessHalflife = 70.0;
 #if defined g_textured || defined g_textured_lit || defined g_particles
     #define gc_textured
 #endif
-#if defined g_water || defined g_hand_water || defined g_weather || defined g_clouds || defined gc_textured || defined g_particles_translucent
+#if defined g_water || defined g_dh_water || defined g_hand_water || defined g_weather || defined g_clouds || defined gc_textured || defined g_particles_translucent
     #define gc_transparent
 #endif
 #if defined g_weather || defined g_clouds || defined gc_textured || defined g_particles_translucent
     #define gc_transparent_mixed
 #endif
-#if defined g_water || defined g_terrain
+#if defined g_water || defined g_terrain || defined g_dh_water || defined g_dh_terrain
     #define gc_terrain
 #endif
 #if defined g_beaconbeam || defined g_entities_glowing || defined g_spidereyes || defined g_basic_lit || defined g_textured_lit
