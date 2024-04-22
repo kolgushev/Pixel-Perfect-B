@@ -298,6 +298,8 @@ uniform vec3 eyePosition;
 uniform float cloudTime;
 uniform vec4 lightningBoltPosition;
 
+uniform sampler2D dhDepthTex0;
+uniform sampler2D dhDepthTex1;
 uniform float dhNearPlane;
 uniform float dhFarPlane;
 uniform int dhRenderDistance;

@@ -70,7 +70,13 @@ const bool colortex1MipmapEnabled = true;
 */
 
 void main() {
-	float depth = texture(depthtex0, texcoord).r;
+	// depth is inconsequential here, so we only really need either depthtex0 or dhDepthTex0
+	#if defined DISTANT_HORIZONS
+		float depth = texture(dhDepthTex0, texcoord).r;
+	#else
+		float depth = texture(depthtex0, texcoord).r;
+	#endif
+	
 	vec3 diffuse = texture(colortex0, texcoord).rgb;
 	vec3 colored = diffuse;
 
@@ -243,12 +249,12 @@ void main() {
 			position = mul_m4_v3(gbufferModelViewInverse, position).rgb;
 
 			#if defined DISTANT_HORIZONS
-				#define FAR dhFarPlane
+				#define FAR float(dhRenderDistance)
 			#else
 				#define FAR far
 			#endif
 
-			colored += colored * diffuseBlur * FAST_GI_STRENGTH * (1 - fogifyDistanceOnly(position, FAR, blindnessSmooth, 1 / far));
+			colored += colored * diffuseBlur * FAST_GI_STRENGTH * (1 - fogifyDistanceOnly(position, FAR, blindnessSmooth, 1 / FAR));
 			// colored = diffuseBlur;
 		}
 	#endif

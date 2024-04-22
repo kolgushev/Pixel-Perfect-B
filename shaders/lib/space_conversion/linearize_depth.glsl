@@ -1,8 +1,4 @@
-// credit to https://wiki.shaderlabs.org/wiki/Shader_tricks for the following functions
-float linearizeDepth(in float depth) {
-	return (near * far) / (depth * (near - far) + far);	
-}
-
+// credit to https://wiki.shaderlabs.org/wiki/Shader_tricks for the following function
 vec3 depthToView(vec2 texCoord, float depth, mat4 projInv) {
 
     vec4 ndc = vec4(texCoord, depth, 1) * 2 - 1;

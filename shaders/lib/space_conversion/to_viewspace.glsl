@@ -13,14 +13,23 @@ vec4 toForcedViewspace(in mat4 projectionMatrix, in mat4 modelViewMatrix, in vec
     return projectionMatrix * modelView;
 }
 
-vec4 getViewSpace(in vec2 texcoord, in float depth) {
+vec4 getViewSpace(in vec2 texcoord, in float depth, in mat4 projectionInverse) {
     vec3 clipSpace = vec3(texcoord, depth) * 2 - 1;    
-    vec4 viewW = mul_m4_v3(gbufferProjectionInverse, clipSpace);
+    vec4 viewW = mul_m4_v3(projectionInverse, clipSpace);
     viewW.xyz /= viewW.w;
     return viewW;
     // return vec3(1);
 }
 
+vec4 getViewSpace(in vec2 texcoord, in float depth) {
+    return getViewSpace(texcoord, depth, gbufferProjectionInverse);
+}
+
+
+vec3 getWorldSpace(in vec2 texcoord, in float depth, in mat4 projectionInverse) {
+    return (gbufferModelViewInverse * vec4(getViewSpace(texcoord, depth, projectionInverse).xyz, 1.0)).xyz;
+}
+
 vec3 getWorldSpace(in vec2 texcoord, in float depth) {
-    return (gbufferModelViewInverse * vec4(getViewSpace(texcoord, depth).xyz, 1.0)).xyz;
+    return getWorldSpace(texcoord, depth, gbufferProjectionInverse);
 }

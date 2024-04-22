@@ -64,6 +64,10 @@ void main() {
     vec3 normalViewspace = view(normal);
 
     float depth = texture(depthtex1, texcoord).r;
+    #if defined DISTANT_HORIZONS
+        float dhDepth = texture(dhDepthTex1, texcoord).r;
+    #endif
+
     #if defined TAA_ENABLED
         vec2 texcoordJittered = texcoord - temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] / vec2(viewWidth, viewHeight);
     #else
@@ -71,6 +75,11 @@ void main() {
     #endif
 
     vec3 position = getWorldSpace(texcoordJittered, depth);
+    #if defined DISTANT_HORIZONS
+        if(depth == 1.0) {
+            position = getWorldSpace(texcoordJittered, dhDepth, dhProjectionInverse);
+        }
+    #endif
 
     #if defined SHADOWS_ENABLED
         vec3 pixelatedPosition = position;

@@ -68,6 +68,9 @@ void main() {
     vec4 albedo = texture(colortex1, texcoord);
 
     float depth = texture(depthtex1, texcoord).r;
+    #if defined DISTANT_HORIZONS
+        float dhDepth = texture(dhDepthTex1, texcoord).r;
+    #endif
 
     bool isSky = albedo.a == 0;
     #if OUTLINE_COLOR == -1
@@ -96,6 +99,11 @@ void main() {
 
     vec3 composite = albedo.rgb;
     vec3 position = getWorldSpace(texcoord, depth);
+    #if defined DISTANT_HORIZONS
+        if(depth == 1.0) {
+            position = getWorldSpace(texcoord, dhDepth, dhProjectionInverse);
+        }
+    #endif
 
     #if defined HAS_SKYLIGHT && defined WEATHER_FOG_IN_SKY_ONLY
         float fogWeatherSkyProcessed = fogWeatherSky;

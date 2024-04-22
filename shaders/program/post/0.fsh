@@ -54,9 +54,22 @@ void main() {
 
     float depth = texture(depthtex1, texcoord).r;
     float depthWater = texture(depthtex0, texcoord).r;
+    #if defined DISTANT_HORIZONS
+        float dhDepth = texture(dhDepthTex1, texcoord).r;
+        float dhDepthWater = texture(dhDepthTex0, texcoord).r;
+    #endif
 
     vec3 position = getWorldSpace(texcoord, depth);
     vec3 positionWater = getWorldSpace(texcoord, depthWater);
+    
+    #if defined DISTANT_HORIZONS
+        if(depth == 1.0) {
+            position = getWorldSpace(texcoord, dhDepth, dhProjectionInverse);
+        }
+        if(depthWater == 1.0) {
+            positionWater = getWorldSpace(texcoord, dhDepthWater, dhProjectionInverse);
+        }
+    #endif
 
     if(isEyeInWater == 1) {
         float atmosPhog = 1.0;
@@ -66,7 +79,13 @@ void main() {
             atmosPhog *= ATMOSPHERIC_FOG_SPECTATOR_MULT_WATER;
         }
 
-        atmosPhog = min(length(positionWater), far) * atmosPhog * (1 - nightVision * NIGHT_VISION_AFFECTS_FOG_WATER);
+        #if defined DISTANT_HORIZONS
+            #define FAR dhFarPlane
+        #else
+            #define FAR far
+        #endif
+
+        atmosPhog = min(length(positionWater), FAR) * atmosPhog * (1 - nightVision * NIGHT_VISION_AFFECTS_FOG_WATER);
 
         atmosPhog = exp(-atmosPhog);
 
