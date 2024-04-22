@@ -137,8 +137,8 @@ void main() {
 
         // Calculate clip-space for motion vectors in here since it's more efficient
 
-        // Camera positions are subtracted in parentheses in order to reduce floating-point inaccuracies
-        vec3 cameraDiff = (cameraPosition - previousCameraPosition);
+        // Camera positions are subtracted first in order to reduce floating-point inaccuracies
+        vec3 cameraDiff = cameraPosition - previousCameraPosition;
 
         vec3 unjitteredView = playerToView(position);
 
