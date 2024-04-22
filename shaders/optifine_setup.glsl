@@ -135,10 +135,9 @@ const float drynessHalflife = 70.0;
 #if defined g_hand || defined g_hand_water
     #define gc_hand
 #endif
-#if defined g_dh_terrain || defined g_hand_water
-    #define gc_dh
-#endif
-
 #if defined gc_entities
     #define gc_fades_out
+#endif
+#if defined g_dh_terrain || defined g_dh_water
+    #define gc_dh
 #endif

@@ -84,12 +84,6 @@ void main() {
     color = gl_Color;
     normal = normalize((gbufferModelViewInverse * vec4(gl_NormalMatrix * gl_Normal, 0.0)).xyz);
 
-    // #if defined IS_IRIS
-    //     light = vec2(vaUV2) * RCP_255;
-    // #else
-    //     light = (LIGHT_MATRIX * vec4(vec2(vaUV2), 0.0, 0.0)).xy;
-    // #endif
-
     /*
     The Optifine-provided lightmap is actually what is used to sample the
     vanilla lighting texture, so it isn't in a 0-1 range by default.
@@ -98,7 +92,7 @@ void main() {
         light = max(light - 0.0313, 0) * 1.067;
     #endif
 
-    position = playerSpace(vaPosition);
+    position = gl_Vertex.xyz;
 
     #if defined DIM_END
         if(END_WARPING > 0.0) {
@@ -109,9 +103,9 @@ void main() {
     #endif
 
     // glPos is in viewspace
-    vec3 glPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
+    vec3 glPos = playerToView(position);
 
-    #if (PANORAMIC_WORLD == 1 || PANORAMIC_WORLD == 2) && !defined gc_skybox && !defined g_skybasic
+    #if (PANORAMIC_WORLD == 1 || PANORAMIC_WORLD == 2)
         float yaw = atan(glPos.x, -glPos.z);
         float absYaw = abs(yaw);
 

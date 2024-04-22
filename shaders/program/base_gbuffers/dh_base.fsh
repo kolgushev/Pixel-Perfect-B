@@ -2,7 +2,7 @@
 
 #include "/common_defs.glsl"
 
-/* DRAWBUFFERS:1235 */
+/* DRAWBUFFERS:01235 */
 vec4 b0; // sky, near plane
 vec4 b1; // far plane
 vec4 b2; // light
@@ -447,12 +447,9 @@ void main() {
             #endif
             b1 = albedo;
         #endif
-    #elif OUTLINE_COLOR == -1 && defined g_line
-        if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
-            b0 = albedo;
-        }
     #else
         b1 = albedo;
+        b0 = vec4(0.0);
         // b1 = vec4((b5).rg * 0.5 + 0.5, 0, 1);
     #endif
 
@@ -465,9 +462,9 @@ void main() {
         b1 = color;
     #endif
 
-    // gl_FragData[0] = b0;
-    gl_FragData[0] = b1;
-    gl_FragData[1] = b2;
-    gl_FragData[2] = b3;
-    gl_FragData[4] = b5;
+    gl_FragData[0] = b0;
+    gl_FragData[1] = b1;
+    gl_FragData[2] = b2;
+    gl_FragData[3] = b3;
+    gl_FragData[5] = b5;
 }

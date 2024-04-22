@@ -188,6 +188,12 @@ flat in int mcEntity;
 #include "/lib/use.glsl"
 
 void main() {
+    #if defined DISTANT_HORIZONS
+        #define FAR dhFarPlane
+    #else
+        #define FAR far
+    #endif
+
     #if defined gc_sky && defined DIM_TWILIGHT
         #if defined g_skybasic
             if(stars.g <= 0.5) {
@@ -593,7 +599,7 @@ void main() {
             float fogWeatherSkyProcessed = fogWeatherSky;
         #endif
 
-        vec4 fogged = fogify(position, position, albedo, diffuse, far, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+        vec4 fogged = fogify(position, position, albedo, diffuse, FAR, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
 
         albedo.rgb = fogged.rgb;
         albedo.a *= 1 - fogged.a;
@@ -604,10 +610,10 @@ void main() {
                 float atmosPhogWater = 0.0;
                 float opaqueFog = 1.0;
                 if(isEyeInWater == 0) {
-                    opaqueFog = fogifyDistanceOnly(positionOpaque, far, blindnessSmooth, 1/far);
+                    opaqueFog = fogifyDistanceOnly(positionOpaque, FAR, blindnessSmooth, 1/FAR);
                     atmosPhogWater = distance(position, positionOpaque);
                     float fogDensity = mcEntity == WATER ? ATMOSPHERIC_FOG_DENSITY_WATER : FOG_DENSITY_ICE;
-                    atmosPhogWater = mix(atmosPhogWater, far, opaqueFog) * fogDensity;
+                    atmosPhogWater = mix(atmosPhogWater, FAR, opaqueFog) * fogDensity;
                     // atmosPhogWater = min(atmosPhogWater, 1);
                     atmosPhogWater = 1 - exp(-atmosPhogWater);
                 }
@@ -639,7 +645,7 @@ void main() {
         // ?for proper mixing of g_skytextured
 
         #if defined FOG_ENABLED && (defined g_skybasic || defined gc_skybox)
-            albedo.rgb = mix(ATMOSPHERIC_FOG_COLOR, albedo.rgb, exp(-fogWeather * far * ATMOSPHERIC_FOG_DENSITY * ATMOSPHERIC_FOG_MULTIPLIER * WEATHER_FOG_MULTIPLIER));
+            albedo.rgb = mix(ATMOSPHERIC_FOG_COLOR, albedo.rgb, exp(-fogWeather * FAR * ATMOSPHERIC_FOG_DENSITY * ATMOSPHERIC_FOG_MULTIPLIER * WEATHER_FOG_MULTIPLIER));
         #endif
 
         albedo.rgb = mix(albedo.rgb, vec3(0), blindnessSmooth);
