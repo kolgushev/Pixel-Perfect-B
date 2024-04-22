@@ -241,7 +241,14 @@ void main() {
 
 			vec3 position = depthToView(texcoord, depth, gbufferProjectionInverse);
 			position = mul_m4_v3(gbufferModelViewInverse, position).rgb;
-			colored += colored * diffuseBlur * FAST_GI_STRENGTH * (1 - fogifyDistanceOnly(position, far, blindnessSmooth, 1 / far));
+
+			#if defined DISTANT_HORIZONS
+				#define FAR dhFarPlane
+			#else
+				#define FAR far
+			#endif
+
+			colored += colored * diffuseBlur * FAST_GI_STRENGTH * (1 - fogifyDistanceOnly(position, FAR, blindnessSmooth, 1 / far));
 			// colored = diffuseBlur;
 		}
 	#endif

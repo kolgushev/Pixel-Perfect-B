@@ -103,7 +103,14 @@ void main() {
         float fogWeatherSkyProcessed = fogWeather;
     #endif
 
-    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, far, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
+
+    #if defined DISTANT_HORIZONS
+        #define FAR dhFarPlane
+    #else
+        #define FAR far
+    #endif
+
+    vec4 fogged = fogify(position, position, opaque(albedo.rgb), albedo.rgb, FAR, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
     composite = fogged.rgb;
     float fog = fogged.a;
 

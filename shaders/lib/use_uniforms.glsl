@@ -297,3 +297,10 @@ uniform bool isSpectator;
 uniform vec3 eyePosition;
 uniform float cloudTime;
 uniform vec4 lightningBoltPosition;
+
+uniform float dhNearPlane;
+uniform float dhFarPlane;
+uniform int dhRenderDistance;
+uniform mat4 dhProjection;
+uniform mat4 dhProjectionInverse;
+uniform mat4 dhPreviousProjection;
