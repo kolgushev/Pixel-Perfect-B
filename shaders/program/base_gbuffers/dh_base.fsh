@@ -245,6 +245,17 @@ flat varying int mcEntity;
 #include "/lib/use.glsl"
 
 void main() {
+    // make sure DH terrain doesn't render over existing terrain
+    vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
+    float depth = texture(depthtex0, texcoordScreenspace).r;
+    if(depth != 1.0) discard;
+
+    // if we do this never, we have weird horizon underwater
+    // if we do this always, transition to DH terrain looks bad overwater
+    if(isEyeInWater == 1 && length(position) < (far - 8)) {
+        discard;
+    }
+
     #if defined NEED_WEATHER_DATA
         #if defined DIM_NO_RAIN
             float rain = 0;
@@ -257,9 +268,6 @@ void main() {
     #endif
 
     vec3 lightmap = vec3(light, color.a);
-    if(mcEntity == LIT_PROBLEMATIC) {
-        lightmap.rg = vec2(10, 0);
-    }
 
     vec2 texcoordMod = texcoord;
 
@@ -291,7 +299,7 @@ void main() {
 
     #if defined HDR_TEX_LIGHT_BRIGHTNESS
         #if !defined gc_emissive
-            if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT || mcEntity == LIT_PROBLEMATIC) {
+            if(mcEntity == DH_BLOCK_ILLUMINATED || mcEntity == DH_BLOCK_LAVA) {
         #endif
                 albedo.rgb = SDRToHDR(albedo.rgb);
         #if !defined gc_emissive
@@ -301,7 +309,7 @@ void main() {
 
 
     #if NOISY_LAVA != 0
-        if(mcEntity == LAVA) {
+        if(mcEntity == DH_BLOCK_LAVA) {
             albedo.rgb *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
         }
     #endif
@@ -369,26 +377,21 @@ void main() {
         vec3 diffuse = albedo.rgb;
         #if defined gc_transparent
             albedo.a *= 0.9;
-            if(mcEntity == WATER) {
+            if(mcEntity == DH_BLOCK_WATER) {
                 #if WATER_STYLE == 1
-                    diffuse = gammaCorrection(diffuse, GAMMA);
-                    float luma = luminance(diffuse);
-                    albedo.a *= albedo.a * mix(luma, 1.0, 0.5);
-                    albedo.a = clamp(albedo.a * 1.1, 0.0, 1.0);
-                    luma = smoothstep(0.4, 1.0, luma);
-                    diffuse = mix(albedo.rgb, vec3(lightColor[0]), luma);
+                    albedo *= vec4(vec3(0.7), 0.3);
+                #else
+                    albedo.a *= 0.8;
                 #endif
             }
 
             #if defined WATER_FOG_FROM_OUTSIDE
-                if(mcEntity == WATER || mcEntity == ICE) {
-                    vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
-
-                    float depth = texture(depthtex1, texcoordScreenspace).r;
+                if(mcEntity == DH_BLOCK_WATER) {
+                    float dhDepth = texture(dhDepthTex1, texcoordScreenspace).r;
                     // TODO: figure out a way to fix this
                     // diffuse = texture(colortex3, texcoordScreenspace).rgb;
                     // diffuse = vec3(1);
-                    positionOpaque = getWorldSpace(texcoordScreenspace, depth);
+                    positionOpaque = getWorldSpace(texcoordScreenspace, dhDepth, dhProjectionInverse);
                 }
             #endif
         #endif
@@ -406,13 +409,13 @@ void main() {
 
         #if defined WATER_FOG_FROM_OUTSIDE && defined gc_transparent
             vec4 overlay = vec4(0);
-            if(mcEntity == WATER || mcEntity == ICE) {
+            if(mcEntity == DH_BLOCK_WATER) {
                 float atmosPhogWater = 0.0;
                 float opaqueFog = 1.0;
                 if(isEyeInWater == 0) {
                     opaqueFog = fogifyDistanceOnly(positionOpaque, dhFarPlane, blindnessSmooth, 1/dhFarPlane);
                     atmosPhogWater = distance(position, positionOpaque);
-                    float fogDensity = mcEntity == WATER ? ATMOSPHERIC_FOG_DENSITY_WATER : FOG_DENSITY_ICE;
+                    float fogDensity = ATMOSPHERIC_FOG_DENSITY_WATER;
                     atmosPhogWater = mix(atmosPhogWater, dhFarPlane, opaqueFog) * fogDensity;
                     // atmosPhogWater = min(atmosPhogWater, 1);
                     atmosPhogWater = 1 - exp(-atmosPhogWater);
