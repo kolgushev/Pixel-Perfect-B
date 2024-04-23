@@ -253,7 +253,11 @@ void main() {
 
     // if we do this never, we have weird horizon underwater
     // if we do this always, transition to DH terrain looks bad overwater
-    if(isEyeInWater == 1 && length(position) < (far - 8)) {
+    if(length(position) < (far - 8)
+    #if defined gc_transparent
+        && isEyeInWater == 1
+    #endif
+    ) {
         discard;
     }
 
