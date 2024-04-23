@@ -40,6 +40,7 @@ flat varying int mcEntity;
 #define use_hdr_mapping
 
 #define use_lava_noise
+#define use_sample_noisetex
 
 #if defined fade_out_items
     #define use_view_width
@@ -271,9 +272,12 @@ void main() {
 
     vec2 texcoordMod = texcoord;
 
-    vec4 albedo = texture(gtexture, texcoordMod);
+    vec4 albedo = color;
 
-    albedo.rgb *= color.rgb;
+    // noise up the color
+    vec3 absolutePosition = position + cameraPosition;
+    vec2 samplePos = normal.x * absolutePosition.yz + normal.y * absolutePosition.xz + normal.z * absolutePosition.yx;
+    albedo.rgb *= mix(dot(tile(samplePos * 4.0, NOISE_WHITE_4D, true).rgb, normal), 1.0, 0.9);
 
     // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed
     albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a);
