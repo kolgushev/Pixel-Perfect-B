@@ -62,7 +62,6 @@
 	#define use_to_viewspace
 	#define use_basic_direct_shading
 	#define use_distortion
-	#define use_temporal_AA_offsets
 
 	#if SHADOW_FILTERING == 4 || SHADOW_FILTERING == 5
 		#define use_super_sample_offsets_4
