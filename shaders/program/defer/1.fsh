@@ -69,7 +69,8 @@ void main() {
 
     float depth = texture(depthtex1, texcoord).r;
     #if defined DISTANT_HORIZONS
-        float dhDepth = texture(dhDepthTex1, texcoord).r;
+        // dhDepthTex1 isn't updated yet
+        float dhDepth = texture(dhDepthTex0, texcoord).r;
     #endif
 
     bool isSky = albedo.a == 0;

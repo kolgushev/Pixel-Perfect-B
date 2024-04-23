@@ -381,7 +381,7 @@ void main() {
                 #if WATER_STYLE == 1
                     albedo *= vec4(vec3(0.7), 0.3);
                 #else
-                    albedo.a *= 0.8;
+                    albedo.a *= 0.6;
                 #endif
             }
 
@@ -469,5 +469,5 @@ void main() {
     gl_FragData[1] = b1;
     gl_FragData[2] = b2;
     gl_FragData[3] = b3;
-    gl_FragData[5] = b5;
+    gl_FragData[4] = b5;
 }
