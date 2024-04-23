@@ -243,6 +243,8 @@ flat varying int mcEntity;
     #define use_sample_noisetex
 #endif
 
+#define use_sample_noise
+
 #include "/lib/use.glsl"
 
 void main() {
@@ -251,15 +253,24 @@ void main() {
     float depth = texture(depthtex0, texcoordScreenspace).r;
     if(depth != 1.0) discard;
 
-    // if we do this never, we have weird horizon underwater
-    // if we do this always, transition to DH terrain looks bad overwater
-    if(length(position) < (far - 8)
+    // DH terrain dithers out when it is about to be replaced by standard terrain
+    // idea for fadeout is originally from BSL, but implementation is from CLOSE_FADE_OUT 
+    #if defined TAA_ENABLED
+        float offset = frameCounter % 2;
+    #else
+        float offset = 0.0;
+    #endif
+    float noiseToSurpass = tile(gl_FragCoord.xy + offset, NOISE_CHECKERBOARD_1D, true).r;
+
+    noiseToSurpass = noiseToSurpass * (1 - EPSILON) + EPSILON;
+
+    if(noiseToSurpass > smoothstep(0.8 * (far - 8.0), 1.0 * (far - 8.0), length(position))
     #if defined gc_transparent
+        // if we do this never, we have weird horizon underwater
+        // if we do this always, transition to DH terrain looks bad overwater
         && isEyeInWater == 1
     #endif
-    ) {
-        discard;
-    }
+    ) discard;
 
     #if defined NEED_WEATHER_DATA
         #if defined DIM_NO_RAIN
@@ -281,6 +292,7 @@ void main() {
     // noise up the color
     vec3 absolutePosition = position + cameraPosition;
     vec2 samplePos = normal.x * absolutePosition.yz + normal.y * absolutePosition.xz + normal.z * absolutePosition.yx;
+    // we're fetching a 4-channel texture, might as well use it to prevent some cases of repetition
     albedo.rgb *= mix(dot(tile(samplePos * 4.0, NOISE_WHITE_4D, true).rgb, normal), 1.0, 0.9);
 
     // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed
