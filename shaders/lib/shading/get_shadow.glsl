@@ -17,6 +17,12 @@ float getShadow(in vec3 position, in vec3 absolutePosition, in mat4 shadowProjec
     float dist = length(positionMod);
     float shadowCutoff = smoothstep(0.9, 1.0, dist / (shadowDistance * SHADOW_CUTOFF));
 
+    #if defined TAA_ENABLED
+        // unjitter
+        vec4 posClip = projectionMatrix * (modelViewMatrix * vec4(positionMod, 1.0));
+        // posClip.xy -= temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] * posClip.w / vec2(viewWidth, viewHeight);
+        positionMod = (gbufferModelViewInverse * (gbufferProjectionInverse * posClip)).xyz;
+    #endif
     vec3 shadowPosition = toViewspace(shadowProjection, shadowModelView, positionMod).xyz;
 
     #if SHADOW_FILTERING == 0
