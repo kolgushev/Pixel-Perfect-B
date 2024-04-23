@@ -342,10 +342,13 @@ void main() {
         albedo.rgb *= RGB_to_AP1;
     #endif
 
-    #if HDR_TEX_STANDARD == 1
-        albedo.rgb = uncharted2_filmic_inverse(albedo.rgb * AP1_to_RGB) * RGB_to_AP1;
-    #elif HDR_TEX_STANDARD == 2
-        albedo.rgb = aces_fitted_inverse(albedo.rgb);
+    // sky is already mastered for ACES
+    #if !defined gc_sky
+        #if HDR_TEX_STANDARD == 1
+            albedo.rgb = uncharted2_filmic_inverse(albedo.rgb * AP1_to_RGB) * RGB_to_AP1;
+        #elif HDR_TEX_STANDARD == 2
+            albedo.rgb = aces_fitted_inverse(albedo.rgb);
+        #endif
     #endif
 
     #if defined g_line
