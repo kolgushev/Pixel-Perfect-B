@@ -256,7 +256,7 @@ void main() {
     // DH terrain dithers out when it is about to be replaced by standard terrain
     // idea for fadeout is originally from BSL, but implementation is from CLOSE_FADE_OUT 
     #if defined TAA_ENABLED
-        float offset = frameCounter % 2;
+        float offset = frameCounter & 1;
     #else
         float offset = 0.0;
     #endif

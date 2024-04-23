@@ -205,16 +205,12 @@ void main() {
     // discard if too close
     #if defined fade_out_items
         // sample noise texture
-        #if defined FULL_TAA_ENABLED
-            float noiseToSurpass = sampleNoise(gl_FragCoord.xy, frameCounter, NOISE_BLUE_2D, true).r;
+        #if defined TAA_ENABLED
+            float offset = frameCounter & 1;
         #else
-            #if defined TAA_ENABLED
-                float offset = frameCounter % 2;
-            #else
-                float offset = 0.0;
-            #endif
-            float noiseToSurpass = tile(gl_FragCoord.xy + offset, NOISE_CHECKERBOARD_1D, true).r;
+            float offset = 0.0;
         #endif
+        float noiseToSurpass = tile(gl_FragCoord.xy + offset, NOISE_CHECKERBOARD_1D, true).r;
 
         #if defined CLOSE_FADE_OUT_FULL
             noiseToSurpass = noiseToSurpass * (1 - EPSILON) + EPSILON;
