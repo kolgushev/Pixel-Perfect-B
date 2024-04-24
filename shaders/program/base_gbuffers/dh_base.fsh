@@ -253,7 +253,7 @@ void main() {
     float depth = texture(depthtex0, texcoordScreenspace).r;
 
     // don't render if blind or if rendering standard terrain
-    // if(depth != 1.0 || blindnessSmooth > (1.0 - EPSILON)) discard;
+    if(depth != 1.0 || blindnessSmooth > (1.0 - EPSILON)) discard;
 
     // DH terrain dithers out when it is about to be replaced by standard terrain
     // idea for fadeout is originally from BSL, but implementation is from CLOSE_FADE_OUT 
