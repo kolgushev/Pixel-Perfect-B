@@ -251,7 +251,9 @@ void main() {
     // make sure DH terrain doesn't render over existing terrain
     vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
     float depth = texture(depthtex0, texcoordScreenspace).r;
-    if(depth != 1.0) discard;
+
+    // don't render if blind or if rendering standard terrain
+    // if(depth != 1.0 || blindnessSmooth > (1.0 - EPSILON)) discard;
 
     // DH terrain dithers out when it is about to be replaced by standard terrain
     // idea for fadeout is originally from BSL, but implementation is from CLOSE_FADE_OUT 
@@ -297,6 +299,7 @@ void main() {
 
     // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed
     albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a);
+    
 
     #if !defined IS_IRIS
         if(albedo.a < alphaTestRef) discard;
