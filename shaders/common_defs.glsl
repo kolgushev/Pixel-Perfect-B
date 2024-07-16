@@ -403,7 +403,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 
 #define HDR_TEX_STANDARD 0 // [0 1 2]
 
-#define USE_PBR
+// #define USE_PBR
 #ifdef USE_PBR
 #endif
 

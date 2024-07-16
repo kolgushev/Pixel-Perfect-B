@@ -91,6 +91,13 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float ro
         // Multiply each part of the light map with it's color
 
         vec3 torchLighting = gammaCorrection(lightmapAdjusted.x * torchColor, lightBoost) * BLOCK_LIGHT_MULT;
+
+        #if defined USE_PBR
+            torchLighting = cookTorranceSingleLight(normal, incident, normal, albedo, F0, roughness, torchLighting);
+        #else
+            torchLighting *= albedo * RCP_PI;
+        #endif
+
         #if defined HAS_MOON
             float moonIntensity = clamp(-skyTime * 4.0, 0.0, 1.0);
 
@@ -98,7 +105,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float ro
                 vec3 moonLighting = cookTorranceSingleLight(normal, incident, moonPositionWorld, albedo, F0, roughness, moonBrightness * MOON_COLOR * moonIntensity);
             #else
                 float moonShading = normalLighting(normal, moonPositionWorld);
-                vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR * moonIntensity * RCP_PI;
+                vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR * moonIntensity;
             #endif
         #else
             vec3 moonLighting = vec3(0.0);
@@ -112,7 +119,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float ro
                 vec3 sunLighting = cookTorranceSingleLight(normal, incident, sunPositionWorld, albedo, F0, roughness, SUN_COLOR * sunIntensity);
             #else
                 float sunShading = normalLighting(normal, sunPositionWorld);
-                vec3 sunLighting = sunShading * SUN_COLOR * sunIntensity * RCP_PI;
+                vec3 sunLighting = sunShading * SUN_COLOR * sunIntensity;
             #endif
         #else
             vec3 sunLighting = vec3(0.0);
@@ -126,7 +133,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float ro
         #endif
 
         #if !defined USE_PBR
-            directSolarLighting *= albedo;
+            directSolarLighting *= albedo * RCP_PI;
         #endif
 
         float hardcoreMult = inversesqrt(darknessFactor * 0.75 + 0.25) - 1;
@@ -138,7 +145,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float ro
             ambientLight += nightVision * NIGHT_VISION_COLOR;
         #endif
 
-        vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR;
+        vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR * albedo;
 
         // // shade according to sky color
         // vec3 skyColor = pixelPerfectSkyVector(normal, normalize(sunPositionWorld));
@@ -153,7 +160,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float ro
         vec3 ambientSkyLight = skyColor * ambientSkyShading * lightmapAdjusted.y * 0.6;
 
         // Add the lighting togther to get the total contribution of the lightmap the final color.
-        vec3 indirectLighting = ambientLight + torchLighting + skyLighting + ambientSkyLight;
+        vec3 indirectLighting = torchLighting + (ambientLight + skyLighting + ambientSkyLight) * albedo;
 
         // apply min lighting
         indirectLighting = mix(0.5 * indirectLighting + minLight, indirectLighting, smoothstep(-minLight, 2.0 * minLight, indirectLighting));

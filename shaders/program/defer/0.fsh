@@ -134,7 +134,7 @@ void main() {
     }
 
     #if !defined DEBUG_VIEW
-        albedo.rgb = albedo.rgb * lightColor[0] + (lightColor[1] + lightningColor) * shadow;
+        albedo.rgb = lightColor[0] + (lightColor[1] + lightningColor) * shadow;
     #endif
 
     b1 = albedo;
