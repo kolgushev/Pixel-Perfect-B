@@ -23,7 +23,7 @@ vec3 actualSkyColor(in float skyTime) {
 }
 
 // Input is not adjusted lightmap coordinates
-mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPositionWorld, in vec3 moonPositionWorld, in float rain, in sampler2D vanillaLightTex) {
+mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float roughness, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPositionWorld, in vec3 moonPositionWorld, in float rain, in sampler2D vanillaLightTex) {
 
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
@@ -86,59 +86,47 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         float lightBoost = BLOCK_LIGHT_POWER + darknessFactor * 0.9 + darknessLightFactor * 4 - nightVision * 0.5;
 
-        // Compute dot product vertex shading from normals
-        float sunShading = normalLighting(normal, sunPositionWorld);
-        float moonShading = normalLighting(normal, moonPositionWorld);
-
-
         vec3 torchColor = mix(TORCH_TINT, mix(TORCH_TINT_VANILLA, vec3(1), sqrt(lightmap.x)), VANILLA_COLORS);
 
         // Multiply each part of the light map with it's color
 
         vec3 torchLighting = gammaCorrection(lightmapAdjusted.x * torchColor, lightBoost) * BLOCK_LIGHT_MULT;
         #if defined HAS_MOON
-            vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR;
+            float moonIntensity = clamp(-skyTime * 4.0, 0.0, 1.0);
+
+            #if defined USE_PBR
+                vec3 moonLighting = cookTorranceSingleLight(normal, incident, moonPositionWorld, albedo, F0, roughness, moonBrightness * MOON_COLOR * moonIntensity);
+            #else
+                float moonShading = normalLighting(normal, moonPositionWorld);
+                vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR * moonIntensity * RCP_PI;
+            #endif
         #else
             vec3 moonLighting = vec3(0.0);
         #endif
         
         #if defined HAS_SUN
+            float sunIntensity = clamp(skyTime * 4.0, 0.0, 1.0);
+
             // TODO: modify sun color during sunset/sunrise
-            vec3 sunLighting = sunShading * SUN_COLOR;
+            #if defined USE_PBR
+                vec3 sunLighting = cookTorranceSingleLight(normal, incident, sunPositionWorld, albedo, F0, roughness, SUN_COLOR * sunIntensity);
+            #else
+                float sunShading = normalLighting(normal, sunPositionWorld);
+                vec3 sunLighting = sunShading * SUN_COLOR * sunIntensity * RCP_PI;
+            #endif
         #else
             vec3 sunLighting = vec3(0.0);
         #endif
-        float moonIntensity = clamp(-skyTime * 4.0, 0.0, 1.0);
-        float sunIntensity = clamp(skyTime * 4.0, 0.0, 1.0);
-        vec3 directSolarLighting = moonLighting * moonIntensity + sunLighting * sunIntensity;
-
-
-        #if defined SPECULAR_ENABLED && defined HAS_SUN && !defined gc_emissive && !defined g_clouds
-            // blinn-phong specular highlights
-            // sun specular
-            #define ROUGHNESS_RCP 6.0
-            vec3 specularSun = pow(max(0.0, dot(normalize(normalize(sunPositionWorld) - incident), normal)), ROUGHNESS_RCP) * SUN_COLOR;
-
-            // moon specular
-            vec3 specularMoon = pow(max(0.0, dot(normalize(normalize(moonPositionWorld) - incident), normal)), ROUGHNESS_RCP) * MOON_COLOR;
-
-            vec3 specular = (specularMoon * moonIntensity + specularSun * sunIntensity) * directLightMult;
-
-            // use schlick approximation
-            float fresnelFactor = pow(1.0 - dot(incident, normal), 5.0) * (1.0 - REFLECTANCE_PLASTIC) + REFLECTANCE_PLASTIC;
-            // sample sky at reflected vector
-            specular /= fresnelFactor;
-
-            // TODO: include blurred sky sample into specular
-
-            directSolarLighting += specular;
-        #endif
-
+        vec3 directSolarLighting = moonLighting + sunLighting;
 
         #if defined FOG_ENABLED
             directSolarLighting *= directLightMult;
         #else
             directSolarLighting *= rainMultiplier(rain);
+        #endif
+
+        #if !defined USE_PBR
+            directSolarLighting *= albedo;
         #endif
 
         float hardcoreMult = inversesqrt(darknessFactor * 0.75 + 0.25) - 1;
@@ -162,7 +150,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 normal, in vec3 normalViewspace
 
         // the 0.47 here is an artistic decision, anything below 0.5 represents bounce lighting reaching above the surface of a block
         float ambientSkyShading = (normal.y + 1) * -0.47 + 1.0;
-        vec3 ambientSkyLight = (directSolarLighting + skyColor) * ambientSkyShading * lightmapAdjusted.y * 0.6;
+        vec3 ambientSkyLight = skyColor * ambientSkyShading * lightmapAdjusted.y * 0.6;
 
         // Add the lighting togther to get the total contribution of the lightmap the final color.
         vec3 indirectLighting = ambientLight + torchLighting + skyLighting + ambientSkyLight;

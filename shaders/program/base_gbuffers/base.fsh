@@ -477,6 +477,9 @@ void main() {
 
                 mat2x3 lightColor = getLightColor(
                     lightmap,
+                    albedo.rgb,
+                    vec3(0.04),
+                    0.9,
                     normalMod,
                     view(normalMod),
                     positionNormalized,
@@ -505,6 +508,9 @@ void main() {
         #elif WATER_MIX_MODE != 1 || defined gc_transparent_mixed
             mat2x3 lightColor = getLightColor(
                 lightmap,
+                albedo.rgb,
+                vec3(0.04),
+                0.9,
                 normal,
                 view(normal),
                 positionNormalized,

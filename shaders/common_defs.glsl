@@ -403,8 +403,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 
 #define HDR_TEX_STANDARD 0 // [0 1 2]
 
-#define SPECULAR_ENABLED
-#ifdef SPECULAR_ENABLED
+#define USE_PBR
+#ifdef USE_PBR
 #endif
 
 // #define FAST_GI
@@ -541,12 +541,12 @@ const float shadowIntervalSize = 8.0;
 
 #if VANILLA_LIGHTING == 2
     #if !defined DYNAMIC_EXPOSURE_LIGHTING
-        #define SUN_LIGHT_MULT (5.0 * SUN_LIGHT_MULT_USER)
+        #define SUN_LIGHT_MULT (15.7 * SUN_LIGHT_MULT_USER)
         #define SKY_LIGHT_MULT (2.0 * SKY_LIGHT_MULT_USER)
         #define SKY_LIGHT_MULT_OVERCAST (2.0 * SKY_LIGHT_MULT_OVERCAST_USER)
-        #define MOON_LIGHT_MULT (0.7 * MOON_LIGHT_MULT_USER)
+        #define MOON_LIGHT_MULT (2.2 * MOON_LIGHT_MULT_USER)
         #define NIGHT_SKY_LIGHT_MULT (1.1 * NIGHT_SKY_LIGHT_MULT_USER)
-        #define BLOCK_LIGHT_MULT (5.0 * BLOCK_LIGHT_MULT_USER)
+        #define BLOCK_LIGHT_MULT (15.7 * BLOCK_LIGHT_MULT_USER)
     #else
         #define SUN_LIGHT_MULT 11.100
         #define SKY_LIGHT_MULT 19.5

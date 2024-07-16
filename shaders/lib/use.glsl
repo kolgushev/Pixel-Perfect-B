@@ -12,6 +12,7 @@
 	#define use_tonemapping
 	#define use_color_manipulation
 	#define use_to_viewspace
+	#define use_cook_torrance
 	#define use_lightning_flash
 	#define use_hosek_wilkie_sky
 	#define use_sun_position
@@ -169,6 +170,10 @@
 
 #if defined use_color_manipulation
 #include "/lib/color/color_manipulation.glsl"
+#endif
+
+#if defined use_cook_torrance
+#include "/lib/shading/cook_torrance.glsl"
 #endif
 
 #if defined use_lightning_flash

@@ -108,14 +108,17 @@ void main() {
 
     vec3 positionNormalized = normalize(position);
     mat2x3 lightColor = getLightColor(
-    lightmap,
-    normal,
-    normalViewspace,
-    positionNormalized,
-    viewInverse(sunPosition),
-    viewInverse(moonPosition),
-    rainStrength,
-    shadowcolor0
+        lightmap,
+        albedo.rgb,
+        vec3(0.04),
+        0.9,
+        normal,
+        normalViewspace,
+        positionNormalized,
+        viewInverse(sunPosition),
+        viewInverse(moonPosition),
+        rainStrength,
+        shadowcolor0
     );
 
     vec3 lightningColor = vec3(0.0);
@@ -131,7 +134,7 @@ void main() {
     }
 
     #if !defined DEBUG_VIEW
-        albedo.rgb *= lightColor[0] + (lightColor[1] + lightningColor) * shadow;
+        albedo.rgb = albedo.rgb * lightColor[0] + (lightColor[1] + lightningColor) * shadow;
     #endif
 
     b1 = albedo;
