@@ -93,7 +93,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float ro
         vec3 torchLighting = gammaCorrection(lightmapAdjusted.x * torchColor, lightBoost) * BLOCK_LIGHT_MULT;
 
         #if defined USE_PBR
-            torchLighting = cookTorranceSingleLight(normal, incident, normal, albedo, F0, roughness, torchLighting);
+            // adjust roughness to reduce weird-looking specular
+            torchLighting = cookTorranceSingleLight(normal, incident, normal, albedo, F0, mix(roughness, 1.0, 0.5), torchLighting);
         #else
             torchLighting *= albedo * RCP_PI;
         #endif
