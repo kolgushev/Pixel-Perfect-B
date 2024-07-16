@@ -479,7 +479,7 @@ void main() {
                     lightmap,
                     albedo.rgb,
                     vec3(0.04),
-                    0.9,
+                    0.98,
                     normalMod,
                     view(normalMod),
                     positionNormalized,
@@ -509,8 +509,8 @@ void main() {
             mat2x3 lightColor = getLightColor(
                 lightmap,
                 albedo.rgb,
-                vec3(0.04),
-                0.9,
+                vec3(0.02),
+                0.4,
                 normal,
                 view(normal),
                 positionNormalized,
@@ -562,9 +562,9 @@ void main() {
         #if defined g_clouds
             albedo.rgb = lightColor[0] + lightningColor;
         #elif WATER_MIX_MODE == 0 || defined gc_transparent_mixed
-            albedo.rgb *= lightColor[0] + (lightColor[1] + lightningColor) * shadow;
+            albedo.rgb = albedo.rgb * lightColor[0] + (lightColor[1] + lightningColor) * shadow;
         #elif WATER_MIX_MODE == 2
-            albedo.rgb *= mix(lightColor[0] + (lightColor[1] + lightningColor) * shadow, vec3(1.0), WATER_MULT_STRENGTH);
+            albedo.rgb = mix(albedo.rgb * lightColor[0] + (lightColor[1] + lightningColor) * shadow, vec3(1.0), WATER_MULT_STRENGTH);
         #endif
 
         vec3 positionOpaque = position;
