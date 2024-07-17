@@ -43,4 +43,7 @@ if not "%~1"=="/k" (
 	echo You can use /k if you want to keep the zip file in the build folder after the program is done.
 )
 
-echo Build completed.
+echo Build completed. Press any key to close.
+
+REM Prevent the window from closing on completion
+pause >nul
