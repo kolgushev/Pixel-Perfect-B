@@ -119,6 +119,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 // use this for very simple gamma correction where accuracy doesn't matter (such as fog color)
 #define gammaCorrection(x, y) pow(x, vec3(y))
 
+#define roughnessFromAlbedo(a) (mix(0.9, 0.1, smoothstep(0.3, 0.9, dot(a.rgb, LUMINANCE_COEFFS))))
+
 // using Bradford chromatic adaptation
 #define RGB_to_AP1 mat3(0.6131324224, 0.3395380158, 0.0474166960, 0.0701243808, 0.9163940113, 0.0134515240, 0.0205876575, 0.1095745716, 0.8697854040)
 #define AP1_to_RGB mat3(1.7048586763, -0.6217160219, -0.0832993717, -0.1300768242, 1.1407357748, -0.0105598017, -0.0239640729, -0.1289755083, 1.1530140189)
@@ -240,8 +242,17 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define VANILLA_COLORS 0.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define CUTOUT_ALIGN_STRENGTH 0.8 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
-// 0 is old lighting off, 1 is standard vanilla, 2 is custom shading
-#define VANILLA_LIGHTING 2 // [1 0 2]
+
+
+// 0 is old lighting off, 1 is standard vanilla, 2 is custom shading, 3 is custom shading with PBR
+#define SHADING_MODE 2 // [1 0 2 3]
+
+#if SHADING_MODE != 3
+    #define VANILLA_LIGHTING SHADING_MODE
+#else
+    #define VANILLA_LIGHTING 2
+    #define USE_PBR
+#endif
 
 // #define RIMLIGHT_ENABLED
 #ifdef RIMLIGHT_ENABLED
@@ -402,10 +413,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #endif
 
 #define HDR_TEX_STANDARD 0 // [0 1 2]
-
-#define USE_PBR
-#ifdef USE_PBR
-#endif
 
 // #define FAST_GI
 #ifdef FAST_GI

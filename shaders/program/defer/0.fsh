@@ -111,7 +111,7 @@ void main() {
         lightmap,
         albedo.rgb,
         vec3(0.04),
-        0.9,
+        roughnessFromAlbedo(albedo),
         normal,
         normalViewspace,
         positionNormalized,

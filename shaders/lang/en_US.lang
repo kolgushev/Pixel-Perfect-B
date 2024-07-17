@@ -40,10 +40,11 @@ screen.POST_PROCESSING=Post Processing
 
 screen.LIGHTING=Lighting
 
-    option.VANILLA_LIGHTING=Lighting Mode
-        value.VANILLA_LIGHTING.1=Vanilla
-        value.VANILLA_LIGHTING.0=Optifine
-        value.VANILLA_LIGHTING.2=Shaders
+    option.SHADING_MODE=Lighting Mode
+        value.SHADING_MODE.1=Vanilla
+        value.SHADING_MODE.0=Optifine
+        value.SHADING_MODE.2=Shaders
+        value.SHADING_MODE.3=Shaders+PBR
 
     option.CUTOUT_ALIGN_STRENGTH=Grass Transluscency
         option.CUTOUT_ALIGN_STRENGTH.comment=Makes grass shading less harsh and more like vanilla. No performance impact.
