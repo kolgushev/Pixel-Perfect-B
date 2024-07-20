@@ -126,7 +126,7 @@ void main() {
             float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
             float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_RGB);
             float roughness = mix(0.94, 0.31, smoothstep(0.9 * averageLuminance, min(1.0 * averageLuminance + 0.35, 1.05), pixelLuminance));
-            roughness = roughness * roughness;
+            roughness *= roughness;
         #else
             float roughness = 0.5;
         #endif

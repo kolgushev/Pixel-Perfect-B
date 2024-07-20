@@ -29,7 +29,9 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float ro
     float ambientOcclusion = lightAndAO.b;
 
     #if defined AO_SQUARED
-        ambientOcclusion = clamp(1 - (pow(1 - ambientOcclusion, 1.7) * 1.2), 0, 1);
+        ambientOcclusion = 1.0 - ambientOcclusion;
+        ambientOcclusion = ambientOcclusion * ambientOcclusion;
+        ambientOcclusion = 1.0 - ambientOcclusion;
     #endif
 
     float skyShading = (normal.y - 1) * 0.5 + 1.0;
@@ -171,7 +173,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float ro
 
     indirectLighting *= adjustedAo;
     #if VANILLA_LIGHTING != 2
-        directSolarLighting *= adjustedAo;
+        indirectLighting *= albedo;
+        directSolarLighting *= adjustedAo * albedo;
     #endif
 
     return mat2x3(indirectLighting, directSolarLighting);
