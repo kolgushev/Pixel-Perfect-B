@@ -2,23 +2,18 @@
 // https://64.github.io/tonemapping/
 // https://learnopengl.com/Advanced-Lighting/HDR
 
-// operates on RGB
-float luminance(in vec3 v) {
-    return dot(v, LUMINANCE_COEFFS_RGB);
-}
-
 vec3 changeLuminance(in vec3 c_in, in float l_in, in float l_out) {
     return c_in * (l_out / max(l_in, EPSILON_3));
 }
 
-vec3 reinhard(in vec3 v) {
-    float originalLum = luminance(v);
+vec3 reinhard(in vec3 v, in vec3 luminanceCoeffs) {
+    float originalLum = dot(v, luminanceCoeffs);
     float newLum = originalLum / (1.0 + originalLum);
     return changeLuminance(v, originalLum, newLum);
 }
 
-vec3 reinhardInverse(in vec3 v) {
-    float originalLum = luminance(v);
+vec3 reinhardInverse(in vec3 v, in vec3 luminanceCoeffs) {
+    float originalLum = dot(v, luminanceCoeffs);
     float newLum = originalLum / (1.0 - min(originalLum, 1.0 - EPSILON));
     return changeLuminance(v, originalLum, newLum);
 }

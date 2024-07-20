@@ -85,7 +85,7 @@ void main() {
     // hybrid tonemapping using a trick from UE4 TAA
     // https://de45xmedrsdbp.cloudfront.net/Resources/files/TemporalAA_small-59732822.pdf#page=19
     #if defined TAA_ENABLED && defined TAA_HYBRID_TONEMAP
-        composite = reinhard(composite);
+        composite = reinhard(composite, LUMINANCE_COEFFS_AP1);
     #endif
 
     #if defined FAST_GI || defined DYNAMIC_EXPOSURE_LIGHTING

@@ -127,7 +127,7 @@ void main() {
         lightmap,
         albedo.rgb,
         vec3(0.04),
-        mix(0.9, 0.1, smoothstep(0.3, 0.9, dot(albedo.rgb, LUMINANCE_COEFFS_RGB))),
+        mix(0.9, 0.1, smoothstep(0.3, 0.9, dot(albedo.rgb, LUMINANCE_COEFFS_AP1))),
         normal,
         view(normal),
         positionNormalized,

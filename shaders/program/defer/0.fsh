@@ -106,7 +106,7 @@ void main() {
         }
 
         float rimlightRaw = mix(0, maxBacklight * RIMLIGHT_MULT, clamp(clamp(50 / dist, 0.0, 1.0) - fog, 0.0, 1.0));
-        float luma = luminance(composite);
+        float luma = dot(composite, LUMINANCE_COEFFS_AP1);
         float lumaNew = (luma + 0.1) * rimlightRaw + luma;
         composite = changeLuminance(composite, luma, lumaNew);
     #endif

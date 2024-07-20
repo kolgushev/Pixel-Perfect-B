@@ -433,7 +433,7 @@ void main() {
             if(mcEntity == WATER) {
                 #if WATER_STYLE == 1
                     diffuse = gammaCorrection(diffuse, GAMMA);
-                    float luma = luminance(diffuse);
+                    float luma = dot(diffuse, LUMINANCE_COEFFS_AP1);
                     albedo.a *= albedo.a * mix(luma, 1.0, 0.5);
                     albedo.a = clamp(albedo.a * 1.1, 0.0, 1.0);
                     luma = smoothstep(0.4, 1.0, luma);

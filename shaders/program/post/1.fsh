@@ -162,7 +162,7 @@ void main() {
 		}
 
 		#if defined TAA_HYBRID_TONEMAP
-			colored = reinhardInverse(colored);
+			colored = reinhardInverse(colored, LUMINANCE_COEFFS_AP1);
 		#endif
     #endif
 
@@ -183,7 +183,7 @@ void main() {
 				// coord = removeBorder(coord, offsetMult * 2);
 				vec3 sampled = texture(colortex1, coord, FAST_GI_LOD_LEVEL).rgb * offsetAndWeight.z;
 
-				diffuseBlur += reinhard(sampled / maxBrightness) * maxBrightness;
+				diffuseBlur += reinhard(sampled / maxBrightness, LUMINANCE_COEFFS_AP1) * maxBrightness;
 				sum += offsetAndWeight.z;
 			}
 

@@ -34,12 +34,12 @@ void main() {
             yellowSample = texture(colortex0, texcoord + colorOffsets[2] * displacement).rgb;
 
 
-            float k = RGBToCMYK(tonemapped).w;
-            float c = RGBToCMYK(cyanSample).x;
-            float m = RGBToCMYK(magentaSample).y;
-            float y = RGBToCMYK(yellowSample).z;
+            float k = RGBToCMYK(tonemapped * AP1_to_RGB).w;
+            float c = RGBToCMYK(cyanSample * AP1_to_RGB).x;
+            float m = RGBToCMYK(magentaSample * AP1_to_RGB).y;
+            float y = RGBToCMYK(yellowSample * AP1_to_RGB).z;
 
-            tonemapped = CMYKToRGB(vec4(c, m, y, k));
+            tonemapped = CMYKToRGB(vec4(c, m, y, k)) * RGB_to_AP1;
         }
     #endif
 
@@ -104,7 +104,7 @@ void main() {
 
     // tonemap image
     #if LMT_MODE == 1
-        tonemapped = reinhard(tonemapped);
+        tonemapped = reinhard(tonemapped, LUMINANCE_COEFFS_AP1);
     #elif LMT_MODE == 2
         tonemapped = hlg(tonemapped);
         // bring it back into linear space (HLG doubles as gamma-correction, and we are 99% chance displaying the output on an SDR screen)
@@ -147,7 +147,7 @@ void main() {
 
     // apply luma contrast
     if(ADJUSTED_LUMINANCE_CONTRAST != 0.0) {
-        float luminance = luminance(colorCorrected);
+        float luminance = dot(colorCorrected, LUMINANCE_COEFFS_AP1);
 
         float b = 2 * luminance - 1;
         colorCorrected = changeLuminance(colorCorrected, luminance, luminance + (1 - abs(b)) * b * ADJUSTED_LUMINANCE_CONTRAST);
