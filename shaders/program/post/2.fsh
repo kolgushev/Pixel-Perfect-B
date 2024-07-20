@@ -34,12 +34,12 @@ void main() {
             yellowSample = texture(colortex0, texcoord + colorOffsets[2] * displacement).rgb;
 
 
-            float k = RGBToCMYK(tonemapped * AP1_to_RGB).w;
-            float c = RGBToCMYK(cyanSample * AP1_to_RGB).x;
-            float m = RGBToCMYK(magentaSample * AP1_to_RGB).y;
-            float y = RGBToCMYK(yellowSample * AP1_to_RGB).z;
+            float k = RGBToCMYK(tonemapped).w;
+            float c = RGBToCMYK(cyanSample).x;
+            float m = RGBToCMYK(magentaSample).y;
+            float y = RGBToCMYK(yellowSample).z;
 
-            tonemapped = CMYKToRGB(vec4(c, m, y, k)) * RGB_to_AP1;
+            tonemapped = CMYKToRGB(vec4(c, m, y, k));
         }
     #endif
 
