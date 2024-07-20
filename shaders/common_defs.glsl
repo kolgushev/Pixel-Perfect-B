@@ -111,15 +111,15 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define smoothScale(x, m) (pow(x, m) * (m))
 #define smoothScale2(x, m) (pow(x, 1/(m)) * (m))
 
-#define LUMINANCE_COEFFS vec3(0.2126, 0.7152, 0.0722)
-#define LUMINANCE_COEFFS_INVERSE vec3(4.7037, 1.3982, 13.8504)
+#define LUMINANCE_COEFFS_RGB vec3(0.2126, 0.7152, 0.0722)
+#define LUMINANCE_COEFFS_RGB_INVERSE vec3(4.7037, 1.3982, 13.8504)
 
 #define hand(h) ((h) < 0.558)
 #define removeBorder(n, r) (((n) - 0.5) * (1 - (r)) + 0.5)
 // use this for very simple gamma correction where accuracy doesn't matter (such as fog color)
 #define gammaCorrection(x, y) pow(x, vec3(y))
 
-#define roughnessFromAlbedo(a) (mix(0.9, 0.1, smoothstep(0.3, 0.9, dot(a.rgb, LUMINANCE_COEFFS))))
+#define roughnessFromAlbedo(a) (mix(0.9, 0.1, smoothstep(0.3, 0.9, dot(a.rgb, LUMINANCE_COEFFS_RGB))))
 
 // using Bradford chromatic adaptation
 #define RGB_to_AP1 mat3(0.6131324224, 0.3395380158, 0.0474166960, 0.0701243808, 0.9163940113, 0.0134515240, 0.0205876575, 0.1095745716, 0.8697854040)

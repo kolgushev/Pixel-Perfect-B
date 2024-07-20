@@ -4,7 +4,7 @@
 
 // operates on RGB
 float luminance(in vec3 v) {
-    return dot(v, LUMINANCE_COEFFS);
+    return dot(v, LUMINANCE_COEFFS_RGB);
 }
 
 vec3 changeLuminance(in vec3 c_in, in float l_in, in float l_out) {

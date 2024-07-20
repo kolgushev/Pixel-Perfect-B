@@ -121,6 +121,15 @@ void main() {
         #endif
 
         vec4 albedo = texture(gtexture, texcoordMod);
+        #if defined USE_PBR
+            vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
+            float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
+            float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_RGB);
+            float roughness = mix(0.94, 0.31, smoothstep(0.9 * averageLuminance, min(1.0 * averageLuminance + 0.35, 1.05), pixelLuminance));
+            roughness = roughness * roughness;
+        #else
+            float roughness = 0.5;
+        #endif
 
         albedo.rgb *= color.rgb;
 
@@ -347,19 +356,23 @@ void main() {
             vec3(1),
             vec3(0)
         );
-    #else
+    #elif !defined gc_sky && !defined g_line
         mat2x3 lightColor = getLightColor(
             lightmap,
             albedo.rgb,
             vec3(0.02),
-            roughnessFromAlbedo(albedo)
+            roughness
             #if defined gc_transparent
                 * 0.5
             #endif
             ,
             normal,
             view(normal),
-            positionNormalized,
+            #if defined gc_particles
+                -normal,
+            #else
+                mix(positionNormalized, -normal, min(abs(getCutoutMask(mcEntity) - 2), 1.0)),
+            #endif
             viewInverse(sunPosition),
             viewInverse(moonPosition),
             rain,
