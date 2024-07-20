@@ -39,6 +39,10 @@ float distributionGGX(in vec3 normal, in vec3 half, in float roughness2) {
 	return roughness2 / (PI * pow(nDotM * nDotM * (roughness2 + tan2Theta), 2.0));
 }
 
+float distributionBlinnPhong(in vec3 normal, in vec3 half, in float roughness2) {
+	return pow(dot(normal, half), 2 / roughness2 - 2) / (PI * roughness2);
+}
+
 vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition /* from surface to light source */, in vec3 albedo, in vec3 F0, in float roughness, in vec3 lightColor) {
 	if(dot(normal, relativeLightPosition) <= 0.0) {
 		return vec3(0.0);

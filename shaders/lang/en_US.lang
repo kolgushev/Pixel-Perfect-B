@@ -41,10 +41,11 @@ screen.POST_PROCESSING=Post Processing
 screen.LIGHTING=Lighting
 
     option.SHADING_MODE=Lighting Mode
-        value.SHADING_MODE.1=Vanilla
+        option.SHADING_MODE.comment=Vanilla +: Mimics the default lighting of Vanilla. Optifine: Same as Vanilla +, but removes the different shading on different sides of the block. Vanilla ++: Custom shading. Vanilla +++: Adds shiny materials and supports PBR Textures.
         value.SHADING_MODE.0=Optifine
-        value.SHADING_MODE.2=Shaders
-        value.SHADING_MODE.3=Shaders+PBR
+        value.SHADING_MODE.1=Vanilla §b+
+        value.SHADING_MODE.2=Vanilla §b++
+        value.SHADING_MODE.3=Vanilla §b+++
 
     option.CUTOUT_ALIGN_STRENGTH=Grass Transluscency
         option.CUTOUT_ALIGN_STRENGTH.comment=Makes grass shading less harsh and more like vanilla. No performance impact.
