@@ -96,6 +96,9 @@ const float drynessHalflife = 70.0;
 
 // g stands for gbuffers
 // gc stands for gbuffers category
+#if defined g_particles || defined g_particles_translucent
+    #define gc_particles
+#endif
 #if defined g_basic || defined g_basic_lit || defined g_line
     #define gc_basic
 #endif
@@ -128,9 +131,6 @@ const float drynessHalflife = 70.0;
 #endif
 #if defined DIM_USES_SKYBOX && defined g_skytextured
     #define gc_skybox
-#endif
-#if defined g_particles || defined g_particles_translucent
-    #define gc_particles
 #endif
 #if defined g_hand || defined g_hand_water
     #define gc_hand
