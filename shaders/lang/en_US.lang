@@ -41,11 +41,11 @@ screen.POST_PROCESSING=Post Processing
 screen.LIGHTING=Lighting
 
     option.SHADING_MODE=Lighting Mode
-        option.SHADING_MODE.comment=Vanilla +: Mimics the default lighting of Vanilla. Optifine: Same as Vanilla +, but removes the different shading on different sides of the block. Vanilla ++: Custom shading. Vanilla +++: Adds shiny materials and supports PBR Textures.
+        option.SHADING_MODE.comment=Vanilla +: Mimics the default lighting of Vanilla. Optifine: Same as Vanilla +, but removes the different shading on different sides of the block. Vanilla ++: Custom shading. Vanilla +++: Adds shiny materials and supports PBR Textures. More Vanilla ➤ Small performance hit.
         value.SHADING_MODE.0=Optifine
-        value.SHADING_MODE.1=Vanilla §b+
-        value.SHADING_MODE.2=Vanilla §b++
-        value.SHADING_MODE.3=Vanilla §b+++
+        value.SHADING_MODE.1=§fVanilla §b+
+        value.SHADING_MODE.2=§fVanilla §b++
+        value.SHADING_MODE.3=§fVanilla §b+++
 
     option.CUTOUT_ALIGN_STRENGTH=Grass Transluscency
         option.CUTOUT_ALIGN_STRENGTH.comment=Makes grass shading less harsh and more like vanilla. No performance impact.
@@ -436,6 +436,11 @@ screen.MISC=Extras
             option.WAVING_ENABLED=Wind Enabled
                 value.WAVING_ENABLED.true=On
                 value.WAVING_ENABLED.false=Off
+
+            option.STILL_WIND=Freeze Wind
+                option.STILL_WIND.comment=Enables the wind (if Wind Enabled is On) but freezes it in place. Useful for before/after screenshots.
+                value.STILL_WIND.true=On
+                value.STILL_WIND.false=Off
             
             option.WAVING_WATER_ENABLED=Waving Water
                 value.WAVING_WATER_ENABLED.true=On
@@ -453,7 +458,7 @@ screen.MISC=Extras
             option.WIND_STRENGTH_CONSTANT_USER=Wind Strength
 
             option.WAVE_STRENGTH_CONSTANT_USER=Wave Strength
-                option.WAVE_STRENGTH_CONSTANT_USER.comment=Changes how much the wind causes waves.
+                option.WAVE_STRENGTH_CONSTANT_USER.comment=Changes how much the wind causes waves in water.
 
             option.LEAVE_WAVING_WAKE=Movements Affect Wind
                 option.LEAVE_WAVING_WAKE.comment=When enabled, the player will cause a slight wind behind them when they run.

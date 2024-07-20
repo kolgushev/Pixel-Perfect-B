@@ -270,7 +270,11 @@ void main() {
             }
 
             vec3 absolutePosition = position + cameraPosition;
-            float time = frameTimeCounter / 3600;
+            #if defined STILL_WIND
+                float time = 1500;
+            #else
+                float time = frameTimeCounter / 3600;
+            #endif
             if((isUpper && !isStiff) || isFullWaving) {
                 time += absolutePosition.y * 0.004 / abs(WIND_SPEED_CONSTANT);
             }
@@ -321,12 +325,12 @@ void main() {
                 offset *= pow(light.y, 2);
             #endif
 
-            #if defined g_terrain && (defined LEAVE_WAVING_WAKE || defined FLATTEN_GRASS)
+            #if defined g_terrain && (defined LEAVE_WAVING_WAKE || defined FLATTEN_GRASS) && !defined STILL_WIND
                 // center of the block relative to player feet
                 vec3 centeredPos = position + vec3(0.0, 0.5, 0.0) + at_midBlock * RCP_64 * vec3(1.0, 0.0, 1.0);
             #endif
 
-            #if defined g_terrain && defined LEAVE_WAVING_WAKE
+            #if defined g_terrain && defined LEAVE_WAVING_WAKE && !defined STILL_WIND
                 // position slightly behind player
                 vec3 positionFromWake = centeredPos + cameraDiffSmooth * 0.3;
                 // make the wake oval-ish instead of a circle
@@ -374,7 +378,7 @@ void main() {
                 offset *= 0.5;
             }
 
-            #if defined g_terrain && defined FLATTEN_GRASS
+            #if defined g_terrain && defined FLATTEN_GRASS && !defined STILL_WIND
                 if(!isFullWaving) {
                     float squashFactor = 1.0 - smoothstep(0.0, 1.0, length((centeredPos + vec3(0.0, 0.5, 0.0)) * vec3(1.0, 0.4, 1.0)));
                     squashFactor *= smoothstep(0.0, 3.0, length(cameraDiffSmooth));

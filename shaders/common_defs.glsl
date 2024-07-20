@@ -150,6 +150,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #ifdef WAVING_ENABLED
 #endif
 
+// #define STILL_WIND
+#ifdef STILL_WIND
+#endif
+
 #define LEAVE_WAVING_WAKE
 #ifdef LEAVE_WAVING_WAKE
 #endif
@@ -245,7 +249,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 
 
 // 0 is old lighting off, 1 is standard vanilla, 2 is custom shading, 3 is custom shading with PBR
-#define SHADING_MODE 2 // [1 0 2 3]
+#define SHADING_MODE 2 // [0 1 2 3]
 
 #if SHADING_MODE != 3
     #define VANILLA_LIGHTING SHADING_MODE
