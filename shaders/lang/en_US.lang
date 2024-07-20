@@ -346,9 +346,10 @@ screen.MISC=Extras
             value.BRIGHT_NETHER.false=Off
 
         option.INVISIBILITY_DISTORTION=Distort Screen When Invisible
-            option.INVISIBILITY_DISTORTION.comment=Adds a color distortion effect when drinking an invisibility potion. This effect is exclusive to Iris. §cDoes not work with Optifine!
-            value.INVISIBILITY_DISTORTION.true=On
-            value.INVISIBILITY_DISTORTION.false=Off
+            option.INVISIBILITY_DISTORTION.comment=Adds a distortion effect when drinking an invisibility potion. This effect is exclusive to Iris. §cDoes not work with Optifine! On ➤ Minimal performance hit.
+            value.INVISIBILITY_DISTORTION.0=Off
+            value.INVISIBILITY_DISTORTION.1=Distort
+            value.INVISIBILITY_DISTORTION.2=Blur
 
         option.LIGHTNING_FLASHES=Lighning Flash Intensity
             option.LIGHTNING_FLASHES.comment=Lights up the environment when lightning strikes. Disabled if "Hide Lightning Flashes" is ON in vanilla accessibility settings. §cMay trigger epilepsy!

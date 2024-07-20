@@ -12,7 +12,7 @@ void main() {
 
     vec3 tonemapped = albedo.rgb;
 
-    #if defined INVISIBILITY_DISTORTION
+    #if INVISIBILITY_DISTORTION != 0
         const vec2 colorOffsets[3] = vec2[3](
             vec2(0.565, 0.825),
             vec2(0.432, -0.902),
@@ -27,19 +27,26 @@ void main() {
             float distortion = invisibility * (pow(texcoordNormalized.x, 2) + pow(texcoordNormalized.y, 2));
             distortion = abs(distortion);
             
-            float displacement = distortion * INVISIBILITY_DISTORT_STRENGTH;
-            
+            #if INVISIBILITY_DISTORTION == 2
+                float displacement = distortion * INVISIBILITY_DISTORT_STRENGTH * 0.75;
+            #else
+                float displacement = distortion * INVISIBILITY_DISTORT_STRENGTH;
+            #endif
+
             magentaSample = texture(colortex0, texcoord + colorOffsets[0] * displacement).rgb;
             cyanSample = texture(colortex0, texcoord + colorOffsets[1] * displacement).rgb;
             yellowSample = texture(colortex0, texcoord + colorOffsets[2] * displacement).rgb;
 
+            #if INVISIBILITY_DISTORTION == 1
+                float k = RGBToCMYK(tonemapped).w;
+                float c = RGBToCMYK(cyanSample).x;
+                float m = RGBToCMYK(magentaSample).y;
+                float y = RGBToCMYK(yellowSample).z;
 
-            float k = RGBToCMYK(tonemapped).w;
-            float c = RGBToCMYK(cyanSample).x;
-            float m = RGBToCMYK(magentaSample).y;
-            float y = RGBToCMYK(yellowSample).z;
-
-            tonemapped = CMYKToRGB(vec4(c, m, y, k));
+                tonemapped = CMYKToRGB(vec4(c, m, y, k));
+            #elif INVISIBILITY_DISTORTION == 2
+                tonemapped = (cyanSample + magentaSample + yellowSample + tonemapped) * 0.25;
+            #endif
         }
     #endif
 
