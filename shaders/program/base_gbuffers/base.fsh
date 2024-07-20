@@ -121,6 +121,8 @@ void main() {
         #endif
 
         vec4 albedo = texture(gtexture, texcoordMod);
+        albedo.rgb *= color.rgb;
+
         #if defined USE_PBR
             vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
             float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
@@ -130,8 +132,6 @@ void main() {
         #else
             float roughness = 0.5;
         #endif
-
-        albedo.rgb *= color.rgb;
 
         #if defined g_clouds
             albedo.a *= step(0.1, albedo.a) * 0.6;
