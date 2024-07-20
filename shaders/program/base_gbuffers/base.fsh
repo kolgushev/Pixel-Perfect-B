@@ -52,60 +52,58 @@ flat in int mcEntity;
     #endif
 #endif
 
-#if defined gc_transparent
-    #define use_shadowcolor0
+#define use_shadowcolor0
 
-    #define use_sun_position
-    #define use_moon_position
-    #define use_darkness_factor
-    #define use_darkness_light_factor
-    #define use_is_spectator
-    #define use_is_eye_in_water
-    #define use_gbuffer_model_view
-    #define use_lightning_bolt_position
-    #define use_is_lightning
-    #define use_direct_light_mult
-    #define use_far
+#define use_sun_position
+#define use_moon_position
+#define use_darkness_factor
+#define use_darkness_light_factor
+#define use_is_spectator
+#define use_is_eye_in_water
+#define use_gbuffer_model_view
+#define use_lightning_bolt_position
+#define use_is_lightning
+#define use_direct_light_mult
+#define use_far
+#define use_view_width
+#define use_view_height
+#define use_gbuffer_projection_inverse
+#define use_gbuffer_model_view_inverse
+#define use_colortex0
+#define use_depthtex1
+#define use_sky_time
+#define use_frame_time_counter
+#define use_night_vision
+#define use_blindness_smooth
+#define use_fog_color
+
+#define use_fogify
+#define use_to_viewspace
+#define use_sample_noisetex
+#define use_lava_noise
+#define use_camera_position
+#define use_basic_direct_shading
+
+#if defined SHADOWS_ENABLED
+    #define use_shadowtex1
+    #define use_shadow_projection
+    #define use_shadow_model_view
+
+
+    #define use_frame_counter
     #define use_view_width
     #define use_view_height
-    #define use_gbuffer_projection_inverse
-    #define use_gbuffer_model_view_inverse
-    #define use_colortex0
-    #define use_depthtex1
-    #define use_sky_time
-    #define use_frame_time_counter
-    #define use_night_vision
-    #define use_blindness_smooth
-    #define use_fog_color
 
-    #define use_fogify
-    #define use_to_viewspace
-    #define use_sample_noisetex
-    #define use_lava_noise
-    #define use_camera_position
-    #define use_basic_direct_shading
-
-    #if defined SHADOWS_ENABLED
-        #define use_shadowtex1
-        #define use_shadow_projection
-        #define use_shadow_model_view
-
-
-        #define use_frame_counter
-        #define use_view_width
-        #define use_view_height
-
-        #define use_sample_noise
-        #define use_get_shadow
-    #endif
-
-    // for changing the end sky rendering when fighting the dragon
-    #if defined DIM_END
-        #define use_boss_battle
-    #endif
-
-    #define NEED_WEATHER_DATA
+    #define use_sample_noise
+    #define use_get_shadow
 #endif
+
+// for changing the end sky rendering when fighting the dragon
+#if defined DIM_END
+    #define use_boss_battle
+#endif
+
+#define NEED_WEATHER_DATA
 
 #if defined g_water
     #define use_tonemapping
@@ -454,121 +452,124 @@ void main() {
         }
     #endif
 
-    #if defined gc_transparent
-        vec3 positionNormalized = normalize(position);
-        // apply lighting here for transparent stuff
-        #if defined g_clouds
-            // TODO: figure out a way for this to work dynamically with Optifine's configurable cloud height
-            #if defined DIM_TWILIGHT
-                #define CLOUD_HEIGHT 128.36
-            #else
-                #define CLOUD_HEIGHT 192.36
-            #endif
-            float positionMod = clamp((position.y + cameraPosition.y - CLOUD_HEIGHT) * 0.3, 0.0, 1.0);
+    vec3 positionNormalized = normalize(position);
+    // apply lighting here for transparent stuff
+    #if defined g_clouds
+        // TODO: figure out a way for this to work dynamically with Optifine's configurable cloud height
+        #if defined DIM_TWILIGHT
+            #define CLOUD_HEIGHT 128.36
+        #else
+            #define CLOUD_HEIGHT 192.36
+        #endif
+        float positionMod = clamp((position.y + cameraPosition.y - CLOUD_HEIGHT) * 0.3, 0.0, 1.0);
 
-            positionMod = mix(positionMod, 1, 0);
+        positionMod = mix(positionMod, 1, 0);
 
-            albedo.a *= 0.8;
+        albedo.a *= 0.8;
 
-            positionMod = mix(positionMod * (1 - rain), 1, 0);
+        positionMod = mix(positionMod * (1 - rain), 1, 0);
 
-            #if VANILLA_LIGHTING == 2
-                vec3 normalMod = vec3(0, positionMod * 2 - 1, 0);
+        #if VANILLA_LIGHTING == 2
+            vec3 normalMod = vec3(0, positionMod * 2 - 1, 0);
 
-                mat2x3 lightColor = getLightColor(
-                    lightmap,
-                    albedo.rgb,
-                    vec3(0.04),
-                    0.9,
-                    normalMod,
-                    view(normalMod),
-                    positionNormalized,
-                    viewInverse(sunPosition),
-                    viewInverse(moonPosition),
-                    rain,
-                    shadowcolor0);
-            #else
-                vec3 skyColor = actualSkyColor(skyTime) + lightningFlash(isLightning, rain);
-                skyColor *= mix(positionMod, 1, 0.5);
-
-                mat2x3 lightColor = mat2x3(
-                    skyColor,
-                    vec3(0)
-                );
-            #endif
-
-            lightColor[0] *= CLOUD_COLOR * mix(1 - rain, 1, RAINCLOUD_BRIGHTNESS);
-            lightColor[0] += lightColor[1];
-            lightColor[1] = vec3(0);
-        #elif defined g_weather
-            mat2x3 lightColor = mat2x3(
-                vec3(1),
-                vec3(0)
-            );
-        #elif WATER_MIX_MODE != 1 || defined gc_transparent_mixed
             mat2x3 lightColor = getLightColor(
                 lightmap,
                 albedo.rgb,
-                vec3(0.02),
-                roughnessFromAlbedo(albedo) * 0.5,
-                normal,
-                view(normal),
+                vec3(0.04),
+                0.9,
+                normalMod,
+                view(normalMod),
                 positionNormalized,
                 viewInverse(sunPosition),
                 viewInverse(moonPosition),
                 rain,
                 shadowcolor0);
+        #else
+            vec3 skyColor = actualSkyColor(skyTime) + lightningFlash(isLightning, rain);
+            skyColor *= mix(positionMod, 1, 0.5);
 
+            mat2x3 lightColor = mat2x3(
+                skyColor,
+                vec3(0)
+            );
+        #endif
+
+        lightColor[0] *= CLOUD_COLOR * mix(1 - rain, 1, RAINCLOUD_BRIGHTNESS);
+        lightColor[0] += lightColor[1];
+        lightColor[1] = vec3(0);
+    #elif defined g_weather
+        mat2x3 lightColor = mat2x3(
+            vec3(1),
+            vec3(0)
+        );
+    #else
+        mat2x3 lightColor = getLightColor(
+            lightmap,
+            albedo.rgb,
+            vec3(0.02),
+            roughnessFromAlbedo(albedo)
+            #if defined gc_transparent
+                * 0.5
+            #endif
+            ,
+            normal,
+            view(normal),
+            positionNormalized,
+            viewInverse(sunPosition),
+            viewInverse(moonPosition),
+            rain,
+            shadowcolor0);
+        
+        #if defined gc_transparent
             lightColor *= albedo.a;
         #endif
+    #endif
 
-        #if WATER_MIX_MODE != 1 || defined gc_transparent_mixed
-            #if defined SHADOWS_ENABLED
-                vec3 shadowPos = position;
-                vec3 pixelatedPosition = position;
+    #if defined SHADOWS_ENABLED
+        vec3 shadowPos = position;
+        vec3 pixelatedPosition = position;
 
-                #if PIXELATED_SHADOWS != 0
-                    pixelatedPosition = ceil((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
-                    shadowPos = mix(pixelatedPosition, position, ceil(abs(normal)));
-                #endif
-
-                float shadow = getShadow(
-                    shadowPos,
-                    pixelatedPosition + cameraPosition,
-                    shadowProjection,
-                    shadowModelView,
-                    texcoord,
-                    shadowtex1,
-                    lightmap.g,
-                    skyTime);
-            #else
-                #if defined VANILLA_SHADOWS
-                    float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;
-                #else
-                    float shadow = basicDirectShading(lightmap.g);
-                #endif
-
-            #endif
-
-            vec3 lightningColor = vec3(0.0);
-
-            if(lightningBoltPosition.w == 1.0) {
-                lightningColor = lightningFlash(1, rainStrength) / (pow(distance(position.xz, lightningBoltPosition.xz), 2) + 1.0);
-                lightningColor *= DIRECT_LIGHTNING_STRENGTH;
-            }
-
+        #if PIXELATED_SHADOWS != 0
+            pixelatedPosition = ceil((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
+            shadowPos = mix(pixelatedPosition, position, ceil(abs(normal)));
         #endif
 
-        #if defined g_clouds
-            albedo.rgb = lightColor[0] + lightningColor * albedo.rgb;
-        #elif WATER_MIX_MODE == 0 || defined gc_transparent_mixed
-            albedo.rgb = lightColor[0] + (lightColor[1] + lightningColor) * shadow;
-        #elif WATER_MIX_MODE == 2
-            albedo.rgb = mix(lightColor[0] + (lightColor[1] + lightningColor) * shadow, vec3(1.0), WATER_MULT_STRENGTH);
+        float shadow = getShadow(
+            shadowPos,
+            pixelatedPosition + cameraPosition,
+            shadowProjection,
+            shadowModelView,
+            texcoord,
+            shadowtex1,
+            lightmap.g,
+            skyTime);
+    #else
+        #if defined VANILLA_SHADOWS
+            float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;
+        #else
+            float shadow = basicDirectShading(lightmap.g);
         #endif
+
+    #endif
+
+    vec3 lightningColor = vec3(0.0);
+
+    if(lightningBoltPosition.w == 1.0) {
+        lightningColor = lightningFlash(1, rainStrength) / (pow(distance(position.xz, lightningBoltPosition.xz), 2) + 1.0);
+        lightningColor *= DIRECT_LIGHTNING_STRENGTH;
+    }
+
+    #if defined g_clouds
+        albedo.rgb = lightColor[0] + lightningColor * albedo.rgb;
+    #elif !defined gc_sky && !defined g_line
+        albedo.rgb = lightColor[0] + (lightColor[1] + lightningColor) * shadow;
+    #endif
+
+    #if defined gc_transparent
 
         vec3 positionOpaque = position;
         vec3 diffuse = albedo.rgb;
+
         #if defined g_water
             albedo.a *= 0.9;
             if(mcEntity == WATER) {
@@ -625,6 +626,8 @@ void main() {
             }
         #endif
     #endif
+
+    // write to buffers
 
     #if defined TAA_ENABLED
         #if defined IS_IRIS && defined g_hand

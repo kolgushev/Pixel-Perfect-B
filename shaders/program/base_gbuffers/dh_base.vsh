@@ -1,3 +1,4 @@
+// Note: dh_base is separate from base due to issues with the GLSL version used by everything else
 #include "/common_defs.glsl"
 
 attribute vec3 vaPosition;
