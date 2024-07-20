@@ -5,10 +5,6 @@ in vec2 vaUV0;
 
 out vec2 texcoord;
 
-#define use_frame_counter
-
-#define use_distortion
-
 #include "/lib/use.glsl"
 
 void main() {

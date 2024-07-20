@@ -5,23 +5,6 @@ layout(location = 0) out vec4 buffer0;
 
 in vec2 texcoord;
 
-// uniforms
-
-#define use_colortex0
-
-#if defined SHADOW_DEBUG
-    #define use_shadowcolor1
-
-    #define use_get_shadow
-    // #define use_sample_noisetex
-    // #define use_view_height
-    // #define use_view_width
-
-    #define use_bicubic_filter
-#endif
-
-#define use_tonemapping
-
 #include "/lib/use.glsl"
 
 void main() {

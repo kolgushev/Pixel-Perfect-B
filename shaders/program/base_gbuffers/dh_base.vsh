@@ -1,4 +1,5 @@
 // Note: dh_base is separate from base due to issues with the GLSL version used by everything else
+#define g_vsh
 #include "/common_defs.glsl"
 
 attribute vec3 vaPosition;
@@ -31,47 +32,6 @@ attribute vec3 at_velocity;
 
 #if defined gc_terrain
     attribute vec3 at_midBlock;
-#endif
-
-// uniforms
-
-#define use_frame_time_counter
-#define use_model_view_matrix
-#define use_projection_matrix
-#define use_gbuffer_model_view_inverse
-#define use_render_stage
-
-#define use_gbuffer_conversion
-
-#define use_to_viewspace
-
-#define use_get_terrain_mask
-
-#define use_chunk_offset
-
-#if defined USE_DOF
-    const int countInstances = 2;
-    #define use_instance_id
-#endif
-
-#if defined DIM_END
-    #define use_camera_position
-
-    #define use_sample_noisetex
-#endif
-
-#if defined TAA_ENABLED
-    #define use_camera_position
-    #define use_previous_camera_position
-    #define use_gbuffer_previous_projection
-    #define use_gbuffer_previous_model_view
-    #define use_gbuffer_projection
-    #define use_gbuffer_model_view
-    #define use_frame_counter
-    #define use_view_width
-    #define use_view_height
-
-    #define use_temporal_AA_offsets
 #endif
 
 #include "/lib/use.glsl"

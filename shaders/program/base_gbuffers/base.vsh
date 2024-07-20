@@ -1,3 +1,4 @@
+#define g_vsh
 #include "/common_defs.glsl"
 
 in vec3 vaPosition;
@@ -30,87 +31,6 @@ in vec3 at_velocity;
 #if defined gc_terrain
     in vec2 mc_Entity;
     in vec3 at_midBlock;
-#endif
-
-
-// uniforms
-
-#define use_frame_time_counter
-#define use_model_view_matrix
-#define use_projection_matrix
-#define use_gbuffer_model_view_inverse
-#define use_render_stage
-
-#define use_gbuffer_conversion
-
-#if defined g_line
-    #define use_view_width
-    #define use_view_height
-    #define use_model_view_matrix
-    #define use_model_view_matrix_inverse
-    #define use_projection_matrix
-    #define use_projection_matrix_inverse
-#endif
-
-#define use_to_viewspace
-
-#if defined g_terrain
-    #define use_get_terrain_mask
-#endif
-
-#if defined gc_terrain
-    #define use_chunk_offset
-
-    #if defined USE_DOF
-        const int countInstances = 2;
-        #define use_instance_id
-    #endif
-#endif
-
-#if defined g_clouds
-    #define use_camera_position
-#endif
-
-#if defined WAVING_ENABLED
-    #if (defined g_terrain || defined g_water || defined g_weather)
-        #if !defined DIM_NO_RAIN
-            #define use_wetness
-        #endif
-
-        #define use_generate_wind
-        #define use_camera_position
-    #endif
-
-    #if defined g_terrain
-        #define use_camera_diff_smooth
-        #define use_frame_time
-    #endif
-
-    #define use_rain_wind
-#endif
-
-#if defined DIM_END
-    #define use_camera_position
-
-    #define use_sample_noisetex
-#endif
-
-#if defined TAA_ENABLED
-    #define use_camera_position
-    #define use_previous_camera_position
-    #define use_gbuffer_previous_projection
-    #define use_gbuffer_previous_model_view
-    #define use_gbuffer_projection
-    #define use_gbuffer_model_view
-    #define use_frame_counter
-    #define use_view_width
-    #define use_view_height
-
-    #define use_temporal_AA_offsets
-#endif
-
-#if defined SUBSURFACE_SCATTERING
-    #define use_sun_position
 #endif
 
 #include "/lib/use.glsl"

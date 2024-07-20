@@ -1,3 +1,4 @@
+#define g_fsh
 #include "/common_defs.glsl"
 
 /* DRAWBUFFERS: */
@@ -5,10 +6,6 @@ in vec2 texcoord;
 
 in vec3 normal;
 in vec3 position;
-
-#define use_shadow_light_position
-
-#define use_texture
 
 #include "/lib/use.glsl"
 

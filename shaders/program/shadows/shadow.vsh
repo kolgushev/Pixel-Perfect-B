@@ -1,3 +1,4 @@
+#define g_vsh
 #include "/common_defs.glsl"
 
 in vec3 vaPosition;
@@ -9,19 +10,6 @@ out vec2 texcoord;
 out vec3 position;
 out vec3 normal;
 
-#define use_projection_matrix
-#define use_model_view_matrix
-#define use_shadow_model_view_inverse
-#define use_frame_counter
-#define use_chunk_offset
-
-#define use_to_viewspace
-#define use_distortion
-
-#define use_frame_counter
-
-#define use_to_viewspace
-#define use_distortion
 
 #include "/lib/use.glsl"
 

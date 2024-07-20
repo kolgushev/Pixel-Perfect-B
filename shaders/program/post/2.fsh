@@ -5,29 +5,6 @@ layout(location = 0) out vec4 b0;
 
 in vec2 texcoord;
 
-#define use_colortex0
-
-#define use_near
-#define use_far
-#define use_boss_battle
-#define use_invisibility
-
-#define use_linearize_depth
-#define use_tonemapping
-#define use_color_manipulation
-
-#if defined USE_LUT
-    #define use_shadowcolor1_3d
-#endif
-
-#if DITHERING_MODE != 0
-    #define use_view_width
-    #define use_view_height
-
-    #define use_sample_noise
-#endif
-
-
 #include "/lib/use.glsl"
 
 void main() {

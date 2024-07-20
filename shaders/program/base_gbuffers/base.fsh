@@ -1,3 +1,4 @@
+#define g_fsh
 #define use_atmospheric_fog_brightness_water
 
 #include "/common_defs.glsl"
@@ -27,160 +28,6 @@ flat in int mcEntity;
 
 #if defined CLOSE_FADE_OUT && (defined gc_fades_out || defined gc_particles)
     #define fade_out_items
-#endif
-
-// uniforms
-
-#define use_texture
-
-#define use_render_stage
-#define use_alpha_test_ref
-
-#define use_tonemapping
-#define use_hdr_mapping
-
-#if defined fade_out_items
-    #define use_view_width
-    #define use_view_height
-    #define use_gbuffer_model_view
-
-    #if defined TAA_ENABLED
-        #define use_frame_counter
-        #define use_sample_noise
-    #else
-        #define use_sample_noisetex
-    #endif
-#endif
-
-#define use_shadowcolor0
-
-#define use_sun_position
-#define use_moon_position
-#define use_darkness_factor
-#define use_darkness_light_factor
-#define use_is_spectator
-#define use_is_eye_in_water
-#define use_gbuffer_model_view
-#define use_lightning_bolt_position
-#define use_is_lightning
-#define use_direct_light_mult
-#define use_far
-#define use_view_width
-#define use_view_height
-#define use_gbuffer_projection_inverse
-#define use_gbuffer_model_view_inverse
-#define use_colortex0
-#define use_depthtex1
-#define use_sky_time
-#define use_frame_time_counter
-#define use_night_vision
-#define use_blindness_smooth
-#define use_fog_color
-
-#define use_fogify
-#define use_to_viewspace
-#define use_sample_noisetex
-#define use_lava_noise
-#define use_camera_position
-#define use_basic_direct_shading
-
-#if defined SHADOWS_ENABLED
-    #define use_shadowtex1
-    #define use_shadow_projection
-    #define use_shadow_model_view
-
-
-    #define use_frame_counter
-    #define use_view_width
-    #define use_view_height
-
-    #define use_sample_noise
-    #define use_get_shadow
-#endif
-
-// for changing the end sky rendering when fighting the dragon
-#if defined DIM_END
-    #define use_boss_battle
-#endif
-
-#define NEED_WEATHER_DATA
-
-#if defined g_water
-    #define use_tonemapping
-#endif
-
-#if defined g_terrain
-    #define use_frame_time_counter
-    #define use_sample_noisetex
-    #define use_lava_noise
-    #define use_camera_position
-#endif
-
-#if defined gc_sky
-    #define use_far
-    #define use_sky_time
-    #define use_is_eye_in_water
-    #define use_blindness_smooth
-
-    #if defined DIM_END
-        #define use_boss_battle
-    #endif
-
-    #define use_switch_fog_color
-
-    #define NEED_WEATHER_DATA
-#endif
-
-#if defined g_weather
-    #define use_sky_time
-    #define use_rain_wind_sharp
-    #define use_rain_wind
-
-    #if defined NOISY_RAIN
-        #define use_rain_wind
-        #define use_camera_position
-        #define use_sample_noisetex
-    #endif
-
-    #define NEED_WEATHER_DATA
-#endif
-
-#if defined g_skybasic
-    #define use_gbuffer_projection_inverse
-    #define use_view_width
-    #define use_view_height
-    #define use_fog_color
-    #define use_sky_color
-    #define use_is_lightning
-    #define use_sun_position
-    #define use_gbuffer_model_view_inverse
-
-    // #define use_calculate_sky
-    #define use_pixel_perfect_sky
-#else
-    #define use_entity_color
-
-    #if defined TEXTURE_FILTERING
-        #define use_texture_filter
-    #endif
-#endif
-
-#if defined NEED_WEATHER_DATA
-    #define use_moon_brightness
-    #define use_rain_strength
-    #define use_thunder_strength
-
-    #define use_fog_weather
-    #define use_fog_weather_sky
-    #define use_in_sky
-    #define use_eye_brightness_smooth_float
-
-    #define use_color_manipulation
-    #define use_calculate_lighting
-#endif
-
-#if defined DIM_END && defined g_skytextured
-    #define use_sample_noisetex
 #endif
 
 #include "/lib/use.glsl"
@@ -220,14 +67,12 @@ void main() {
         if(noiseToSurpass > smoothstep(0.47 * FADE_OUT_RADIUS, 0.6 * FADE_OUT_RADIUS, length(position))) discard;
     #endif
 
-    #if defined NEED_WEATHER_DATA
-        #if defined DIM_NO_RAIN
-            float rain = 0;
-        #else
-            float rain = rainStrength;
-            #if defined IS_IRIS
-                rain *= mix(thunderStrength, 1, THUNDER_THRESHOLD);
-            #endif
+    #if defined DIM_NO_RAIN
+        float rain = 0;
+    #else
+        float rain = rainStrength;
+        #if defined IS_IRIS
+            rain *= mix(thunderStrength, 1, THUNDER_THRESHOLD);
         #endif
     #endif
 

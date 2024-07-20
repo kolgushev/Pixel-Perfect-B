@@ -5,11 +5,6 @@ layout(location = 1) out float b1;
 
 in vec2 texcoord;
 
-#define use_shadowtex1
-#define use_frame_counter
-
-#define use_distortion
-
 #include "/lib/use.glsl"
 
 void main() {

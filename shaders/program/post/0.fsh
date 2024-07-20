@@ -12,40 +12,6 @@ layout(location = 0) out vec4 b0;
 in vec2 texcoord;
 
 
-// uniforms
-
-
-#define use_colortex0
-#define use_colortex1
-#define use_depthtex0
-#define use_depthtex1
-
-#define use_fog_weather
-#define use_far
-#define use_is_eye_in_water
-#define use_night_vision
-#define use_blindness_smooth
-#define use_is_spectator
-#define use_fog_color
-#define use_camera_position
-#define use_frame_time_counter
-#define use_lava_noise
-#define use_camera_position
-#define use_in_sky
-#define use_eye_brightness_smooth_float
-#define use_fog_weather_sky
-
-#define use_fogify
-#define use_to_viewspace
-
-#if defined DIM_END
-    #define use_boss_battle
-#endif
-
-#if defined TAA_ENABLED && defined TAA_HYBRID_TONEMAP
-    #define use_tonemapping
-#endif
-
 #include "/lib/use.glsl"
 
 void main() {

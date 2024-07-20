@@ -6,61 +6,6 @@ layout(location=1) out vec4 b1;
 
 in vec2 texcoord;
 
-
-// uniforms
-
-#define use_colortex0
-#define use_colortex1
-#define use_colortex2
-#define use_depthtex1
-
-#define use_gbuffer_projection_inverse
-#define use_gbuffer_model_view_inverse
-#define use_far
-#define use_fog_color
-#define use_is_eye_in_water
-#define use_night_vision
-#define use_blindness_smooth
-#define use_is_spectator
-#define use_fog_weather_sky
-#define use_fog_weather
-#define use_in_sky
-#define use_eye_brightness_smooth_float
-#define use_camera_position
-#define use_frame_time_counter
-
-#define use_switch_fog_color
-#define use_fogify
-#define use_to_viewspace
-#define use_lava_noise
-
-#if defined RIMLIGHT_ENABLED
-    #define use_colortex3
-
-    #define use_near
-    #define use_aspect_ratio
-    #define use_view_width
-    #define use_view_height
-
-    #define use_super_sample_offsets_cross
-
-    #define use_linearize_depth
-    #define use_tonemapping
-#endif
-
-#if OUTLINE_COLOR == -1
-    #define use_tonemapping
-#endif
-
-#if defined DIM_TWILIGHT
-    #define use_gbuffer_projection_inverse
-    #define use_gbuffer_model_view_inverse
-
-    // #define use_calculate_sky
-    #define use_pixel_perfect_sky
-    #define use_linearize_depth
-#endif
-
 #include "/lib/use.glsl"
 
 void main() {
