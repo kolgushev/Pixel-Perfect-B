@@ -258,6 +258,13 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
     #define USE_PBR
 #endif
 
+// 0: Schlick
+#define FRESNEL_MODEL 0 // [0]
+// 0: GGX 1: Cook-Torrance
+#define GEOMETRY_MODEL 0 // [0 1]
+// 0: GGX 1: Blinn-Phong
+#define DISTRIBUTION_MODEL 0 // [0 1]
+
 // #define RIMLIGHT_ENABLED
 #ifdef RIMLIGHT_ENABLED
 #endif

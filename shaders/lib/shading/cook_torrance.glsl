@@ -26,6 +26,11 @@ float geometryGGX(in vec3 light, in vec3 view, in vec3 normal, in vec3 half, in 
 	return subGeometryGGX(view, normal, half, roughness2) * subGeometryGGX(light, normal, half, roughness2);
 }
 
+float geometryCookTorrance(in vec3 light, in vec3 view, in vec3 normal, in vec3 half, in float roughness2) {
+	float coeff = 2.0 * dot(normal, half) / dot(view, half);
+	return min(1.0, min(coeff * dot(normal, view), coeff * dot(light, normal)));
+}
+
 float distributionGGX(in vec3 normal, in vec3 half, in float roughness2) {
 	float nDotM = dot(normal, half);
 	if(nDotM <= 0.0) {
@@ -56,9 +61,19 @@ vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeL
 
 	float roughness2 = roughness * roughness;
 
-	vec3 F = fresnelSchlick(normalizedLight, half, F0);
-	float G = geometryGGX(normalizedLight, normalizedView, normal, half, roughness2);
-	float D = distributionGGX(normal, half, roughness2);
+	#if FRESNEL_MODEL == 0
+		vec3 F = fresnelSchlick(normalizedLight, half, F0);
+	#endif
+	#if GEOMETRY_MODEL == 0
+		float G = geometryGGX(normalizedLight, normalizedView, normal, half, roughness2);
+	#elif GEOMETRY_MODEL == 1
+		float G = geometryCookTorrance(normalizedLight, normalizedView, normal, half, roughness2);
+	#endif
+	#if DISTRIBUTION_MODEL == 0
+		float D = distributionGGX(normal, half, roughness2);
+	#elif DISTRIBUTION_MODEL == 1
+		float D = distributionBlinnPhong(normal, half, roughness2);
+	#endif
 
 	// lambertian diffuse * dot(n, l)
 	vec3 diffuse = albedo * RCP_PI * dot(normal, normalizedLight);

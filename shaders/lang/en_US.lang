@@ -608,3 +608,19 @@ screen.ADVANCED=Advanced
             option.FORCED_PERSPECTIVE_SHAPE=Shape
                 value.FORCED_PERSPECTIVE_SHAPE.0.0=Spherical
                 value.FORCED_PERSPECTIVE_SHAPE.1.0=Flat
+    
+    screen.PBR=PBR Rendering
+        screen.PBR.comment=PBR (Physically Based Rendering) is a rendering method that provides more realistic lighting and material effects. Only takes effect if Lighting Mode is Vanilla +++.
+
+        option.FRESNEL_MODEL=Fresnel Model
+            value.FRESNEL_MODEL.0=Schlick
+
+        option.GEOMETRY_MODEL=Geometry Model
+            option.GEOMETRY_MODEL.comment=GGX is more accurate but slower. Cook-Torrance is less accurate but faster.
+            value.GEOMETRY_MODEL.0=GGX
+            value.GEOMETRY_MODEL.1=Cook-Torrance
+
+        option.DISTRIBUTION_MODEL=Distribution Model
+            option.DISTRIBUTION_MODEL.comment=GGX is more accurate but slower. Blinn-Phong is less accurate but faster.
+            value.DISTRIBUTION_MODEL.0=GGX
+            value.DISTRIBUTION_MODEL.1=Blinn-Phong
