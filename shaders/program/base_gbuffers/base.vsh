@@ -153,7 +153,7 @@ void main() {
 
     #if defined g_line
         normal = vaNormal;
-    #elif defined IS_IRIS || defined gc_terrain || defined gc_textured || defined g_clouds || defined g_weather
+    #elif (defined IS_IRIS && !defined gc_hand) || defined gc_terrain || defined gc_textured || defined g_clouds || defined g_weather
         normal = vaNormal;
 
         #if defined g_terrain

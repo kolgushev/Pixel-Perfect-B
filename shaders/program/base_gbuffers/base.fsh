@@ -628,7 +628,7 @@ void main() {
 
     #if defined TAA_ENABLED
         #if defined IS_IRIS && defined g_hand
-            b5 = vec4(0);
+            b5 = opaque1(0.0);
         #else
             vec2 prevTexcoord = (prevClip.xy / prevClip.z) * 0.5 + 0.5;
             vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.z) * 0.5 + 0.5;
