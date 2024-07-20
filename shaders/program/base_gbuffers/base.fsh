@@ -420,7 +420,7 @@ void main() {
     #if defined g_clouds
         albedo.rgb = lightColor[0] + lightningColor * albedo.rgb;
     #elif !defined gc_sky && !defined g_line
-        albedo.rgb = lightColor[0] + (lightColor[1] + lightningColor) * shadow;
+        albedo.rgb = lightColor[0] + (lightColor[1]) * shadow + lightningColor * albedo.rgb;
     #endif
 
     #if defined gc_transparent
