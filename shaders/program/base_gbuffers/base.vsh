@@ -487,9 +487,9 @@ void main() {
         #else
             #define PREV_CLIP toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position + cameraDiff).xyw
         #endif
-        // TODO: remove all this needless logic once Iris fixes block entities
+
         // TODO: add proper position evaluation for hand
-        #if defined gc_entities && (!defined IS_IRIS || !defined gc_block_entities || !defined gc_hand)
+        #if defined gc_entities && (!defined IS_IRIS || !defined gc_hand)
             #if defined IS_IRIS
                 bool hasMovement = at_velocity != vec3(0.0);
             #else
