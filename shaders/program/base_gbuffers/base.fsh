@@ -279,7 +279,8 @@ void main() {
 
     bool isMetal = false;
     #if defined USE_PBR && defined IS_SHADED
-        #if defined MC_TEXTURE_FORMAT_LAB_PBR_1_3 || defined MC_TEXTURE_FORMAT_LAB_PBR
+        // Referncing https://shaderlabs.org/wiki/LabPBR_Material_Standard
+        #if defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
             vec4 specular = texture(specular, texcoordMod);
             // convert from perceptual smoothness
             float roughness = pow(1.0 - specular.r, 2.0);
