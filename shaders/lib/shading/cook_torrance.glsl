@@ -59,10 +59,15 @@ vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeL
 	if(dot(normal, relativeLightPosition) <= 0.0) {
 		return vec3(0.0);
 	}
-	
+
 	// Does not include ambient light so that multiple lights can be summed up
 	vec3 normalizedLight = normalize(relativeLightPosition);
 	vec3 normalizedView = normalize(-position);
+
+	// correct for when dot(normal, view) < 0 (this can happen with normal mapping)
+	if(dot(normal, normalizedView) < 0.0) {
+		normalizedView = normalize(reflect(normalizedView, normal) + normalizedView * 0.9);
+	}
 
 	vec3 half = normalize(normalizedLight + normalizedView);
 

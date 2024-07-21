@@ -419,7 +419,7 @@ void main() {
             #if defined gc_particles
                 -normalMod,
             #else
-                mix(positionNormalized, -normalMod, min(abs(getCutoutMask(mcEntity) - 2), 1.0)),
+                positionNormalized,
             #endif
             viewInverse(sunPosition),
             viewInverse(moonPosition),
