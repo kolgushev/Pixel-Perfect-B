@@ -123,24 +123,6 @@ void main() {
         vec4 albedo = texture(gtexture, texcoordMod);
         albedo.rgb *= color.rgb;
 
-        #if defined USE_PBR
-            #if defined TEXTURE_FORMAT_LAB_PBR_1_3
-                vec4 specular = texture(specular, texcoordMod);
-                // convert from perceptual smoothness
-                float roughness = pow(1.0 - specular.r, 2.0);
-            #elif defined AUTO_MAT
-                vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
-                float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
-                float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_RGB);
-                float roughness = mix(0.94, 0.31, smoothstep(0.9 * averageLuminance, min(1.0 * averageLuminance + 0.35, 1.05), pixelLuminance));
-                roughness *= roughness;
-            #else
-                float roughness = 0.8;
-            #endif
-        #else
-            float roughness = 0.5;
-        #endif
-
         #if defined g_clouds
             albedo.a *= step(0.1, albedo.a) * 0.6;
         #elif !defined gc_terrain
@@ -291,6 +273,44 @@ void main() {
         albedo.rgb = getFogColor(isEyeInWater, albedo.rgb);
     #endif
 
+    #if !defined gc_sky && !defined g_line
+        #define IS_SHADED
+    #endif
+
+    bool isMetal = false;
+    #if defined USE_PBR && defined IS_SHADED
+        #if defined MC_TEXTURE_FORMAT_LAB_PBR_1_3 || defined MC_TEXTURE_FORMAT_LAB_PBR
+            vec4 specular = texture(specular, texcoordMod);
+            // convert from perceptual smoothness
+            float roughness = pow(1.0 - specular.r, 2.0);
+            vec3 reflectance = vec3(specular.g);
+            int metalId = int(round(specular.g * 255));
+            #include "/lib/shading/metal_reflectances.glsl"
+
+            if(metalId > 230) {
+                if(metalId <= 237) {
+                    reflectance = F0_INDEX[metalId - 230];
+                } else {
+                    reflectance = albedo.rgb;
+                }
+                isMetal = true;
+            }
+        #elif defined AUTO_MAT
+            vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
+            float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
+            float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_RGB);
+            float roughness = mix(0.94, 0.31, smoothstep(0.9 * averageLuminance, min(1.0 * averageLuminance + 0.35, 1.05), pixelLuminance));
+            roughness *= roughness;
+            vec3 reflectance = vec3(0.02);
+        #else
+            float roughness = 0.8;
+            vec3 reflectance = vec3(0.02);
+        #endif
+    #else
+        float roughness = 0.5;
+        vec3 reflectance = vec3(0.02);
+    #endif
+
     #if defined HDR_TEX_LIGHT_BRIGHTNESS
         #if !defined gc_emissive
             if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT || mcEntity == LIT_PROBLEMATIC) {
@@ -339,6 +359,7 @@ void main() {
                 albedo.rgb,
                 vec3(0.04),
                 0.9,
+                false,
                 normalMod,
                 view(normalMod),
                 positionNormalized,
@@ -364,16 +385,17 @@ void main() {
             vec3(1),
             vec3(0)
         );
-    #elif !defined gc_sky && !defined g_line
+    #elif defined IS_SHADED
         mat2x3 lightColor = getLightColor(
             lightmap,
             albedo.rgb,
-            vec3(0.02),
+            reflectance,
             roughness
             #if defined gc_transparent
                 * 0.5
             #endif
             ,
+            isMetal,
             normal,
             view(normal),
             #if defined gc_particles
@@ -427,7 +449,7 @@ void main() {
 
     #if defined g_clouds
         albedo.rgb = lightColor[0] + lightningColor * albedo.rgb;
-    #elif !defined gc_sky && !defined g_line
+    #elif defined IS_SHADED
         albedo.rgb = lightColor[0] + (lightColor[1]) * shadow + lightningColor * albedo.rgb;
     #endif
 

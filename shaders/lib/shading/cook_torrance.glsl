@@ -48,7 +48,7 @@ float distributionBlinnPhong(in vec3 normal, in vec3 half, in float roughness2) 
 	return pow(dot(normal, half), 2 / roughness2 - 2) / (PI * roughness2);
 }
 
-vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition /* from surface to light source */, in vec3 albedo, in vec3 F0, in float roughness, in vec3 lightColor) {
+vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition /* from surface to light source */, in vec3 albedo, in vec3 F0, in float roughness, in bool isMetal, in vec3 lightColor) {
 	if(dot(normal, relativeLightPosition) <= 0.0) {
 		return vec3(0.0);
 	}
@@ -76,11 +76,12 @@ vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeL
 	#endif
 
 	// lambertian diffuse * dot(n, l)
-	vec3 diffuse = albedo * RCP_PI * dot(normal, normalizedLight);
+	vec3 diffuse = vec3(0.0);
+	if(!isMetal) {
+		diffuse = albedo * RCP_PI * dot(normal, normalizedLight) * (1.0 - F);
+	}
 	// Cook-Torrance specular * dot(n, l)
 	vec3 specular = D * G * F / (4.0 * dot(normal, normalizedView));
 
-	vec3 s = F;
-
-	return lightColor * ((1.0 - s) * diffuse + s * specular);
+	return lightColor * (diffuse + specular);
 }

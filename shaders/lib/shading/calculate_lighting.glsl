@@ -23,7 +23,7 @@ vec3 actualSkyColor(in float skyTime) {
 }
 
 // Input is not adjusted lightmap coordinates
-mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float roughness, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPositionWorld, in vec3 moonPositionWorld, in float rain, in sampler2D vanillaLightTex) {
+mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float roughness, in bool isMetal, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPositionWorld, in vec3 moonPositionWorld, in float rain, in sampler2D vanillaLightTex) {
 
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
@@ -96,7 +96,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float ro
 
         #if defined USE_PBR
             // adjust roughness to reduce weird-looking specular
-            torchLighting = cookTorranceSingleLight(normal, incident, normal, albedo, F0, mix(roughness, 1.0, 0.5), torchLighting);
+            torchLighting = cookTorranceSingleLight(normal, incident, normal, albedo, F0, mix(roughness, 1.0, 0.5), isMetal, torchLighting);
         #else
             torchLighting *= albedo * RCP_PI;
         #endif
@@ -105,7 +105,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float ro
             float moonIntensity = clamp(-skyTime * 4.0, 0.0, 1.0);
 
             #if defined USE_PBR
-                vec3 moonLighting = cookTorranceSingleLight(normal, incident, moonPositionWorld, albedo, F0, roughness, moonBrightness * MOON_COLOR * moonIntensity);
+                vec3 moonLighting = cookTorranceSingleLight(normal, incident, moonPositionWorld, albedo, F0, roughness, isMetal, moonBrightness * MOON_COLOR * moonIntensity);
             #else
                 float moonShading = normalLighting(normal, moonPositionWorld);
                 vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR * moonIntensity;
@@ -119,7 +119,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in vec3 albedo, in vec3 F0, in float ro
 
             // TODO: modify sun color during sunset/sunrise
             #if defined USE_PBR
-                vec3 sunLighting = cookTorranceSingleLight(normal, incident, sunPositionWorld, albedo, F0, roughness, SUN_COLOR * sunIntensity);
+                vec3 sunLighting = cookTorranceSingleLight(normal, incident, sunPositionWorld, albedo, F0, roughness, isMetal, SUN_COLOR * sunIntensity);
             #else
                 float sunShading = normalLighting(normal, sunPositionWorld);
                 vec3 sunLighting = sunShading * SUN_COLOR * sunIntensity;
