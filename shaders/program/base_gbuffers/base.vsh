@@ -71,12 +71,13 @@ void main() {
         light = max(light - 0.0313, 0) * 1.067;
     #endif
 
+
     #if defined g_line
         normal = vaNormal;
     #elif defined gc_particles
         normal = UP;
-    #elif (defined IS_IRIS && !defined gc_hand) || defined gc_terrain || defined gc_textured || defined g_clouds || defined g_weather
-        normal = vaNormal;
+    #else
+        normal = mat3(gbufferModelViewInverse) * normalMatrix * vaNormal;
 
         #if defined g_terrain
             // make grass have up normal (and down-facing cutout stuff have down normal)
@@ -92,8 +93,6 @@ void main() {
                 }
             #endif
         #endif
-    #else
-        normal = viewInverse(vaNormal);
     #endif
 
     position = playerSpace(vaPosition);
