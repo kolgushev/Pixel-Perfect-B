@@ -33,9 +33,10 @@ float geometryCookTorrance(in vec3 light, in vec3 view, in vec3 normal, in vec3 
 
 float distributionGGX(in vec3 normal, in vec3 half, in float roughness2) {
 	float nDotM = dot(normal, half);
-	if(nDotM <= 0.0) {
-		return 0.0;
-	}
+	#if defined USE_LIGHT_RADIUS_HACK
+		// this is a hack to approximate non-point light sources. Need to figure out how to do this for real someday.
+		nDotM = min(nDotM + 0.0002, 1.0);
+	#endif
 
 	float cosTheta = nDotM / (length(normal) * length(half));
 	float cosTheta2 = cosTheta * cosTheta;
@@ -45,7 +46,13 @@ float distributionGGX(in vec3 normal, in vec3 half, in float roughness2) {
 }
 
 float distributionBlinnPhong(in vec3 normal, in vec3 half, in float roughness2) {
-	return pow(dot(normal, half), 2 / roughness2 - 2) / (PI * roughness2);
+	float nDotM = dot(normal, half);
+
+	#if defined USE_LIGHT_RADIUS_HACK
+		nDotM = min(nDotM + 0.0002, 1.0);
+	#endif
+
+	return pow(nDotM, 2 / roughness2 - 2) / (PI * roughness2);
 }
 
 vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition /* from surface to light source */, in vec3 albedo, in vec3 F0, in float roughness, in bool isMetal, in vec3 lightColor) {
@@ -64,10 +71,15 @@ vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeL
 	#if FRESNEL_MODEL == 0
 		vec3 F = fresnelSchlick(normalizedLight, half, F0);
 	#endif
+
 	#if GEOMETRY_MODEL == 0
 		float G = geometryGGX(normalizedLight, normalizedView, normal, half, roughness2);
 	#elif GEOMETRY_MODEL == 1
 		float G = geometryCookTorrance(normalizedLight, normalizedView, normal, half, roughness2);
+	#endif
+
+	#if defined USE_LIGHT_RADIUS_HACK
+		roughness2 = min(roughness2 + 0.00001, 1.0);
 	#endif
 	#if DISTRIBUTION_MODEL == 0
 		float D = distributionGGX(normal, half, roughness2);
