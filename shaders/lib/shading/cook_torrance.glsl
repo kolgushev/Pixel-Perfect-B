@@ -66,7 +66,7 @@ vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeL
 
 	// correct for when dot(normal, view) < 0 (this can happen with normal mapping)
 	if(dot(normal, normalizedView) < 0.0) {
-		normalizedView = normalize(reflect(normalizedView, normal) + normalizedView * 0.9);
+		normalizedView = reflect(normalizedView, normal);
 	}
 
 	vec3 half = normalize(normalizedLight + normalizedView);

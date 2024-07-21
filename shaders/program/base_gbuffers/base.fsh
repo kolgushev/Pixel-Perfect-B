@@ -326,6 +326,7 @@ void main() {
         vec4 normalsAndAO = texture(normals, texcoordMod);
         vec3 normalMap = vec3(normalsAndAO.x, normalsAndAO.y, 0.0);
         normalMap.xy = normalMap.xy * 2.0 - 1.0;
+
         // in case of bad normal mapping
         if(length(normalMap.xy) > 1.0) {
             normalMap.xy = normalize(normalMap.xy);
@@ -333,12 +334,14 @@ void main() {
         // reconstruct z
         normalMap.z = sqrt(1.0 - dot(normalMap.xy, normalMap.xy));
 
-        normalMap = getTBN(normal, tangent) * normalMap;
+        normalMap = getTBN(normal, normalize(tangent)) * normalMap;
+
         #if NORMAL_MAP_STRENGTH == 10
             normalMod = normalMap;
         #else
             normalMod = normalize(mix(normal, normalMap, NORMAL_MAP_STRENGTH * 0.1));
         #endif
+
     #endif
 
     #if defined g_spidereyes
