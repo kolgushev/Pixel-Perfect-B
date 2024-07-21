@@ -124,11 +124,19 @@ void main() {
         albedo.rgb *= color.rgb;
 
         #if defined USE_PBR
-            vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
-            float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
-            float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_RGB);
-            float roughness = mix(0.94, 0.31, smoothstep(0.9 * averageLuminance, min(1.0 * averageLuminance + 0.35, 1.05), pixelLuminance));
-            roughness *= roughness;
+            #if defined TEXTURE_FORMAT_LAB_PBR_1_3
+                vec4 specular = texture(specular, texcoordMod);
+                // convert from perceptual smoothness
+                float roughness = pow(1.0 - specular.r, 2.0);
+            #elif defined AUTO_MAT
+                vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
+                float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
+                float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_RGB);
+                float roughness = mix(0.94, 0.31, smoothstep(0.9 * averageLuminance, min(1.0 * averageLuminance + 0.35, 1.05), pixelLuminance));
+                roughness *= roughness;
+            #else
+                float roughness = 0.8;
+            #endif
         #else
             float roughness = 0.5;
         #endif

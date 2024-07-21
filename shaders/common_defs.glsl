@@ -255,6 +255,11 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
     #define USE_PBR
 #endif
 
+// try to infer material properties from block data/texture
+#define AUTO_MAT
+#ifdef AUTO_MAT
+#endif
+
 // 0: Schlick
 #define FRESNEL_MODEL 0 // [0]
 // 0: GGX 1: Cook-Torrance
