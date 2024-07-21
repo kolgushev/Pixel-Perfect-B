@@ -534,9 +534,6 @@ void main() {
         #endif
     #endif
 
-    albedo = opaque(normalMod * 0.5 + 0.5);
-
-
     // write to buffers
 
     #if defined TAA_ENABLED
