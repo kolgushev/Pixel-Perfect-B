@@ -82,9 +82,6 @@ void main() {
         vec3 lightmap = vec3(0, 1, 1);
     #else
         vec3 lightmap = vec3(light, color.a);
-        if(mcEntity == LIT_PROBLEMATIC) {
-            lightmap.rg = vec2(10, 0);
-        }
     #endif
 
 
@@ -159,7 +156,7 @@ void main() {
 
             float gradient2 = smoothstep(-0.2, 1, vertical);
             if(bossBattle != 2) {
-                albedo.rgb = mix(albedo.rgb, SDRToHDR(albedo.rgb * 7) * 0.05, pow(gradient2, 2));
+                albedo.rgb = mix(albedo.rgb, albedo.rgb * getEmissiveness(albedo.rgb * 7, LUMINANCE_COEFFS_RGB) * 0.525, pow(gradient2, 2));
             }
         #elif !defined DIM_NO_HORIZON
             // prevent underground sun/moon, add virtual horizon
@@ -278,60 +275,59 @@ void main() {
     #endif
 
     bool isMetal = false;
-    #if defined USE_PBR && defined IS_SHADED
-        // Referncing https://shaderlabs.org/wiki/LabPBR_Material_Standard
-        #if defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
-            vec4 specular = texture(specular, texcoordMod);
-            // convert from perceptual smoothness
-            float roughness = pow(1.0 - specular.r, 2.0);
-            vec3 reflectance = vec3(specular.g);
-            int metalId = int(round(specular.g * 255));
-            #include "/lib/shading/metal_reflectances.glsl"
 
-            if(metalId > 230) {
-                if(metalId <= 237) {
-                    reflectance = F0_INDEX[metalId - 230];
-                } else {
-                    reflectance = albedo.rgb;
-                }
-                isMetal = true;
+    // Referencing https://shaderlabs.org/wiki/LabPBR_Material_Standard
+    #if defined USE_PBR && defined IS_SHADED && defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
+        vec4 specular = texture(specular, texcoordMod);
+        // convert from perceptual smoothness
+        float roughness = pow(1.0 - specular.x, 2.0);
+        vec3 reflectance = vec3(specular.y);
+        int metalId = int(round(specular.y * 255));
+        #include "/lib/shading/metal_reflectances.glsl"
+
+        if(metalId > 230) {
+            if(metalId <= 237) {
+                reflectance = F0_INDEX[metalId - 230];
+            } else {
+                reflectance = albedo.rgb;
             }
-        #elif defined AUTO_MAT
-            vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
-            float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
-            float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_RGB);
-            float roughness = mix(0.94, 0.31, smoothstep(0.9 * averageLuminance, min(1.0 * averageLuminance + 0.35, 1.05), pixelLuminance));
-            roughness *= roughness;
-            vec3 reflectance = vec3(0.02);
+            isMetal = true;
+        }
+
+        float emissiveness = specular.w < 1.0 ? specular.w * 254.0 * RCP_255 : 0.0;
+    #elif defined USE_PBR && defined IS_SHADED && defined AUTO_MAT
+        vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
+        float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
+        float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
+        float roughness = mix(0.94, 0.31, smoothstep(0.9 * averageLuminance, min(1.0 * averageLuminance + 0.35, 1.05), pixelLuminance));
+        roughness *= roughness;
+        
+        vec3 reflectance = vec3(0.02);
+
+        float emissiveness = 0.0;
+        #if defined gc_emissive
+            emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
         #else
-            float roughness = 0.8;
-            vec3 reflectance = vec3(0.02);
+            if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT || mcEntity == LIT_PROBLEMATIC) {
+                emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
+            }
         #endif
     #else
-        float roughness = 0.5;
+        float roughness = 0.8;
         vec3 reflectance = vec3(0.02);
-    #endif
-
-    #if defined HDR_TEX_LIGHT_BRIGHTNESS
-        #if !defined gc_emissive
-            if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT || mcEntity == LIT_PROBLEMATIC) {
-        #endif
-                albedo.rgb = SDRToHDR(albedo.rgb);
-        #if !defined gc_emissive
-            }
-        #endif
+        float emissiveness = 0.0;
     #endif
 
     #if defined g_spidereyes
-        albedo.rgb *= SPIDEREYES_MULT;
+        emissiveness *= SPIDEREYES_MULT;
     #endif
     if(renderStage == MC_RENDER_STAGE_WORLD_BORDER) {
-        albedo.rgb *= 100.0;
+        emissiveness *= 100.0;
     }
 
     #if defined g_terrain && NOISY_LAVA != 0
         if(mcEntity == LAVA) {
-            albedo.rgb *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
+            emissiveness *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
         }
     #endif
 
@@ -361,6 +357,7 @@ void main() {
                 vec3(0.04),
                 0.9,
                 false,
+                0.0,
                 normalMod,
                 view(normalMod),
                 positionNormalized,
@@ -397,6 +394,7 @@ void main() {
             #endif
             ,
             isMetal,
+            emissiveness,
             normal,
             view(normal),
             #if defined gc_particles

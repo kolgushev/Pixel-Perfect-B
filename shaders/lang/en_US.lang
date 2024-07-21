@@ -524,11 +524,6 @@ screen.ADVANCED=Advanced
 
     option.END_SKY_RESOLUTION=End Sky Resolution
         option.END_SKY_RESOLUTION.comment=Because the end sky has a custom renderer to avoid the repeating texture effect it usually has, we can control its resolution.
-
-    option.HDR_TEX_LIGHT_BRIGHTNESS=Convert Light Sources To HDR
-        option.HDR_TEX_LIGHT_BRIGHTNESS.comment=Uses a special algorithm to increase the contrast and brightness of lit blocks. Although this usually looks much better when turned on, some LMTs may blow out already super-bright blocks like froglights.
-        value.HDR_TEX_LIGHT_BRIGHTNESS.true=On
-        value.HDR_TEX_LIGHT_BRIGHTNESS.false=Off
         
     option.CLOUD_EXTENSION=Extend Clouds
         option.CLOUD_EXTENSION.comment=Best left at §a1.0§b. Lower values extend the fog distance. The default cloud fog distance matches environment fog distance.

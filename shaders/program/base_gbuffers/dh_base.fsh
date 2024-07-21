@@ -129,6 +129,8 @@ void main() {
         vec3(0.04),
         mix(0.9, 0.1, smoothstep(0.3, 0.9, dot(albedo.rgb, LUMINANCE_COEFFS_AP1))),
         false,
+        // TODO: emissiveness
+        0.0,
         normal,
         view(normal),
         positionNormalized,

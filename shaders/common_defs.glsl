@@ -421,10 +421,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 
 #define BLOCK_LIGHT_POWER 1
 
-#define HDR_TEX_LIGHT_BRIGHTNESS
-#ifdef HDR_TEX_LIGHT_BRIGHTNESS
-#endif
-
 #define HDR_TEX_STANDARD 0 // [0 1 2]
 
 // #define FAST_GI
