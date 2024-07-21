@@ -80,9 +80,6 @@ void main() {
     vec2 samplePos = normal.x * absolutePosition.yz + normal.y * absolutePosition.xz + normal.z * absolutePosition.yx;
     // we're fetching a 4-channel texture, might as well use it to prevent some cases of repetition
     albedo.rgb *= mix(dot(tile(samplePos * 4.0, NOISE_WHITE_4D, true).rgb, normal), 1.0, 0.9);
-
-    // We didn't add this into the color in vsh since color is multiplied and entityColor is mixed
-    albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a);
     
 
     #if !defined IS_IRIS
@@ -104,20 +101,70 @@ void main() {
         albedo.rgb = vec3(1, 0, 0);
     #endif
 
-    #if defined HDR_TEX_LIGHT_BRIGHTNESS
-        #if !defined gc_emissive
-            if(mcEntity == DH_BLOCK_ILLUMINATED || mcEntity == DH_BLOCK_LAVA) {
-        #endif
-                albedo.rgb = SDRToHDR(albedo.rgb);
-        #if !defined gc_emissive
-            }
-        #endif
-    #endif
+    bool isMetal = mcEntity == DH_BLOCK_METAL;
+    float roughness = 0.8;
+    vec3 reflectance = vec3(0.02);
+    switch(mcEntity) {
+        case DH_BLOCK_LEAVES:
+            roughness = 0.6;
+            reflectance = vec3(0.04);
+            break;
+        case DH_BLOCK_STONE:
+            roughness = 0.9;
+            reflectance = vec3(0.02);
+            break;
+        case DH_BLOCK_WOOD:
+            roughness = 0.7;
+            reflectance = vec3(0.05);
+            break;
+        case DH_BLOCK_METAL:
+            roughness = 0.2;
+            reflectance = albedo.rgb;
+            break;
+        case DH_BLOCK_DIRT:
+            roughness = 0.85;
+            reflectance = vec3(0.02);
+            break;
+        case DH_BLOCK_LAVA:
+            roughness = 0.9;
+            reflectance = vec3(0.1);
+            break;
+        case DH_BLOCK_DEEPSLATE:
+            roughness = 0.9;
+            reflectance = vec3(0.02);
+            break;
+        case DH_BLOCK_SNOW:
+            roughness = 0.6;
+            reflectance = vec3(0.04);
+            break;
+        case DH_BLOCK_SAND:
+            roughness = 0.8;
+            reflectance = vec3(0.05);
+            break;
+        case DH_BLOCK_TERRACOTTA:
+            roughness = 0.75;
+            reflectance = vec3(0.05);
+            break;
+        case DH_BLOCK_NETHER_STONE:
+            roughness = 0.9;
+            reflectance = vec3(0.02);
+            break;
+        case DH_BLOCK_WATER:
+            roughness = 0.05;
+            reflectance = vec3(0.02);
+            break;
+        case DH_BLOCK_ILLUMINATED:
+            roughness = 0.9;
+            reflectance = vec3(0.02);
+            break;
+    }
+    roughness *= roughness;
 
+    float emissiveness = mcEntity == DH_BLOCK_ILLUMINATED || mcEntity == DH_BLOCK_LAVA ? getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1) : 0.0;
 
     #if NOISY_LAVA != 0
         if(mcEntity == DH_BLOCK_LAVA) {
-            albedo.rgb *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
+            emissiveness *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
         }
     #endif
 
@@ -126,11 +173,10 @@ void main() {
     mat2x3 lightColor = getLightColor(
         lightmap,
         albedo.rgb,
-        vec3(0.04),
-        mix(0.9, 0.1, smoothstep(0.3, 0.9, dot(albedo.rgb, LUMINANCE_COEFFS_AP1))),
-        false,
-        // TODO: emissiveness
-        0.0,
+        reflectance,
+        roughness,
+        isMetal,
+        emissiveness,
         normal,
         view(normal),
         positionNormalized,
