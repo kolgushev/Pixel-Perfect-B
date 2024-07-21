@@ -15,6 +15,7 @@ in vec4 color;
 in vec2 light;
 in vec3 position;
 in vec3 normal;
+in vec4 tangent;
 flat in int mcEntity;
 #if defined TAA_ENABLED
     in vec3 prevClip;
@@ -275,6 +276,7 @@ void main() {
     #endif
 
     bool isMetal = false;
+    vec3 normalMod = normal;
 
     // Referencing https://shaderlabs.org/wiki/LabPBR_Material_Standard
     #if defined USE_PBR && defined IS_SHADED && defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
@@ -295,7 +297,7 @@ void main() {
         }
 
         float emissiveness = specular.w < 1.0 ? specular.w * 254.0 * RCP_255 : 0.0;
-    #elif defined USE_PBR && defined IS_SHADED && defined AUTO_MAT
+    #elif defined USE_PBR && defined IS_SHADED && defined AUTO_MAT  
         vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
         float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
         float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
@@ -316,6 +318,23 @@ void main() {
         float roughness = 0.8;
         vec3 reflectance = vec3(0.02);
         float emissiveness = 0.0;
+    #endif
+
+    // normal mapping happens regardless of PBR
+    #if defined IS_SHADED && defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
+        // normal stuff
+        vec4 normalsAndAO = texture(normals, texcoordMod);
+        vec3 normalMap = vec3(normalsAndAO.x, normalsAndAO.y, 0.0);
+        normalMap.xy = normalMap.xy * 2.0 - 1.0;
+        // in case of bad normal mapping
+        if(length(normalMap.xy) > 1.0) {
+            normalMap.xy = normalize(normalMap.xy);
+        }
+        // reconstruct z
+        normalMap.z = sqrt(1.0 - dot(normalMap.xy, normalMap.xy));
+
+        normalMap = getTBN(normal, tangent) * normalMap;
+        normalMod = mix(normal, normalMap, 1.0);
     #endif
 
     #if defined g_spidereyes
@@ -349,7 +368,7 @@ void main() {
         positionMod = mix(positionMod * (1 - rain), 1, 0);
 
         #if VANILLA_LIGHTING == 2
-            vec3 normalMod = vec3(0, positionMod * 2 - 1, 0);
+            normalMod = vec3(0, positionMod * 2 - 1, 0);
 
             mat2x3 lightColor = getLightColor(
                 lightmap,
@@ -395,12 +414,12 @@ void main() {
             ,
             isMetal,
             emissiveness,
-            normal,
-            view(normal),
+            normalMod,
+            view(normalMod),
             #if defined gc_particles
-                -normal,
+                -normalMod,
             #else
-                mix(positionNormalized, -normal, min(abs(getCutoutMask(mcEntity) - 2), 1.0)),
+                mix(positionNormalized, -normalMod, min(abs(getCutoutMask(mcEntity) - 2), 1.0)),
             #endif
             viewInverse(sunPosition),
             viewInverse(moonPosition),
@@ -418,6 +437,7 @@ void main() {
 
         #if PIXELATED_SHADOWS != 0
             pixelatedPosition = ceil((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
+            // since we're using this to determine actual face (not apparent) direction, use normal not normalMod
             shadowPos = mix(pixelatedPosition, position, ceil(abs(normal)));
         #endif
 
@@ -514,6 +534,9 @@ void main() {
         #endif
     #endif
 
+    // albedo = opaque(normalMod * 0.5 + 0.5);
+
+
     // write to buffers
 
     #if defined TAA_ENABLED
@@ -569,7 +592,7 @@ void main() {
 
     if(albedo.a > 0.5 || renderStage == MC_RENDER_STAGE_TERRAIN_CUTOUT_MIPPED || renderStage == MC_RENDER_STAGE_TERRAIN_SOLID) {
         b2 = opaque(lightmap);
-        b3 = opaque(normal);
+        b3 = opaque(normalMod);
     }
 
     #if defined g_line

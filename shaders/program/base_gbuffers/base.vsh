@@ -1,6 +1,8 @@
 #define g_vsh
 #include "/common_defs.glsl"
 
+in vec4 at_tangent;
+
 in vec3 vaPosition;
 in vec2 vaUV0;
 in ivec2 vaUV2;
@@ -13,6 +15,7 @@ out vec4 color;
 out vec2 light;
 out vec3 position;
 out vec3 normal;
+out vec4 tangent;
 flat out int mcEntity;
 #if defined TAA_ENABLED
     out vec3 prevClip;
@@ -71,10 +74,10 @@ void main() {
         light = max(light - 0.0313, 0) * 1.067;
     #endif
 
+    // make sure at_tangent is in DirectX format
+    tangent = vec4(normalMatrix * (at_tangent.xyz), at_tangent.w);
 
-    #if defined g_line
-        normal = vaNormal;
-    #elif defined gc_particles
+    #if defined gc_particles || defined g_line
         normal = UP;
     #else
         normal = mat3(gbufferModelViewInverse) * normalMatrix * vaNormal;
@@ -147,9 +150,6 @@ void main() {
                 vec4(viewPosition, linePosStart.w)
                 )
             ).xyz;
-
-        // set normal to a realistic value
-        normal = UP;
     #endif
 
     #if (defined g_terrain || (defined g_weather && defined WAVING_RAIN_ENABLED) || (defined g_water && defined WAVING_WATER_ENABLED)) && defined WAVING_ENABLED && !defined DIM_NO_WIND

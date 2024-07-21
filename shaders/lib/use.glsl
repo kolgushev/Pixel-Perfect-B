@@ -14,6 +14,7 @@
 #include "/lib/texture/texture_filter.glsl"
 #endif
 
+#include "/lib/space_conversion/get_tbn.glsl"
 #include "/lib/shading/basic_direct_shading.glsl"
 #include "/lib/texture/bicubic_filter.glsl"
 #include "/lib/atmospherics/calculate_sky.glsl"
