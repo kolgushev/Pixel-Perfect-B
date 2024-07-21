@@ -321,7 +321,7 @@ void main() {
     #endif
 
     // normal mapping happens regardless of PBR
-    #if defined IS_SHADED && defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
+    #if defined IS_SHADED && defined MC_TEXTURE_FORMAT_LAB_PBR_1_3 && NORMAL_MAP_STRENGTH != 0
         // normal stuff
         vec4 normalsAndAO = texture(normals, texcoordMod);
         vec3 normalMap = vec3(normalsAndAO.x, normalsAndAO.y, 0.0);
@@ -334,7 +334,11 @@ void main() {
         normalMap.z = sqrt(1.0 - dot(normalMap.xy, normalMap.xy));
 
         normalMap = getTBN(normal, tangent) * normalMap;
-        normalMod = mix(normal, normalMap, 1.0);
+        #if NORMAL_MAP_STRENGTH == 10
+            normalMod = normalMap;
+        #else
+            normalMod = normalize(mix(normal, normalMap, NORMAL_MAP_STRENGTH * 0.1));
+        #endif
     #endif
 
     #if defined g_spidereyes
