@@ -320,28 +320,36 @@ void main() {
         float emissiveness = 0.0;
     #endif
 
-    // normal mapping happens regardless of PBR
-    #if defined IS_SHADED && defined MC_TEXTURE_FORMAT_LAB_PBR_1_3 && NORMAL_MAP_STRENGTH != 0
+    float AOMap = 1.0;
+    // normal mapping & AO happens regardless of PBR
+    #if defined IS_SHADED && defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
         // normal stuff
         vec4 normalsAndAO = texture(normals, texcoordMod);
-        vec3 normalMap = vec3(normalsAndAO.x, normalsAndAO.y, 0.0);
-        normalMap.xy = normalMap.xy * 2.0 - 1.0;
 
-        // in case of bad normal mapping
-        if(length(normalMap.xy) > 1.0) {
-            normalMap.xy = normalize(normalMap.xy);
-        }
-        // reconstruct z
-        normalMap.z = sqrt(1.0 - dot(normalMap.xy, normalMap.xy));
-
-        normalMap = getTBN(normal, normalize(tangent)) * normalMap;
-
-        #if NORMAL_MAP_STRENGTH == 10
-            normalMod = normalMap;
-        #else
-            normalMod = normalize(mix(normal, normalMap, NORMAL_MAP_STRENGTH * 0.1));
+        #if AO_MAP_STRENGTH != 0
+            AOMap = mix(1.0, normalsAndAO.z, AO_MAP_STRENGTH * 0.1);
         #endif
 
+        #if NORMAL_MAP_STRENGTH != 0
+            vec3 normalMap = vec3(normalsAndAO.x, normalsAndAO.y, 0.0);
+            normalMap.xy = normalMap.xy * 2.0 - 1.0;
+
+            // in case of bad normal mapping
+            if(length(normalMap.xy) > 1.0) {
+                normalMap = vec3(normalize(normalMap.xy), 0.0);
+            } else {
+                // reconstruct z
+                normalMap.z = sqrt(1.0 - dot(normalMap.xy, normalMap.xy));
+            }
+
+            normalMap = getTBN(normal, normalize(tangent)) * normalMap;
+
+            #if NORMAL_MAP_STRENGTH == 10
+                normalMod = normalMap;
+            #else
+                normalMod = normalize(mix(normal, normalMap, NORMAL_MAP_STRENGTH * 0.1));
+            #endif
+        #endif
     #endif
 
     #if defined g_spidereyes
@@ -379,6 +387,7 @@ void main() {
 
             mat2x3 lightColor = getLightColor(
                 lightmap,
+                AOMap,
                 albedo.rgb,
                 vec3(0.04),
                 0.9,
@@ -412,6 +421,7 @@ void main() {
     #elif defined IS_SHADED
         mat2x3 lightColor = getLightColor(
             lightmap,
+            AOMap,
             albedo.rgb,
             reflectance,
             roughness

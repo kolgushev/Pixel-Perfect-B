@@ -172,6 +172,7 @@ void main() {
     
     mat2x3 lightColor = getLightColor(
         lightmap,
+        1.0,
         albedo.rgb,
         reflectance,
         roughness,

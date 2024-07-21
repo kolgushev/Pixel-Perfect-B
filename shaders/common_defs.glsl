@@ -262,6 +262,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 
 #define NORMAL_MAP_STRENGTH 10 // [0 1 2 3 4 5 6 7 8 9 10]
 
+#define AO_MAP_STRENGTH 10 // [0 1 2 3 4 5 6 7 8 9 10]
+
+
 // 0: Schlick
 #define FRESNEL_MODEL 0 // [0]
 // 0: GGX 1: Cook-Torrance
