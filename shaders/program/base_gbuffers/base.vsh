@@ -75,7 +75,7 @@ void main() {
     #endif
 
     // make sure at_tangent is in DirectX format
-    tangent = vec4(normalMatrix * (at_tangent.xyz), at_tangent.w);
+    tangent = vec4(mat3(gbufferModelViewInverse) * normalMatrix * (at_tangent.xyz), at_tangent.w);
 
     #if defined gc_particles || defined g_line
         normal = UP;
