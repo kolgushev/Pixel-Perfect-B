@@ -123,13 +123,13 @@ void main() {
 
         #if defined g_clouds
             albedo.a *= step(0.1, albedo.a) * 0.6;
+        #elif defined g_damagedblock
+            albedo.a = clamp(albedo.a - 0.003, 0.0, 1.0);
         #elif !defined gc_terrain
             albedo.a *= color.a;
         #endif
 
-        #if defined g_damagedblock
-            albedo.a = clamp(albedo.a - 0.003, 0.0, 1.0);
-        #elif defined g_weather
+        #if defined g_weather
             float rainMask;
             #if defined NOISY_RAIN
                 rainMask = tile((frameTimeCounter * 12 + absolutePosition.y) * 3 + positionMod * 200 + absolutePosition.xz * 4, NOISE_PERLIN_4D, false).r;
@@ -271,14 +271,11 @@ void main() {
         albedo.rgb = getFogColor(isEyeInWater, albedo.rgb);
     #endif
 
-    #if !defined gc_sky && !defined g_line
-        #define IS_SHADED
-    #endif
-
 
     // Material Properties
-    
-    // Referencing https://shaderlabs.org/wiki/LabPBR_Material_Standard
+    #if !defined gc_sky && !defined g_line && !defined g_armor_glint
+        #define IS_SHADED
+    #endif
 
     // normal, emission, and AO mapping happens regardless of PBR
     vec3 normalMod = normal;
@@ -290,7 +287,7 @@ void main() {
     vec3 reflectance = vec3(0.02);
     bool isMetal = false;
 
-
+    // Referencing https://shaderlabs.org/wiki/LabPBR_Material_Standard
     #if defined IS_SHADED && defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
         // normal and AO stuff
         vec4 normalsAndAO = texture(normals, texcoordMod);
@@ -340,13 +337,16 @@ void main() {
             }
         #endif
     #elif defined IS_SHADED && defined AUTO_MAT
-        #if defined gc_emissive
+        #if defined g_spidereyes
+            emissiveness = SPIDEREYES_MULT;
+        #elif defined gc_emissive
             emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
         #else
             if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT || mcEntity == LIT_PROBLEMATIC) {
                 emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
             }
         #endif
+
 
         #if defined USE_PBR
             vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
@@ -358,13 +358,6 @@ void main() {
             reflectance = vec3(0.02);
         #endif
     #endif
-
-    #if defined g_spidereyes
-        emissiveness += SPIDEREYES_MULT;
-    #endif
-    if(renderStage == MC_RENDER_STAGE_WORLD_BORDER) {
-        emissiveness += 100.0;
-    }
 
     #if defined g_terrain && NOISY_LAVA != 0
         if(mcEntity == LAVA) {
@@ -449,10 +442,6 @@ void main() {
             viewInverse(moonPosition),
             rain,
             shadowcolor0);
-        
-        #if defined gc_transparent
-            lightColor *= albedo.a;
-        #endif
     #endif
 
     #if defined SHADOWS_ENABLED
@@ -556,6 +545,10 @@ void main() {
                 overlay = vec4(ATMOSPHERIC_FOG_BRIGHTNESS_WATER * ATMOSPHERIC_FOG_COLOR_WATER, atmosPhogWater * (1 - fogged.a));
             }
         #endif
+    #endif
+
+    #if defined g_armor_glint
+        albedo.rgb *= ENCHANT_GLINT_MULT;
     #endif
 
     // write to buffers

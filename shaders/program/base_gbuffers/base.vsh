@@ -52,8 +52,11 @@ void main() {
         mcEntity = -1;
     #endif
 
-    texcoord = vaUV0;
-    
+    #if defined g_armor_glint
+        texcoord = (textureMatrix * vec4(vaUV0, 0.0, 1.0)).xy;    
+    #else
+        texcoord = vaUV0;
+    #endif
     color = vaColor;
 
     #if defined g_weather

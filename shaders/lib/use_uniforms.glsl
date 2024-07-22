@@ -53,6 +53,7 @@ uniform mat4 gbufferPreviousModelView;
 uniform mat4 gbufferPreviousProjection;
 uniform mat4 gbufferProjection;
 uniform mat4 gbufferProjectionInverse;
+uniform mat4 textureMatrix;
 uniform mat4 modelViewMatrix;
 uniform mat4 modelViewMatrixInverse;
 uniform mat4 projectionMatrix;
