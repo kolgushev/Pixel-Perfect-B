@@ -486,8 +486,7 @@ void main() {
 
         #if PIXELATED_SHADOWS != 0
             pixelatedPosition = ceil((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
-            // since we're using this to determine actual face (not apparent) direction, use normal not normalMod
-            shadowPos = mix(pixelatedPosition, position, ceil(abs(normal)));
+            shadowPos = pixelatedPosition;
         #endif
 
         float shadow = getShadow(
@@ -495,7 +494,7 @@ void main() {
             pixelatedPosition + cameraPosition,
             shadowProjection,
             shadowModelView,
-            texcoord,
+            gl_FragCoord.xy,
             shadowtex1,
             lightmap.g,
             skyTime);
