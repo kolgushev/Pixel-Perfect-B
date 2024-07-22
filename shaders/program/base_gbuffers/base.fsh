@@ -412,15 +412,9 @@ void main() {
         #endif
         float positionMod = clamp((position.y + cameraPosition.y - CLOUD_HEIGHT) * 0.3, 0.0, 1.0);
 
-        positionMod = mix(positionMod, 1, 0);
-
-        albedo.a *= 0.8;
-
         positionMod = mix(positionMod * (1 - rain), 1, 0);
 
         #if VANILLA_LIGHTING == 2
-            normalMod = vec3(0, positionMod * 2 - 1, 0);
-
             mat2x3 lightColor = getLightColor(
                 lightmap,
                 AOMap,
@@ -429,13 +423,16 @@ void main() {
                 0.9,
                 false,
                 0.0,
-                normalMod,
-                view(normalMod),
+                UP,
+                view(UP),
                 positionNormalized,
                 viewInverse(sunPosition),
                 viewInverse(moonPosition),
                 rain,
                 shadowcolor0);
+            lightColor[0] = lightColor[0] * 0.5 + lightColor[1] * sin(positionMod * PI - PI * 0.5) * 0.5;
+
+            albedo.a *= 0.3;
         #else
             vec3 skyColor = actualSkyColor(skyTime) + lightningFlash(isLightning, rain);
             skyColor *= mix(positionMod, 1, 0.5);
