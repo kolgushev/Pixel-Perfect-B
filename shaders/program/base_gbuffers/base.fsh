@@ -370,8 +370,11 @@ void main() {
         #endif
 
         #if NORMAL_MAP_STRENGTH != 0
+            #define TEX_SIZE_DEFINED
+            vec2 texSize = atlasSize == vec2(0.0) ? textureSize(gtexture, 0) : atlasSize;
+
             float variance = roughness * 0.07;
-            vec2 noiseSample = tile(texcoord.xy * atlasSize, NOISE_BLUE_4D, true).rg;
+            vec2 noiseSample = tile(texcoord.xy * texSize, NOISE_BLUE_4D, true).rg;
             vec3 normalMap = vec3(noiseSample.x, noiseSample.y, 0.0) * 2.0 - 1.0;
             normalMap *= variance;
         #endif
@@ -386,7 +389,9 @@ void main() {
             normalMap.z = sqrt(1.0 - dot(normalMap.xy, normalMap.xy));
         }
 
-        normalMap = getTBN(normal, normalize(tangent)) * normalMap;
+        #define TBN_DEFINED
+        mat3 TBN = getTBN(normal, normalize(tangent));
+        normalMap = (TBN * normalMap);
 
         #if NORMAL_MAP_STRENGTH == 10
             normalMod = normalMap;
@@ -482,13 +487,28 @@ void main() {
         vec3 pixelatedPosition = position;
 
         #if PIXELATED_SHADOWS != 0
-            pixelatedPosition = ceil((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
+            #if !defined TBN_DEFINED
+                #define TBN_DEFINED
+                mat3 TBN = getTBN(normal, normalize(tangent));
+            #endif
+
+            #if !defined TEX_SIZE_DEFINED
+                #define TEX_SIZE_DEFINED
+                vec2 texSize = atlasSize == vec2(0.0) ? textureSize(gtexture, 0) : atlasSize;
+            #endif
+            
+            vec2 texcoordScaled = texcoord * texSize;
+
+            vec3 move = vec3((0.5 - fract(texcoordScaled)) * TEXELS_PER_BLOCK, 0.0);
+
+            move = TBN * move;
+            pixelatedPosition = position + move;
             shadowPos = pixelatedPosition;
         #endif
 
         float shadow = getShadow(
             shadowPos,
-            pixelatedPosition + cameraPosition,
+            shadowPos + cameraPosition,
             shadowProjection,
             shadowModelView,
             gl_FragCoord.xy,
