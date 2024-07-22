@@ -293,15 +293,10 @@ void main() {
     #endif
 
     #if defined gc_transparent
-        #if defined gc_transparent_mixed
-            // clouds are always mixed instead of multiplied
-            b0 = albedo;
-        #else
-            #if defined WATER_FOG_FROM_OUTSIDE && defined gc_transparent
-                b0 = overlay;
-            #endif
-            b1 = albedo;
+        #if defined WATER_FOG_FROM_OUTSIDE && defined gc_transparent
+            b0 = overlay;
         #endif
+        b1 = albedo;
     #else
         b1 = albedo;
         b0 = vec4(0.0);

@@ -617,15 +617,10 @@ void main() {
         b0 = albedo;
         b1 = vec4(0, 0, 0, 0);
     #elif defined gc_transparent
-        #if defined gc_transparent_mixed
-            // clouds are always mixed instead of multiplied
-            b0 = albedo;
-        #else
-            #if defined WATER_FOG_FROM_OUTSIDE && defined g_water
-                b0 = overlay;
-            #endif
-            b1 = albedo;
+        #if defined WATER_FOG_FROM_OUTSIDE && defined g_water
+            b0 = overlay;
         #endif
+        b1 = albedo;
     #elif OUTLINE_COLOR == -1 && defined g_line
         if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
             b0 = albedo;
