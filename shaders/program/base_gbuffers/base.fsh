@@ -352,10 +352,38 @@ void main() {
             vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
             float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
             float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
-            roughness = mix(0.94, 0.31, smoothstep(0.9 * averageLuminance, min(1.0 * averageLuminance + 0.35, 1.05), pixelLuminance));
-            roughness *= roughness;
             
-            reflectance = vec3(0.02);
+            if(mcEntity == SPECULAR_OVERRIDE) {
+                roughness = 0.9;
+            } else {
+                // super specular stuff
+                roughness = 1.0 - mix(0.06, 0.18, smoothstep(averageLuminance, averageLuminance + 0.2, pixelLuminance));
+                // semi-specular stuff
+                roughness -= mix(0.0, 0.5, smoothstep(averageLuminance * 0.5, averageLuminance * 1.2, pixelLuminance));
+
+                roughness *= roughness;
+            }
+
+            if(
+                mcEntity == METALLIC
+                #if defined METALLIC_REDSTONE_BLOCK
+                || mcEntity == REDSTONE_BLOCK
+                #endif
+                #if defined METALLIC_WAXED_COPPER
+                || mcEntity == WAXED_COPPER
+                #endif
+                #if defined METALLIC_NETHERITE_BLOCK
+                || mcEntity == NETHERITE_BLOCK
+                #endif
+            ) {
+                isMetal = true;
+                if(mcEntity == NETHERITE_BLOCK) {
+                    roughness *= 0.8;
+                    reflectance = vec3(0.99408284,0.78994083,1.21597633) * dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
+                } else {
+                    reflectance = albedo.rgb;
+                }
+            }
         #endif
     #endif
 
@@ -486,7 +514,6 @@ void main() {
     #endif
 
     #if defined gc_transparent
-
         vec3 positionOpaque = position;
         vec3 diffuse = albedo.rgb;
 

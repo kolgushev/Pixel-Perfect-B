@@ -93,6 +93,11 @@ const float drynessHalflife = 70.0;
 #define WAVING_CUTOUTS_BOTTOM_LIT 18
 #define WAVING_ON_WATER 20
 #define ICE 21
+#define SPECULAR_OVERRIDE 22
+#define METALLIC 23
+#define WAXED_COPPER 24
+#define REDSTONE_BLOCK 25
+#define NETHERITE_BLOCK 26
 
 // g stands for gbuffers
 // gc stands for gbuffers category

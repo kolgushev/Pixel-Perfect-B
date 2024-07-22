@@ -266,6 +266,17 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define AO_MAP_STRENGTH 10 // [0 1 2 3 4 5 6 7 8 9 10]
 
 
+#define METALLIC_REDSTONE_BLOCK
+#ifdef METALLIC_REDSTONE_BLOCK
+#endif
+// #define METALLIC_WAXED_COPPER
+#ifdef METALLIC_WAXED_COPPER
+#endif
+#define METALLIC_NETHERITE_BLOCK
+#ifdef METALLIC_NETHERITE_BLOCK
+#endif
+
+
 // 0: Schlick
 #define FRESNEL_MODEL 0 // [0]
 // 0: GGX 1: Cook-Torrance
