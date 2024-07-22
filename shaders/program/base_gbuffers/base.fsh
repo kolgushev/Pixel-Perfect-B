@@ -275,55 +275,24 @@ void main() {
         #define IS_SHADED
     #endif
 
-    bool isMetal = false;
-    vec3 normalMod = normal;
 
+    // Material Properties
+    
     // Referencing https://shaderlabs.org/wiki/LabPBR_Material_Standard
-    #if defined USE_PBR && defined IS_SHADED && defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
-        vec4 specular = texture(specular, texcoordMod);
-        // convert from perceptual smoothness
-        float roughness = pow(1.0 - specular.x, 2.0);
-        vec3 reflectance = vec3(specular.y);
-        int metalId = int(round(specular.y * 255));
-        #include "/lib/shading/metal_reflectances.glsl"
 
-        if(metalId > 230) {
-            if(metalId <= 237) {
-                reflectance = F0_INDEX[metalId - 230];
-            } else {
-                reflectance = albedo.rgb;
-            }
-            isMetal = true;
-        }
-
-        float emissiveness = specular.w < 1.0 ? specular.w * 254.0 * RCP_255 : 0.0;
-    #elif defined USE_PBR && defined IS_SHADED && defined AUTO_MAT  
-        vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
-        float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
-        float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
-        float roughness = mix(0.94, 0.31, smoothstep(0.9 * averageLuminance, min(1.0 * averageLuminance + 0.35, 1.05), pixelLuminance));
-        roughness *= roughness;
-        
-        vec3 reflectance = vec3(0.02);
-
-        float emissiveness = 0.0;
-        #if defined gc_emissive
-            emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
-        #else
-            if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT || mcEntity == LIT_PROBLEMATIC) {
-                emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
-            }
-        #endif
-    #else
-        float roughness = 0.8;
-        vec3 reflectance = vec3(0.02);
-        float emissiveness = 0.0;
-    #endif
-
+    // normal, emission, and AO mapping happens regardless of PBR
+    vec3 normalMod = normal;
     float AOMap = 1.0;
-    // normal mapping & AO happens regardless of PBR
+    float emissiveness = 0.0;
+
+    // Specular, roughness and metallicness mapping only happens with PBR
+    float roughness = 0.8;
+    vec3 reflectance = vec3(0.02);
+    bool isMetal = false;
+
+
     #if defined IS_SHADED && defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
-        // normal stuff
+        // normal and AO stuff
         vec4 normalsAndAO = texture(normals, texcoordMod);
 
         #if AO_MAP_STRENGTH != 0
@@ -350,13 +319,51 @@ void main() {
                 normalMod = normalize(mix(normal, normalMap, NORMAL_MAP_STRENGTH * 0.1));
             #endif
         #endif
+
+        vec4 specular = texture(specular, texcoordMod);
+        emissiveness = specular.w < 1.0 ? specular.w * 254.0 * RCP_255 : 0.0;
+
+        #if defined USE_PBR
+            // convert from perceptual smoothness
+            roughness = pow(1.0 - specular.x, 2.0);
+            reflectance = vec3(specular.y);
+            int metalId = int(round(specular.y * 255));
+            #include "/lib/shading/metal_reflectances.glsl"
+
+            if(metalId > 230) {
+                if(metalId <= 237) {
+                    reflectance = F0_INDEX[metalId - 230];
+                } else {
+                    reflectance = albedo.rgb;
+                }
+                isMetal = true;
+            }
+        #endif
+    #elif defined IS_SHADED && defined AUTO_MAT
+        #if defined gc_emissive
+            emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
+        #else
+            if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT || mcEntity == LIT_PROBLEMATIC) {
+                emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
+            }
+        #endif
+
+        #if defined USE_PBR
+            vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
+            float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
+            float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
+            roughness = mix(0.94, 0.31, smoothstep(0.9 * averageLuminance, min(1.0 * averageLuminance + 0.35, 1.05), pixelLuminance));
+            roughness *= roughness;
+            
+            reflectance = vec3(0.02);
+        #endif
     #endif
 
     #if defined g_spidereyes
-        emissiveness *= SPIDEREYES_MULT;
+        emissiveness += SPIDEREYES_MULT;
     #endif
     if(renderStage == MC_RENDER_STAGE_WORLD_BORDER) {
-        emissiveness *= 100.0;
+        emissiveness += 100.0;
     }
 
     #if defined g_terrain && NOISY_LAVA != 0
