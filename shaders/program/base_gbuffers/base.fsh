@@ -299,22 +299,6 @@ void main() {
         #if NORMAL_MAP_STRENGTH != 0
             vec3 normalMap = vec3(normalsAndAO.x, normalsAndAO.y, 0.0);
             normalMap.xy = normalMap.xy * 2.0 - 1.0;
-
-            // in case of bad normal mapping
-            if(length(normalMap.xy) > 1.0) {
-                normalMap = vec3(normalize(normalMap.xy), 0.0);
-            } else {
-                // reconstruct z
-                normalMap.z = sqrt(1.0 - dot(normalMap.xy, normalMap.xy));
-            }
-
-            normalMap = getTBN(normal, normalize(tangent)) * normalMap;
-
-            #if NORMAL_MAP_STRENGTH == 10
-                normalMod = normalMap;
-            #else
-                normalMod = normalize(mix(normal, normalMap, NORMAL_MAP_STRENGTH * 0.1));
-            #endif
         #endif
 
         vec4 specular = texture(specular, texcoordMod);
@@ -347,7 +331,6 @@ void main() {
             }
         #endif
 
-
         #if defined USE_PBR
             vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
             float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
@@ -357,7 +340,7 @@ void main() {
                 roughness = 0.9;
             } else {
                 // super specular stuff
-                roughness = 1.0 - mix(0.06, 0.18, smoothstep(averageLuminance, averageLuminance + 0.2, pixelLuminance));
+                roughness = 0.9 - mix(0.0, 0.18, smoothstep(averageLuminance, averageLuminance + 0.2, pixelLuminance));
                 // semi-specular stuff
                 roughness -= mix(0.0, 0.5, smoothstep(averageLuminance * 0.5, averageLuminance * 1.2, pixelLuminance));
 
@@ -384,6 +367,31 @@ void main() {
                     reflectance = albedo.rgb;
                 }
             }
+        #endif
+
+        #if NORMAL_MAP_STRENGTH != 0
+            float variance = roughness * 0.07;
+            vec2 noiseSample = tile(texcoord.xy * atlasSize, NOISE_BLUE_4D, true).rg;
+            vec3 normalMap = vec3(noiseSample.x, noiseSample.y, 0.0) * 2.0 - 1.0;
+            normalMap *= variance;
+        #endif
+    #endif
+
+    #if defined IS_SHADED && NORMAL_MAP_STRENGTH != 0
+        // in case of bad normal mapping
+        if(length(normalMap.xy) > 1.0) {
+            normalMap = vec3(normalize(normalMap.xy), 0.0);
+        } else {
+            // reconstruct z
+            normalMap.z = sqrt(1.0 - dot(normalMap.xy, normalMap.xy));
+        }
+
+        normalMap = getTBN(normal, normalize(tangent)) * normalMap;
+
+        #if NORMAL_MAP_STRENGTH == 10
+            normalMod = normalMap;
+        #else
+            normalMod = normalize(mix(normal, normalMap, NORMAL_MAP_STRENGTH * 0.1));
         #endif
     #endif
 
