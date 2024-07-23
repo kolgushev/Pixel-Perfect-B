@@ -15,6 +15,7 @@ out vec4 color;
 out vec2 light;
 out vec3 position;
 out vec3 normal;
+out vec3 normalModVsh;
 out vec4 tangent;
 flat out int mcEntity;
 #if defined TAA_ENABLED
@@ -78,27 +79,31 @@ void main() {
     #endif
 
     // make sure at_tangent is in DirectX format
-    tangent = vec4(mat3(gbufferModelViewInverse) * normalMatrix * at_tangent.xyz, at_tangent.w);
+    tangent = vec4(mat3(gbufferModelViewInverse) * normalMatrix * normalize(at_tangent.xyz), normalize(at_tangent.w));
 
-    #if defined gc_particles || defined g_line
+    #if defined gc_particles
         normal = UP;
     #else
         normal = mat3(gbufferModelViewInverse) * normalMatrix * vaNormal;
+    #endif
 
-        #if defined g_terrain
-            // make grass have up normal (and down-facing cutout stuff have down normal)
-            float fakeNormal = (getCutoutMask(mc_Entity.x) - 2) * CUTOUT_ALIGN_STRENGTH;
-            normal = mix(normal, vec3(0, sign(fakeNormal), 0), abs(fakeNormal));
+    #if defined gc_particles || defined g_line
+        normalModVsh = UP;
+    #elif defined g_terrain
+        // make grass have up normal (and down-facing cutout stuff have down normal)
+        float fakeNormal = (getCutoutMask(mc_Entity.x) - 2) * CUTOUT_ALIGN_STRENGTH;
+        normalModVsh = mix(normal, vec3(0, sign(fakeNormal), 0), abs(fakeNormal));
 
-            // transluscency
-            #if defined SUBSURFACE_SCATTERING
-                if(mc_Entity.x == TRANSLUSCENT || mc_Entity.x == TRANSLUSCENT_STIFF) {
-                    // make sure normal always faces the sun
-                    // a bit hacky, but better than facing it upwards and more performant than storing mcEntity in a buffer + manually shading in post
-                    normal *= sign(dot(normal, viewInverse(sunPosition)));
-                }
-            #endif
+        // transluscency
+        #if defined SUBSURFACE_SCATTERING
+            if(mc_Entity.x == TRANSLUSCENT || mc_Entity.x == TRANSLUSCENT_STIFF) {
+                // make sure normal always faces the sun
+                // a bit hacky, but better than facing it upwards and more performant than storing mcEntity in a buffer + manually shading in post
+                normalModVsh *= sign(dot(normalModVsh, viewInverse(sunPosition)));
+            }
         #endif
+    #else
+        normalModVsh = normal;
     #endif
 
     position = playerSpace(vaPosition);
@@ -153,6 +158,8 @@ void main() {
                 vec4(viewPosition, linePosStart.w)
                 )
             ).xyz;
+
+        normal = UP;
     #endif
 
     #if (defined g_terrain || (defined g_weather && defined WAVING_RAIN_ENABLED) || (defined g_water && defined WAVING_WATER_ENABLED)) && defined WAVING_ENABLED && !defined DIM_NO_WIND

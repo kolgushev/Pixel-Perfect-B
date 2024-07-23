@@ -18,25 +18,6 @@ vec3 reinhardInverse(in vec3 v, in vec3 luminanceCoeffs) {
     return changeLuminance(v, originalLum, newLum);
 }
 
-vec3 hlg(in vec3 v) {
-    // constants r, a, b, c referenced from https://en.wikipedia.org/wiki/Hybrid_log%E2%80%93gamma
-    const float r = 0.5;
-    const float a = 0.17883277;
-    // float b = 1.0 - 4.0 * a;
-    const float b = 0.28466892;
-    // float c = 0.5 - a * log(4.0 * a)
-    const float c = 0.55991073;
-    
-    bvec3 cutoff = greaterThan(v, vec3(1.0));
-    
-    vec3 e = clamp(v, 0.0, 12.0);
-
-    vec3 lower = r * sqrt(e);
-    vec3 upper = a * log(e - b) + c;
-
-    return mix(lower, upper, cutoff);
-}
-
 vec3 uncharted2_tonemap_partial(in vec3 x)
 {
     const float a = 0.15;
@@ -51,11 +32,11 @@ vec3 uncharted2_tonemap_partial(in vec3 x)
 vec3 uncharted2_filmic(in vec3 v)
 {
     float exposure_bias = 2.0;
-    vec3 curr = uncharted2_tonemap_partial(v * exposure_bias);
+    vec3 curr = uncharted2_tonemap_partial(ACEScgToLinearRGB(v * exposure_bias));
 
     const vec3 W = vec3(11.2);
     vec3 white_scale = vec3(1.0) / uncharted2_tonemap_partial(W);
-    return curr * white_scale;
+    return linearRGBToACEScg(curr * white_scale);
 }
 
 vec3 aces_approx(in vec3 v)
@@ -67,24 +48,6 @@ vec3 aces_approx(in vec3 v)
     const float d = 0.59;
     const float e = 0.14;
     return (v*(a*v+b))/(v*(c*v+d)+e);
-}
-
-vec3 linear_to_srgb(in vec3 v)
-{
-    bvec3 cutoff = lessThan(v, vec3(0.0031308));
-    vec3 higher = vec3(1.055)*pow(v, vec3(1.0/2.4)) - vec3(0.055);
-    vec3 lower = v * vec3(12.92);
-
-    return mix(higher, lower, cutoff);
-}
-
-vec3 srgb_to_linear(in vec3 v)
-{
-    bvec3 cutoff = lessThan(v, vec3(0.04045));
-    vec3 higher = pow((v + vec3(0.055)) / vec3(1.055), vec3(2.4));
-    vec3 lower = v / vec3(12.92);
-
-    return mix(higher, lower, cutoff);
 }
 
 // adapted for GLSL from https://github.com/TheRealMJP/BakingLab/blob/master/BakingLab/ACES.hlsl
@@ -111,9 +74,9 @@ vec3 rtt_and_odt_fit(in vec3 v) {
 // Inputs and outputs have been transformed to operate on the CAT02 ACEScg colorspace
 vec3 aces_fitted(in vec3 v)
 {
-    v = v * AP1_to_RRT_SAT;
+    v = ACES_INPUT * (AP1_to_RGB * v);
     v = rtt_and_odt_fit(v);
-    return v * RRT_SAT_to_AP1;
+    return RGB_to_AP1 * (ACES_OUTPUT * v);
 }
 
 // found courtesy of wolfram|alpha
@@ -128,15 +91,15 @@ vec3 rtt_and_odt_fit_inverse(in vec3 v) {
 
 // expects v to be in linear ACEScg (AP1 primaries)
 vec3 aces_fitted_inverse(in vec3 v) {
-    v = v * RRT_SAT_to_AP1_INVERSE;
+    v = RRT_SAT_to_AP1_INVERSE * v;
     // bring v into a range such that the output of rtt_and_odt_fit_inverse is between zero and one
     v *= 0.619 / 1.00007;
     v = rtt_and_odt_fit_inverse(v);
-    return v * AP1_to_RRT_SAT_INVERSE;
+    return AP1_to_RRT_SAT_INVERSE * v;
 }
 
 vec3 uncharted2_filmic_inverse(in vec3 y) {
     // bring y into a range such that the output of the equation is between zero and one
-    y = y * 0.493;
-    return (-0.833333 * sqrt(1895912086208.0 * y * y + 206886131312.0 * y + 4680270125.0) - 1.06161e6 * y + 57010.4) / (sqrt(1895912086208.0 * y * y + 206886131312.0 * y + 4680270125.0) - 1.84714e6);
+    y = ACEScgToLinearRGB(y) * 0.493;
+    return linearRGBToACEScg((-0.833333 * sqrt(1895912086208.0 * y * y + 206886131312.0 * y + 4680270125.0) - 1.06161e6 * y + 57010.4) / (sqrt(1895912086208.0 * y * y + 206886131312.0 * y + 4680270125.0) - 1.84714e6));
 }

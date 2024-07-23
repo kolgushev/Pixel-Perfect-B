@@ -26,6 +26,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define RCP_3 0.33333333333
 #define RCP_7 0.14285714285
 #define RCP_8 0.125
+#define RCP_12 0.0833333333
 #define RCP_16 0.0625
 #define RCP_32 0.03125
 #define RCP_64 0.015625
@@ -122,26 +123,51 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 // use this for very simple gamma correction where accuracy doesn't matter (such as fog color)
 #define gammaCorrection(x, y) pow(x, vec3(y))
 
-// using Bradford chromatic adaptation
-#define RGB_to_AP1 mat3(0.6131324224, 0.3395380158, 0.0474166960, 0.0701243808, 0.9163940113, 0.0134515240, 0.0205876575, 0.1095745716, 0.8697854040)
-#define AP1_to_RGB mat3(1.7048586763, -0.6217160219, -0.0832993717, -0.1300768242, 1.1407357748, -0.0105598017, -0.0239640729, -0.1289755083, 1.1530140189)
-#define AP1_to_AP0 mat3(0.6954522414, 0.1406786965, 0.1638690622, 0.0447945634, 0.8596711184, 0.0955343182, -0.0055258826, 0.0040252103, 1.0015006723)
-#define AP0_to_AP1 mat3(1.4514393161, -0.2365107469, -0.2149285693, -0.0765537733, 1.1762296998, -0.0996759265, 0.0083161484, -0.0060324498, 0.9977163014)
+// RGB refers to the sRGB/rec709 primaries
+// no chromatic adaptation
+// courtesy of https://haraldbrendel.com/colorspacecalculator.html
+#define RGB_to_AP1 mat3(0.558807, 0.064968, 0.020550, 0.302364, 0.852346, 0.107552, 0.044470, 0.011826, 0.871898)
+#define AP1_to_RGB mat3(1.653375, -0.125698, -0.023463, -0.576871, 1.083792, -0.120094, -0.076504, -0.008289, 1.017700)
+#define AP0_to_AP1 mat3(1.451439, -0.076554, 0.008316, -0.236511, 1.176230, -0.006032, -0.214929, -0.099676, 0.997716)
+#define AP1_to_AP0 mat3(0.695452, 0.044795, -0.005526, 0.140679, 0.859671, 0.004025, 0.163869, 0.095534, 1.001501)
+#define XYZ_to_AP1 mat3(1.641023, -0.663663, 0.011722, -0.324803, 1.615332, -0.008284, -0.236425, 0.016756, 0.988395)
+#define AP1_to_XYZ mat3(0.662454, 0.134004, 0.156188, 0.272229, 0.674082, 0.053690, -0.005575, 0.004061, 1.010339)
 
-// no adaptation
-#define XYZ_to_AP1 mat3(1.6410233797, -0.3248032942, -0.2364246952, -0.6636628587, 1.6153315917, 0.0167563477, 0.0117218943, -0.0082844420, 0.9883948585)
-#define AP1_to_XYZ mat3(0.6624541811, 0.1340042065, 0.1561876870, 0.2722287168, 0.6740817658, 0.0536895174, -0.0055746495, 0.0040607335, 1.0103391003)
+#define BT2020_to_AP1 mat3(0.889427, 0.001503, 0.004901, 0.009698, 0.926256, 0.022075, 0.006517, 0.001381, 0.973023)
+#define AP1_to_BT2020 mat3(1.017287, -0.001644, -0.005087, -0.010489, 0.976836, -0.022109, -0.006798, -0.001375, 0.929903)
+#define ADOBE_RGB_to_AP1 mat3(0.781411, 0.090848, 0.028736, 0.077851, 0.825958, 0.061936, 0.046379, 0.012334, 0.909328)
+#define AP1_to_ADOBE_RGB mat3(1.163196, -0.127522, -0.028073, -0.105296, 1.099514, -0.071563, -0.057899, -0.008409, 0.989619)
+#define DCI_P3_to_AP1 mat3(0.638471, 0.041398, 0.003356, 0.201694, 0.946859, 0.042197, 0.044154, 0.011742, 0.865706)
+#define AP1_to_DCI_P3 mat3(1.349548, -0.058976, -0.002358, -0.284576, 0.910312, -0.043268, -0.064972, -0.009339, 0.982159)
+#define DISPLAY_P3_to_AP1 mat3(0.670915, 0.043502, 0.003527, 0.185886, 0.872649, 0.038890, 0.048840, 0.012988, 0.957583)
+#define AP1_to_DISPLAY_P3 mat3(1.349548, -0.067243, -0.002240, -0.284576, 1.037917, -0.041105, -0.064972, -0.010648, 0.933044)
 
 // Used for hill ACES
-#define ACES_INPUT mat3(0.59719, 0.35458, 0.04823, 0.07600, 0.90834, 0.01566, 0.02840, 0.13383, 0.83777)
-#define ACES_OUTPUT mat3(1.60475, -0.53108, -0.07367, -0.10208, 1.10813, -0.00605, -0.00327, -0.07276,  1.07602)
+// static const float3x3 ACESInputMat =
+// {
+//     {0.59719, 0.35458, 0.04823},
+//     {0.07600, 0.90834, 0.01566},
+//     {0.02840, 0.13383, 0.83777}
+// };
 
-// AP1_to_RGB transformed with ACES_INPUT/ACES_OUTPUT so we don't have to do two matrix operations (although it's probably optimized by the compiler anyway)
-#define AP1_to_RRT_SAT mat3(0.9685084331, 0.0286313032, 0.0027035464, 0.0087154419, 0.9886400751, 0.0027436319, 0.0086323548, 0.0286570720, 0.9627850109)
-#define AP1_to_RRT_SAT_INVERSE mat3(1.0328090484, -0.0298288478, -0.0028151745, -0.0090798688, 1.0118362518, -0.0028579157, -0.0089899319, -0.0298496245, 1.0387637840)
+// ODT_SAT => XYZ => D60_2_D65 => sRGB
+// static const float3x3 ACESOutputMat =
+// {
+//     { 1.60475, -0.53108, -0.07367},
+//     {-0.10208,  1.10813, -0.00605},
+//     {-0.00327, -0.07276,  1.07602}
+// };
 
-#define RRT_SAT_to_AP1 mat3(0.9451659060, 0.0501227406, 0.0048710168, 0.0149938171, 0.9801607289, 0.0048035393, 0.0150455383, 0.0501173130, 0.9347727049)
-#define RRT_SAT_to_AP1_INVERSE mat3(1.0589535418, -0.0538839972, -0.0052412170, -0.0161198402, 1.0213292202, -0.0051643303, -0.0161800220, -0.0538907075, 1.0701400180)
+#define ACES_INPUT mat3(0.59719, 0.07600, 0.02840, 0.35458, 0.90834, 0.13383, 0.04823, 0.01566, 0.83777)
+#define ACES_OUTPUT mat3(1.60475, -0.10208, -0.00327, -0.53108, 1.10813, -0.07276, -0.07367, -0.00605, 1.07602)
+
+// compositions of RGB_to_AP1/back and ACES_INPUT/OUTPUT
+#define AP1_to_RRT_SAT mat3(0.941677, 0.011113, 0.010477, 0.033997, 0.938729, 0.028050, 0.000457, 0.002594, 0.849316)
+#define RRT_SAT_to_AP1_INVERSE mat3(1.062394, -0.012542, -0.012691, -0.038462, 1.065821, -0.034726, -0.000454, -0.003249, 1.177531)
+
+#define RRT_SAT_to_AP1 mat3(0.865735, 0.017211, 0.019148, 0.035052, 0.909147, 0.044829, 0.004854, 0.002782, 0.936015)
+#define AP1_to_RRT_SAT_INVERSE mat3(1.156098, -0.021817, -0.022605, -0.044284, 1.100929, -0.051821, -0.005864, -0.003159, 1.068630)
+
 
 
 
@@ -310,7 +336,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define PLANET_BRIGHTNESS_USER 2.0
 
 #define CONTRAST 0.0 //[-0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5]
-#define LUMINANCE_CONTRAST 0.0 //[-0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5]
+#define CONTRAST 0.0 //[-0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5]
 #define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0]
 #define POST_SATURATION 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
@@ -320,10 +346,11 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 
 #define POST_TEMP 6550 // [3500 4000 4500 5000 5500 6000 6550 8000 9000 10000 11000 12000 13000 14000 15000]
 
-#define INPUT_COLORSPACE 0 // [0 1 2 3 4 5]
-#define USER_OUTPUT_COLORSPACE 0 // [0 1 2 3 5 7]
-// output mapping: 0:none 1:reinhard 2:Hable 3:ACES/UE4 4:Custom (default)
-#define USER_LMT_MODE 5 // [0 1 2 3 4]
+// -1 is auto, rest corresponds to _COLORSPACE defs
+#define OUTPUT_COLORSPACE -1 // [-1 0 1 2 3 4 6 7 9 10 11 12]
+// output mapping: 0:none 1:reinhard 2:Hable 3:ACES/UE4 4:ACES/approx 5:Custom (default)
+#define TONEMAP_USER 3 // [0 1 2 3 5]
+#define TONEMAP TONEMAP_USER
 
 // #define USE_NIGHT_EFFECT
 #ifdef USE_NIGHT_EFFECT
@@ -612,25 +639,8 @@ const float shadowIntervalSize = 8.0;
 
 #define EXPOSURE_WEIGHT 0.4
 
-#if defined USE_LUT    
-    #ifdef LUT_OUTPUT_COLORSPACE
-        #define OUTPUT_COLORSPACE LUT_OUTPUT_COLORSPACE
-    #else
-        #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACE
-    #endif
-    #ifdef LUT_LMT_MODE
-        #define LMT_MODE LUT_LMT_MODE
-    #else
-        #define LMT_MODE USER_LMT_MODE
-    #endif
-
-#else
-    #define OUTPUT_COLORSPACE USER_OUTPUT_COLORSPACE
-    #define LMT_MODE USER_LMT_MODE
-#endif
-
 // measuring face of stone block
-#if LMT_MODE == 4 || LMT_MODE == 5
+#if TONEMAP == 4 || TONEMAP == 5
     #if !defined DYNAMIC_EXPOSURE_LIGHTING
         #if STREAMER_MODE == 0 || STREAMER_MODE == -1
             #define MIN_LIGHT_MULT (MIN_LIGHT_MULT_USER * 0.25)
@@ -670,8 +680,8 @@ const float shadowIntervalSize = 8.0;
     #endif
 #endif
 
-#define TORCH_TINT (kelvinToRGB(TORCH_TEMP))
-#define TORCH_TINT_VANILLA (vec3(1.0, 0.5, 0) * RGB_to_AP1)
+#define TORCH_TINT (kelvinToColor(TORCH_TEMP))
+#define TORCH_TINT_VANILLA (RGB_to_AP1 * vec3(1.0, 0.5, 0))
 
 
 #define WIND_PERIOD_CONSTANT 0.3
@@ -711,7 +721,7 @@ const float shadowIntervalSize = 8.0;
     #if defined BRIGHT_NETHER
         #define BASE_COLOR (vec3(2.0, 1.8, 1.6))
     #else
-        #define BASE_COLOR (vec3(1.0, 0.55, 0.4) * RGB_to_AP1)
+        #define BASE_COLOR (RGB_to_AP1 * vec3(1.0, 0.55, 0.4))
     #endif
     #define AMBIENT_COLOR (BASE_COLOR * 5.0)
     #define MIN_LIGHT_COLOR AMBIENT_COLOR
@@ -751,8 +761,8 @@ const float shadowIntervalSize = 8.0;
     #endif
 
 
-    #define BASE_COLOR (vec3(0.9, 0.7, 1.2) * RGB_to_AP1)
-    #define AMBIENT_COLOR (vec3(0.9, 0.85, 1.1) * RGB_to_AP1 * 10.0)
+    #define BASE_COLOR (RGB_to_AP1 * vec3(0.9, 0.7, 1.2))
+    #define AMBIENT_COLOR (RGB_to_AP1 * vec3(0.9, 0.85, 1.1) * 10.0)
     #define MIN_LIGHT_COLOR AMBIENT_COLOR
     #define CLOUD_COLOR AMBIENT_COLOR
 
@@ -790,12 +800,12 @@ const float shadowIntervalSize = 8.0;
         #define DIM_HAS_FOGGY_WEATHER
     #endif
 
-    #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_AP1)
+    #define BASE_COLOR (RGB_to_AP1 * vec3(1.0, 1.0, 1.0))
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
-    #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_AP1)
+    #define MIN_LIGHT_COLOR (RGB_to_AP1 * vec3(0.8, 0.9, 1.0))
     #define CLOUD_COLOR (vec3(0.97, 0.98, 1.0) * 0.8)
     
-    #define ATMOSPHERIC_FOG_COLOR (gammaCorrection(fogColor, GAMMA) * RGB_to_AP1)
+    #define ATMOSPHERIC_FOG_COLOR (rec709ToACEScg(fogColor))
     #define ATMOSPHERIC_FOG_MULTIPLIER 0.35
 
     #define SECONDARY_FOG_COLOR_MULTIPLIER 2.0
@@ -806,8 +816,8 @@ const float shadowIntervalSize = 8.0;
     #define NIGHT_SKY_EDGE_COLOR (vec3(0.4, 0.6, 0.7) * 4.7)
     #define NIGHT_SKY_TOP_COLOR (vec3(0.05, 0.12, 0.4) * 3.0)
 
-    #define DAY_SKY_COLOR ((vec3(0.67, 0.83, 1.0) * RGB_to_AP1) * SKY_LIGHT_MULT)
-    #define NIGHT_SKY_COLOR ((vec3(0.4, 0.4, 1.0) * RGB_to_AP1 * 4.0) * NIGHT_SKY_LIGHT_MULT)
+    #define DAY_SKY_COLOR ((RGB_to_AP1 * vec3(0.67, 0.83, 1.0)) * SKY_LIGHT_MULT)
+    #define NIGHT_SKY_COLOR ((RGB_to_AP1 * vec3(0.4, 0.4, 1.0) * 4.0) * NIGHT_SKY_LIGHT_MULT)
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
 
@@ -828,12 +838,12 @@ const float shadowIntervalSize = 8.0;
         #define DIM_HAS_FOGGY_WEATHER
     #endif
 
-    #define BASE_COLOR (vec3(1.0, 1.0, 1.0) * RGB_to_AP1)
+    #define BASE_COLOR (RGB_to_AP1 * vec3(1.0, 1.0, 1.0))
     #define AMBIENT_COLOR (BASE_COLOR * 1.0)
-    #define MIN_LIGHT_COLOR (vec3(0.8, 0.9, 1.0) * RGB_to_AP1)
+    #define MIN_LIGHT_COLOR (RGB_to_AP1 * vec3(0.8, 0.9, 1.0))
     #define CLOUD_COLOR (vec3(0.97, 0.98, 1.0) * 0.8)
     
-    #define ATMOSPHERIC_FOG_COLOR (gammaCorrection(fogColor, GAMMA) * RGB_to_AP1)
+    #define ATMOSPHERIC_FOG_COLOR (rec709ToACEScg(fogColor))
     #define ATMOSPHERIC_FOG_MULTIPLIER 0.35
 
     #define SECONDARY_FOG_COLOR_MULTIPLIER 2.0
@@ -844,8 +854,8 @@ const float shadowIntervalSize = 8.0;
     #define NIGHT_SKY_EDGE_COLOR (vec3(0.0, 0.3, 0.7))
     #define NIGHT_SKY_TOP_COLOR (vec3(0.1, 0.1, 0.1))
 
-    #define DAY_SKY_COLOR ((vec3(0.67, 0.83, 1.0) * RGB_to_AP1) * SKY_LIGHT_MULT)
-    #define NIGHT_SKY_COLOR ((vec3(0.5, 0.6, 1.0) * RGB_to_AP1) * NIGHT_SKY_LIGHT_MULT)
+    #define DAY_SKY_COLOR ((RGB_to_AP1 * vec3(0.67, 0.83, 1.0)) * SKY_LIGHT_MULT)
+    #define NIGHT_SKY_COLOR ((RGB_to_AP1 * vec3(0.5, 0.6, 1.0)) * NIGHT_SKY_LIGHT_MULT)
 
 
     #define SKY_BRIGHTNESS (SKY_BRIGHTNESS_USER * 1.2)
@@ -901,23 +911,21 @@ const float shadowIntervalSize = 8.0;
 #define ATMOSPHERIC_FOG_SPECTATOR_MULT_POWDER_SNOW 0.01
 
 // boss battle colors
-#define OVERLAY_COLOR_ENDER_DRAGON (vec3(0.82, 0.8, 0.85) * RGB_to_AP1)
+#define OVERLAY_COLOR_ENDER_DRAGON (RGB_to_AP1 * vec3(0.82, 0.8, 0.85))
 #define OVERLAY_SATURATION_ENDER_DRAGON 1.0
-#define OVERLAY_COLOR_WITHER (vec3(0.9, 0.7, 0.56) * RGB_to_AP1)
+#define OVERLAY_COLOR_WITHER (RGB_to_AP1 * vec3(0.9, 0.7, 0.56))
 #define OVERLAY_SATURATION_WITHER 0.7
-#define OVERLAY_COLOR_RAID (vec3(0.8, 1.0, 0.87) * RGB_to_AP1)
+#define OVERLAY_COLOR_RAID (RGB_to_AP1 * vec3(0.8, 1.0, 0.87))
 #define OVERLAY_SATURATION_RAID 0.8
 
-#define NIGHT_VISION_COLOR ((vec3(0.7, 0.8, 1.0) * RGB_to_AP1))
+#define NIGHT_VISION_COLOR (RGB_to_AP1 * vec3(0.7, 0.8, 1.0))
 
-// #define NIGHT_SKY_COLOR ((vec3(1, 0.98, 0.95) * RGB_to_AP1) * NIGHT_SKY_LIGHT_MULT)
-#define DAY_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_AP1) * SKY_LIGHT_MULT)
-#define NIGHT_SKY_COLOR_VANILLA ((vec3(1) * RGB_to_AP1) * NIGHT_SKY_LIGHT_MULT)
-#define SUN_COLOR ((kelvinToRGB(SUN_TEMP)) * SUN_LIGHT_MULT)
-#define MOON_COLOR ((vec3(0.5, 0.66, 1.0) * RGB_to_AP1) * MOON_LIGHT_MULT)
-// #define MOON_COLOR ((vec3(0.95, 0.99, 1) * RGB_to_AP1) * MOON_LIGHT_MULT)
+#define DAY_SKY_COLOR_VANILLA ((RGB_to_AP1 * vec3(1)) * SKY_LIGHT_MULT)
+#define NIGHT_SKY_COLOR_VANILLA ((RGB_to_AP1 * vec3(1)) * NIGHT_SKY_LIGHT_MULT)
+#define SUN_COLOR ((kelvinToColor(SUN_TEMP)) * SUN_LIGHT_MULT)
+#define MOON_COLOR ((RGB_to_AP1 * vec3(0.5, 0.66, 1.0)) * MOON_LIGHT_MULT)
 
-#define NIGHT_EFFECT_HUE (vec3(0.2, 0.6, 1.0) * RGB_to_AP1)
+#define NIGHT_EFFECT_HUE (RGB_to_AP1 * vec3(0.2, 0.6, 1.0))
 
 #define COLORS_SATURATION_WEIGHTS normalize(vec3(COLORS_SATURATION_WEIGHTS_RED, COLORS_SATURATION_WEIGHTS_GREEN, COLORS_SATURATION_WEIGHTS_BLUE))
 
@@ -937,3 +945,29 @@ const float shadowIntervalSize = 8.0;
 #if defined gc_skybox && defined DIM_END
     #define NO_AA
 #endif
+
+
+// mappings
+
+// colorspace
+#define SRGB_COLORSPACE 0
+#define DCI_P3_COLORSPACE 1
+#define DISPLAY_P3_COLORSPACE 2
+#define REC2020_COLORSPACE 3
+#define ADOBE_RGB_COLORSPACE 4
+#define P3_D65_PQ_COLORSPACE 5
+#define REC709_COLORSPACE 6
+#define REC2100_HLG_COLORSPACE 7
+#define REC2100_PQ_COLORSPACE 8
+#define ACEScg_COLORSPACE 9
+#define ACES2065_1_COLORSPACE 10
+#define LINEAR_RGB_COLORSPACE 11
+#define XYZ_COLORSPACE 12
+
+// tonemap
+#define NONE_TONEMAP 0
+#define REINHARD_TONEMAP 1
+#define HABLE_TONEMAP 2
+#define ACES_FITTED_TONEMAP 3
+#define ACES_APPROX_TONEMAP 4
+#define CUSTOM_TONEMAP 5

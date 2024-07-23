@@ -91,7 +91,7 @@ if len(file_names) >= 1:
 """
         
         if viewing_transform:
-            write_str += f'#define LUT_LMT_MODE {viewing_transform}\n'
+            write_str += f'#define LUT_TONEMAP {viewing_transform}\n'
         if output_colorspace:
             write_str += f'#define LUT_OUTPUT_COLORSPACE {output_colorspace}\n'
         if gamma_correction:

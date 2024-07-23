@@ -1,3 +1,4 @@
+#extension GL_ARB_derivative_control : enable
 #define g_fsh
 #define use_atmospheric_fog_brightness_water
 
@@ -15,6 +16,7 @@ in vec4 color;
 in vec2 light;
 in vec3 position;
 in vec3 normal;
+in vec3 normalModVsh;
 in vec4 tangent;
 flat in int mcEntity;
 #if defined TAA_ENABLED
@@ -180,12 +182,11 @@ void main() {
     #endif
 
     #if !defined g_skybasic
-        albedo.rgb = srgb_to_linear(albedo.rgb);
-        albedo.rgb *= RGB_to_AP1;
+        albedo.rgb = sRGBToACEScg(albedo.rgb);
     #endif
 
     #if HDR_TEX_STANDARD == 1
-        albedo.rgb = uncharted2_filmic_inverse(albedo.rgb * AP1_to_RGB) * RGB_to_AP1;
+        albedo.rgb = uncharted2_filmic_inverse(albedo.rgb);
     #elif HDR_TEX_STANDARD == 2
         albedo.rgb = aces_fitted_inverse(albedo.rgb);
     #endif
@@ -278,7 +279,7 @@ void main() {
     #endif
 
     // normal, emission, and AO mapping happens regardless of PBR
-    vec3 normalMod = normal;
+    vec3 normalMod = normalModVsh;
     float AOMap = 1.0;
     float emissiveness = 0.0;
 
@@ -390,13 +391,13 @@ void main() {
         }
 
         #define TBN_DEFINED
-        mat3 TBN = getTBN(normal, normalize(tangent));
+        mat3 TBN = getTBN(normal, tangent);
         normalMap = (TBN * normalMap);
 
         #if NORMAL_MAP_STRENGTH == 10
             normalMod = normalMap;
         #else
-            normalMod = normalize(mix(normal, normalMap, NORMAL_MAP_STRENGTH * 0.1));
+            normalMod = normalize(mix(normalMod, normalMap, NORMAL_MAP_STRENGTH * 0.1));
         #endif
     #endif
 
@@ -489,7 +490,7 @@ void main() {
         #if PIXELATED_SHADOWS != 0
             #if !defined TBN_DEFINED
                 #define TBN_DEFINED
-                mat3 TBN = getTBN(normal, normalize(tangent));
+                mat3 TBN = getTBN(normal, tangent);
             #endif
 
             #if !defined TEX_SIZE_DEFINED
@@ -498,10 +499,17 @@ void main() {
             #endif
             
             vec2 texcoordScaled = texcoord * texSize;
+            vec2 dTexel = dFdx(texcoordScaled);
+            vec3 dWorld = dFdx(position);
 
-            vec3 move = vec3((0.5 - fract(texcoordScaled)) * TEXELS_PER_BLOCK, 0.0);
+            vec3 move = vec3((0.5 - fract(texcoordScaled)), 0.0);
 
-            move = TBN * move;
+            float texelSize = 0.0;
+            if(length(dTexel) > 0.0) {
+                texelSize = length(dWorld) / length(dTexel);
+            }
+
+            move = TBN * move * texelSize;
             pixelatedPosition = position + move;
             shadowPos = pixelatedPosition;
         #endif

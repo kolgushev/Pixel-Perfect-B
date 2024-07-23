@@ -24,8 +24,8 @@ screen.POST_PROCESSING=Post Processing
     option.CONTRAST=Contrast
         option.CONTRAST.comment=Higher contrast intensifies colors and white/black levels, while lower contrast decreases them. Too much contrast may cause color clipping, while too little may make everything look grayed out. No performance impact.
 
-    option.LUMINANCE_CONTRAST=Contrast
-        option.LUMINANCE_CONTRAST.comment=Higher contrast intensifies white and black levels, while lower contrast decreases them. Too much contrast may cause color clipping, while too little may make everything look grayed out. No performance impact.
+    option.CONTRAST=Contrast
+        option.CONTRAST.comment=Higher contrast intensifies white and black levels, while lower contrast decreases them. Too much contrast may cause color clipping, while too little may make everything look grayed out. No performance impact.
 
     option.EXPOSURE=Exposure
         option.EXPOSURE.comment=Increases the brightness of the image while preserving dark areas. No performance impact.
@@ -298,25 +298,25 @@ screen.COLORS=Colors
         screen.ACES=ACES
             screen.ACES.comment=Academy Color Encoding System.
             
-            option.USER_OUTPUT_COLORSPACE=Output Colorspace
-                option.USER_OUTPUT_COLORSPACE.comment=The color space to transform the screen to. Works separately from Iris's color space setting. Selecting "Linear AP1" does not transform the image, as that is the shader's internal colorspace. §bUse sRGB if unsure. §cMay not work when "Use LUT" is enabled!
-                value.USER_OUTPUT_COLORSPACE.0=sRGB (default)
-                value.USER_OUTPUT_COLORSPACE.1=Linear sRGB
-                value.USER_OUTPUT_COLORSPACE.2=Gamma 2.2 sRGB
-                value.USER_OUTPUT_COLORSPACE.3=Linear AP1 (ACEScg)
-                value.USER_OUTPUT_COLORSPACE.4=Gamma 2.2 AP1 (ACEScg)
-                value.USER_OUTPUT_COLORSPACE.5=Linear AP0 (ACES2065-1)
-                value.USER_OUTPUT_COLORSPACE.6=Gamma 2.2 AP0 (ACES2065-1)
-                value.USER_OUTPUT_COLORSPACE.7=Linear XYZ
+            option.OUTPUT_COLORSPACE=Output Colorspace
+                option.OUTPUT_COLORSPACE.comment=The color space to transform the screen to. Works separately from Iris's color space setting. Selecting "Linear AP1" does not transform the image, as that is the shader's internal colorspace. §bUse sRGB if unsure. §cMay not work when "Use LUT" is enabled!
+                value.OUTPUT_COLORSPACE.0=sRGB (default)
+                value.OUTPUT_COLORSPACE.1=Linear sRGB
+                value.OUTPUT_COLORSPACE.2=Gamma 2.2 sRGB
+                value.OUTPUT_COLORSPACE.3=Linear AP1 (ACEScg)
+                value.OUTPUT_COLORSPACE.4=Gamma 2.2 AP1 (ACEScg)
+                value.OUTPUT_COLORSPACE.5=Linear AP0 (ACES2065-1)
+                value.OUTPUT_COLORSPACE.6=Gamma 2.2 AP0 (ACES2065-1)
+                value.OUTPUT_COLORSPACE.7=Linear XYZ
 
-            option.USER_LMT_MODE=Tonemapper
-                option.USER_LMT_MODE.comment=Compresses the game's "realistic" light values into ones your monitor can display. (and does so in a way that looks nice). §cMay not work when "Use LUT" is enabled!
-                value.USER_LMT_MODE.0=§cNone (not recommended)
-                value.USER_LMT_MODE.1=§6Reinhard
-                value.USER_LMT_MODE.2=§6Hybrid Log-Gamma (HLG)
-                value.USER_LMT_MODE.3=Hable (Uncharted 2)
-                value.USER_LMT_MODE.4=Hill ACES (Unreal Engine)
-                value.USER_LMT_MODE.5=Pixel Perfect (Modded Hill ACES)
+            option.TONEMAP_USER=Tonemapper
+                option.TONEMAP_USER.comment=Compresses the game's "realistic" light values into ones your monitor can display. (and does so in a way that looks nice). §cMay not work when "Use LUT" is enabled!
+                value.TONEMAP_USER.0=§cNone (not recommended)
+                value.TONEMAP_USER.1=§6Reinhard
+                value.TONEMAP_USER.2=§6Hybrid Log-Gamma (HLG)
+                value.TONEMAP_USER.3=Hable (Uncharted 2)
+                value.TONEMAP_USER.4=Hill ACES (Unreal Engine)
+                value.TONEMAP_USER.5=Pixel Perfect (Modded Hill ACES)
 
 screen.RESOURCEPACK=Resourcepack Settings
     screen.RESOURCEPACK.comment=Make sure to look at these settings if you have a resourcepack enabled.

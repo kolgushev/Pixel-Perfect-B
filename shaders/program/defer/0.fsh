@@ -31,7 +31,7 @@ void main() {
             #if defined ATMOSPHERIC_FOG
                 vec3 skyColorProcessed = ATMOSPHERIC_FOG_COLOR;
             #else
-                vec3 skyColorProcessed = gammaCorrection(fogColor * 2, GAMMA) * RGB_to_AP1;
+                vec3 skyColorProcessed = rec709ToACEScg(fogColor * 2);
                 #if defined FOG_ENABLED
                     skyColorProcessed = mix(skyColorProcessed, ATMOSPHERIC_FOG_COLOR, fogWeather);
                 #endif

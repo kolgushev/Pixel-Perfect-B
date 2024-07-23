@@ -1,5 +1,5 @@
 // kelvin to RGB code adapted from https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html
-vec3 kelvinToRGB(in float actualTemp) {
+vec3 kelvinToColor(in float actualTemp) {
     // divide by 100 to get a workable number
     float temp = actualTemp * 0.01;
     
@@ -12,7 +12,7 @@ vec3 kelvinToRGB(in float actualTemp) {
             1.292936186062745 * pow(temp - 60, -0.1332047592),
             1);
 
-    return gammaCorrection(clamp(color, vec3(0), vec3(1)), GAMMA) * RGB_to_AP1;
+    return sRGBToACEScg(clamp(color, vec3(0.0), vec3(1.0)));
 }
 
 // thanks to https://www.rapidtables.com/convert/color/rgb-to-cmyk.html for CMYK calculations

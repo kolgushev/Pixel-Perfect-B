@@ -40,8 +40,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
         indirectLighting = max(indirectLighting, vec3(0));
         directSolarLighting = max(directSolarLighting, vec3(0));
 
-        directSolarLighting = gammaCorrection(directSolarLighting, GAMMA) * RGB_to_AP1 * SKY_LIGHT_MULT;
-        indirectLighting = gammaCorrection(indirectLighting, GAMMA) * RGB_to_AP1 * BLOCK_LIGHT_MULT;
+        directSolarLighting = rec709ToACEScg(directSolarLighting) * SKY_LIGHT_MULT;
+        indirectLighting = rec709ToACEScg(indirectLighting) * BLOCK_LIGHT_MULT;
 
         #if VANILLA_LIGHTING == 1 && !defined gc_emissive
             float oldLighting = max((abs(normal.z) + (normal.y) * 2.75), -0.7) * ISQRT_5 + ISQRT_5;

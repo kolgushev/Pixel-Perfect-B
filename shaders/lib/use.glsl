@@ -15,13 +15,14 @@
 #endif
 
 #include "/lib/space_conversion/get_tbn.glsl"
+#include "/lib/color/colorspace_transforms.glsl"
+#include "/lib/color/tonemapping.glsl"
 #include "/lib/shading/basic_direct_shading.glsl"
 #include "/lib/texture/bicubic_filter.glsl"
 #include "/lib/atmospherics/calculate_sky.glsl"
 #include "/lib/color/color_manipulation.glsl"
 #include "/lib/shading/cook_torrance.glsl"
 #include "/lib/effects/lightning_flash.glsl"
-#include "/lib/color/tonemapping.glsl"
 #include "/lib/atmospherics/hosek_wilkie_sky.glsl"
 #include "/lib/atmospherics/pixel_perfect_sky.glsl"
 #include "/lib/shading/calculate_lighting.glsl"

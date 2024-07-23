@@ -88,11 +88,10 @@ void main() {
         if(albedo.a < 0.1) discard;
     #endif
 
-    albedo.rgb = srgb_to_linear(albedo.rgb);
-    albedo.rgb *= RGB_to_AP1;
+    albedo.rgb = sRGBToACEScg(albedo.rgb);
 
     #if HDR_TEX_STANDARD == 1
-        albedo.rgb = uncharted2_filmic_inverse(albedo.rgb * AP1_to_RGB) * RGB_to_AP1;
+        albedo.rgb = linearRGBToACEScg(uncharted2_filmic_inverse(ACEScgToLinearRGB(albedo.rgb)));
     #elif HDR_TEX_STANDARD == 2
         albedo.rgb = aces_fitted_inverse(albedo.rgb);
     #endif
