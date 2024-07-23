@@ -91,11 +91,11 @@ vec3 rtt_and_odt_fit_inverse(in vec3 v) {
 
 // expects v to be in linear ACEScg (AP1 primaries)
 vec3 aces_fitted_inverse(in vec3 v) {
-    v = RRT_SAT_to_AP1_INVERSE * v;
+    v = ACES_OUTPUT_INVERSE * (AP1_to_RGB * v);
     // bring v into a range such that the output of rtt_and_odt_fit_inverse is between zero and one
     v *= 0.619 / 1.00007;
     v = rtt_and_odt_fit_inverse(v);
-    return AP1_to_RRT_SAT_INVERSE * v;
+    return RGB_to_AP1 * (ACES_INPUT_INVERSE * v);
 }
 
 vec3 uncharted2_filmic_inverse(in vec3 y) {
