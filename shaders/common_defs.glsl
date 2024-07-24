@@ -331,16 +331,12 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0]
 #define SATURATION 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
-// #define USE_LUT
-#ifdef USE_LUT
-#endif
-
 #define POST_TEMP 6550 // [3500 4000 4500 5000 5500 6000 6550 8000 9000 10000 11000 12000 13000 14000 15000]
 
 // -1 is auto, rest corresponds to _COLORSPACE defs
 #define OUTPUT_COLORSPACE -1 // [-1 0 1 2 3 4 6 7 9 10 11 12]
 // output mapping: 0:none 1:reinhard 2:Hable 3:ACES/UE4 4:ACES/approx 5:Custom (default)
-#define TONEMAP_USER 3 // [0 1 2 3 5]
+#define TONEMAP_USER 5 // [0 1 5 -1 2 3]
 #define TONEMAP TONEMAP_USER
 
 // #define USE_NIGHT_EFFECT
