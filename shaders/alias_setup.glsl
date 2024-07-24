@@ -78,6 +78,7 @@ const float drynessHalflife = 70.0;
 #define ACES2065_1_COLORSPACE 10
 #define LINEAR_RGB_COLORSPACE 11
 #define XYZ_COLORSPACE 12
+#define OKLAB_COLORSPACE 13
 
 // tonemap
 #define NONE_TONEMAP 0

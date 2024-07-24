@@ -5,6 +5,9 @@ layout(location = 0) out vec4 b0;
 
 in vec2 texcoord;
 
+#if defined USE_LUT
+    #define use_shadowcolor1_3d
+#endif
 #include "/lib/use.glsl"
 
 void main() {
@@ -80,10 +83,15 @@ void main() {
         colorCorrected *= changeLuminance(tempColor, dot(tempColor, LUMINANCE_COEFFS_AP1), 1.0);
     #endif
 
-    colorCorrected *= EXPOSURE;
-
     #if !defined DYNAMIC_EXPOSURE_LIGHTING
         colorCorrected *= EXPOSURE_WEIGHT;
+    #endif
+
+    // expose, also map from 0-(LUT domain max) to 0-1
+    #if defined USE_LUT && !defined LUT_NO_MAPPING
+        colorCorrected *= EXPOSURE * LUT_DOMAIN_MAX_RCP;
+    #else
+        colorCorrected *= EXPOSURE;
     #endif
 
     #if TONEMAP == REINHARD_TONEMAP
@@ -108,7 +116,13 @@ void main() {
             colorCorrected = ACEScgToColorspace(colorCorrected, LUT_INPUT_COLORSPACE);
         #endif
 
-        vec3 noBorder = removeBorder(colorCorrected * LUT_DOMAIN_MULT - LUT_DOMAIN_SUBTRACT, LUT_SIZE_RCP);
+        #if !defined LUT_NO_MAPPING
+            // map from 0-1 to 0-(LUT domain max), then (LUT domain min)-(LUT domain max) to 0-1
+            colorCorrected = (colorCorrected * LUT_DOMAIN_MAX - LUT_DOMAIN_MIN) * LUT_DOMAIN_RANGE_RCP;
+        #endif
+
+        // map from 0-1 to texture sampling coordinates
+        vec3 noBorder = removeBorder(colorCorrected, LUT_SIZE_RCP);
         
         vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
         colorCorrected = lutApplied * LUT_RANGE_MULT;
@@ -123,9 +137,7 @@ void main() {
         // Convert to OKLab
 
         // effectively converts to XYZ with D65 whitepoint
-        colorCorrected = RGB_to_XYZ * (AP1_to_RGB * colorCorrected);
-        colorCorrected = OKLAB_M1 * clamp(colorCorrected, 0.0, 1.0);
-        colorCorrected = OKLAB_M2 * pow(colorCorrected, vec3(RCP_3));
+        colorCorrected = ACEScgToOKLab(colorCorrected);
 
         if(CONTRAST != 1.0) {
             // equation for contrast is x+(1-|2x-1|)(2x-1)a
@@ -140,9 +152,7 @@ void main() {
             colorCorrected.gb *= SATURATION;
         }
 
-        colorCorrected = pow(OKLAB_M2_INVERSE * colorCorrected, vec3(3.0));
-        colorCorrected = OKLAB_M1_INVERSE * colorCorrected;
-        colorCorrected = RGB_to_AP1 * (XYZ_to_RGB * colorCorrected);
+        colorCorrected = OKLabToACEScg(colorCorrected);
     }
 
     #if OUTPUT_COLORSPACE == -1

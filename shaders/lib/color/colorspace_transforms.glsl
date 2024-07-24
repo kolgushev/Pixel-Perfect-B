@@ -169,6 +169,21 @@ vec3 DisplayP3ToACEScg(in vec3 v) {
     return AP1_to_DISPLAY_P3 * sRGBOETFInverse(v);
 }
 
+// OKLab
+vec3 ACEScgToOKLab(in vec3 v) {
+    vec3 lab = RGB_to_XYZ * (AP1_to_RGB * v);
+    lab = OKLAB_M1 * clamp(lab, 0.0, 1.0);
+    lab = OKLAB_M2 * pow(lab, vec3(RCP_3));
+    return lab;
+}
+
+vec3 OKLabToACEScg(in vec3 v) {
+    vec3 lab = pow(OKLAB_M2_INVERSE * v, vec3(3.0));
+    lab = OKLAB_M1_INVERSE * lab;
+    lab = RGB_to_AP1 * (XYZ_to_RGB * lab);
+    return lab;
+}
+
 
 // General function
 vec3 ACEScgToColorspace(in vec3 v, in int id){
@@ -199,6 +214,8 @@ vec3 ACEScgToColorspace(in vec3 v, in int id){
             return ACEScgToLinearRGB(v);
         case XYZ_COLORSPACE:
             return ACEScgToXYZ(v);
+        case OKLAB_COLORSPACE:
+            return ACEScgToOKLab(v);
 
         case SRGB_COLORSPACE:
         default:
@@ -234,6 +251,8 @@ vec3 colorspaceToACEScg(in vec3 v, in int id){
             return linearRGBToACEScg(v);
         case XYZ_COLORSPACE:
             return XYZToACEScg(v);
+        case OKLAB_COLORSPACE:
+            return OKLabToACEScg(v);
 
         case SRGB_COLORSPACE:
         default:

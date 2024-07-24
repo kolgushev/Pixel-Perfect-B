@@ -5,8 +5,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
     are expected to be in the ACEScg colorspace.
 */
 
-
-
 // include defs from other files
 #include "/alias_setup.glsl"
 #include "/LUTs/lut_meta.glsl"
@@ -345,7 +343,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 // output mapping: 0:none 1:reinhard 2:Hable 3:ACES/UE4 4:ACES/approx 5:Custom (default)
 #define TONEMAP_USER 5 // [5 -1 2 3 0 1]
 #if TONEMAP_USER == -1
-    #define TONEMAP_USER LUT_TONEMAP
+    #define USE_LUT
+    #define TONEMAP LUT_TONEMAP
 #else
     #define TONEMAP TONEMAP_USER
 #endif

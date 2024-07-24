@@ -1,4 +1,10 @@
-# Made with the help of Adobe's Cube LUT Specification: https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
+'''
+This script applies the first .cube file in the LUTs directory to the shader.
+It does so by converting the data to lut.dat and writing the metadata to lut_meta.glsl.
+For debugging purposes, it also writes the data visually to lut.png.
+'''
+
+# Made with the help of Adobe's Cube LUT Specification: https://kono.phpage.fr/images/a/a1/Adobe-cube-lut-specification-1.0.pdf
 
 import glob, os, re, cv2, io, copy
 import numpy as np
@@ -22,19 +28,28 @@ if len(file_names) >= 1:
     columns = re.findall(r'^ *([\d\. e+-]+) *$', raw_text, re.M)
 
     # find custom options
-    raw_text_lower = raw_text.lower()
-    viewing_transform = re.findall(r'^# *viewing transform *: *(\d+) *$', raw_text_lower, re.M)
-    output_colorspace = re.findall(r'^# *output colorspace *: *(\d+) *$', raw_text_lower, re.M)
-    gamma_correction = re.findall(r'^# *gamma correction *: *(\w+) *$', raw_text_lower, re.M)
-    if viewing_transform:
-        print('found viewing transform setting')
-        viewing_transform = viewing_transform[0]
+    raw_text_upper = raw_text.upper()
+    tonemap = re.findall(r'^# *TONEMAP *: *(\w+) *$', raw_text_upper, re.M)
+    input_colorspace = re.findall(r'^# *INPUT COLORSPACE *: *(\w+) *$', raw_text_upper, re.M)
+    output_colorspace = re.findall(r'^# *OUTPUT COLORSPACE *: *(\w+) *$', raw_text_upper, re.M)
+
+    if tonemap:
+        print('found tonemap setting')
+        tonemap = tonemap[0]
+    else:
+        tonemap = 'ACES_FITTED_TONEMAP'
+
+    if input_colorspace:
+        print('found input colorspace setting')
+        input_colorspace = input_colorspace[0]
+    else:
+        input_colorspace = 'SRGB_COLORSPACE'
+
     if output_colorspace:
         print('found output colorspace setting')
         output_colorspace = output_colorspace[0]
-    if gamma_correction:
-        print('found gamma correction setting')
-        gamma_correction = gamma_correction[0]
+    else:
+        output_colorspace = 'SRGB_COLORSPACE'
 
     # check for linear mapping (to avoid unnecessary calculations)
     meta_domain_min = re.findall(r'\d+(?:\.\d+)?', meta_domain_min_list[0]) if len(meta_domain_min_list) >= 1 else ['0.0', '0.0', '0.0']
@@ -64,39 +79,43 @@ if len(file_names) >= 1:
         meta_size = int(meta_1D_list[0]) if meta_1D else int(meta_3D_list[0])
 
         # pregenerate some meta values
-        meta_domain_mult = []
+        meta_domain_max_rcp = []
+        meta_domain_range_rcp = []
         linear_mapping = True
         for i in range(len(meta_domain_min)):
             minNum = float(meta_domain_min[i])
             maxNum = float(meta_domain_max[i])
             if(minNum != 0.0 or maxNum != 1.0):
                 linear_mapping = False
-            meta_domain_mult.append(str(maxNum - minNum))
+            meta_domain_max_rcp.append(str(1.0 / maxNum))
+            meta_domain_range_rcp.append(str(1.0 / (maxNum - minNum)))
 
-        meta_domain_add_str = ", ".join(meta_domain_min)
-        meta_domain_mult_str = ", ".join(meta_domain_mult)
+
 
         # write metadata to file
         lut_meta = open('lut_meta.glsl', 'w')
         write_str = f"""\
 #define LUT_DIM {meta_dimensions}
 #define LUT_SIZE {meta_size}
-#define LUT_SIZE_RCP {1 / meta_size}
-#define LUT_SIZE_RCP1 {1 / (meta_size - 1)}
-{"" if linear_mapping else "// "}#define LUT_LINEAR_MAPPING
-#define LUT_DOMAIN_ADD vec3({meta_domain_add_str.strip()})
-#define LUT_DOMAIN_MULT vec3({meta_domain_mult_str.strip()})
+#define LUT_SIZE_RCP {1.0 / meta_size}
+#define LUT_SIZE_RCP1 {1.0 / (meta_size - 1.0)}
+
+{"" if linear_mapping else "// "}#define LUT_NO_MAPPING
+
+#define LUT_DOMAIN_MIN vec3({", ".join(meta_domain_min).strip()})
+#define LUT_DOMAIN_MAX vec3({", ".join(meta_domain_max).strip()})
+
+#define LUT_DOMAIN_MAX_RCP vec3({", ".join(meta_domain_max_rcp).strip()})
+
+#define LUT_DOMAIN_RANGE_RCP vec3({", ".join(meta_domain_range_rcp).strip()})
+
 #define LUT_RANGE_MULT {1 / meta_max_color}
 
+#define LUT_TONEMAP {tonemap}
+#define LUT_INPUT_COLORSPACE {input_colorspace}
+#define LUT_OUTPUT_COLORSPACE {output_colorspace}
 """
         
-        if viewing_transform:
-            write_str += f'#define LUT_TONEMAP {viewing_transform}\n'
-        if output_colorspace:
-            write_str += f'#define LUT_OUTPUT_COLORSPACE {output_colorspace}\n'
-        if gamma_correction:
-            write_str += f'#define LUT_OVERRIDE_GAMMA_CORRECT\n{"" if gamma_correction.lower() == "on" else "// "}#define LUT_GAMMA_CORRECT'
-
         # write the proper specs in shaders.properties
         PROPS_FILE_DIR='../shaders.properties'
         with open(PROPS_FILE_DIR, 'r') as props_file:
@@ -106,12 +125,6 @@ if len(file_names) >= 1:
             fr'texture.\g<1>=/LUTs/lut.dat TEXTURE_{meta_dimensions}D RGB16F {meta_size} {meta_size} {meta_size} RGB FLOAT',
             text)
         
-        with open(PROPS_FILE_DIR, 'w') as props_file:
-            props_file.write(text)
-
-        # write to lut_meta file
-        lut_meta.write(write_str)
-
         # reformat data into 3D array to use as intake for openCV
         buffer = io.BytesIO()
         img = []
@@ -121,6 +134,12 @@ if len(file_names) >= 1:
             file = open('error.md', 'w')
             file.write("Error: One-dimensional LUTs are currently unsupported.")
         else:
+            with open(PROPS_FILE_DIR, 'w') as props_file:
+                props_file.write(text)
+
+            # write to lut_meta file
+            lut_meta.write(write_str)
+
             if PACK:
                 num_tiles = int(np.ceil(np.sqrt(meta_size)))
                 tex_size = num_tiles * meta_size
