@@ -191,7 +191,7 @@ vec3 ACEScgToColorspace(in vec3 v, in int id){
         case REC2100_PQ_COLORSPACE:
             // TODO
             return ACEScgToRec2100_HLG(v);
-        case ACEScg_COLORSPACE:
+        case ACESCG_COLORSPACE:
             return v;
         case ACES2065_1_COLORSPACE:
             return ACEScgToACES2065_1(v);
@@ -226,7 +226,7 @@ vec3 colorspaceToACEScg(in vec3 v, in int id){
         case REC2100_PQ_COLORSPACE:
             // TODO
             return rec2100_HLGToACEScg(v);
-        case ACEScg_COLORSPACE:
+        case ACESCG_COLORSPACE:
             return v;
         case ACES2065_1_COLORSPACE:
             return ACES2065_1ToACEScg(v);

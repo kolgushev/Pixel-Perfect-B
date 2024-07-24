@@ -62,8 +62,32 @@ const float drynessHalflife = 70.0;
 #define MC_RENDER_STAGE_HAND_TRANSLUCENT 23          // Translucent handheld objects
 
 
-// block mappings
+// mappings
 
+// colorspace
+#define SRGB_COLORSPACE 0
+#define DCI_P3_COLORSPACE 1
+#define DISPLAY_P3_COLORSPACE 2
+#define REC2020_COLORSPACE 3
+#define ADOBE_RGB_COLORSPACE 4
+#define P3_D65_PQ_COLORSPACE 5
+#define REC709_COLORSPACE 6
+#define REC2100_HLG_COLORSPACE 7
+#define REC2100_PQ_COLORSPACE 8
+#define ACESCG_COLORSPACE 9
+#define ACES2065_1_COLORSPACE 10
+#define LINEAR_RGB_COLORSPACE 11
+#define XYZ_COLORSPACE 12
+
+// tonemap
+#define NONE_TONEMAP 0
+#define REINHARD_TONEMAP 1
+#define HABLE_TONEMAP 2
+#define ACES_FITTED_TONEMAP 3
+#define ACES_APPROX_TONEMAP 4
+#define CUSTOM_TONEMAP 5
+
+//block
 #define CUTOUTS 1
 #define CUTOUTS_UPSIDE_DOWN 2
 #define LIT 3

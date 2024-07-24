@@ -5,9 +5,16 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
     are expected to be in the ACEScg colorspace.
 */
 
+
+
 // include defs from other files
+#include "/alias_setup.glsl"
 #include "/LUTs/lut_meta.glsl"
 #include "/tex/noise/noise_meta.glsl"
+
+#if defined gc_skybox && defined DIM_END
+    #define NO_AA
+#endif
 
 // constants
 
@@ -336,8 +343,12 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 // -1 is auto, rest corresponds to _COLORSPACE defs
 #define OUTPUT_COLORSPACE -1 // [-1 0 1 2 3 4 6 7 9 10 11 12]
 // output mapping: 0:none 1:reinhard 2:Hable 3:ACES/UE4 4:ACES/approx 5:Custom (default)
-#define TONEMAP_USER 5 // [0 1 5 -1 2 3]
-#define TONEMAP TONEMAP_USER
+#define TONEMAP_USER 5 // [5 -1 2 3 0 1]
+#if TONEMAP_USER == -1
+    #define TONEMAP_USER LUT_TONEMAP
+#else
+    #define TONEMAP TONEMAP_USER
+#endif
 
 // #define USE_NIGHT_EFFECT
 #ifdef USE_NIGHT_EFFECT
@@ -924,37 +935,3 @@ const float shadowIntervalSize = 8.0;
 
 // inverse of TEX_RES
 #define TEXELS_PER_BLOCK (1.0 / float(TEX_RES))
-
-
-// optifine setup
-#include "/optifine_setup.glsl"
-
-#if defined gc_skybox && defined DIM_END
-    #define NO_AA
-#endif
-
-
-// mappings
-
-// colorspace
-#define SRGB_COLORSPACE 0
-#define DCI_P3_COLORSPACE 1
-#define DISPLAY_P3_COLORSPACE 2
-#define REC2020_COLORSPACE 3
-#define ADOBE_RGB_COLORSPACE 4
-#define P3_D65_PQ_COLORSPACE 5
-#define REC709_COLORSPACE 6
-#define REC2100_HLG_COLORSPACE 7
-#define REC2100_PQ_COLORSPACE 8
-#define ACEScg_COLORSPACE 9
-#define ACES2065_1_COLORSPACE 10
-#define LINEAR_RGB_COLORSPACE 11
-#define XYZ_COLORSPACE 12
-
-// tonemap
-#define NONE_TONEMAP 0
-#define REINHARD_TONEMAP 1
-#define HABLE_TONEMAP 2
-#define ACES_FITTED_TONEMAP 3
-#define ACES_APPROX_TONEMAP 4
-#define CUSTOM_TONEMAP 5

@@ -104,10 +104,18 @@ void main() {
     #endif
 
     #if defined USE_LUT
+        #if LUT_INPUT_COLORSPACE != ACESCG_COLORSPACE
+            colorCorrected = ACEScgToColorspace(colorCorrected, LUT_INPUT_COLORSPACE);
+        #endif
+
         vec3 noBorder = removeBorder(colorCorrected * LUT_DOMAIN_MULT - LUT_DOMAIN_SUBTRACT, LUT_SIZE_RCP);
         
         vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
         colorCorrected = lutApplied * LUT_RANGE_MULT;
+
+        #if LUT_OUTPUT_COLORSPACE != ACESCG_COLORSPACE
+            colorCorrected = ColorspaceToACEScg(colorCorrected, LUT_OUTPUT_COLORSPACE);
+        #endif
     #endif
 
 
