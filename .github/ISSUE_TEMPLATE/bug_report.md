@@ -10,6 +10,9 @@ assignees: kolgushev
 **Describe the bug**
 A clear and concise description of what the bug is.
 
+
+The next steps are optional, but filling them out would be greatly appreciated.
+
 **To Reproduce**
 Steps to reproduce the behavior:
 1. Go to '...'
