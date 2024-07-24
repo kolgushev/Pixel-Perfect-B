@@ -123,7 +123,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 // use this for very simple gamma correction where accuracy doesn't matter (such as fog color)
 #define gammaCorrection(x, y) pow(x, vec3(y))
 
-// RGB refers to the sRGB/rec709 primaries
 // courtesy of https://haraldbrendel.com/colorspacecalculator.html
 
 // no CAT
@@ -131,6 +130,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define AP1_to_AP0 mat3(0.695452, 0.044795, -0.005526, 0.140679, 0.859671, 0.004025, 0.163869, 0.095534, 1.001501)
 #define XYZ_to_AP1 mat3(1.641023, -0.663663, 0.011722, -0.324803, 1.615332, -0.008284, -0.236425, 0.016756, 0.988395)
 #define AP1_to_XYZ mat3(0.662454, 0.134004, 0.156188, 0.272229, 0.674082, 0.053690, -0.005575, 0.004061, 1.010339)
+// RGB refers to the sRGB/rec709 primaries
+#define RGB_to_XYZ mat3(0.412391, 0.212639, 0.019331, 0.357584, 0.715169, 0.119195, 0.180481, 0.072192, 0.950532)
+#define XYZ_to_RGB mat3(3.240970, -0.969244, 0.055630, -1.537383, 1.875968, -0.203977, -0.498611, 0.041555, 1.056972)
 
 // with CAT02
 #define RGB_to_AP1 mat3(0.613083, 0.070004, 0.020491, 0.341167, 0.918063, 0.106764, 0.045750, 0.011934, 0.872745)
@@ -155,7 +157,11 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define ACES_INPUT_INVERSE mat3(1.76474097, -0.67577768, -0.08896329, -0.14702785, 1.16025151, -0.01322366, -0.03633683, -0.16243644, 1.19877327)
 #define ACES_OUTPUT_INVERSE mat3(0.64303825, 0.31118675, 0.04577546, 0.05926869, 0.93143649, 0.00929492, 0.0059619, 0.06392902, 0.93011838)
 
-
+// for OKLab
+#define OKLAB_M1 mat3(0.8189330101, 0.0329845436, 0.0482003018, 0.3618667424, 0.9293118715, 0.2643662691, -0.1288597137, 0.0361456387, 0.6338517070)
+#define OKLAB_M2 mat3(0.2104542553, 1.9779984951, 0.0259040371, 0.7936177850, -2.4285922050, 0.7827717662, -0.0040720468, 0.4505937099, -0.8086757660)
+#define OKLAB_M1_INVERSE mat3(1.22701385, -0.04058018, -0.07638128, -0.55779998, 1.11225687, -0.42148198, 0.28125615, -0.07167668, 1.58616322)
+#define OKLAB_M2_INVERSE mat3(1.0, 1.00000001, 1.00000005, 0.39633779, -0.10556134, -0.08948418, 0.21580376, -0.06385417, -1.29148554)
 
 
 // Settings
@@ -322,9 +328,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define PLANET_BRIGHTNESS_USER 2.0
 
 #define CONTRAST 0.0 //[-0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5]
-#define CONTRAST 0.0 //[-0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5]
 #define EXPOSURE 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0]
-#define POST_SATURATION 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
+#define SATURATION 1.0 //[0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
 // #define USE_LUT
 #ifdef USE_LUT

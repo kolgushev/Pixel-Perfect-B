@@ -110,9 +110,32 @@ void main() {
         colorCorrected = lutApplied * LUT_RANGE_MULT;
     #endif
 
-    colorCorrected = clamp(colorCorrected, 0.0, 1.0);
 
-    // TODO: Contrast, saturation
+    if(CONTRAST != 1.0 || SATURATION != 1.0) {
+        // Convert to OKLab
+
+        // effectively converts to XYZ with D65 whitepoint
+        colorCorrected = RGB_to_XYZ * (AP1_to_RGB * colorCorrected);
+        colorCorrected = OKLAB_M1 * clamp(colorCorrected, 0.0, 1.0);
+        colorCorrected = OKLAB_M2 * pow(colorCorrected, vec3(RCP_3));
+
+        if(CONTRAST != 1.0) {
+            // equation for contrast is x+(1-|2x-1|)(2x-1)a
+            // where "x" is the color channel and "a" is the contrast
+            float b = 2.0 * colorCorrected.r - 1.0;
+
+            colorCorrected.r = colorCorrected.r + (1.0 - abs(b)) * b * CONTRAST;
+        }
+
+        // same formula as contrast to preserve detail in vibrant colors
+        if(SATURATION != 1.0) {
+            colorCorrected.gb *= SATURATION;
+        }
+
+        colorCorrected = pow(OKLAB_M2_INVERSE * colorCorrected, vec3(3.0));
+        colorCorrected = OKLAB_M1_INVERSE * colorCorrected;
+        colorCorrected = RGB_to_AP1 * (XYZ_to_RGB * colorCorrected);
+    }
 
     #if OUTPUT_COLORSPACE == -1
         #if defined IS_IRIS
