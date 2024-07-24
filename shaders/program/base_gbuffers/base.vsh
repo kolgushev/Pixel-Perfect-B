@@ -83,6 +83,7 @@ void main() {
 
     #if defined gc_particles
         normal = UP;
+        tangent = vec4(viewInverse(vec3(1.0, 0.0, 0.0)), 1.0);
     #else
         normal = mat3(gbufferModelViewInverse) * normalMatrix * vaNormal;
     #endif

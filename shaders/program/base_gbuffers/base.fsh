@@ -610,6 +610,7 @@ void main() {
         albedo.rgb *= ENCHANT_GLINT_MULT;
     #endif
 
+    
     // write to buffers
 
     #if defined TAA_ENABLED
