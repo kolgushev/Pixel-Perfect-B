@@ -263,6 +263,10 @@ void main() {
             #endif
 
             #if defined g_terrain && defined LEAVE_WAVING_WAKE && !defined STILL_WIND
+                #if defined IS_IRIS
+                    if(firstPersonCamera && !isSpectator) {
+                #endif
+
                 // position slightly behind player
                 vec3 positionFromWake = centeredPos + cameraDiffSmooth * 0.3;
                 // make the wake oval-ish instead of a circle
@@ -279,6 +283,10 @@ void main() {
                 // color.rgb = max(vec3(EPSILON), color.rgb);
 
                 offset += cameraDiffSmooth.xz * 0.3 * wakeEffect;
+                
+                #if defined IS_IRIS
+                    }
+                #endif
             #endif
 
             #define N 0.5
@@ -311,7 +319,12 @@ void main() {
             }
 
             #if defined g_terrain && defined FLATTEN_GRASS && !defined STILL_WIND
-                if(!isFullWaving) {
+                if(
+                    !isFullWaving
+                    #if defined IS_IRIS
+                        && firstPersonCamera && !isSpectator
+                    #endif
+                    ) {
                     float squashFactor = 1.0 - smoothstep(0.0, 1.0, length((centeredPos + vec3(0.0, 0.5, 0.0)) * vec3(1.0, 0.4, 1.0)));
                     squashFactor *= smoothstep(0.0, 3.0, length(cameraDiffSmooth));
                     if(isStiff) squashFactor *= 0.7;
