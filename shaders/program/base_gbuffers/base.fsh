@@ -337,7 +337,7 @@ void main() {
             float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
             float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
             
-            if(mcEntity == SPECULAR_OVERRIDE) {
+            if(mcEntity == SPECULAR_MATTE) {
                 roughness = 0.9;
             } else {
                 // super specular stuff
@@ -346,6 +346,10 @@ void main() {
                 roughness -= mix(0.0, 0.5, smoothstep(averageLuminance * 0.5, averageLuminance * 1.2, pixelLuminance));
 
                 roughness *= roughness;
+            }
+
+            if(mcEntity == SPECULAR_SHINY) {
+                roughness *= 0.5;
             }
 
             if(
