@@ -15,7 +15,7 @@ out vec4 color;
 out vec2 light;
 out vec3 position;
 out vec3 normal;
-out vec3 normalModVsh;
+out vec3 displayNormal;
 out vec4 tangent;
 flat out int mcEntity;
 #if defined TAA_ENABLED
@@ -82,29 +82,29 @@ void main() {
     tangent = vec4(mat3(gbufferModelViewInverse) * normalMatrix * normalize(at_tangent.xyz), normalize(at_tangent.w));
 
     #if defined gc_particles
-        normal = UP;
+        normal = viewInverse(UP);
         tangent = vec4(viewInverse(vec3(1.0, 0.0, 0.0)), 1.0);
     #else
         normal = mat3(gbufferModelViewInverse) * normalMatrix * vaNormal;
     #endif
 
     #if defined gc_particles || defined g_line
-        normalModVsh = UP;
+        displayNormal = UP;
     #elif defined g_terrain
         // make grass have up normal (and down-facing cutout stuff have down normal)
         float fakeNormal = (getCutoutMask(mc_Entity.x) - 2) * CUTOUT_ALIGN_STRENGTH;
-        normalModVsh = mix(normal, vec3(0, sign(fakeNormal), 0), abs(fakeNormal));
+        displayNormal = mix(normal, vec3(0, sign(fakeNormal), 0), abs(fakeNormal));
 
         // transluscency
         #if defined SUBSURFACE_SCATTERING
             if(mc_Entity.x == TRANSLUSCENT || mc_Entity.x == TRANSLUSCENT_STIFF) {
                 // make sure normal always faces the sun
                 // a bit hacky, but better than facing it upwards and more performant than storing mcEntity in a buffer + manually shading in post
-                normalModVsh *= sign(dot(normalModVsh, viewInverse(sunPosition)));
+                displayNormal *= sign(dot(displayNormal, viewInverse(sunPosition)));
             }
         #endif
     #else
-        normalModVsh = normal;
+        displayNormal = normal;
     #endif
 
     position = playerSpace(vaPosition);

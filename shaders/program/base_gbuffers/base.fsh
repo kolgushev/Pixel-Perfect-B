@@ -16,7 +16,7 @@ in vec4 color;
 in vec2 light;
 in vec3 position;
 in vec3 normal;
-in vec3 normalModVsh;
+in vec3 displayNormal;
 in vec4 tangent;
 flat in int mcEntity;
 #if defined TAA_ENABLED
@@ -279,7 +279,7 @@ void main() {
     #endif
 
     // normal, emission, and AO mapping happens regardless of PBR
-    vec3 normalMod = normalModVsh;
+    vec3 normalMod = displayNormal;
     float AOMap = 1.0;
     float emissiveness = 0.0;
 
@@ -289,119 +289,127 @@ void main() {
     bool isMetal = false;
 
     // Referencing https://shaderlabs.org/wiki/LabPBR_Material_Standard
-    #if defined IS_SHADED && defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
-        // normal and AO stuff
-        vec4 normalsAndAO = texture(normals, texcoordMod);
+    #if defined IS_SHADED
+        #if defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
+            // normal and AO stuff
+            vec4 normalsAndAO = texture(normals, texcoordMod);
 
-        #if AO_MAP_STRENGTH != 0
-            AOMap = mix(1.0, normalsAndAO.z, AO_MAP_STRENGTH * 0.1);
-        #endif
+            #if AO_MAP_STRENGTH != 0
+                AOMap = mix(1.0, normalsAndAO.z, AO_MAP_STRENGTH * 0.1);
+            #endif
 
-        #if NORMAL_MAP_STRENGTH != 0
-            vec3 normalMap = vec3(normalsAndAO.x, normalsAndAO.y, 0.0);
-            normalMap.xy = normalMap.xy * 2.0 - 1.0;
-        #endif
+            #if NORMAL_MAP_STRENGTH != 0
+                vec3 normalMap = vec3(normalsAndAO.x, normalsAndAO.y, 0.0);
+                normalMap.xy = normalMap.xy * 2.0 - 1.0;
+            #endif
 
-        vec4 specular = texture(specular, texcoordMod);
-        emissiveness = specular.w < 1.0 ? specular.w * 254.0 * RCP_255 : 0.0;
+            vec4 specular = texture(specular, texcoordMod);
+            emissiveness = specular.w < 1.0 ? specular.w * 254.0 * RCP_255 : 0.0;
 
-        #if defined USE_PBR
-            // convert from perceptual smoothness
-            roughness = pow(1.0 - specular.x, 2.0);
-            reflectance = vec3(specular.y);
-            int metalId = int(round(specular.y * 255));
-            #include "/lib/shading/metal_reflectances.glsl"
+            #if defined USE_PBR
+                // convert from perceptual smoothness
+                roughness = pow(1.0 - specular.x, 2.0);
+                reflectance = vec3(specular.y);
+                int metalId = int(round(specular.y * 255));
+                #include "/lib/shading/metal_reflectances.glsl"
 
-            if(metalId > 230) {
-                if(metalId <= 237) {
-                    reflectance = F0_INDEX[metalId - 230];
-                } else {
-                    reflectance = albedo.rgb;
+                if(metalId > 230) {
+                    if(metalId <= 237) {
+                        reflectance = F0_INDEX[metalId - 230];
+                    } else {
+                        reflectance = albedo.rgb;
+                    }
+                    isMetal = true;
                 }
-                isMetal = true;
-            }
-        #endif
-    #elif defined IS_SHADED && defined AUTO_MAT
-        #if defined g_spidereyes
-            emissiveness = SPIDEREYES_MULT;
-        #elif defined gc_emissive
-            emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
-        #else
-            if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT || mcEntity == LIT_PROBLEMATIC) {
+            #endif
+        #elif defined AUTO_MAT
+            #if defined g_spidereyes
+                emissiveness = SPIDEREYES_MULT;
+            #elif defined gc_emissive
                 emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
-            }
-        #endif
-
-        #if defined USE_PBR
-            vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
-            float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
-            float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
-            
-            if(mcEntity == SPECULAR_MATTE) {
-                roughness = 0.9;
-            } else {
-                // super specular stuff
-                roughness = 0.9 - mix(0.0, 0.18, smoothstep(averageLuminance, averageLuminance + 0.2, pixelLuminance));
-                // semi-specular stuff
-                roughness -= mix(0.0, 0.5, smoothstep(averageLuminance * 0.5, averageLuminance * 1.2, pixelLuminance));
-
-                roughness *= roughness;
-            }
-
-            if(mcEntity == SPECULAR_SHINY || mcEntity == ICE || mcEntity == WATER) {
-                roughness *= roughness * 0.7;
-            }
-
-            if(
-                mcEntity == METALLIC
-                #if defined METALLIC_REDSTONE_BLOCK
-                || mcEntity == REDSTONE_BLOCK
-                #endif
-                #if defined METALLIC_WAXED_COPPER
-                || mcEntity == WAXED_COPPER
-                #endif
-                #if defined METALLIC_NETHERITE_BLOCK
-                || mcEntity == NETHERITE_BLOCK
-                #endif
-            ) {
-                isMetal = true;
-                if(mcEntity == NETHERITE_BLOCK) {
-                    roughness *= 0.8;
-                    reflectance = vec3(0.99408284,0.78994083,1.21597633) * dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
-                } else {
-                    reflectance = albedo.rgb;
+            #else
+                if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT || mcEntity == LIT_PROBLEMATIC) {
+                    emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
                 }
-            }
+            #endif
+
+            #if defined USE_PBR
+                vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
+                float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
+                float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
+                
+                if(mcEntity == SPECULAR_MATTE) {
+                    roughness = 0.9;
+                } else {
+                    // super specular stuff
+                    roughness = 0.9 - mix(0.0, 0.18, smoothstep(averageLuminance, averageLuminance + 0.2, pixelLuminance));
+                    // semi-specular stuff
+                    roughness -= mix(0.0, 0.5, smoothstep(averageLuminance * 0.5, averageLuminance * 1.2, pixelLuminance));
+
+                    roughness *= roughness;
+                }
+
+                if(mcEntity == SPECULAR_SHINY || mcEntity == ICE || mcEntity == WATER) {
+                    roughness *= roughness * 0.7;
+                }
+
+                if(
+                    mcEntity == METALLIC
+                    #if defined METALLIC_REDSTONE_BLOCK
+                    || mcEntity == REDSTONE_BLOCK
+                    #endif
+                    #if defined METALLIC_WAXED_COPPER
+                    || mcEntity == WAXED_COPPER
+                    #endif
+                    #if defined METALLIC_NETHERITE_BLOCK
+                    || mcEntity == NETHERITE_BLOCK
+                    #endif
+                ) {
+                    isMetal = true;
+                    if(mcEntity == NETHERITE_BLOCK) {
+                        roughness *= 0.8;
+                        reflectance = vec3(0.99408284,0.78994083,1.21597633) * dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
+                    } else {
+                        reflectance = albedo.rgb;
+                    }
+                }
+            #endif
+
+            #if NORMAL_MAP_STRENGTH != 0
+                #define TEX_SIZE_DEFINED
+                vec2 texSize = atlasSize == vec2(0.0) ? textureSize(gtexture, 0) : atlasSize;
+
+                float variance = roughness * 0.07;
+                vec2 noiseSample = tile(texcoord.xy * texSize, NOISE_BLUE_4D, true).rg;
+                vec3 normalMap = vec3(noiseSample.x, noiseSample.y, 0.0) * 2.0 - 1.0;
+                normalMap *= variance;
+            #endif
+
         #endif
 
         #if NORMAL_MAP_STRENGTH != 0
-            #define TEX_SIZE_DEFINED
-            vec2 texSize = atlasSize == vec2(0.0) ? textureSize(gtexture, 0) : atlasSize;
+            #if NORMAL_MAP_STRENGTH != 10
+                normalMap.xy *= float(NORMAL_MAP_STRENGTH) * 0.1;
+            #endif
 
-            float variance = roughness * 0.07;
-            vec2 noiseSample = tile(texcoord.xy * texSize, NOISE_BLUE_4D, true).rg;
-            vec3 normalMap = vec3(noiseSample.x, noiseSample.y, 0.0) * 2.0 - 1.0;
-            normalMap *= variance;
-        #endif
-    #endif
+            // in case of bad normal mapping
+            if(length(normalMap.xy) > 1.0) {
+                normalMap = vec3(normalize(normalMap.xy), 0.0);
+            } else {
+                // reconstruct z
+                normalMap.z = sqrt(1.0 - dot(normalMap.xy, normalMap.xy));
+            }
 
-    #if defined IS_SHADED && NORMAL_MAP_STRENGTH != 0
-        // in case of bad normal mapping
-        if(length(normalMap.xy) > 1.0) {
-            normalMap = vec3(normalize(normalMap.xy), 0.0);
-        } else {
-            // reconstruct z
-            normalMap.z = sqrt(1.0 - dot(normalMap.xy, normalMap.xy));
-        }
+            #define TBN_DEFINED
+            mat3 TBN = getTBN(normal, tangent);
+            vec3 normalMapVector = (TBN * normalMap);
 
-        #define TBN_DEFINED
-        mat3 TBN = getTBN(normal, tangent);
-        normalMap = (TBN * normalMap);
+            // if shading is upwards (eg. grass, particles)
+            if(normal != displayNormal) {
+                normalMapVector = normalize(mix(normalMapVector, displayNormal, 0.5));
+            }
 
-        #if NORMAL_MAP_STRENGTH == 10
-            normalMod = normalMap;
-        #else
-            normalMod = normalize(mix(normalMod, normalMap, NORMAL_MAP_STRENGTH * 0.1));
+            normalMod = normalMapVector;
         #endif
     #endif
 
