@@ -1,40 +1,3 @@
-// use floats since they aren't capped at one (for easier color manipulation)
-/*
-const int colortex0Format = RGB16F;
-const vec4 colortex0ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
-
-const int colortex1Format = RGBA16F;
-
-const int colortex2Format = RGB8;
-
-const int colortex3Format = RGB8_SNORM;
-const bool colortex3Clear = false;
-
-const int colortex4Format = RGB16F;
-const bool colortex4Clear = false;
-
-const int colortex5Format = RG16F;
-
-const int shadowcolor1Format = R16F;
-const bool shadowcolor1Clear = false;
-*/
-
-const bool noisetexNearest = false;
-
-const bool generateShadowMipmap = false;
-const bool generateShadowColorMipmap = false;
-
-#if AO_MODE == 1
-    const float ambientOcclusionLevel = 1.0;
-#else
-   const float ambientOcclusionLevel = 0;
-#endif
-
-const float centerDepthHalflife = 1.0;
-
-const float wetnessHalflife = 40.0;
-const float drynessHalflife = 70.0;
-
 // These are already supported, this is mainly for linting
 #define MC_RENDER_STAGE_NONE 0                      // Undefined
 #define MC_RENDER_STAGE_SKY 1                       // Sky
@@ -166,4 +129,8 @@ const float drynessHalflife = 70.0;
 #endif
 #if defined g_dh_terrain || defined g_dh_water
     #define gc_dh
+#endif
+
+#if defined gc_skybox && defined DIM_END
+    #define NO_AA
 #endif
