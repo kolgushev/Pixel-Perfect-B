@@ -348,8 +348,8 @@ void main() {
                 roughness *= roughness;
             }
 
-            if(mcEntity == SPECULAR_SHINY) {
-                roughness *= 0.5;
+            if(mcEntity == SPECULAR_SHINY || mcEntity == ICE || mcEntity == WATER) {
+                roughness *= roughness * 0.7;
             }
 
             if(
