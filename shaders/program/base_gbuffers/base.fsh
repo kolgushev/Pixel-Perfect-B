@@ -36,7 +36,7 @@ flat in int mcEntity;
 #include "/lib/use.glsl"
 
 void main() {
-    #if defined DISTANT_HORIZONS
+    #if defined DISTANT_HORIZONS && !defined g_clouds
         #define FAR dhFarPlane
     #else
         #define FAR far
@@ -610,7 +610,7 @@ void main() {
         albedo.rgb *= ENCHANT_GLINT_MULT;
     #endif
 
-    
+
     // write to buffers
 
     #if defined TAA_ENABLED
