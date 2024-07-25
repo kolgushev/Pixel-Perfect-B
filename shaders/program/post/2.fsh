@@ -109,6 +109,8 @@ void main() {
         colorCorrected = mix(100.0 * colorCorrected * colorCorrectedMod * colorCorrectedMod + colorCorrected, colorCorrected, applyTone);
         colorCorrected *= 0.5;
         colorCorrected = aces_fitted(colorCorrected);
+    #elif TONEMAP == HLG_TONEMAP
+        colorCorrected = hlg(colorCorrected * RCP_12);
     #endif
 
     #if defined USE_LUT

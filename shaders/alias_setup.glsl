@@ -87,6 +87,7 @@ const float drynessHalflife = 70.0;
 #define ACES_FITTED_TONEMAP 3
 #define ACES_APPROX_TONEMAP 4
 #define CUSTOM_TONEMAP 5
+#define HLG_TONEMAP 6
 
 //block
 #define CUTOUTS 1
