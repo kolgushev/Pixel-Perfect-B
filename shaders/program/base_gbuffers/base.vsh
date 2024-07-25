@@ -216,6 +216,8 @@ void main() {
             // there is no rain in the nether (rain in deserts is a windstorm)
             #if defined DIM_NO_RAIN
                 float wetness = 0.0;
+            #else
+                float wetness = wetnessCustom;
             #endif
 
             vec2 offset = vec2(0,0);

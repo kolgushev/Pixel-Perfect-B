@@ -278,15 +278,22 @@ void main() {
         #define IS_SHADED
     #endif
 
-    // normal, emission, and AO mapping happens regardless of PBR
+    // normal, emission, porosity, and AO mapping happens regardless of PBR
     vec3 normalMod = displayNormal;
     float AOMap = 1.0;
     float emissiveness = 0.0;
+    float porosity = 0.0;
 
     // Specular, roughness and metallicness mapping only happens with PBR
     float roughness = 0.8;
     vec3 reflectance = vec3(0.02);
     bool isMetal = false;
+    // water & puddles are applied as a separate clearcoat
+    float clearcoatStrength = 0.0;
+    vec3 clearcoatNormal = displayNormal;
+
+    // height mapping happens if PBR (for puddles) or if POM
+    float height = 1.0;
 
     // Referencing https://shaderlabs.org/wiki/LabPBR_Material_Standard
     #if defined IS_SHADED
@@ -306,13 +313,17 @@ void main() {
             vec4 specular = texture(specular, texcoordMod);
             emissiveness = specular.w < 1.0 ? specular.w * 254.0 * RCP_255 : 0.0;
 
+            height = normalsAndAO.w;
+
             #if defined USE_PBR
                 // convert from perceptual smoothness
                 roughness = pow(1.0 - specular.x, 2.0);
                 reflectance = vec3(specular.y);
-                int metalId = int(round(specular.y * 255));
-                #include "/lib/shading/metal_reflectances.glsl"
 
+                porosity = clamp(specular.b * 3.984375, 0.0, 1.0);
+
+                #include "/lib/shading/metal_reflectances.glsl"
+                int metalId = int(round(specular.y * 255));
                 if(metalId > 230) {
                     if(metalId <= 237) {
                         reflectance = F0_INDEX[metalId - 230];
@@ -320,6 +331,8 @@ void main() {
                         reflectance = albedo.rgb;
                     }
                     isMetal = true;
+                    // in case the "reserved for future use" part of LabPBR spec is ever used
+                    porosity = 0.0;
                 }
             #endif
         #elif defined AUTO_MAT
@@ -384,7 +397,6 @@ void main() {
                 vec3 normalMap = vec3(noiseSample.x, noiseSample.y, 0.0) * 2.0 - 1.0;
                 normalMap *= variance;
             #endif
-
         #endif
 
         #if NORMAL_MAP_STRENGTH != 0
@@ -410,7 +422,55 @@ void main() {
             }
 
             normalMod = normalMapVector;
+            clearcoatNormal = normalMapVector;
         #endif
+
+        #if PUDDLE_STRENGTH != 0
+            if(mcEntity != WATER) {
+                float waterDeposited = max(wetnessFiltered * float(PUDDLE_STRENGTH) * 0.5 * dot(clearcoatNormal, UP) * smoothstep(0.5, 0.9, lightmap.g), 0.0);
+
+                // darken albedo if water gets absorbed by material
+                float waterCapacityUsed = smoothstep(-EPSILON, porosity, waterDeposited);
+
+                #if defined USE_PBR || defined PUDDLE_WATER_FOG
+                    // determines small amount of water covering surface (proportion of water not being absorbed)
+                    // clearcoatStrength = min(waterCapacityUsed * waterDeposited, 1.0);
+                    clearcoatStrength = min(waterCapacityUsed * waterDeposited, 1.0) * 0.4;
+                    
+                    float puddleHeight = tile((position.xz + cameraPosition.xz) * 2.0 + vec2(0.0, 0.5), NOISE_PERLIN_4D, false).r;
+                    puddleHeight = smoothstep(0.4, 0.8, puddleHeight);
+
+                    float waterNotAbsorbed = waterDeposited - porosity;
+                    waterNotAbsorbed = max(waterNotAbsorbed * 0.25 - height * 0.5 - puddleHeight, 0.0);
+
+                    // puddles
+                    float puddleness = smoothstep(0.0, 0.5, waterNotAbsorbed);
+                #endif
+
+                #if defined USE_PBR
+                    // two noise textures moving in opposite directions form puddle wavelets
+                    vec2 waveletMap = tile((position.xz + cameraPosition.xz) * 30.0 + frameTimeCounter * 10.0 + vec2(0.5, 0.0), NOISE_PERLIN_4D, false).rg + tile((position.xz + cameraPosition.xz) * 30.0 - frameTimeCounter * 10.0, NOISE_PERLIN_4D, false).rg;
+
+                    waveletMap = waveletMap * 0.05 - 0.025;
+
+                    vec3 waveletNormal = vec3(waveletMap.x, 0.0, waveletMap.y);
+                    // reconstruct y
+                    waveletNormal.y = sqrt(1.0 - dot(waveletNormal.xy, waveletNormal.xy));
+
+                    clearcoatNormal = normalize(mix(clearcoatNormal, waveletNormal, puddleness));
+                #else
+                    // imitate effect of clearcoat reducing normal diffuse/specular
+                    albedo.rgb *= 1.0 - 0.2 * min(waterCapacityUsed * waterDeposited, 1.0);
+                #endif
+
+                #if defined PUDDLE_WATER_FOG
+                    float fogWater = waterNotAbsorbed * 0.1;
+                    fogWater = 1.0 - exp(-fogWater);
+
+                    albedo = mix(albedo, vec4(ATMOSPHERIC_FOG_BRIGHTNESS_WATER * ATMOSPHERIC_FOG_COLOR_WATER, 1.0), fogWater);
+                #endif
+            #endif
+        }
     #endif
 
     #if defined g_terrain && NOISY_LAVA != 0
@@ -441,6 +501,8 @@ void main() {
                 0.9,
                 false,
                 0.0,
+                clearcoatStrength,
+                clearcoatNormal,
                 UP,
                 view(UP),
                 positionNormalized,
@@ -482,6 +544,8 @@ void main() {
             ,
             isMetal,
             emissiveness,
+            clearcoatStrength,
+            clearcoatNormal,
             normalMod,
             view(normalMod),
             #if defined gc_particles
@@ -609,7 +673,7 @@ void main() {
                     float fogDensity = mcEntity == WATER ? ATMOSPHERIC_FOG_DENSITY_WATER : FOG_DENSITY_ICE;
                     atmosPhogWater = mix(atmosPhogWater, FAR, opaqueFog) * fogDensity;
                     // atmosPhogWater = min(atmosPhogWater, 1);
-                    atmosPhogWater = 1 - exp(-atmosPhogWater);
+                    atmosPhogWater = 1.0 - exp(-atmosPhogWater);
                 }
 
                 // apply fog to non-transparent objects

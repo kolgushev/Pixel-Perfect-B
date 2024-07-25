@@ -45,7 +45,7 @@ float distributionBlinnPhong(in vec3 normal, in vec3 halfVec, in float roughness
 	return pow(nDotM, 2 / roughness2 - 2) / (PI * roughness2);
 }
 
-vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition /* from surface to light source */, in vec3 albedo, in vec3 F0, in float roughness, in bool isMetal, in vec3 lightColor) {
+vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition /* from surface to light source */, in vec3 albedo, in vec3 F0, in float roughness, in bool isMetal, in float clearcoat, in vec3 clearcoatNormal, in vec3 lightColor) {
 	if(dot(normal, relativeLightPosition) <= 0.0) {
 		return vec3(0.0);
 	}
@@ -64,6 +64,7 @@ vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeL
 
 
 	#if defined USE_LIGHT_RADIUS_HACK
+		#define REFLECTED_LIGHT
 		vec3 reflectedLight = reflect(-normalizedLight, normal);
 
 		// pretend we're pointing exactly at the light source if we land within a certain radius of it
@@ -96,5 +97,12 @@ vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeL
 	// Cook-Torrance specular * dot(n, l)
 	vec3 specular = D * G * F / (4.0 * dot(normal, normalizedView));
 
-	return lightColor * (diffuse + specular);
+	float clearcoatLight = 0.0;
+	// clearcoat
+	if(clearcoat > 0.0) {
+		vec3 reflectedLightClearcoat = reflect(-normalizedLight, clearcoatNormal);
+		clearcoatLight = smoothstep(0.9985, 0.999, dot(normalizedView, reflectedLightClearcoat));
+	}
+
+	return lightColor * ((diffuse + specular) * (1.0 - clearcoat) + clearcoatLight * clearcoat);
 }

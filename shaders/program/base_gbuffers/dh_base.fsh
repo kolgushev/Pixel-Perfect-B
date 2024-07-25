@@ -177,6 +177,8 @@ void main() {
         roughness,
         isMetal,
         emissiveness,
+        0.0,
+        UP,
         normal,
         view(normal),
         positionNormalized,
