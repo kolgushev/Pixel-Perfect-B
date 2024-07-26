@@ -117,6 +117,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
         #else
             vec3 sunLighting = vec3(0.0);
         #endif
+
         vec3 directSolarLighting = moonLighting + sunLighting;
 
         #if defined FOG_ENABLED
@@ -152,8 +153,20 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
         float ambientSkyShading = (normal.y + 1) * -0.47 + 1.0;
         vec3 ambientSkyLight = skyColor * ambientSkyShading * lightmapAdjusted.y * 0.6;
 
+        // clearcoat
+        vec3 skyReflection = vec3(0.0);
+        #if defined PUDDLES_REFLECT_SKY
+            vec3 clearcoatReflection = reflect(incident, clearcoatNormal);
+            skyReflection = pixelPerfectSkyVector(clearcoatReflection, sunPositionWorld, vec2(0.0), rain, skyTime, true);
+
+            float fresnel = fresnelSchlick(normalize(clearcoatReflection), clearcoatNormal, 0.02);
+            fresnel *= clearcoatStrength;
+            skyReflection *= fresnel;
+            ambientSkyLight *= 1.0 - fresnel;
+        #endif
+
         // Add the lighting togther to get the total contribution of the lightmap the final color.
-        vec3 indirectLighting = torchLighting + (ambientLight + skyLighting + ambientSkyLight) * albedo;
+        vec3 indirectLighting = torchLighting + (ambientLight + skyLighting + ambientSkyLight) * albedo + skyReflection;
 
         // apply min lighting
         indirectLighting = mix(0.5 * indirectLighting + minLight, indirectLighting, smoothstep(-minLight, 2.0 * minLight, indirectLighting));

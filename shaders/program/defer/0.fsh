@@ -26,7 +26,7 @@ void main() {
     // the nether & twilight forest don't render sky
     #if !defined HAS_SKY
         #if defined DIM_TWILIGHT
-            vec3 skyColorProcessed = pixelPerfectSkyVector(viewInverse(depthToView(texcoord, depth, gbufferProjectionInverse)), vec3(0.0, -1.0, 0.0), vec2(0.0), 0.0, -1.0);
+            vec3 skyColorProcessed = pixelPerfectSkyVector(viewInverse(depthToView(texcoord, depth, gbufferProjectionInverse)), vec3(0.0, -1.0, 0.0), vec2(0.0), 0.0, -1.0, false);
         #else
             #if defined ATMOSPHERIC_FOG
                 vec3 skyColorProcessed = ATMOSPHERIC_FOG_COLOR;

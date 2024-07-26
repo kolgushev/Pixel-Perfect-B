@@ -20,7 +20,7 @@
 	}
 #endif
 
-vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float rain, in float skyTime) {
+vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float rain, in float skyTime, in bool isReflection) {
 	v = normalize(v);
 	vec3 vecSun = normalize(sun_dir);
 	float dt = dot(vecSun, UP);
@@ -30,7 +30,7 @@ vec3 pixelPerfectSkyVector(in vec3 v, in vec3 sun_dir, in vec2 stars, in float r
 	vec3 color = transitionSky(transition, normalize(vec), vecSun);
 
 	#if defined HORIZON_AS_OCEAN
-		if(v.y < 0.0) {
+		if(v.y < 0.0 && !isReflection) {
 			vec = vec3(v.x, max(expandSky, -v.y + expandSky), v.z);
 			vecSun = normalize(vec3(sun_dir.x, -sun_dir.y, sun_dir.z));
 			// apply fresnel to mirror copy

@@ -4,6 +4,10 @@
 
 #include "/common_defs.glsl"
 
+#if !defined gc_sky && !defined g_line && !defined g_armor_glint && !defined g_clouds
+    #define IS_SHADED
+#endif
+
 /* DRAWBUFFERS:01235 */
 layout(location = 0) out vec4 b0; // sky, near plane
 layout(location = 1) out vec4 b1; // far plane
@@ -91,7 +95,7 @@ void main() {
     #if defined g_skybasic
         if(renderStage == MC_RENDER_STAGE_SUNSET) discard;
 
-        vec4 albedo = opaque(pixelPerfectSkyVector(position, viewInverse(sunPosition), stars, rain, skyTime));
+        vec4 albedo = opaque(pixelPerfectSkyVector(position, viewInverse(sunPosition), stars, rain, skyTime, false));
 
         if(stars.g > 0.5) {
             albedo = opaque1(stars.r);
@@ -185,10 +189,12 @@ void main() {
         albedo.rgb = sRGBToACEScg(albedo.rgb);
     #endif
 
-    #if HDR_TEX_STANDARD == 1
-        albedo.rgb = uncharted2_filmic_inverse(albedo.rgb);
-    #elif HDR_TEX_STANDARD == 2
-        albedo.rgb = aces_fitted_inverse(albedo.rgb);
+    #if defined IS_SHADED
+        #if HDR_TEX_STANDARD == 1
+            albedo.rgb = uncharted2_filmic_inverse(albedo.rgb);
+        #elif HDR_TEX_STANDARD == 2
+            albedo.rgb = aces_fitted_inverse(albedo.rgb);
+        #endif
     #endif
 
     #if defined g_line
@@ -274,10 +280,6 @@ void main() {
 
 
     // Material Properties
-    #if !defined gc_sky && !defined g_line && !defined g_armor_glint
-        #define IS_SHADED
-    #endif
-
     // normal, emission, porosity, and AO mapping happens regardless of PBR
     vec3 normalMod = displayNormal;
     float AOMap = 1.0;
@@ -427,35 +429,42 @@ void main() {
 
         #if PUDDLE_STRENGTH != 0
             if(mcEntity != WATER) {
-                float waterDeposited = max(wetnessFiltered * float(PUDDLE_STRENGTH) * 0.5 * dot(clearcoatNormal, UP) * smoothstep(0.5, 0.9, lightmap.g), 0.0);
+                #define MAX_WATER 1.5
+                // 0.15 instead of 0.1 so that some of the water cannot be absorbed even w/ max porosity
+                float waterDeposited = max(wetnessFiltered * float(PUDDLE_STRENGTH) * 0.1 * MAX_WATER * dot(normal, UP) * smoothstep(0.5, 0.9, lightmap.g), 0.0);
 
-                // darken albedo if water gets absorbed by material
+                // porous stuff dries faster and wets slower
                 float waterCapacityUsed = smoothstep(-EPSILON, porosity, waterDeposited);
 
                 #if defined USE_PBR || defined PUDDLE_WATER_FOG
                     // determines small amount of water covering surface (proportion of water not being absorbed)
                     // clearcoatStrength = min(waterCapacityUsed * waterDeposited, 1.0);
-                    clearcoatStrength = min(waterCapacityUsed * waterDeposited, 1.0) * 0.4;
+                    clearcoatStrength = min(waterCapacityUsed * waterDeposited, 1.0);
                     
                     float puddleHeight = tile((position.xz + cameraPosition.xz) * 2.0 + vec2(0.0, 0.5), NOISE_PERLIN_4D, false).r;
                     puddleHeight = smoothstep(0.4, 0.8, puddleHeight);
 
+                    // A waterNotAbsorbed of 2.0 means everything is fully underwater
                     float waterNotAbsorbed = waterDeposited - porosity;
-                    waterNotAbsorbed = max(waterNotAbsorbed * 0.25 - height * 0.5 - puddleHeight, 0.0);
+                    // This being set below 2.0 means some areas will be wet but not underwater due to puddleHeight
+                    #define MAX_WATER_NOT_ABSORBED 0.4
+                    waterNotAbsorbed *= (MAX_WATER_NOT_ABSORBED / (MAX_WATER - 1.0));
 
-                    // puddles
-                    float puddleness = smoothstep(0.0, 0.5, waterNotAbsorbed);
+                    waterNotAbsorbed = max(waterNotAbsorbed - height * 0.5 - puddleHeight, 0.0);
                 #endif
 
                 #if defined USE_PBR
+                    // puddles
+                    float puddleness = smoothstep(0.0, 0.5, waterNotAbsorbed);
+
                     // two noise textures moving in opposite directions form puddle wavelets
                     vec2 waveletMap = tile((position.xz + cameraPosition.xz) * 30.0 + frameTimeCounter * 10.0 + vec2(0.5, 0.0), NOISE_PERLIN_4D, false).rg + tile((position.xz + cameraPosition.xz) * 30.0 - frameTimeCounter * 10.0, NOISE_PERLIN_4D, false).rg;
 
                     waveletMap = waveletMap * 0.05 - 0.025;
 
-                    vec3 waveletNormal = vec3(waveletMap.x, 0.0, waveletMap.y);
-                    // reconstruct y
-                    waveletNormal.y = sqrt(1.0 - dot(waveletNormal.xy, waveletNormal.xy));
+                    vec3 waveletNormal = vec3(waveletMap.xy, 0.0);
+                    // reconstruct vertical
+                    waveletNormal.y = sqrt(1.0 - dot(waveletNormal.xz, waveletNormal.xz));
 
                     clearcoatNormal = normalize(mix(clearcoatNormal, waveletNormal, puddleness));
                 #else

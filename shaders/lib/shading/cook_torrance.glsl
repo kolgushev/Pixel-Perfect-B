@@ -1,9 +1,11 @@
 // Referencing https://graphicscompendium.com/gamedev/15-pbr
 // and https://graphicscompendium.com/references/cook-torrance
 
-
+float fresnelSchlick(in vec3 normalizedLight, in vec3 halfVec, in float F0) {
+	return F0 + (1.0 - F0) * pow(clamp(1.0 - dot(normalizedLight, halfVec), 0.0, 1.0), 5.0);
+}
 vec3 fresnelSchlick(in vec3 normalizedLight, in vec3 halfVec, in vec3 F0) {
-	return F0 + (1.0 - F0) * pow(max(1.0 - dot(normalizedLight, halfVec), 0.0), 5.0);
+	return F0 + (1.0 - F0) * pow(clamp(1.0 - dot(normalizedLight, halfVec), 0.0, 1.0), 5.0);
 }
 
 float subGeometryGGX(in vec3 x, in vec3 normal, in vec3 halfVec, in float roughness2) {
@@ -97,12 +99,14 @@ vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeL
 	// Cook-Torrance specular * dot(n, l)
 	vec3 specular = D * G * F / (4.0 * dot(normal, normalizedView));
 
-	float clearcoatLight = 0.0;
+	vec3 clearcoatLight = vec3(0.0);
+	float clearcoatMod = clearcoat;
 	// clearcoat
 	if(clearcoat > 0.0) {
-		vec3 reflectedLightClearcoat = reflect(-normalizedLight, clearcoatNormal);
-		clearcoatLight = smoothstep(0.9985, 0.999, dot(normalizedView, reflectedLightClearcoat));
+		vec3 clearcoatReflection = reflect(-normalizedView, clearcoatNormal);
+		clearcoatMod *= fresnelSchlick(clearcoatReflection, clearcoatNormal, 0.02);
+		clearcoatLight += lightColor * smoothstep(0.9985, 0.999, dot(normalizedLight, clearcoatReflection));
 	}
 
-	return lightColor * ((diffuse + specular) * (1.0 - clearcoat) + clearcoatLight * clearcoat);
+	return lightColor * (diffuse + specular) * (1.0 - clearcoatMod) + clearcoatLight * clearcoatMod;
 }

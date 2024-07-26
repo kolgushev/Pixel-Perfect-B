@@ -473,8 +473,12 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 
 #define PUDDLE_STRENGTH 10 // [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
 
-#define PUDDLE_WATER_FOG
+// #define PUDDLE_WATER_FOG
 #ifdef PUDDLE_WATER_FOG
+#endif
+
+#define PUDDLES_REFLECT_SKY
+#ifdef PUDDLES_REFLECT_SKY
 #endif
 
 #define RAIN_FOG
