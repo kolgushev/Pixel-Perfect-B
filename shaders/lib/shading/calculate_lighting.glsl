@@ -15,7 +15,7 @@ vec3 actualSkyColor(in float skyTime) {
 }
 
 // Input is not adjusted lightmap coordinates
-mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3 F0, in float roughness, in bool isMetal, in float emissiveness, in float clearcoatStrength, in vec3 clearcoatNormal, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPositionWorld, in vec3 moonPositionWorld, in float rain, in sampler2D vanillaLightTex) {
+mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3 F0, in float roughness, in int metalId, in float emissiveness, in float clearcoatStrength, in vec3 clearcoatNormal, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPositionWorld, in vec3 moonPositionWorld, in float rain, in sampler2D vanillaLightTex) {
 
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
@@ -86,7 +86,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
 
         #if defined USE_PBR && !defined g_clouds
             // adjust roughness to reduce weird-looking specular
-            torchLighting = cookTorranceSingleLight(normal, incident, normal, albedo, F0, mix(roughness, 1.0, 0.5), isMetal, clearcoatStrength, clearcoatNormal, torchLighting);
+            torchLighting = cookTorranceSingleLight(normal, incident, normal, albedo, F0, mix(roughness, 1.0, 0.5), metalId, clearcoatStrength, clearcoatNormal, torchLighting);
         #else
             torchLighting *= albedo * RCP_PI;
         #endif
@@ -94,12 +94,15 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
         #if defined HAS_MOON
             float moonIntensity = clamp(-skyTime * 4.0, 0.0, 1.0);
 
-            #if defined USE_PBR && !defined g_clouds
-                vec3 moonLighting = cookTorranceSingleLight(normal, incident, moonPositionWorld, albedo, F0, roughness, isMetal, clearcoatStrength, clearcoatNormal, moonBrightness * MOON_COLOR * moonIntensity);
-            #else
-                float moonShading = normalLighting(normal, moonPositionWorld);
-                vec3 moonLighting = moonShading * moonBrightness * MOON_COLOR * moonIntensity;
-            #endif
+            vec3 moonLighting = vec3(0.0);
+            if(moonIntensity > 0.0) {
+                #if defined USE_PBR && !defined g_clouds
+                    moonLighting = cookTorranceSingleLight(normal, incident, moonPositionWorld, albedo, F0, roughness, metalId, clearcoatStrength, clearcoatNormal, moonBrightness * MOON_COLOR * moonIntensity);
+                #else
+                    float moonShading = normalLighting(normal, moonPositionWorld);
+                    moonLighting = moonShading * moonBrightness * MOON_COLOR * moonIntensity;
+                #endif
+            }
         #else
             vec3 moonLighting = vec3(0.0);
         #endif
@@ -108,12 +111,15 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             float sunIntensity = clamp(skyTime * 4.0, 0.0, 1.0);
 
             // TODO: modify sun color during sunset/sunrise
-            #if defined USE_PBR && !defined g_clouds
-                vec3 sunLighting = cookTorranceSingleLight(normal, incident, sunPositionWorld, albedo, F0, roughness, isMetal, clearcoatStrength, clearcoatNormal, SUN_COLOR * sunIntensity);
-            #else
-                float sunShading = normalLighting(normal, sunPositionWorld);
-                vec3 sunLighting = sunShading * SUN_COLOR * sunIntensity;
-            #endif
+            vec3 sunLighting = vec3(0.0);
+            if(sunIntensity > 0.0) {
+                #if defined USE_PBR && !defined g_clouds
+                    sunLighting = cookTorranceSingleLight(normal, incident, sunPositionWorld, albedo, F0, roughness, metalId, clearcoatStrength, clearcoatNormal, SUN_COLOR * sunIntensity);
+                #else
+                    float sunShading = normalLighting(normal, sunPositionWorld);
+                    sunLighting = sunShading * SUN_COLOR * sunIntensity;
+                #endif
+            }
         #else
             vec3 sunLighting = vec3(0.0);
         #endif

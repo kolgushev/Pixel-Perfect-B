@@ -289,7 +289,8 @@ void main() {
     // Specular, roughness and metallicness mapping only happens with PBR
     float roughness = 0.8;
     vec3 reflectance = vec3(0.02);
-    bool isMetal = false;
+    // -2 dielectric, -1 generic metal, 0-n hardcoded metal
+    int metalId = -2;
     // water & puddles are applied as a separate clearcoat
     float clearcoatStrength = 0.0;
     vec3 clearcoatNormal = displayNormal;
@@ -325,16 +326,19 @@ void main() {
                 porosity = clamp(specular.b * 3.984375, 0.0, 1.0);
 
                 #include "/lib/shading/metal_reflectances.glsl"
-                int metalId = int(round(specular.y * 255));
+                metalId = int(round(specular.y * 255));
                 if(metalId > 230) {
                     if(metalId <= 237) {
                         reflectance = F0_INDEX[metalId - 230];
+                        metalId = metalId - 230;
                     } else {
                         reflectance = albedo.rgb;
+                        metalId = -1;
                     }
-                    isMetal = true;
                     // in case the "reserved for future use" part of LabPBR spec is ever used
                     porosity = 0.0;
+                } else {
+                    metalId = -2;
                 }
             #endif
         #elif defined AUTO_MAT
@@ -380,7 +384,7 @@ void main() {
                     || mcEntity == NETHERITE_BLOCK
                     #endif
                 ) {
-                    isMetal = true;
+                    metalId = -1;
                     if(mcEntity == NETHERITE_BLOCK) {
                         roughness *= 0.8;
                         reflectance = vec3(0.99408284,0.78994083,1.21597633) * dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
@@ -508,7 +512,7 @@ void main() {
                 albedo.rgb,
                 vec3(0.04),
                 0.9,
-                false,
+                -2,
                 0.0,
                 clearcoatStrength,
                 clearcoatNormal,
@@ -551,7 +555,7 @@ void main() {
                 * 0.5
             #endif
             ,
-            isMetal,
+            metalId,
             emissiveness,
             clearcoatStrength,
             clearcoatNormal,

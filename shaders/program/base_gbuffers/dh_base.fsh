@@ -100,7 +100,8 @@ void main() {
         albedo.rgb = vec3(1, 0, 0);
     #endif
 
-    bool isMetal = mcEntity == DH_BLOCK_METAL;
+    // -2 dielectric, -1 generic metal, 0-n hardcoded metal
+    int metalId = mcEntity == DH_BLOCK_METAL ? -1 : -2;
     float roughness = 0.8;
     vec3 reflectance = vec3(0.02);
     switch(mcEntity) {
@@ -175,7 +176,7 @@ void main() {
         albedo.rgb,
         reflectance,
         roughness,
-        isMetal,
+        metalId,
         emissiveness,
         0.0,
         UP,
