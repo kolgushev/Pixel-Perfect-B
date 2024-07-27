@@ -156,7 +156,10 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
         // clearcoat
         vec3 skyReflection = vec3(0.0);
         #if defined PUDDLES_REFLECT_SKY
-            vec3 clearcoatReflection = reflect(incident, clearcoatNormal);
+            vec3 clearcoatReflection = incident;
+            if(dot(incident, clearcoatNormal) < 0.0) {
+                clearcoatReflection = reflect(incident, clearcoatNormal);
+            }
             skyReflection = pixelPerfectSkyVector(clearcoatReflection, sunPositionWorld, vec2(0.0), rain, skyTime, true);
 
             float fresnel = fresnelSchlick(normalize(clearcoatReflection), clearcoatNormal, 0.02);

@@ -215,9 +215,9 @@ void main() {
             
             // there is no rain in the nether (rain in deserts is a windstorm)
             #if defined DIM_NO_RAIN
-                float wetness = 0.0;
+                float windSpeed = 0.0;
             #else
-                float wetness = wetnessCustom;
+                float windSpeed = windiness;
             #endif
 
             vec2 offset = vec2(0,0);
@@ -227,20 +227,20 @@ void main() {
             const float rainUpper = 0.9;
             
             // normal wind
-            if(wetness <= rainUpper || rainWind < 1.0) {
+            if(windSpeed <= rainUpper || rainWind < 1.0) {
                 offset = getCalmWindProfile(absolutePosition.xz, time, fine) * WIND_STRENGTH_CONSTANT_CALM;
             }
 
             // custom faster wind for bad weather
             if(isWater) {
                 rainOffset = getStormyWindProfile(absolutePosition.xz, time * 0.4, fine * 1.7) * 1.5;
-            } else if(wetness >= rainLower) {
+            } else if(windSpeed >= rainLower) {
                 rainOffset = getStormyWindProfile(absolutePosition.xz, time, fine);
             }
             
             // mix the two winds depending on weather
             // in snowy biomes, rainOffset is nonexistent
-            offset = mix(offset, rainOffset, smoothstep(rainLower, rainUpper, wetness) * rainWind);
+            offset = mix(offset, rainOffset, smoothstep(rainLower, rainUpper, windSpeed) * rainWind);
 
             #if !defined g_weather
                 if(isUpper) {
@@ -337,7 +337,7 @@ void main() {
             #endif
 
             if(isWater) {
-                float offset1D = length(offset) * 0.4 - (smoothstep(rainLower, rainUpper, wetness) * 0.3 * WIND_STRENGTH_CONSTANT + 0.07);
+                float offset1D = length(offset) * 0.4 - (smoothstep(rainLower, rainUpper, windSpeed) * 0.3 * WIND_STRENGTH_CONSTANT + 0.07);
                 float modAbsPos = mod(absolutePosition.y, 1);
                 #if defined g_water
                     offset1D = modAbsPos > 1 - 0.01 ? 0.0 : offset1D;
