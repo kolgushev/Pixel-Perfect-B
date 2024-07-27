@@ -1,8 +1,18 @@
-float normalLighting(in vec3 normal, in vec3 lightPos) {
+float normalLighting(in vec3 normal, in vec3 lightPos, in float subsurface) {
     #if VANILLA_LIGHTING != 2 && defined SHADOWS_ENABLED
-        return clamp(dot(normal, normalize(lightPos)) * 6.0, 0.0, 1.0);
+        float shading = dot(normal, normalize(lightPos)) * 6.0;
     #else
-        return max(dot(normal, normalize(lightPos)), 0.0);
+        float shading = dot(normal, normalize(lightPos));
+    #endif
+    
+    #if defined DO_SUBSURFACE
+        if(subsurface > 0.0) {
+            return mix(clamp(shading, 0.0, 1.0), min(abs(shading), 1.0), subsurface);
+        } else {
+            return clamp(shading, 0.0, 1.0);
+        }
+    #else
+        return clamp(shading, 0.0, 1.0);
     #endif
 }
 
@@ -15,7 +25,7 @@ vec3 actualSkyColor(in float skyTime) {
 }
 
 // Input is not adjusted lightmap coordinates
-mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3 F0, in float roughness, in int metalId, in float emissiveness, in float clearcoatStrength, in vec3 clearcoatNormal, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPositionWorld, in vec3 moonPositionWorld, in float rain, in sampler2D vanillaLightTex) {
+mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3 F0, in float roughness, in int metalId, in float subsurface, in float emissiveness, in float clearcoatStrength, in vec3 clearcoatNormal, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPositionWorld, in vec3 moonPositionWorld, in float rain, in sampler2D vanillaLightTex) {
 
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
@@ -55,8 +65,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
         directSolarLighting -= indirectLighting;
 
         #if defined SHADOWS_ENABLED
-            float sunShading = normalLighting(normalViewspace, sunPosition);
-            float moonShading = normalLighting(normalViewspace, moonPosition);
+            float sunShading = normalLighting(normalViewspace, sunPosition, subsurface);
+            float moonShading = normalLighting(normalViewspace, moonPosition, subsurface);
 
             skyShading = mix(moonShading, sunShading, clamp(skyTime * 8.0 + 0.5, 0.0, 1.0) * 0.5 + 0.5);
 
@@ -86,7 +96,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
 
         #if defined USE_PBR && !defined g_clouds
             // adjust roughness to reduce weird-looking specular
-            torchLighting = cookTorranceSingleLight(normal, incident, normal, albedo, F0, mix(roughness, 1.0, 0.5), metalId, clearcoatStrength, clearcoatNormal, torchLighting);
+            torchLighting = singleLight(normal, incident, normal, albedo, F0, mix(roughness, 1.0, 0.5), metalId, subsurface, clearcoatStrength, clearcoatNormal, torchLighting);
         #else
             torchLighting *= albedo * RCP_PI;
         #endif
@@ -97,9 +107,9 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             vec3 moonLighting = vec3(0.0);
             if(moonIntensity > 0.0) {
                 #if defined USE_PBR && !defined g_clouds
-                    moonLighting = cookTorranceSingleLight(normal, incident, moonPositionWorld, albedo, F0, roughness, metalId, clearcoatStrength, clearcoatNormal, moonBrightness * MOON_COLOR * moonIntensity);
+                    moonLighting = singleLight(normal, incident, moonPositionWorld, albedo, F0, roughness, metalId, subsurface, clearcoatStrength, clearcoatNormal, moonBrightness * MOON_COLOR * moonIntensity);
                 #else
-                    float moonShading = normalLighting(normal, moonPositionWorld);
+                    float moonShading = normalLighting(normal, moonPositionWorld, subsurface);
                     moonLighting = moonShading * moonBrightness * MOON_COLOR * moonIntensity;
                 #endif
             }
@@ -114,9 +124,9 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             vec3 sunLighting = vec3(0.0);
             if(sunIntensity > 0.0) {
                 #if defined USE_PBR && !defined g_clouds
-                    sunLighting = cookTorranceSingleLight(normal, incident, sunPositionWorld, albedo, F0, roughness, metalId, clearcoatStrength, clearcoatNormal, SUN_COLOR * sunIntensity);
+                    sunLighting = singleLight(normal, incident, sunPositionWorld, albedo, F0, roughness, metalId, subsurface, clearcoatStrength, clearcoatNormal, SUN_COLOR * sunIntensity);
                 #else
-                    float sunShading = normalLighting(normal, sunPositionWorld);
+                    float sunShading = normalLighting(normal, sunPositionWorld, subsurface);
                     sunLighting = sunShading * SUN_COLOR * sunIntensity;
                 #endif
             }

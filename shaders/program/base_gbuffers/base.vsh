@@ -434,9 +434,9 @@ void main() {
         vec3 unjitteredView = playerToView(position);
 
         #if defined g_skybasic
-            #define PREV_CLIP toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position).xyw
+            #define PREV_CLIP toClipspace(gbufferPreviousProjection, gbufferPreviousModelView, position).xyw
         #else
-            #define PREV_CLIP toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position + cameraDiff).xyw
+            #define PREV_CLIP toClipspace(gbufferPreviousProjection, gbufferPreviousModelView, position + cameraDiff).xyw
         #endif
 
         // TODO: add proper position evaluation for hand

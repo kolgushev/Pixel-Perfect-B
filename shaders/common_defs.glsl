@@ -284,6 +284,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 
 #define AO_MAP_STRENGTH 10 // [0 1 2 3 4 5 6 7 8 9 10]
 
+#define DO_SUBSURFACE
+#ifdef DO_SUBSURFACE
+#endif
+
 // #define COMPLEX_METALS
 #ifdef COMPLEX_METALS
 #endif

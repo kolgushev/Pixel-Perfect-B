@@ -30,7 +30,7 @@ void main() {
             position = vaPosition + chunkOffset;
             normal = vaNormal;
 
-            gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
+            gl_Position = toClipspace(projectionMatrix, modelViewMatrix, position);
             
             gl_Position.xy = distortShadow(gl_Position.xy);
             gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);

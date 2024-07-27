@@ -1,4 +1,4 @@
-vec4 toViewspace(in mat4 projectionMatrix, in mat4 modelViewMatrix, in vec3 position) {
+vec4 toClipspace(in mat4 projectionMatrix, in mat4 modelViewMatrix, in vec3 position) {
     return projectionMatrix * mul_m4_v3(modelViewMatrix, position);
 }
 

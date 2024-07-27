@@ -23,14 +23,6 @@ flat varying int mcEntity;
     varying vec3 unjitteredClip;
 #endif
 
-#if defined g_skybasic
-    varying vec2 stars;
-#endif
-
-#if defined CLOSE_FADE_OUT && (defined gc_fades_out || defined gc_particles)
-    #define fade_out_items
-#endif
-
 #include "/lib/use.glsl"
 
 void main() {
@@ -103,10 +95,12 @@ void main() {
     // -2 dielectric, -1 generic metal, 0-n hardcoded metal
     int metalId = mcEntity == DH_BLOCK_METAL ? -1 : -2;
     float roughness = 0.8;
+    float subsurface = 0.0;
     vec3 reflectance = vec3(0.02);
     switch(mcEntity) {
         case DH_BLOCK_LEAVES:
             roughness = 0.6;
+            subsurface = 0.5;
             reflectance = vec3(0.04);
             break;
         case DH_BLOCK_STONE:
@@ -135,10 +129,12 @@ void main() {
             break;
         case DH_BLOCK_SNOW:
             roughness = 0.6;
+            subsurface = 0.8;
             reflectance = vec3(0.04);
             break;
         case DH_BLOCK_SAND:
             roughness = 0.8;
+            subsurface = 0.1;
             reflectance = vec3(0.05);
             break;
         case DH_BLOCK_TERRACOTTA:
@@ -177,6 +173,7 @@ void main() {
         reflectance,
         roughness,
         metalId,
+        subsurface,
         emissiveness,
         0.0,
         UP,
@@ -201,13 +198,16 @@ void main() {
 
         float shadow = getShadow(
             shadowPos,
+            normal,
+            viewInverse(shadowLightPosition),
             pixelatedPosition + cameraPosition,
             shadowProjection,
             shadowModelView,
             texcoord,
             shadowtex1,
             lightmap.g,
-            skyTime);
+            skyTime,
+            subsurface);
     #else
         #if defined VANILLA_SHADOWS
             float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;

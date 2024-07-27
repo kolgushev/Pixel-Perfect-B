@@ -103,7 +103,7 @@ void main() {
 
         vec3 unjitteredView = playerToView(position);
 
-        prevClip = toViewspace(dhPreviousProjection, gbufferPreviousModelView, position + cameraDiff).xyw;
+        prevClip = toClipspace(dhPreviousProjection, gbufferPreviousModelView, position + cameraDiff).xyw;
 
         unjitteredClip = viewToClip(unjitteredView).xyw;
     #endif

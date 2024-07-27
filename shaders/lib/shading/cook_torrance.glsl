@@ -78,9 +78,17 @@ float distributionBlinnPhong(in vec3 normal, in vec3 halfVec, in float roughness
 	return pow(nDotM, 2 / roughness2 - 2) / (PI * roughness2);
 }
 
-vec3 cookTorranceSingleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition /* from surface to light source */, in vec3 albedo, in vec3 F0, in float roughness, in int metalId, in float clearcoat, in vec3 clearcoatNormal, in vec3 lightColor) {
+vec3 singleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition /* from surface to light source */, in vec3 albedo, in vec3 F0, in float roughness, in int metalId, in float subsurface, in float clearcoat, in vec3 clearcoatNormal, in vec3 lightColor) {
 	if(dot(normal, relativeLightPosition) <= 0.0) {
-		return vec3(0.0);
+		#if defined DO_SUBSURFACE
+			if(subsurface > 0.0) {
+				return albedo * RCP_PI * abs(dot(normal, normalize(relativeLightPosition))) * subsurface * lightColor;
+			} else {
+				return vec3(0.0);
+			}
+		#else
+			return vec3(0.0);
+		#endif
 	}
 
 	// Does not include ambient light so that multiple lights can be summed up

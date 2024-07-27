@@ -280,11 +280,12 @@ void main() {
 
 
     // Material Properties
-    // normal, emission, porosity, and AO mapping happens regardless of PBR
+    // normal, emission, porosity, SS, and AO mapping happens regardless of PBR
     vec3 normalMod = displayNormal;
     float AOMap = 1.0;
     float emissiveness = 0.0;
     float porosity = 0.0;
+    float subsurface = 0.0;
 
     // Specular, roughness and metallicness mapping only happens with PBR
     float roughness = 0.8;
@@ -317,6 +318,9 @@ void main() {
             emissiveness = specular.w < 1.0 ? specular.w * 254.0 * RCP_255 : 0.0;
 
             height = normalsAndAO.w;
+
+            // specular.b * (255 / (255 - 64)) - 64 * (255 / (255 - 64));
+            subsurface = specular.b * 1.3350785340 - 0.3350785340;
 
             #if defined USE_PBR
                 // convert from perceptual smoothness
@@ -514,6 +518,7 @@ void main() {
                 0.9,
                 -2,
                 0.0,
+                0.0,
                 clearcoatStrength,
                 clearcoatNormal,
                 UP,
@@ -556,6 +561,7 @@ void main() {
             #endif
             ,
             metalId,
+            subsurface,
             emissiveness,
             clearcoatStrength,
             clearcoatNormal,
@@ -605,13 +611,16 @@ void main() {
 
         float shadow = getShadow(
             shadowPos,
+            normalMod,
+            viewInverse(shadowLightPosition),
             shadowPos + cameraPosition,
             shadowProjection,
             shadowModelView,
             gl_FragCoord.xy,
             shadowtex1,
             lightmap.g,
-            skyTime);
+            skyTime,
+            subsurface);
     #else
         #if defined VANILLA_SHADOWS
             float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;
