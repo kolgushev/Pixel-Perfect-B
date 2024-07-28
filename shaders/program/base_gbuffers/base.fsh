@@ -327,7 +327,16 @@ void main() {
                 roughness = pow(1.0 - specular.x, 2.0);
                 reflectance = vec3(specular.y);
 
-                porosity = clamp(specular.b * 3.984375, 0.0, 1.0);
+                porosity = specular.b * 3.984375;
+                if(porosity > 1.0 + EPSILON) {
+                    if(isBlockAutomatSomewhatPorous(mcEntity)) {
+                        porosity = 0.5;
+                    } else if(isBlockAutomatVeryPorous(mcEntity)) {
+                        porosity = 1.0;
+                    } else {
+                        porosity = 0.0;
+                    }
+                }
 
                 #include "/lib/shading/metal_reflectances.glsl"
                 metalId = int(round(specular.y * 255));
