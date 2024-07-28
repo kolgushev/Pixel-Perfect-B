@@ -351,7 +351,7 @@ void main() {
             #elif defined gc_emissive
                 emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
             #else
-                if(mcEntity == LIT || mcEntity == LIT_CUTOUTS || mcEntity == LIT_CUTOUTS_UPSIDE_DOWN || mcEntity == LAVA || mcEntity == WAVING_CUTOUTS_BOTTOM_LIT || mcEntity == LIT_PROBLEMATIC) {
+                if(isBlockAutomatGlowing(mcEntity)) {
                     emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
                 }
             #endif
@@ -361,7 +361,7 @@ void main() {
                 float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
                 float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
                 
-                if(mcEntity == SPECULAR_MATTE) {
+                if(isBlockAutomatMatte(mcEntity)) {
                     roughness = 0.9;
                 } else {
                     // super specular stuff
@@ -372,24 +372,24 @@ void main() {
                     roughness *= roughness;
                 }
 
-                if(mcEntity == SPECULAR_SHINY || mcEntity == ICE || mcEntity == WATER) {
+                if(isBlockAutomatShiny(mcEntity)) {
                     roughness *= roughness * 0.7;
                 }
 
                 if(
-                    mcEntity == METALLIC
+                    isBlockAutomatMetallic(mcEntity)
                     #if defined METALLIC_REDSTONE_BLOCK
-                    || mcEntity == REDSTONE_BLOCK
+                    || isBlockRedstone(mcEntity)
                     #endif
                     #if defined METALLIC_WAXED_COPPER
-                    || mcEntity == WAXED_COPPER
+                    || isBlockWaxedUnoxidizedCopper(mcEntity)
                     #endif
                     #if defined METALLIC_NETHERITE_BLOCK
-                    || mcEntity == NETHERITE_BLOCK
+                    || isBlockNetheriteBlock(mcEntity)
                     #endif
                 ) {
                     metalId = -1;
-                    if(mcEntity == NETHERITE_BLOCK) {
+                    if(isBlockNetheriteBlock(mcEntity)) {
                         roughness *= 0.8;
                         reflectance = vec3(0.99408284,0.78994083,1.21597633) * dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
                     } else {
@@ -436,7 +436,7 @@ void main() {
         #endif
 
         #if PUDDLE_STRENGTH != 0
-            if(mcEntity != WATER) {
+            if(!isBlockWater(mcEntity)) {
                 #define MAX_WATER 1.5
                 // 0.15 instead of 0.1 so that some of the water cannot be absorbed even w/ max porosity
                 float waterDeposited = max(wetnessFiltered * float(PUDDLE_STRENGTH) * 0.1 * MAX_WATER * dot(normal, UP) * smoothstep(0.5, 0.9, lightmap.g), 0.0);
@@ -491,7 +491,7 @@ void main() {
     #endif
 
     #if defined g_terrain && NOISY_LAVA != 0
-        if(mcEntity == LAVA) {
+        if(isBlockLava(mcEntity)) {
             emissiveness *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
         }
     #endif
@@ -649,7 +649,7 @@ void main() {
 
         #if defined g_water
             albedo.a *= 0.9;
-            if(mcEntity == WATER) {
+            if(isBlockWater(mcEntity)) {
                 #if WATER_STYLE == 1
                     diffuse = gammaCorrection(diffuse, GAMMA);
                     float luma = dot(diffuse, LUMINANCE_COEFFS_AP1);
@@ -661,7 +661,7 @@ void main() {
             }
 
             #if defined WATER_FOG_FROM_OUTSIDE
-                if(mcEntity == WATER || mcEntity == ICE) {
+                if(isBlockWater(mcEntity) || isBlockIce(mcEntity)) {
                     vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
 
                     float depth = texture(depthtex1, texcoordScreenspace).r;
@@ -686,13 +686,13 @@ void main() {
 
         #if defined WATER_FOG_FROM_OUTSIDE && defined g_water
             vec4 overlay = vec4(0);
-            if(mcEntity == WATER || mcEntity == ICE) {
+            if(isBlockWater(mcEntity) || isBlockIce(mcEntity)) {
                 float atmosPhogWater = 0.0;
                 float opaqueFog = 1.0;
                 if(isEyeInWater == 0) {
                     opaqueFog = fogifyDistanceOnly(positionOpaque, FAR, blindnessSmooth, 1/FAR);
                     atmosPhogWater = distance(position, positionOpaque);
-                    float fogDensity = mcEntity == WATER ? ATMOSPHERIC_FOG_DENSITY_WATER : FOG_DENSITY_ICE;
+                    float fogDensity = isBlockWater(mcEntity) ? ATMOSPHERIC_FOG_DENSITY_WATER : FOG_DENSITY_ICE;
                     atmosPhogWater = mix(atmosPhogWater, FAR, opaqueFog) * fogDensity;
                     // atmosPhogWater = min(atmosPhogWater, 1);
                     atmosPhogWater = 1.0 - exp(-atmosPhogWater);

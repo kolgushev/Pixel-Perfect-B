@@ -52,42 +52,7 @@
 #define CUSTOM_TONEMAP 5
 #define HLG_TONEMAP 6
 
-//block
-#define CUTOUTS 1
-#define CUTOUTS_UPSIDE_DOWN 2
-#define LIT 3
-#define LIT_CUTOUTS 4
-#define LIT_CUTOUTS_UPSIDE_DOWN 5
-#define LIT_PARTIAL 6
-#define LIT_PARTIAL_CUTOUTS 7
-#define LIT_PARTIAL_CUTOUTS_UPSIDE_DOWN 8
-#define LIT_PROBLEMATIC 9
-#define WAVING_CUTOUTS_LOW 19
-#define WAVING_CUTOUTS_BOTTOM 10
-#define WAVING_CUTOUTS_TOP 11
-#define WAVING_CUTOUTS_BOTTOM_STIFF 12
-#define WAVING_CUTOUTS_TOP_STIFF 13
-#if defined WAVING_FULL_BLOCKS_ENABLED
-    #define WAVING 14
-    #define WAVING_STIFF 15
-#else
-    #define WAVING (-2)
-    #define WAVING_STIFF (-2)
-#endif
-#define TRANSLUSCENT 14
-#define TRANSLUSCENT_STIFF 15
-
-#define WATER 16
-#define LAVA 17
-#define WAVING_CUTOUTS_BOTTOM_LIT 18
-#define WAVING_ON_WATER 20
-#define ICE 21
-#define SPECULAR_MATTE 22
-#define SPECULAR_SHINY 23
-#define METALLIC 24
-#define WAXED_COPPER 25
-#define REDSTONE_BLOCK 26
-#define NETHERITE_BLOCK 27
+#include "/block_aliases.glsl"
 
 // g stands for gbuffers
 // gc stands for gbuffers category

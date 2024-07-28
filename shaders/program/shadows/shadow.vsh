@@ -18,7 +18,7 @@ void main() {
         #if defined GRASS_CASTS_SHADOWS
             #define IS_WAVY false
         #else
-            #define IS_WAVY (mc_Entity.x == WAVING_CUTOUTS_LOW || mc_Entity.x == WAVING_CUTOUTS_BOTTOM || mc_Entity.x == WAVING_CUTOUTS_TOP || mc_Entity.x == WAVING_CUTOUTS_BOTTOM_STIFF || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF || mc_Entity.x == WAVING_CUTOUTS_BOTTOM_LIT)
+            #define IS_WAVY (isBlockWavy(mc_Entity.x))
         #endif
 
         if(IS_WAVY) {

@@ -97,7 +97,7 @@ void main() {
 
         // transluscency
         #if defined SUBSURFACE_SCATTERING
-            if(mc_Entity.x == TRANSLUSCENT || mc_Entity.x == TRANSLUSCENT_STIFF) {
+            if(isBlockAutomatTranslucent(mc_Entity.x)) {
                 // make sure normal always faces the sun
                 // a bit hacky, but better than facing it upwards and more performant than storing mcEntity in a buffer + manually shading in post
                 displayNormal *= sign(dot(displayNormal, viewInverse(sunPosition)));
@@ -163,20 +163,41 @@ void main() {
         normal = UP;
     #endif
 
-    #if (defined g_terrain || (defined g_weather && defined WAVING_RAIN_ENABLED) || (defined g_water && defined WAVING_WATER_ENABLED)) && defined WAVING_ENABLED && !defined DIM_NO_WIND
+    #if (defined g_terrain || defined g_water || (defined g_weather && defined WAVING_RAIN_ENABLED)) && defined WAVING_ENABLED && !defined DIM_NO_WIND
         #if !defined g_weather
-            bool isTopPart = at_midBlock.y < 10 || (mc_Entity.x == WAVING_CUTOUTS_LOW && at_midBlock.y < 30) || (mc_Entity.x == WAVING_ON_WATER);
-            bool isFullWaving = mc_Entity.x == WAVING || mc_Entity.x == WAVING_STIFF;
-            bool isWater = mc_Entity.x == WATER || mc_Entity.x == WAVING_ON_WATER;
+            bool isTopPart = at_midBlock.y < 10 || (isBlockWavesFromBottom(mc_Entity.x) && at_midBlock.y < 30) || (isBlockOnWater(mc_Entity.x));
+            bool isFullWaving = !isBlockCrossCutouts(mc_Entity.x) && !isBlockCrossCutoutsUpsideDown(mc_Entity.x);
+            bool isWater = isBlockWater(mc_Entity.x) || isBlockOnWater(mc_Entity.x);
+            bool isUpper = isBlockTopHalf(mc_Entity.x);
 
             bool allowWaving = 
+                isBlockWavy(mc_Entity.x)
+                &&
                 (
-                    (mc_Entity.x == WAVING_CUTOUTS_LOW || mc_Entity.x == WAVING_CUTOUTS_BOTTOM || mc_Entity.x == WAVING_CUTOUTS_BOTTOM_STIFF || mc_Entity.x == WAVING_CUTOUTS_BOTTOM_LIT)
-                    &&
-                    isTopPart
-                )
-                ||
-                (mc_Entity.x == WAVING_CUTOUTS_TOP || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF || isFullWaving || isWater);
+                    (
+                        isUpper
+                        #if defined WAVING_FULL_BLOCKS_ENABLED
+                            ||
+                            isFullWaving
+                        #endif
+                        #if defined WAVING_WATER_ENABLED
+                            ||
+                            isWater
+                        #endif
+                    )
+                    ||
+                    (
+                        (
+                            !isFullWaving
+                            #if defined WAVING_WATER_ENABLED
+                                ||
+                                isBlockOnWater(mc_Entity.x)
+                            #endif
+                        )
+                        &&
+                        isTopPart
+                    )
+                );
         #else
             bool isTopPart = false;
             bool isFullWaving = true;
@@ -186,9 +207,9 @@ void main() {
 
         if(allowWaving) {
             #if !defined g_weather
-                bool isUpper = (mc_Entity.x == WAVING_CUTOUTS_TOP || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF) && isTopPart;
-                bool isStiff = mc_Entity.x == WAVING_CUTOUTS_BOTTOM_STIFF || mc_Entity.x == WAVING_CUTOUTS_TOP_STIFF || mc_Entity.x == WAVING_STIFF || mc_Entity.x == WAVING_CUTOUTS_LOW;
-                bool isSuperStiff = mc_Entity.x == WAVING_CUTOUTS_LOW;
+                bool isUpper = isUpper && isTopPart;
+                bool isStiff = isBlockStiff(mc_Entity.x);
+                bool isSuperStiff = isBlockWavesFromBottom(mc_Entity.x);
             #else
                 bool isUpper = position.y > 3;
                 bool isStiff = false;
