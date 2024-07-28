@@ -14,10 +14,12 @@ float shadowSample(in vec3 positionClipSpace, in sampler2D shadowtex) {
 
 float shadowStep(in float len, in float subsurface, in vec3 normal, in vec3 shadowLightPosition) {
     #if defined DO_SUBSURFACE
+        float sharpShadow = step(-0.1, len);
         if(dot(normal, shadowLightPosition) < 0.0) {
-            return smoothstep(-1.0, -0.1, len);
+            float smoothShadow = smoothstep(-SQRT_3, -0.1, len);
+            return smoothShadow * smoothShadow;
         } else {
-            return step(-0.1, len);
+            return sharpShadow;
         }
     #else
         return step(-0.1, len);
@@ -63,7 +65,7 @@ float getShadow(in vec3 position, in vec3 normal, in vec3 shadowLightPosition, i
 
                     noise = sampleNoise(sampleCoord, iMod, NOISE_BLUE_3D, true).rgb * 2 - 1;
 
-                    shadowOffset = noise / shadowDistance * 0.5 * SHADOW_FILTERING_RADIUS;
+                    shadowOffset = noise / shadowDistance * 0.5 * mix(SHADOW_FILTERING_RADIUS, 1.0, subsurface);
 
                     float sampled = shadowSample(shadowPosition + shadowOffset, shadowtex);
 
