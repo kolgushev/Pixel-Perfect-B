@@ -398,6 +398,11 @@ void main() {
                 }
             #endif
 
+            if(isBlockAutomatTranslucent(mcEntity)) {
+                subsurface = 1.0;
+                porosity = 1.0;
+            }
+
             #if NORMAL_MAP_STRENGTH != 0
                 #define TEX_SIZE_DEFINED
                 vec2 texSize = atlasSize == vec2(0.0) ? textureSize(gtexture, 0) : atlasSize;
