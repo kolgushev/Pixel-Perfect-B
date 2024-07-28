@@ -400,7 +400,12 @@ void main() {
 
             if(isBlockAutomatTranslucent(mcEntity)) {
                 subsurface = 1.0;
+            }
+
+            if(isBlockAutomatVeryPorous(mcEntity)) {
                 porosity = 1.0;
+            } else if(isBlockAutomatSomewhatPorous(mcEntity)) {
+                porosity = 0.5;
             }
 
             #if NORMAL_MAP_STRENGTH != 0
