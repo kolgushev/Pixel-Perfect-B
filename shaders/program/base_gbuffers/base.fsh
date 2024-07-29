@@ -421,10 +421,16 @@ void main() {
                 #define TEX_SIZE_DEFINED
                 vec2 texSize = atlasSize == vec2(0.0) ? textureSize(gtexture, 0) : atlasSize;
 
-                float variance = roughness * 0.07;
-                vec2 noiseSample = tile(texcoord.xy * texSize, NOISE_BLUE_4D, true).rg;
-                vec3 normalMap = vec3(noiseSample.x, noiseSample.y, 0.0) * 2.0 - 1.0;
-                normalMap *= variance;
+
+                float variance;
+                vec2 noiseSample;
+                vec3 normalMap = vec3(0.0);
+                if(!isBlockWater(mcEntity)) {
+                    variance = roughness * 0.07;
+                    noiseSample = tile(texcoord.xy * texSize, NOISE_BLUE_4D, true).rg;
+                    normalMap = vec3(noiseSample.x, noiseSample.y, 0.0) * 2.0 - 1.0;
+                    normalMap *= variance;
+                }
             #endif
         #endif
 
