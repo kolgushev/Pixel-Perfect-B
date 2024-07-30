@@ -427,7 +427,7 @@ void main() {
                 vec3 normalMap = vec3(0.0);
                 if(!isBlockWater(mcEntity)) {
                     variance = roughness * 0.07;
-                    noiseSample = tile(texcoord.xy * texSize, NOISE_BLUE_4D, true).rg;
+                    noiseSample = tile(texcoord.xy * texSize, NOISE_BLUE_2D, true).rg;
                     normalMap = vec3(noiseSample.x, noiseSample.y, 0.0) * 2.0 - 1.0;
                     normalMap *= variance;
                 }
@@ -607,12 +607,12 @@ void main() {
         vec3 shadowPos = position;
         vec3 pixelatedPosition = position;
 
-        #if PIXELATED_SHADOWS != 0
-            #if !defined TBN_DEFINED
-                #define TBN_DEFINED
-                mat3 TBN = getTBN(normal, tangent);
-            #endif
+        #if !defined TBN_DEFINED
+            #define TBN_DEFINED
+            mat3 TBN = getTBN(normal, tangent);
+        #endif
 
+        #if PIXELATED_SHADOWS != 0
             #if !defined TEX_SIZE_DEFINED
                 #define TEX_SIZE_DEFINED
                 vec2 texSize = atlasSize == vec2(0.0) ? textureSize(gtexture, 0) : atlasSize;
@@ -637,12 +637,9 @@ void main() {
         float shadow = getShadow(
             shadowPos,
             normalMod,
+            TBN,
             viewInverse(shadowLightPosition),
-            shadowPos + cameraPosition,
-            shadowProjection,
-            shadowModelView,
-            gl_FragCoord.xy,
-            shadowtex1,
+            tile(gl_FragCoord.xy, NOISE_BLUE_2D, false),
             lightmap.g,
             skyTime,
             subsurface);

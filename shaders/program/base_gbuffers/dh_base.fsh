@@ -16,6 +16,8 @@ varying vec4 color;
 varying vec2 light;
 varying vec3 position;
 varying vec3 normal;
+varying vec4 tangent;
+
 flat varying int mcEntity;
 
 #if defined TAA_ENABLED
@@ -199,12 +201,9 @@ void main() {
         float shadow = getShadow(
             shadowPos,
             normal,
+            getTBN(normal, tangent),
             viewInverse(shadowLightPosition),
-            pixelatedPosition + cameraPosition,
-            shadowProjection,
-            shadowModelView,
-            texcoord,
-            shadowtex1,
+            tile(gl_FragCoord.xy + offset, NOISE_BLUE_2D, false),
             lightmap.g,
             skyTime,
             subsurface);
