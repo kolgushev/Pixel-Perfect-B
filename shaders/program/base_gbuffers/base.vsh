@@ -489,7 +489,7 @@ void main() {
         #endif
 
         // TODO: add proper position evaluation for hand
-        #if defined gc_entities && (!defined IS_IRIS || !defined gc_hand)
+        #if defined gc_entities && !defined IS_IRIS
             #if defined IS_IRIS
                 bool hasMovement = at_velocity != vec3(0.0);
             #else
