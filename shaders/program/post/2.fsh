@@ -94,28 +94,28 @@ void main() {
         colorCorrected *= EXPOSURE;
     #endif
 
-    #if TONEMAP == REINHARD_TONEMAP
+    #if TONEMAP == TONEMAP_REINHARD
         colorCorrected = reinhard(colorCorrected, LUMINANCE_COEFFS_AP1);
-    #elif TONEMAP == HABLE_TONEMAP
+    #elif TONEMAP == TONEMAP_HABLE
         colorCorrected = uncharted2_filmic(colorCorrected);
-    #elif TONEMAP == ACES_FITTED_TONEMAP
+    #elif TONEMAP == TONEMAP_ACES_FITTED
         colorCorrected = aces_fitted(colorCorrected);
-    #elif TONEMAP == ACES_APPROX_TONEMAP
+    #elif TONEMAP == TONEMAP_ACES_APPROX
         colorCorrected = aces_approx(colorCorrected);
-    #elif TONEMAP == CUSTOM_TONEMAP
+    #elif TONEMAP == TONEMAP_CUSTOM
         colorCorrected *= 2.4;
         bvec3 applyTone = greaterThan(colorCorrected, vec3(0.1));
         vec3 colorCorrectedMod = 0.1 - colorCorrected;
         colorCorrected = mix(100.0 * colorCorrected * colorCorrectedMod * colorCorrectedMod + colorCorrected, colorCorrected, applyTone);
         colorCorrected *= 0.5;
         colorCorrected = aces_fitted(colorCorrected);
-    #elif TONEMAP == HLG_TONEMAP
+    #elif TONEMAP == TONEMAP_HLG
         colorCorrected = hlg(colorCorrected * RCP_12);
     #endif
 
     #if defined USE_LUT
-        #if LUT_INPUT_COLORSPACE != ACESCG_COLORSPACE
-            colorCorrected = ACEScgToColorspace(colorCorrected, LUT_INPUT_COLORSPACE);
+        #if COLORSPACE_LUT_INPUT != COLORSPACE_ACESCG
+            colorCorrected = ACEScgToColorspace(colorCorrected, COLORSPACE_LUT_INPUT);
         #endif
 
         #if !defined LUT_NO_MAPPING
@@ -129,8 +129,8 @@ void main() {
         vec3 lutApplied = texture(shadowcolor1, noBorder).rgb;
         colorCorrected = lutApplied * LUT_RANGE_MULT;
 
-        #if LUT_OUTPUT_COLORSPACE != ACESCG_COLORSPACE
-            colorCorrected = ColorspaceToACEScg(colorCorrected, LUT_OUTPUT_COLORSPACE);
+        #if COLORSPACE_LUT_OUTPUT != COLORSPACE_ACESCG
+            colorCorrected = ColorspaceToACEScg(colorCorrected, COLORSPACE_LUT_OUTPUT);
         #endif
     #endif
 
@@ -157,14 +157,14 @@ void main() {
         colorCorrected = OKLabToACEScg(colorCorrected);
     }
 
-    #if OUTPUT_COLORSPACE == -1
+    #if COLORSPACE_OUTPUT == -1
         #if defined IS_IRIS
             colorCorrected = ACEScgToColorspace(colorCorrected, currentColorSpace);
         #else
-            colorCorrected = ACEScgToColorspace(colorCorrected, SRGB_COLORSPACE);
+            colorCorrected = ACEScgToColorspace(colorCorrected, COLORSPACE_SRGB);
         #endif
     #else
-        colorCorrected = ACEScgToColorspace(colorCorrected, OUTPUT_COLORSPACE);
+        colorCorrected = ACEScgToColorspace(colorCorrected, COLORSPACE_OUTPUT);
     #endif
 
     // dithering

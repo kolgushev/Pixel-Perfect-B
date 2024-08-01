@@ -188,36 +188,36 @@ vec3 OKLabToACEScg(in vec3 v) {
 // General function
 vec3 ACEScgToColorspace(in vec3 v, in int id){
     switch(id){
-        case DCI_P3_COLORSPACE:
+        case COLORSPACE_DCI_P3:
             return ACEScgToDCI_P3(v);
-        case DISPLAY_P3_COLORSPACE:
+        case COLORSPACE_DISPLAY_P3:
             return ACEScgToDisplayP3(v);
-        case REC2020_COLORSPACE:
+        case COLORSPACE_REC2020:
             return ACEScgToRec2020(v);
-        case ADOBE_RGB_COLORSPACE:
+        case COLORSPACE_ADOBE_RGB:
             return ACEScgToAdobeRGB(v);
-        case P3_D65_PQ_COLORSPACE:
+        case COLORSPACE_P3_D65_PQ:
             // TODO
             return ACEScgToDCI_P3(v);
-        case REC709_COLORSPACE:
+        case COLORSPACE_REC709:
             return ACEScgToRec709(v);
-        case REC2100_HLG_COLORSPACE:
+        case COLORSPACE_REC2100_HLG:
             return ACEScgToRec2100_HLG(v);
-        case REC2100_PQ_COLORSPACE:
+        case COLORSPACE_REC2100_PQ:
             // TODO
             return ACEScgToRec2100_HLG(v);
-        case ACESCG_COLORSPACE:
+        case COLORSPACE_ACESCG:
             return v;
-        case ACES2065_1_COLORSPACE:
+        case COLORSPACE_ACES2065_1:
             return ACEScgToACES2065_1(v);
-        case LINEAR_RGB_COLORSPACE:
+        case COLORSPACE_LINEAR_RGB:
             return ACEScgToLinearRGB(v);
-        case XYZ_COLORSPACE:
+        case COLORSPACE_XYZ:
             return ACEScgToXYZ(v);
-        case OKLAB_COLORSPACE:
+        case COLORSPACE_OKLAB:
             return ACEScgToOKLab(v);
 
-        case SRGB_COLORSPACE:
+        case COLORSPACE_SRGB:
         default:
             return ACEScgToSRGB(v);
     }
@@ -225,36 +225,36 @@ vec3 ACEScgToColorspace(in vec3 v, in int id){
 
 vec3 colorspaceToACEScg(in vec3 v, in int id){
     switch(id){
-        case DCI_P3_COLORSPACE:
+        case COLORSPACE_DCI_P3:
             return DCI_P3ToACEScg(v);
-        case DISPLAY_P3_COLORSPACE:
+        case COLORSPACE_DISPLAY_P3:
             return DisplayP3ToACEScg(v);
-        case REC2020_COLORSPACE:
+        case COLORSPACE_REC2020:
             return rec2020ToACEScg(v);
-        case ADOBE_RGB_COLORSPACE:
+        case COLORSPACE_ADOBE_RGB:
             return adobeRGBToACEScg(v);
-        case P3_D65_PQ_COLORSPACE:
+        case COLORSPACE_P3_D65_PQ:
             // TODO
             return DCI_P3ToACEScg(v);
-        case REC709_COLORSPACE:
+        case COLORSPACE_REC709:
             return rec709ToACEScg(v);
-        case REC2100_HLG_COLORSPACE:
+        case COLORSPACE_REC2100_HLG:
             return rec2100_HLGToACEScg(v);
-        case REC2100_PQ_COLORSPACE:
+        case COLORSPACE_REC2100_PQ:
             // TODO
             return rec2100_HLGToACEScg(v);
-        case ACESCG_COLORSPACE:
+        case COLORSPACE_ACESCG:
             return v;
-        case ACES2065_1_COLORSPACE:
+        case COLORSPACE_ACES2065_1:
             return ACES2065_1ToACEScg(v);
-        case LINEAR_RGB_COLORSPACE:
+        case COLORSPACE_LINEAR_RGB:
             return linearRGBToACEScg(v);
-        case XYZ_COLORSPACE:
+        case COLORSPACE_XYZ:
             return XYZToACEScg(v);
-        case OKLAB_COLORSPACE:
+        case COLORSPACE_OKLAB:
             return OKLabToACEScg(v);
 
-        case SRGB_COLORSPACE:
+        case COLORSPACE_SRGB:
         default:
             return sRGBToACEScg(v);
     }

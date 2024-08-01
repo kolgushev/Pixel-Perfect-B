@@ -44,9 +44,9 @@ If you upload the `.cube` file to the custom GPT I mentioned earlier, it can hel
 The script can also read some settings that aren't included in your `.cube` file by default. You can open the `.cube` file with any text editor (Notepad should work fine) and add the following lines to the top of the file:
 
 ```
-# tonemap: <The tonemap used by the LUT> (ACES_FITTED_TONEMAP by default)
-# input colorspace: <The colorspace of the image the LUT uses> (SRGB_COLORSPACE by default)
-# output colorspace: <The colorspace of the image the LUT outputs> (SRGB_COLORSPACE by default)
+# tonemap: <The tonemap used by the LUT> (TONEMAP_ACES_FITTED by default)
+# input colorspace: <The colorspace of the image the LUT uses> (COLORSPACE_SRGB by default)
+# output colorspace: <The colorspace of the image the LUT outputs> (COLORSPACE_SRGB by default)
 ```
 
 You can use these to mod the shader to potentially work with WCG colors.
@@ -63,24 +63,24 @@ The 10s mean that the shader will pass colors divided by 10 to the LUT, allowing
 
 Supported tonemaps:
 
-- NONE_TONEMAP
-- REINHARD_TONEMAP
-- HABLE_TONEMAP
-- ACES_FITTED_TONEMAP
-- ACES_APPROX_TONEMAP
-- CUSTOM_TONEMAP
+- TONEMAP_NONE
+- TONEMAP_REINHARD
+- TONEMAP_HABLE
+- TONEMAP_ACES_FITTED
+- TONEMAP_ACES_APPROX
+- TONEMAP_CUSTOM
 
 Supported colorspaces:
 
-- SRGB_COLORSPACE
-- DCI_P3_COLORSPACE
-- DISPLAY_P3_COLORSPACE
-- REC2020_COLORSPACE
-- ADOBE_RGB_COLORSPACE
-- REC709_COLORSPACE
-- REC2100_HLG_COLORSPACE
-- ACESCG_COLORSPACE
-- ACES2065_1_COLORSPACE
-- LINEAR_RGB_COLORSPACE
-- XYZ_COLORSPACE
-- OKLAB_COLORSPACE
+- COLORSPACE_SRGB
+- COLORSPACE_DCI_P3
+- COLORSPACE_DISPLAY_P3
+- COLORSPACE_REC2020
+- COLORSPACE_ADOBE_RGB
+- COLORSPACE_REC709
+- COLORSPACE_REC2100_HLG
+- COLORSPACE_ACESCG
+- COLORSPACE_ACES2065_1
+- COLORSPACE_LINEAR_RGB
+- COLORSPACE_XYZ
+- COLORSPACE_OKLAB

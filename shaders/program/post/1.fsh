@@ -161,7 +161,7 @@ void main() {
 			b4 = colored;
 		}
 
-		#if defined TAA_HYBRID_TONEMAP
+		#if defined TONEMAP_TAA_HYBRID
 			colored = reinhardInverse(colored, LUMINANCE_COEFFS_AP1);
 		#endif
     #endif

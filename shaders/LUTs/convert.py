@@ -37,19 +37,19 @@ if len(file_names) >= 1:
         print('found tonemap setting')
         tonemap = tonemap[0]
     else:
-        tonemap = 'ACES_FITTED_TONEMAP'
+        tonemap = 'TONEMAP_ACES_FITTED'
 
     if input_colorspace:
         print('found input colorspace setting')
         input_colorspace = input_colorspace[0]
     else:
-        input_colorspace = 'SRGB_COLORSPACE'
+        input_colorspace = 'COLORSPACE_SRGB'
 
     if output_colorspace:
         print('found output colorspace setting')
         output_colorspace = output_colorspace[0]
     else:
-        output_colorspace = 'SRGB_COLORSPACE'
+        output_colorspace = 'COLORSPACE_SRGB'
 
     # check for linear mapping (to avoid unnecessary calculations)
     meta_domain_min = re.findall(r'\d+(?:\.\d+)?', meta_domain_min_list[0]) if len(meta_domain_min_list) >= 1 else ['0.0', '0.0', '0.0']
@@ -111,9 +111,9 @@ if len(file_names) >= 1:
 
 #define LUT_RANGE_MULT {1 / meta_max_color}
 
-#define LUT_TONEMAP {tonemap}
-#define LUT_INPUT_COLORSPACE {input_colorspace}
-#define LUT_OUTPUT_COLORSPACE {output_colorspace}
+#define TONEMAP_LUT {tonemap}
+#define COLORSPACE_LUT_INPUT {input_colorspace}
+#define COLORSPACE_LUT_OUTPUT {output_colorspace}
 """
         
         # write the proper specs in shaders.properties

@@ -342,12 +342,12 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define POST_TEMP 6550 // [3500 4000 4500 5000 5500 6000 6550 8000 9000 10000 11000 12000 13000 14000 15000]
 
 // -1 is auto, rest corresponds to _COLORSPACE defs
-#define OUTPUT_COLORSPACE -1 // [-1 0 1 2 3 4 6 7 9 10 11 12]
+#define COLORSPACE_OUTPUT -1 // [-1 0 1 2 3 4 6 7 9 10 11 12]
 // output mapping: 0:none 1:reinhard 2:Hable 3:ACES/UE4 4:ACES/approx 5:Custom (default)
 #define TONEMAP_USER 5 // [5 -1 2 3 0 1]
 #if TONEMAP_USER == -1
     #define USE_LUT
-    #define TONEMAP LUT_TONEMAP
+    #define TONEMAP TONEMAP_LUT
 #else
     #define TONEMAP TONEMAP_USER
 #endif
@@ -401,8 +401,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
     #define TAA_NO_CLIPPING_WHEN_STILL
 #endif
 
-#define TAA_HYBRID_TONEMAP
-#ifdef TAA_HYBRID_TONEMAP
+#define TONEMAP_TAA_HYBRID
+#ifdef TONEMAP_TAA_HYBRID
 #endif
 
 // not enabled because high levels of atmospheric fog
