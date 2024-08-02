@@ -11,13 +11,13 @@ in vec2 texcoord;
 #include "/lib/use.glsl"
 
 void main() {
-    vec3 colorCorrected;
 
     #if defined FREEZING_DISTORTION || INVISIBILITY_DISTORTION != 0
         vec2 texcoordNormalized = texcoord * 2 - 1;
     #endif
 
     #if defined FREEZING_DISTORTION
+        vec3 colorCorrected;
         if(freezing > 0.0) {
             float noiseSample = tile(texcoord * vec2(viewWidth, viewHeight) * 0.2 + frameTimeCounter * 0.5, NOISE_PERLIN_4D, false).x;
 
@@ -29,6 +29,8 @@ void main() {
         } else {
             colorCorrected = texture(colortex0, texcoord).rgb;
         }
+    #else
+        vec3 colorCorrected = texture(colortex0, texcoord).rgb;
     #endif
 
     #if INVISIBILITY_DISTORTION != 0
