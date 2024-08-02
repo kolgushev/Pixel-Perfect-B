@@ -512,6 +512,11 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define INVISIBILITY_DISTORTION 1 // [0 1 2]
 #define INVISIBILITY_DISTORT_STRENGTH 0.005 // [0.003 0.004 0.005 0.006 0.007 0.008 0.009 0.01 0.011 0.012 0.013 0.014 0.015 0.016 0.017 0.018 0.019 0.02]
 
+// #define FREEZING_DISTORTION
+#ifdef FREEZING_DISTORTION
+#endif
+
+
 // #define BRIGHT_NETHER
 #ifdef BRIGHT_NETHER
 #endif

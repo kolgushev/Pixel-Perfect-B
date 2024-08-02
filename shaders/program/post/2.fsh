@@ -11,9 +11,25 @@ in vec2 texcoord;
 #include "/lib/use.glsl"
 
 void main() {
-    vec4 albedo = texture(colortex0, texcoord);
+    vec3 colorCorrected;
 
-    vec3 colorCorrected = albedo.rgb;
+    #if defined FREEZING_DISTORTION || INVISIBILITY_DISTORTION != 0
+        vec2 texcoordNormalized = texcoord * 2 - 1;
+    #endif
+
+    #if defined FREEZING_DISTORTION
+        if(freezing > 0.0) {
+            float noiseSample = tile(texcoord * vec2(viewWidth, viewHeight) * 0.2 + frameTimeCounter * 0.5, NOISE_PERLIN_4D, false).x;
+
+            float freezeDistortion = freezing * pow(noiseSample, 7) * (pow(texcoordNormalized.x, 2) + pow(texcoordNormalized.y, 2)) * 5.0;
+
+            vec2 normal = vec2(-dFdx(freezeDistortion), -dFdy(freezeDistortion));
+
+            colorCorrected = texture(colortex0, texcoord + normal).rgb;
+        } else {
+            colorCorrected = texture(colortex0, texcoord).rgb;
+        }
+    #endif
 
     #if INVISIBILITY_DISTORTION != 0
         const vec2 colorOffsets[3] = vec2[3](
@@ -25,7 +41,6 @@ void main() {
         vec3 cyanSample;
         vec3 yellowSample;
         if(invisibility > 0.0) {
-            vec2 texcoordNormalized = texcoord * 2 - 1;
             
             float distortion = invisibility * (pow(texcoordNormalized.x, 2) + pow(texcoordNormalized.y, 2));
             distortion = abs(distortion);

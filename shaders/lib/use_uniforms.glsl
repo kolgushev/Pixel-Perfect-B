@@ -247,6 +247,7 @@ uniform float fogWeather;
 uniform float fogWeatherSky;
 uniform float inSky;
 uniform float invisibility;
+uniform float freezing;
 uniform float isLightning;
 uniform float moonBrightness;
 uniform float rainWind;
