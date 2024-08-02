@@ -99,7 +99,11 @@
 #define TONEMAP_HLG 6
 
 // shadow filtering
-// #define 
+#define FILTERING_NONE 0
+#define FILTERING_PCF 1
+#define FILTERING_VPSS_CHEAP 2
+#define FILTERING_VPSS 3
+#define FILTERING_BILINEAR 4
 
 // blocks
 #include "/block_aliases.glsl"

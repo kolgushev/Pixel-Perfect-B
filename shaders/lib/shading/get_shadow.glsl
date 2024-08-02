@@ -14,45 +14,109 @@ float shadowSample(in vec3 position) {
                     (shadowProjectionInverse * vec4(shadowSurface * 2.0 - 1.0, 1.0)).xyz) * sign(shadowDiff);
 }
 
-float shadowStep(in float len, in float subsurface, in vec3 normal, in vec3 shadowLightPosition) {
+float shadowStep(in float len, in float subsurface, in float factor) {
+    float sharpShadow = smoothstep(0.0, EPSILON, len);
     #if defined DO_SUBSURFACE
-        float sharpShadow = step(-0.1, len);
-        if(dot(normal, shadowLightPosition) < 0.0) {
-            float smoothShadow = smoothstep(-SQRT_3, -0.1, len);
-            return smoothShadow * smoothShadow;
-        } else {
-            return sharpShadow;
-        }
+        float smoothShadow = smoothstep(0.1 - SQRT_3, 0.0, len);
+        return mix(subsurface < EPSILON ? 0.0 : smoothShadow * smoothShadow, sharpShadow, factor);
     #else
-        return step(-0.1, len);
+        return mix(0.0, sharpShadow, factor);
     #endif
 }
 
-float getShadow(in vec3 position, in vec3 normal, in mat3 TBN, in vec3 shadowLightPosition, in vec4 noise, in float lightmapLight, in float skyTime, in float subsurface) {
+float getShadow(in vec3 position, in vec3 normal, in mat3 TBN, in vec2 screenPos, in vec3 shadowLightPosition, in float lightmapLight, in float skyTime, in float subsurface) {
     vec3 shadowLightPos = normalize(shadowLightPosition);
     float shadowCutoff = smoothstep(0.9, 1.0, length(position) / (shadowDistance * SHADOW_CUTOFF));
     float basicShading = basicDirectShading(skyTime);
+    float NdotL = dot(normal, shadowLightPos);
+    bool isUnlit = NdotL < -SHADOW_NORMAL_MIX_THRESHOLD;
+    bool isSubsurf = subsurface > EPSILON;
+
     if(
-        dot(normal, shadowLightPos) < -SHADOW_NORMAL_MIX_THRESHOLD
+        isUnlit
         #if defined DO_SUBSURFACE
-            && subsurface < EPSILON_2
+            && !isSubsurf
         #endif
         || shadowCutoff > 1.0 - EPSILON
     ) {
-        return basicShading;
+        return isUnlit ? 0.0 : basicShading;
     } else {
         float shadow = 0.0;
 
-        vec3 shadowPosition = toClipspace(shadowProjection, shadowModelView, position).xyz;
+        // extend position out a bit to account for shadow resolution inaccuracies
+        // TODO: Calculate the extension amount analytically
+        vec3 shadowPosition = position + normal * 0.1;
 
-        shadow = shadowSample(shadowPosition);
-        shadow = shadowStep(shadow, subsurface, normal, shadowLightPosition);
+        float factor = smoothstep(-SHADOW_NORMAL_MIX_THRESHOLD, 0.0, NdotL);
+
+        #if SHADOW_FILTERING == FILTERING_NONE
+            shadowPosition = toClipspace(shadowProjection, shadowModelView, shadowPosition).xyz;
+            shadow = shadowSample(shadowPosition);
+            shadow = shadowStep(shadow, subsurface, factor);
+        #else
+            #if SHADOW_FILTERING == FILTERING_VPSS_CHEAP
+                // determine dist from current position to position of shadow caster
+                shadow = shadowSample(shadowPosition);
+            #endif
+
+            float radius = SHADOW_FILTERING_RADIUS;
+            vec2 noise = vec2(0.0);
+
+            #if SHADOW_FILTERING == FILTERING_PCF && defined DO_SUBSURFACE
+                if(isSubsurf && isUnlit) {
+                    radius = 0.5 * subsurface;
+                }
+            #elif SHADOW_FILTERING == FILTERING_BILINEAR
+                if(isSubsurf && isUnlit) {
+                    radius = subsurface;
+            #endif
+                vec2 offset;
+                vec3 worldOffset;
+                vec3 samplePos;
+                // Generate sample positions in tangent space using blue noise
+                for (int i = 0; i < SHADOW_FILTERING_SAMPLES; i++) {
+                    noise = tile(screenPos + i * (113.0 - EPSILON) + randomVec.xy * 256.0, NOISE_WHITE_4D, true).xy;
+                    offset = radius * (noise.xy * 2.0 - 1.0);
+                    
+                    // transform offset to world space using TBN matrix
+                    worldOffset = TBN * vec3(offset, 0.0);
+                    
+                    // apply offset to shadow position
+                    samplePos = shadowPosition + worldOffset;
+
+                    samplePos = toClipspace(shadowProjection, shadowModelView, samplePos).xyz;
+                    shadow += shadowStep(shadowSample(samplePos), subsurface, factor);
+                }
+
+                shadow *= 1.0 / float(SHADOW_FILTERING_SAMPLES);
+            #if SHADOW_FILTERING == FILTERING_BILINEAR
+                } else {
+                    shadowPosition = toClipspace(shadowProjection, shadowModelView, shadowPosition).xyz;
+                    vec2 samplePositionWithinBounds = mod(shadowPosition.xy * shadowMapResolution, 1);
+
+                    shadowPosition.xy = floor(shadowPosition.xy * shadowMapResolution) / shadowMapResolution;
+
+                    float shadowSamples[4];
+
+                    for(int i = 0; i < 4; i++) {
+                        vec3 samplePos = shadowPosition + vec3(superSampleOffsets4[i] / shadowMapResolution, 0.0);
+                        shadowSamples[i] = shadowSample(samplePos);
+                        shadowSamples[i] = shadowStep(shadowSamples[i], subsurface, factor);
+                    }
+
+                    shadowSamples[0] = mix(shadowSamples[0], shadowSamples[1], samplePositionWithinBounds.y);
+                    shadowSamples[1] = mix(shadowSamples[2], shadowSamples[3], samplePositionWithinBounds.y);
+
+                    shadow = mix(shadowSamples[0], shadowSamples[1], samplePositionWithinBounds.x);
+                }
+            #endif
+
+        #endif
 
         #if defined SHADOW_AFFECTED_BY_LIGHTMAP
             shadow *= lightmapLight;
         #endif
 
-        shadow = mix(basicShading, shadow, smoothstep(-SHADOW_NORMAL_MIX_THRESHOLD, 0.0, dot(normal, shadowLightPos)));
         shadow = mix(shadow, basicShading, shadowCutoff);
 
         return shadow;

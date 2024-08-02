@@ -173,17 +173,10 @@ screen.SHADOWS=Shadows
         value.SHADOWS_ENABLED_USER.true=On
         value.SHADOWS_ENABLED_USER.false=Off
 
-    option.PIXELATED_SHADOWS_USER=Pixelated Shadow Override
-        option.PIXELATED_SHADOWS_USER.comment=Pixelates shadows so they match with the pixels on a block. Inspired from complementary's pixelated shadows, though the implementation is my own. Enabled ➤ Minimal performance hit.
-        value.PIXELATED_SHADOWS_USER.0=Off
-        value.PIXELATED_SHADOWS_USER.8=8×8
-        value.PIXELATED_SHADOWS_USER.16=16×16
-        value.PIXELATED_SHADOWS_USER.32=32×32
-        value.PIXELATED_SHADOWS_USER.64=64×64
-        value.PIXELATED_SHADOWS_USER.128=128×128
-        value.PIXELATED_SHADOWS_USER.256=256×256
-        value.PIXELATED_SHADOWS_USER.512=512×512
-        value.PIXELATED_SHADOWS_USER.1024=1024×1024
+    option.PIXELATED_SHADOWS=Pixelated Shadows
+        option.PIXELATED_SHADOWS.comment=Pixelates shadows so they match with the pixels on blocks and entities. Inspired by Complementary's pixelated shadows, though the implementation is my own. Enabled ➤ Small performance hit.
+        value.PIXELATED_SHADOWS.false=Off
+        value.PIXELATED_SHADOWS.true=On
 
     option.shadowDistance=Shadow Distance
         option.shadowDistance.comment=How far away the shadows can be, in blocks. Since setting higher distances means the same shadow image is spread over more blocks, shadows become less detailed when the distance is increased. Increased ➤ No performance impact.
@@ -204,13 +197,12 @@ screen.SHADOWS=Shadows
         option.SHADOW_DISTORTION.comment=Because things that are farther away appear smaller, the shadowmap (shadow image) is warped to have a higher resolution closer to the player. Lower distortion makes the resolution seem lower, but higher resolution might look weird. Increased ➤ No performance impact.
 
     option.SHADOW_FILTERING=Filtering
-        option.SHADOW_FILTERING.comment=Makes shadows look nicer by blurring them. PCF ➤ Medium-Large performance hit (based on number of samples). Bilinear ➤ Small performance hit.
-        value.SHADOW_FILTERING.0=Off
+        option.SHADOW_FILTERING.comment=Makes shadows look nicer by blurring them. PCF ➤ Performance hit varies (based on number of samples). Bilinear ➤ Small performance hit.
+        value.SHADOW_FILTERING.0=§cOff
         value.SHADOW_FILTERING.1=PCF
         value.SHADOW_FILTERING.2=VP Lite §c(Experimental)
         value.SHADOW_FILTERING.3=VP §c(Experimental)
         value.SHADOW_FILTERING.4=Bilinear
-        value.SHADOW_FILTERING.5=Pixelated
 
     option.SHADOW_FILTERING_RADIUS=Filtering Radius
         option.SHADOW_FILTERING_RADIUS.comment=How much the shadow is blurred (if filtering is enabled). Increased ➤ No performance impact.

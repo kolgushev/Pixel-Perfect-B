@@ -193,27 +193,23 @@ void main() {
         vec3 shadowPos = position;
         vec3 pixelatedPosition = position;
 
-        #if PIXELATED_SHADOWS != 0
-            pixelatedPosition = ceil((position + cameraPosition) * PIXELATED_SHADOWS) / PIXELATED_SHADOWS - cameraPosition;
-            shadowPos = mix(pixelatedPosition, position, ceil(abs(normal)));
-        #endif
+        // float shadow = getShadow(
+        //     shadowPos,
+        //     normal,
+        //     getTBN(normal, tangent),
+        //     gl_FragCoord.xy,
+        //     viewInverse(shadowLightPosition),
+        //     lightmap.g,
+        //     skyTime,
+        //     subsurface);
 
-        float shadow = getShadow(
-            shadowPos,
-            normal,
-            getTBN(normal, tangent),
-            viewInverse(shadowLightPosition),
-            tile(gl_FragCoord.xy + offset, NOISE_BLUE_2D, false),
-            lightmap.g,
-            skyTime,
-            subsurface);
+        float shadow = 1.0;
     #else
         #if defined VANILLA_SHADOWS
             float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;
         #else
             float shadow = basicDirectShading(lightmap.g);
         #endif
-
     #endif
 
     vec3 lightningColor = vec3(0.0);

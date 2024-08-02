@@ -546,17 +546,12 @@ const float entityShadowDistanceMul = 0.3; // [0.1 0.2 0.3 0.4]
 
 #define SHADOW_NORMAL_MIX_THRESHOLD 0.01
 
-// 0:off 1:Percentage Closer 2:Variable-Penumbra Offbrand 3:Variable-Penumbra 4:Bilinear 5:Bilinear+Pixelated
-#define SHADOW_FILTERING 5 // [0 1 4 5]
+#define SHADOW_FILTERING 4 // [0 1 4]
 #define SHADOW_FILTERING_SAMPLES 5 // [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
 #define SHADOW_FILTERING_RADIUS 0.1 // [0.025 0.05 0.075 0.1 0.125 0.15 0.175 0.2]
 
-#define PIXELATED_SHADOWS_USER 0 // [0 8 16 32 64 128]
-
-#if SHADOW_FILTERING == 5 && PIXELATED_SHADOWS == 0
-    #define PIXELATED_SHADOWS TEX_RES
-#else
-    #define PIXELATED_SHADOWS PIXELATED_SHADOWS_USER
+#define PIXELATED_SHADOWS
+#ifdef PIXELATED_SHADOWS
 #endif
 
 #define SHADOW_TRANSITION_MIXING 0 // [0 1]

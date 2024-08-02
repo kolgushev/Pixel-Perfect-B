@@ -268,6 +268,7 @@ uniform vec3 skyG;
 uniform vec3 skyH;
 uniform vec3 skyI;
 uniform vec3 skyZ;
+uniform vec4 randomVec;
 
 #if defined HAS_SKYLIGHT
 	#define EYE_BRIGHTNESS_SMOOTH_FLOAT_PROCESSED eyeBrightnessSmoothFloat

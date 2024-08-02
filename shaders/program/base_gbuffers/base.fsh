@@ -612,7 +612,7 @@ void main() {
             mat3 TBN = getTBN(normal, tangent);
         #endif
 
-        #if PIXELATED_SHADOWS != 0
+        #if defined PIXELATED_SHADOWS
             #if !defined TEX_SIZE_DEFINED
                 #define TEX_SIZE_DEFINED
                 vec2 texSize = atlasSize == vec2(0.0) ? textureSize(gtexture, 0) : atlasSize;
@@ -638,8 +638,8 @@ void main() {
             shadowPos,
             normalMod,
             TBN,
+            gl_FragCoord.xy,
             viewInverse(shadowLightPosition),
-            tile(gl_FragCoord.xy, NOISE_BLUE_2D, false),
             lightmap.g,
             skyTime,
             subsurface);
