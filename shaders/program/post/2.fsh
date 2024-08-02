@@ -25,7 +25,7 @@ void main() {
 
             vec2 normal = vec2(-dFdx(freezeDistortion), -dFdy(freezeDistortion));
 
-            colorCorrected = texture(colortex0, texcoord + normal).rgb;
+            colorCorrected = mix(texture(colortex0, texcoord + normal).rgb, ATMOSPHERIC_FOG_COLOR_POWDER_SNOW, 1.0 - exp(freezeDistortion * -ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW));
         } else {
             colorCorrected = texture(colortex0, texcoord).rgb;
         }
