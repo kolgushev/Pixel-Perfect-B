@@ -7,7 +7,7 @@ float normalLighting(in vec3 normal, in vec3 lightPos, in float subsurface) {
     
     #if defined DO_SUBSURFACE
         if(subsurface > 0.0) {
-            return mix(clamp(shading, 0.0, 1.0), min(abs(shading), 1.0), subsurface);
+            return mix(clamp(shading, 0.0, 1.0), min(abs(shading), 1.0) * 0.5, subsurface);
         } else {
             return clamp(shading, 0.0, 1.0);
         }
