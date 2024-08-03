@@ -8,7 +8,7 @@ in vec2 texcoord;
 #include "/lib/use.glsl"
 
 void main() {
-	float depth = texture(shadowtex1, texcoord).r;
+	float depth = texture(shadowtex0, texcoord).r;
 	
 	/*
 	The culling results in out-of-frustum shadows being cleared normally,
