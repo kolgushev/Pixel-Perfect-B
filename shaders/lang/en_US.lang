@@ -110,6 +110,11 @@ screen.LIGHTING=Lighting
 
         suffix.SECONDARY_FOG_END=%
 
+    option.CUSTOM_NETHER_FOG_COLOR=Fog Color
+        option.CUSTOM_NETHER_FOG_COLOR.comment=Rather than using the shader color, use the vanilla biome color.
+        value.CUSTOM_NETHER_FOG_COLOR.true=Shader
+        value.CUSTOM_NETHER_FOG_COLOR.false=Vanilla
+
     option.FAST_GI=Fake GI
         option.FAST_GI.comment=Fakes global illumination (raytracing) by applying a blurred version of the view image as "lighting".
         value.FAST_GI.true=On

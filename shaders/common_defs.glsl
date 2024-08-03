@@ -478,6 +478,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #endif
 #define ATMOSPHERIC_FOG_DENSITY 0.0015 // [0.0005 0.00075 0.001 0.0015 0.002 0.0035 0.005]
 
+#define CUSTOM_NETHER_FOG_COLOR
+#ifdef CUSTOM_NETHER_FOG_COLOR
+#endif
+
 #define PUDDLE_STRENGTH 10 // [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
 
 // #define PUDDLE_WATER_FOG
@@ -774,10 +778,15 @@ const float shadowIntervalSize = 8.0;
     #define CLOUD_COLOR AMBIENT_COLOR
 
 
-    // The color is intentionally unconverted here to get a much more vibrant color than sRGB would allow
-    // (that is the main benefit of an ACES workflow, after all)
-    #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.09, 0.03))
-    #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
+    #if defined CUSTOM_NETHER_FOG_COLOR
+        // The color is intentionally unconverted here to get a much more vibrant color than sRGB would allow
+        // (that is the main benefit of an ACES workflow, after all)
+        #define ATMOSPHERIC_FOG_COLOR (vec3(1.0, 0.09, 0.03))
+        #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
+    #else
+        #define ATMOSPHERIC_FOG_COLOR (sRGBToACEScg(fogColor) * 50.0)
+        #define ATMOSPHERIC_FOG_MULTIPLIER 1.0
+    #endif
 
     #define SECONDARY_FOG_COLOR_MULTIPLIER 1.0
 
