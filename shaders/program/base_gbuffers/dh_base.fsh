@@ -172,9 +172,9 @@ void main() {
             // lava actually has a very low albedo, its orange color is exclusively because of emission
             // simulate that here
             albedo.rgb *= 0.1;
-            emissiveness *= 6.0;
+            emissiveness *= 1.5;
         #else
-            albedo.rgb *= 2.5;
+            albedo.rgb *= 1.0;
             #if NOISY_LAVA != 0
                 albedo.rgb *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
             #endif
