@@ -6,6 +6,6 @@ float emissivenessFromAlbedo(in float x) {
 	return c / (a - a * x * b) - c / a + x;
 }
 
-float getEmissiveness(in vec3 x, in vec3 luminanceCoefficients) {
-	return emissivenessFromAlbedo(dot(x, luminanceCoefficients));
+vec3 getEmissiveness(in vec3 x, in vec3 luminanceCoefficients) {
+	return vec3(emissivenessFromAlbedo(dot(x, luminanceCoefficients))) * x;
 }

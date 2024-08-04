@@ -282,8 +282,9 @@ void main() {
     // Material Properties
     // normal, emission, porosity, SS, and AO mapping happens regardless of PBR
     vec3 normalMod = displayNormal;
+    vec3 normalMap = vec3(0.0);
     float AOMap = 1.0;
-    float emissiveness = 0.0;
+    vec3 emissiveness = vec3(0.0);
     float porosity = 0.0;
     float subsurface = 0.0;
 
@@ -310,12 +311,12 @@ void main() {
             #endif
 
             #if NORMAL_MAP_STRENGTH != 0
-                vec3 normalMap = vec3(normalsAndAO.x, normalsAndAO.y, 0.0);
+                normalMap = vec3(normalsAndAO.x, normalsAndAO.y, 0.0);
                 normalMap.xy = normalMap.xy * 2.0 - 1.0;
             #endif
 
             vec4 specular = texture(specular, texcoordMod);
-            emissiveness = specular.w < 1.0 ? specular.w * 254.0 * RCP_255 : 0.0;
+            emissiveness = specular.w < 1.0 ? specular.w * 254.0 * RCP_255 * albedo.rgb : vec3(0.0);
 
             height = normalsAndAO.w;
 
@@ -356,7 +357,7 @@ void main() {
             #endif
         #elif defined AUTO_MAT
             #if defined g_spidereyes
-                emissiveness = SPIDEREYES_MULT;
+                emissiveness = albedo.rgb * SPIDEREYES_MULT;
             #elif defined gc_emissive
                 emissiveness = getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1);
             #else
@@ -424,7 +425,6 @@ void main() {
 
                 float variance;
                 vec2 noiseSample;
-                vec3 normalMap = vec3(0.0);
                 if(!isBlockWater(mcEntity)) {
                     variance = roughness * 0.07;
                     noiseSample = tile(texcoord.xy * texSize, NOISE_BLUE_2D, true).rg;
@@ -432,6 +432,14 @@ void main() {
                     normalMap *= variance;
                 }
             #endif
+        #endif
+
+        #if (defined MC_TEXTURE_FORMAT_LAB_PBR_1_3 || defined AUTO_MAT) && defined g_terrain
+            // lava actually has a very low albedo, its orange color is exclusively because of emission
+            // simulate that here
+            if(isBlockLava(mcEntity)) {
+                albedo.rgb *= 0.1;
+            }
         #endif
 
         #if NORMAL_MAP_STRENGTH != 0
@@ -517,7 +525,11 @@ void main() {
 
     #if defined g_terrain && NOISY_LAVA != 0
         if(isBlockLava(mcEntity)) {
-            emissiveness *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
+            #if defined AUTO_MAT || defined MC_TEXTURE_FORMAT_LAB_PBR_1_3
+                emissiveness *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
+            #else
+                albedo.rgb *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
+            #endif
         }
     #endif
 
@@ -543,7 +555,7 @@ void main() {
                 0.9,
                 -2,
                 0.0,
-                0.0,
+                vec3(0.0),
                 clearcoatStrength,
                 clearcoatNormal,
                 UP,

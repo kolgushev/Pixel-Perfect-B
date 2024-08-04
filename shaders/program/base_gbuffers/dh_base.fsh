@@ -99,72 +99,87 @@ void main() {
     float roughness = 0.8;
     float subsurface = 0.0;
     vec3 reflectance = vec3(0.02);
-    switch(mcEntity) {
-        case DH_BLOCK_LEAVES:
-            roughness = 0.6;
-            subsurface = 0.5;
-            reflectance = vec3(0.04);
-            break;
-        case DH_BLOCK_STONE:
-            roughness = 0.9;
-            reflectance = vec3(0.02);
-            break;
-        case DH_BLOCK_WOOD:
-            roughness = 0.7;
-            reflectance = vec3(0.05);
-            break;
-        case DH_BLOCK_METAL:
-            roughness = 0.2;
-            reflectance = albedo.rgb;
-            break;
-        case DH_BLOCK_DIRT:
-            roughness = 0.85;
-            reflectance = vec3(0.02);
-            break;
-        case DH_BLOCK_LAVA:
-            roughness = 0.9;
-            reflectance = vec3(0.1);
-            break;
-        case DH_BLOCK_DEEPSLATE:
-            roughness = 0.9;
-            reflectance = vec3(0.02);
-            break;
-        case DH_BLOCK_SNOW:
-            roughness = 0.6;
-            subsurface = 0.8;
-            reflectance = vec3(0.04);
-            break;
-        case DH_BLOCK_SAND:
-            roughness = 0.8;
-            subsurface = 0.1;
-            reflectance = vec3(0.05);
-            break;
-        case DH_BLOCK_TERRACOTTA:
-            roughness = 0.75;
-            reflectance = vec3(0.05);
-            break;
-        case DH_BLOCK_NETHER_STONE:
-            roughness = 0.9;
-            reflectance = vec3(0.02);
-            break;
-        case DH_BLOCK_WATER:
-            roughness = 0.05;
-            reflectance = vec3(0.02);
-            break;
-        case DH_BLOCK_ILLUMINATED:
-            roughness = 0.9;
-            reflectance = vec3(0.02);
-            break;
-    }
-    roughness *= roughness;
+    vec3 emissiveness = vec3(0.0);
 
-    float emissiveness = mcEntity == DH_BLOCK_ILLUMINATED || mcEntity == DH_BLOCK_LAVA ? getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1) : 0.0;
-
-    #if NOISY_LAVA != 0
-        if(mcEntity == DH_BLOCK_LAVA) {
-            emissiveness *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
+    #if defined AUTO_MAT
+        switch(mcEntity) {
+            case DH_BLOCK_LEAVES:
+                roughness = 0.6;
+                subsurface = 0.5;
+                reflectance = vec3(0.04);
+                break;
+            case DH_BLOCK_STONE:
+                roughness = 0.9;
+                reflectance = vec3(0.02);
+                break;
+            case DH_BLOCK_WOOD:
+                roughness = 0.7;
+                reflectance = vec3(0.05);
+                break;
+            case DH_BLOCK_METAL:
+                roughness = 0.2;
+                reflectance = albedo.rgb;
+                break;
+            case DH_BLOCK_DIRT:
+                roughness = 0.85;
+                reflectance = vec3(0.02);
+                break;
+            case DH_BLOCK_LAVA:
+                roughness = 0.9;
+                reflectance = vec3(0.1);
+                break;
+            case DH_BLOCK_DEEPSLATE:
+                roughness = 0.9;
+                reflectance = vec3(0.02);
+                break;
+            case DH_BLOCK_SNOW:
+                roughness = 0.6;
+                subsurface = 0.8;
+                reflectance = vec3(0.04);
+                break;
+            case DH_BLOCK_SAND:
+                roughness = 0.8;
+                subsurface = 0.1;
+                reflectance = vec3(0.05);
+                break;
+            case DH_BLOCK_TERRACOTTA:
+                roughness = 0.75;
+                reflectance = vec3(0.05);
+                break;
+            case DH_BLOCK_NETHER_STONE:
+                roughness = 0.9;
+                reflectance = vec3(0.02);
+                break;
+            case DH_BLOCK_WATER:
+                roughness = 0.05;
+                reflectance = vec3(0.02);
+                break;
+            case DH_BLOCK_ILLUMINATED:
+                roughness = 0.9;
+                reflectance = vec3(0.02);
+                break;
         }
+        roughness *= roughness;
+
+        emissiveness = mcEntity == DH_BLOCK_ILLUMINATED || mcEntity == DH_BLOCK_LAVA ? getEmissiveness(albedo.rgb, LUMINANCE_COEFFS_AP1) : vec3(0.0);
     #endif
+
+    if(mcEntity == DH_BLOCK_LAVA) {
+        #if defined MC_TEXTURE_FORMAT_LAB_PBR_1_3 || defined AUTO_MAT
+            #if NOISY_LAVA != 0
+                emissiveness *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
+            #endif
+            // lava actually has a very low albedo, its orange color is exclusively because of emission
+            // simulate that here
+            albedo.rgb *= 0.1;
+            emissiveness *= 6.0;
+        #else
+            albedo.rgb *= 2.5;
+            #if NOISY_LAVA != 0
+                albedo.rgb *= lavaNoise(position.xz + cameraPosition.xz, frameTimeCounter);
+            #endif
+        #endif
+    }
 
     vec3 positionNormalized = normalize(position);
     

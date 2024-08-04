@@ -25,7 +25,7 @@ vec3 actualSkyColor(in float skyTime) {
 }
 
 // Input is not adjusted lightmap coordinates
-mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3 F0, in float roughness, in int metalId, in float subsurface, in float emissiveness, in float clearcoatStrength, in vec3 clearcoatNormal, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPositionWorld, in vec3 moonPositionWorld, in float rain, in sampler2D vanillaLightTex) {
+mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3 F0, in float roughness, in int metalId, in float subsurface, in vec3 emissiveness, in float clearcoatStrength, in vec3 clearcoatNormal, in vec3 normal, in vec3 normalViewspace, in vec3 incident, in vec3 sunPositionWorld, in vec3 moonPositionWorld, in float rain, in sampler2D vanillaLightTex) {
 
     vec2 lightmap = lightAndAO.rg;
     float ambientOcclusion = lightAndAO.b;
@@ -199,7 +199,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
         directSolarLighting *= adjustedAo * albedo;
     #endif
 
-    indirectLighting += emissiveness * DEFAULT_EMISSIVE_STRENGTH * albedo;
+    indirectLighting += emissiveness * DEFAULT_EMISSIVE_STRENGTH;
 
     return mat2x3(indirectLighting, directSolarLighting);
 }
