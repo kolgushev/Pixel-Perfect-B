@@ -17,9 +17,6 @@ out vec3 position;
 out vec3 normal;
 out vec3 displayNormal;
 out vec4 tangent;
-#if defined PIXELATED_SHADOWS
-    out float glPosClipW;
-#endif
 flat out int mcEntity;
 #if defined TAA_ENABLED
     out vec3 prevClip;
@@ -481,9 +478,6 @@ void main() {
         unjitteredClip = viewToClip(unjitteredView).xyw;
     #endif
 
-    #if defined PIXELATED_SHADOWS
-        glPosClipW = glPosClip.w;
-    #endif
     gl_Position = glPosClip;
 
     #if defined g_skybasic
