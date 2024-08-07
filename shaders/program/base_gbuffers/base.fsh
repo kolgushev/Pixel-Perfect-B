@@ -22,6 +22,9 @@ in vec3 position;
 in vec3 normal;
 in vec3 displayNormal;
 in vec4 tangent;
+#if defined PIXELATED_SHADOWS
+    in float glPosClipW;
+#endif
 flat in int mcEntity;
 #if defined TAA_ENABLED
     in vec3 prevClip;
@@ -632,13 +635,13 @@ void main() {
             
             vec2 texcoordScaled = texcoord * texSize;
             vec2 dTexel = dFdx(texcoordScaled);
-            vec3 dWorld = dFdx(position);
 
             vec3 move = vec3((0.5 - fract(texcoordScaled)), 0.0);
 
             float texelSize = 0.0;
             if(length(dTexel) > 0.0) {
-                texelSize = length(dWorld) / length(dTexel);
+                // Thanks to https://x.com/FreyaHolmer/status/1820157167682388210/photo/1 for the optimization
+                texelSize = (2.0 * glPosClipW) / (viewWidth * projectionMatrix[0][0] * length(dTexel));
             }
 
             move = TBN * move * texelSize;
