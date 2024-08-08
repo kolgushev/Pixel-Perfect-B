@@ -454,7 +454,7 @@ void main() {
     #endif
 
     #if defined gc_basic
-        if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
+        if((renderStage == MC_RENDER_STAGE_OUTLINE || renderStage == MC_RENDER_STAGE_NONE) && color.rgb == vec3(0)) {
             #if defined OUTLINE_THROUGH_BLOCKS
                 glPos *= 0.2;
             #endif
