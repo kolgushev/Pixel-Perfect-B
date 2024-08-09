@@ -1,5 +1,4 @@
-// Sourced from https://github.com/diharaw/sky-models
-
+// Sky calculations sourced from https://github.com/diharaw/sky-models
 /*
 Copyright (c) 2019 Dihara Wijetunga
 

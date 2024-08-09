@@ -151,9 +151,13 @@ void main() {
         light = max(light - 0.0313, 0) * 1.067;
     #endif
 
+    #if defined g_clouds
+        light = vec2(0.0, 1.0);
+    #endif
+
     #if defined g_line
         normal = vaNormal;
-    #elif defined IS_IRIS || defined gc_terrain || defined gc_textured || defined g_clouds || defined g_weather
+    #elif (defined IS_IRIS && !defined gc_hand) || defined gc_terrain || defined gc_textured || defined g_clouds || defined g_weather
         normal = vaNormal;
 
         #if defined g_terrain
@@ -454,7 +458,7 @@ void main() {
     #endif
 
     #if defined gc_basic
-        if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
+        if((renderStage == MC_RENDER_STAGE_OUTLINE || renderStage == MC_RENDER_STAGE_NONE) && color.rgb == vec3(0)) {
             #if defined OUTLINE_THROUGH_BLOCKS
                 glPos *= 0.2;
             #endif
@@ -487,9 +491,9 @@ void main() {
         #else
             #define PREV_CLIP toViewspace(gbufferPreviousProjection, gbufferPreviousModelView, position + cameraDiff).xyw
         #endif
-        // TODO: remove all this needless logic once Iris fixes block entities
+
         // TODO: add proper position evaluation for hand
-        #if defined gc_entities && (!defined IS_IRIS || !defined gc_block_entities || !defined gc_hand)
+        #if defined gc_entities && !defined IS_IRIS
             #if defined IS_IRIS
                 bool hasMovement = at_velocity != vec3(0.0);
             #else

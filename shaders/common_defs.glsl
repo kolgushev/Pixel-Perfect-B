@@ -305,6 +305,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 // 0: none 1:DITAA (Double-Image TAA) 2: full TAA
 #define TAA_MODE 2 // [0 1 2]
 
+#define TAA_SHADOW_FIX
+#ifdef TAA_SHADOW_FIX
+#endif
+
 #if TAA_MODE == 1
 #endif
 

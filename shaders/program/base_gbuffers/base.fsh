@@ -351,7 +351,7 @@ void main() {
     #endif
 
     #if defined g_line
-        if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
+        if((renderStage == MC_RENDER_STAGE_OUTLINE || renderStage == MC_RENDER_STAGE_NONE) && color.rgb == vec3(0)) {
             #if OUTLINE_COLOR == 0
                 albedo = vec4(0.0, 0.0, 0.0, OUTLINE_ALPHA);
             #elif OUTLINE_COLOR == 1
@@ -622,7 +622,7 @@ void main() {
 
     #if defined TAA_ENABLED
         #if defined IS_IRIS && defined g_hand
-            b5 = vec4(0);
+            b5 = opaque1(0.0);
         #else
             vec2 prevTexcoord = (prevClip.xy / prevClip.z) * 0.5 + 0.5;
             vec2 unjitteredTexcoord = (unjitteredClip.xy / unjitteredClip.z) * 0.5 + 0.5;
