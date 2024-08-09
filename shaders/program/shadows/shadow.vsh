@@ -51,7 +51,7 @@ void main() {
             position = vaPosition + chunkOffset;
             normal = vaNormal;
 
-            #if defined TAA_ENABLED && defined TAA_SHADOW_FIX && !defined NO_AA
+            #if defined TAA_ENABLED && defined TAA_SHADOW_FIX && !defined NO_AA && IS_IRIS
                 gl_Position = gbufferProjection * (gbufferModelView * vec4(position, 1.0));
                     
                 // jitter
