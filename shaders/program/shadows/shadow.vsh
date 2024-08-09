@@ -23,6 +23,15 @@ out vec3 normal;
 #define use_to_viewspace
 #define use_distortion
 
+#define use_gbuffer_projection
+#define use_gbuffer_model_view
+#define use_gbuffer_projection_inverse
+#define use_gbuffer_model_view_inverse
+
+#if defined TAA_ENABLED && defined TAA_SHADOW_FIX
+    #define use_temporal_AA_offsets
+#endif
+
 #include "/lib/use.glsl"
 
 void main() {
@@ -42,7 +51,17 @@ void main() {
             position = vaPosition + chunkOffset;
             normal = vaNormal;
 
-            gl_Position = toViewspace(projectionMatrix, modelViewMatrix, position);
+            #if defined TAA_ENABLED && defined TAA_SHADOW_FIX && !defined NO_AA
+                gl_Position = gbufferProjection * (gbufferModelView * vec4(position, 1.0));
+                    
+                // jitter
+                gl_Position.xy -= temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] * gl_Position.w / vec2(viewWidth, viewHeight);
+
+                gl_Position = gbufferModelViewInverse * (gbufferProjectionInverse * gl_Position);
+            #endif
+
+
+            gl_Position = toViewspace(projectionMatrix, modelViewMatrix, gl_Position.xyz);
             
             gl_Position.xy = distortShadow(gl_Position.xy);
             gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);
