@@ -16,22 +16,25 @@ void main() {
         vec2 texcoordNormalized = texcoord * 2 - 1;
     #endif
 
+    vec2 texcoordMod = texcoord;
     #if defined FREEZING_DISTORTION
-        vec3 colorCorrected;
+        float freezeDistortion;
         if(freezing > 0.0) {
             float noiseSample = tile(texcoord * vec2(viewWidth, viewHeight) * 0.2 + frameTimeCounter * 0.5, NOISE_PERLIN_4D, false).x;
 
-            float freezeDistortion = freezing * pow(noiseSample, 7) * (pow(texcoordNormalized.x, 2) + pow(texcoordNormalized.y, 2)) * 5.0;
+            freezeDistortion = freezing * pow(noiseSample, 7) * (pow(texcoordNormalized.x, 2) + pow(texcoordNormalized.y, 2)) * FREEZING_DISTORT_STRENGTH;
 
-            vec2 normal = vec2(-dFdx(freezeDistortion), -dFdy(freezeDistortion));
-
-            colorCorrected = mix(texture(colortex0, texcoord + normal).rgb, ATMOSPHERIC_FOG_COLOR_POWDER_SNOW, 1.0 - exp(freezeDistortion * -ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW));
-        } else {
-            colorCorrected = texture(colortex0, texcoord).rgb;
+            texcoordMod += vec2(-dFdx(freezeDistortion), -dFdy(freezeDistortion));
         }
-    #else
-        vec3 colorCorrected = texture(colortex0, texcoord).rgb;
     #endif
+
+    #if defined UNDERWATER_DISTORTION
+        if(isEyeInWater == 1) {
+            texcoordMod += vec2(sin((texcoord.y * UNDERWATER_DISTORT_FREQUENCY + frameTimeCounter * UNDERWATER_DISTORT_SPEED) * 2.0 * PI) * UNDERWATER_DISTORT_STRENGTH * 0.01 * (1.0 / UNDERWATER_DISTORT_FREQUENCY), 0.0);
+        }
+    #endif
+
+    vec3 colorCorrected = texture(colortex0, texcoordMod).rgb;
 
     #if INVISIBILITY_DISTORTION != 0
         const vec2 colorOffsets[3] = vec2[3](
@@ -39,11 +42,11 @@ void main() {
             vec2(0.432, -0.902),
             vec2(-0.997, 0.076)
         );
+
         vec3 magentaSample;
         vec3 cyanSample;
         vec3 yellowSample;
         if(invisibility > 0.0) {
-            
             float distortion = invisibility * (pow(texcoordNormalized.x, 2) + pow(texcoordNormalized.y, 2));
             distortion = abs(distortion);
             
@@ -53,9 +56,9 @@ void main() {
                 float displacement = distortion * INVISIBILITY_DISTORT_STRENGTH;
             #endif
 
-            magentaSample = texture(colortex0, texcoord + colorOffsets[0] * displacement).rgb;
-            cyanSample = texture(colortex0, texcoord + colorOffsets[1] * displacement).rgb;
-            yellowSample = texture(colortex0, texcoord + colorOffsets[2] * displacement).rgb;
+            magentaSample = texture(colortex0, texcoordMod + colorOffsets[0] * displacement).rgb;
+            cyanSample = texture(colortex0, texcoordMod + colorOffsets[1] * displacement).rgb;
+            yellowSample = texture(colortex0, texcoordMod + colorOffsets[2] * displacement).rgb;
 
             #if INVISIBILITY_DISTORTION == 1
                 float k = RGBToCMYK(colorCorrected).w;
@@ -67,6 +70,12 @@ void main() {
             #elif INVISIBILITY_DISTORTION == 2
                 colorCorrected = (cyanSample + magentaSample + yellowSample + colorCorrected) * 0.25;
             #endif
+        }
+    #endif
+
+    #if defined FREEZING_DISTORTION
+        if(freezing > 0.0) {
+            colorCorrected = mix(colorCorrected, ATMOSPHERIC_FOG_COLOR_POWDER_SNOW, 1.0 - exp(freezeDistortion * -ATMOSPHERIC_FOG_DENSITY_POWDER_SNOW));
         }
     #endif
 
