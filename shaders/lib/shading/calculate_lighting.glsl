@@ -185,17 +185,17 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR * albedo;
         #else
             vec3 ambientLight = vec3(0.0);
-            vec3 minLight = 0.5 * indirectLighting;
         #endif
 
         // Add the lighting togther to get the total contribution of the lightmap the final color.
-        vec3 indirectLighting = torchLighting + (skyLighting + ambientSkyLight) * albedo + skyReflection;
-        #if !defined g_clouds
-            indirectLighting += ambientLight;
-            
-            // apply min lighting
-            indirectLighting = mix(0.5 * indirectLighting + minLight, indirectLighting, smoothstep(-minLight, 2.0 * minLight, indirectLighting));
+        vec3 indirectLighting = torchLighting + (skyLighting + ambientSkyLight + ambientLight) * albedo + skyReflection;
+
+        #if defined g_clouds
+            vec3 minLight = 0.5 * indirectLighting;
         #endif
+
+        // apply min lighting
+        indirectLighting = mix(0.5 * indirectLighting + minLight, indirectLighting, smoothstep(-minLight, 2.0 * minLight, indirectLighting));
 
 
         // apply min lighting
