@@ -78,6 +78,10 @@ void main() {
         light = max(light - 0.0313, 0) * 1.067;
     #endif
 
+    #if defined g_clouds
+        light = vec2(0.0, 1.0);
+    #endif
+
     // make sure at_tangent is in DirectX format
     tangent = vec4(mat3(gbufferModelViewInverse) * normalMatrix * normalize(at_tangent.xyz), normalize(at_tangent.w));
 
@@ -112,7 +116,7 @@ void main() {
     #if defined g_line
         // The line is given to us as a single point at the start with the offset being given via the normal
         // We have to turn that into a thin parallelogram stretching across the screen with a pixel width
-        // Special thanks to https://cdn.discordapp.com/attachments/960320448594329630/960695935837548695/base150.zip
+        // Special thanks to https://github.com/shaderLABS/Base-150/blob/main/shaders/gbuffers_line.vsh
         // for providing a solution
 
         const float LINE_WIDTH  = 2.5;
@@ -128,8 +132,8 @@ void main() {
         vec2 resolution = vec2(viewWidth, viewHeight);
 
         // Find the viewspace position of the line start and end
-        vec4 linePosStart = gbufferProjection * (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition, 1.0)));
-        vec4 linePosEnd = gbufferProjection * (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition + normal, 1.0)));
+        vec4 linePosStart = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition, 1.0)));
+        vec4 linePosEnd = projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition + normal, 1.0)));
 
         // account for perspective
         vec3 ndc1 = linePosStart.xyz / linePosStart.w;
@@ -426,7 +430,7 @@ void main() {
     #endif
 
     #if defined gc_basic
-        if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
+        if((renderStage == MC_RENDER_STAGE_OUTLINE || renderStage == MC_RENDER_STAGE_NONE) && color.rgb == vec3(0)) {
             #if defined OUTLINE_THROUGH_BLOCKS
                 glPos *= 0.2;
             #endif

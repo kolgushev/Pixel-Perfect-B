@@ -3,7 +3,7 @@ name: Feature request
 about: Suggest an idea for the shader
 title: ''
 labels: suggestion
-assignees: ''
+assignees: kolgushev
 
 ---
 

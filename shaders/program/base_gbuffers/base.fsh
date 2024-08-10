@@ -198,7 +198,7 @@ void main() {
     #endif
 
     #if defined g_line
-        if(renderStage == MC_RENDER_STAGE_OUTLINE && color.rgb == vec3(0)) {
+        if((renderStage == MC_RENDER_STAGE_OUTLINE || renderStage == MC_RENDER_STAGE_NONE) && color.rgb == vec3(0)) {
             #if OUTLINE_COLOR == 0
                 albedo = vec4(0.0, 0.0, 0.0, OUTLINE_ALPHA);
             #elif OUTLINE_COLOR == 1

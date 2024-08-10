@@ -146,17 +146,6 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             directSolarLighting *= albedo * RCP_PI;
         #endif
 
-        float hardcoreMult = inversesqrt(darknessFactor * 0.75 + 0.25) - 1;
-        vec3 ambientLight = hardcoreMult * AMBIENT_LIGHT_MULT * AMBIENT_COLOR;
-        ambientLight *= (1 - clamp(lightmap.y * 1.5, 0.0, 1.0));
-        #if STREAMER_MODE == -1
-            ambientLight += vec3(0.8, 0.9, 1.0) * 2.0;
-        #else
-            ambientLight += nightVision * NIGHT_VISION_COLOR;
-        #endif
-
-        vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR * albedo;
-
         // // shade according to sky color
         // vec3 skyColor = pixelPerfectSkyVector(normal, normalize(sunPositionWorld));
         // vec3 skyLighting = skyColor * lightmapAdjusted.y;
@@ -184,8 +173,30 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             ambientSkyLight *= 1.0 - fresnel;
         #endif
 
+        float hardcoreMult = inversesqrt(darknessFactor * 0.75 + 0.25) - 1;
+        #if !defined g_clouds
+            vec3 ambientLight = hardcoreMult * AMBIENT_LIGHT_MULT * AMBIENT_COLOR;
+            ambientLight *= (1 - clamp(lightmap.y * 1.5, 0.0, 1.0));
+            #if STREAMER_MODE == -1
+                ambientLight += vec3(0.8, 0.9, 1.0) * 2.0;
+            #else
+                ambientLight += nightVision * NIGHT_VISION_COLOR;
+            #endif
+            vec3 minLight = hardcoreMult * MIN_LIGHT_MULT * MIN_LIGHT_COLOR * albedo;
+        #else
+            vec3 ambientLight = vec3(0.0);
+            vec3 minLight = 0.5 * indirectLighting;
+        #endif
+
         // Add the lighting togther to get the total contribution of the lightmap the final color.
-        vec3 indirectLighting = torchLighting + (ambientLight + skyLighting + ambientSkyLight) * albedo + skyReflection;
+        vec3 indirectLighting = torchLighting + (skyLighting + ambientSkyLight) * albedo + skyReflection;
+        #if !defined g_clouds
+            indirectLighting += ambientLight;
+            
+            // apply min lighting
+            indirectLighting = mix(0.5 * indirectLighting + minLight, indirectLighting, smoothstep(-minLight, 2.0 * minLight, indirectLighting));
+        #endif
+
 
         // apply min lighting
         indirectLighting = mix(0.5 * indirectLighting + minLight, indirectLighting, smoothstep(-minLight, 2.0 * minLight, indirectLighting));

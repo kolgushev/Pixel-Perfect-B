@@ -30,7 +30,19 @@ void main() {
             position = vaPosition + chunkOffset;
             normal = vaNormal;
 
-            gl_Position = toClipspace(projectionMatrix, modelViewMatrix, position);
+            #if defined TAA_ENABLED && defined TAA_SHADOW_FIX && !defined NO_AA && IS_IRIS
+                gl_Position = gbufferProjection * (gbufferModelView * vec4(position, 1.0));
+                    
+                // jitter
+                gl_Position.xy -= temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] * gl_Position.w / vec2(viewWidth, viewHeight);
+
+                gl_Position = gbufferModelViewInverse * (gbufferProjectionInverse * gl_Position);
+            #else
+                gl_Position = vec4(position, 1.0);
+            #endif
+
+
+            gl_Position = toClipspace(projectionMatrix, modelViewMatrix, gl_Position.xyz);
             
             gl_Position.xy = distortShadow(gl_Position.xy);
             gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);
