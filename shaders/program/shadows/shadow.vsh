@@ -58,6 +58,8 @@ void main() {
                 gl_Position.xy -= temporalAAOffsets[frameCounter % TAA_OFFSET_LEN] * gl_Position.w / vec2(viewWidth, viewHeight);
 
                 gl_Position = gbufferModelViewInverse * (gbufferProjectionInverse * gl_Position);
+            #else
+                gl_Position = vec4(position, 1.0);
             #endif
 
 
