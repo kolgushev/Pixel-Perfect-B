@@ -548,6 +548,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #ifdef SHADOWS_ENABLED_USER
 #endif
 
+#define DH_SHADOWS_ENABLED
+#ifdef DH_SHADOWS_ENABLED
+#endif
+
 #define GRASS_CASTS_SHADOWS
 #ifdef GRASS_CASTS_SHADOWS
 #endif
@@ -561,8 +565,6 @@ const float shadowDistance = 150.0; // [100.0 125.0 150.0 175.0 200.0 225.0 250.
 const float entityShadowDistanceMul = 0.3; // [0.1 0.2 0.3 0.4]
 
 #define SHADOW_DISTORTION 0.9 // [0.0 0.5 0.8 0.9 0.95 0.98]
-// 0:off 1:2× 2:4×
-#define SHADOW_SUPERSAMPLE 0 // [0 1 2]
 #define SHADOW_AFFECTED_BY_LIGHTMAP
 #ifdef SHADOW_AFFECTED_BY_LIGHTMAP
 #endif
@@ -651,18 +653,6 @@ const float shadowIntervalSize = 8.0;
 
 #define SHADOW_CUTOFF 0.76
 
-#if SHADOW_SUPERSAMPLE != 0
-    const bool shadowtex1Nearest = true;
-    const bool shadowcolor1Nearest = true;
-#endif
-
-#if SHADOW_SUPERSAMPLE == 1
-    #define SHADOW_RES_MULT 2.0
-    #define SHADOW_RES_MULT_RCP 0.5
-#elif SHADOW_SUPERSAMPLE == 2
-    #define SHADOW_RES_MULT 4.0
-    #define SHADOW_RES_MULT_RCP 0.25
-#endif
 
 #if VANILLA_LIGHTING == 2
     #if !defined DYNAMIC_EXPOSURE_LIGHTING

@@ -192,12 +192,6 @@ screen.SHADOWS=Shadows
     option.shadowMapResolution=Shadow Resolution
         option.shadowMapResolution.comment=Controls the resolution of the shadowmap (the shadow image). A higher-resolution shadowmap will increase the detail in shadows and make them look sharper. However, a higher resolution takes longer to calculate, decreasing performance. Increased ➤ Large performance hit.
 
-    option.SHADOW_SUPERSAMPLE=Shadow TSR
-        option.SHADOW_SUPERSAMPLE.comment=Shadow Temporal Super-Resolution improves performance by updating shadows over several frames. Some shadows might not update instantly when this setting is increased. Shadow update speed depends on framerate, so 60+ fps is recommended for the 4× setting. Increased ➤ Large performance boost.
-        value.SHADOW_SUPERSAMPLE.0=Off
-        value.SHADOW_SUPERSAMPLE.1=2×
-        value.SHADOW_SUPERSAMPLE.2=4×
-
     option.SHADOW_DISTORTION=Shadow Distortion
         option.SHADOW_DISTORTION.comment=Because things that are farther away appear smaller, the shadowmap (shadow image) is warped to have a higher resolution closer to the player. Lower distortion makes the resolution seem lower, but higher resolution might look weird. Increased ➤ No performance impact.
 

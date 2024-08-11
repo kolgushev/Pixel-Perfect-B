@@ -5,8 +5,6 @@ float shadowSample(in vec3 position) {
     shadowPosition.xy = distortShadow(shadowPosition.xy);
     shadowPosition = shadowPosition * 0.5 + 0.5;
     
-    shadowPosition.xy = supersampleSampleShift(shadowPosition.xy);
-
     vec3 shadowSurface = vec3(shadowPosition.xy, texture(shadowtex0, shadowPosition.xy).r);
     float shadowDiff = shadowSurface.z - shadowPosition.z;
 

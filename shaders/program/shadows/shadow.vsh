@@ -45,8 +45,6 @@ void main() {
             gl_Position = toClipspace(projectionMatrix, modelViewMatrix, gl_Position.xyz);
             
             gl_Position.xy = distortShadow(gl_Position.xy);
-            gl_Position.xy = supersampleShift(gl_Position.xy, frameCounter);
-            gl_Position.xy = supersampleSubpixelShift(gl_Position.xy, frameCounter);
         }
     #else
         gl_Position = vec4(0);

@@ -53,9 +53,3 @@ const vec2 superSampleOffsets16[16] = vec2[16](
         vec2(-0.32806464509456035, -0.9178100193528712)
     );
 #endif
-
-#if SHADOW_SUPERSAMPLE == 1
-    const vec2 superSampleOffsets[4] = superSampleOffsets4;
-#elif SHADOW_SUPERSAMPLE == 2
-    const vec2 superSampleOffsets[16] = superSampleOffsets16;
-#endif
