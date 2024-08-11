@@ -244,6 +244,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define SPIDEREYES_MULT 1.0
 #define ENCHANT_GLINT_MULT 3.0 // [1.0 2.0 3.0 4.0 5.0]
 
+#define VOLUMETRIC_PARTICLES
+#ifdef VOLUMETRIC_PARTICLES
+#endif
+
 #define END_WARPING 0.0 // [0.0 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5]
 
 #define PANORAMIC_WORLD 0 // [0 1 2]
@@ -262,7 +266,6 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 
 #define VANILLA_COLORS 0.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define CUTOUT_ALIGN_STRENGTH 0.8 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-
 
 
 // 0 is old lighting off, 1 is standard vanilla, 2 is custom shading, 3 is custom shading with PBR

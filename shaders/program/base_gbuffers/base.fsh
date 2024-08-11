@@ -677,6 +677,15 @@ void main() {
         albedo.rgb = lightColor[0] + (lightColor[1]) * shadow + lightningColor * albedo.rgb;
     #endif
 
+    #if defined VOLUMETRIC_PARTICLES && defined gc_particles
+        #define HAVE_DEPTH
+        vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
+        float depth = texture(depthtex1, texcoordScreenspace).r;
+
+        // particles are considered about 0.1 blocks thick
+        albedo.a *= smoothstep(0.0, 0.2, length(depthToView(texcoordScreenspace, depth, gbufferProjectionInverse)) - length(position));
+    #endif
+
     #if defined gc_transparent
         vec3 positionOpaque = position;
         vec3 diffuse = albedo.rgb;
@@ -696,9 +705,12 @@ void main() {
 
             #if defined WATER_FOG_FROM_OUTSIDE
                 if(isBlockWater(mcEntity) || isBlockIce(mcEntity)) {
-                    vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
 
-                    float depth = texture(depthtex1, texcoordScreenspace).r;
+                    #if !defined HAVE_DEPTH
+                        #define HAVE_DEPTH
+                        vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
+                        float depth = texture(depthtex1, texcoordScreenspace).r;
+                    #endif
                     // TODO: figure out a way to fix this
                     // diffuse = texture(colortex3, texcoordScreenspace).rgb;
                     // diffuse = vec3(1);
