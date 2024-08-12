@@ -42,7 +42,7 @@ void main() {
             #endif
 
 
-            gl_Position = toClipspace(projectionMatrix, modelViewMatrix, gl_Position.xyz);
+            gl_Position = toClipspace(shadowProjection, shadowModelView, gl_Position.xyz);
             
             gl_Position.xy = distortShadow(gl_Position.xy);
         }

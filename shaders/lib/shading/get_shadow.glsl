@@ -24,7 +24,11 @@ float shadowStep(in float len, in float subsurface, in float factor) {
 
 float getShadow(in vec3 position, in vec3 normal, in mat3 TBN, in vec2 screenPos, in vec3 shadowLightPosition, in float lightmapLight, in float skyTime, in float subsurface) {
     vec3 shadowLightPos = normalize(shadowLightPosition);
-    float shadowCutoff = smoothstep(0.9, 1.0, length(position) / (shadowDistance * SHADOW_CUTOFF));
+    #if defined DO_SUBSURFACE
+        float shadowCutoff = 0.0;
+    #else
+        float shadowCutoff = smoothstep(0.9, 1.0, length(position) / (shadowDistance * SHADOW_CUTOFF));
+    #endif
     float basicShading = basicDirectShading(skyTime);
     float NdotL = dot(normal, shadowLightPos);
     bool isUnlit = NdotL < -SHADOW_NORMAL_MIX_THRESHOLD;
