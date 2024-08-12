@@ -46,7 +46,7 @@ void main() {
 
     noiseToSurpass = noiseToSurpass * (1 - EPSILON) + EPSILON;
 
-    float transition = fogifyDistanceOnly(position, (far - 16.0), 0.0, 1.0 / (far - 16.0));
+    float transition = fogifyDistanceOnly(position, (far - 16.0), 0.0, 1.0 / (far - 16.0), 0.6);
     if(noiseToSurpass > transition
     #if defined gc_transparent
         // if we do this never, we have weird horizon underwater
@@ -284,7 +284,7 @@ void main() {
                 float atmosPhogWater = 0.0;
                 float opaqueFog = 1.0;
                 if(isEyeInWater == 0) {
-                    opaqueFog = fogifyDistanceOnly(positionOpaque, dhFarPlane, blindnessSmooth, 1/dhFarPlane);
+                    opaqueFog = fogifyDistanceOnly(positionOpaque, dhFarPlane, blindnessSmooth, 1/dhFarPlane, 0.875);
                     atmosPhogWater = distance(position, positionOpaque);
                     float fogDensity = ATMOSPHERIC_FOG_DENSITY_WATER;
                     atmosPhogWater = mix(atmosPhogWater, dhFarPlane, opaqueFog) * fogDensity;

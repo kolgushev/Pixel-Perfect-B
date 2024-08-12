@@ -66,7 +66,7 @@ void main() {
         float noiseToSurpass = tile(gl_FragCoord.xy + offset, NOISE_CHECKERBOARD_1D, true).r;
 
         float noiseToSurpassMod = noiseToSurpass * (1 - EPSILON) + EPSILON;
-        float transition = fogifyDistanceOnly(position, far, 0.0, 1.0 / far);
+        float transition = fogifyDistanceOnly(position, far, 0.0, 1.0 / far, 0.6);
 
         if(noiseToSurpassMod <= transition) discard;
     #endif
@@ -754,7 +754,7 @@ void main() {
                 float atmosPhogWater = 0.0;
                 float opaqueFog = 1.0;
                 if(isEyeInWater == 0) {
-                    opaqueFog = fogifyDistanceOnly(positionOpaque, FAR, blindnessSmooth, 1/FAR);
+                    opaqueFog = fogifyDistanceOnly(positionOpaque, FAR, blindnessSmooth, 1/FAR, 0.875);
                     atmosPhogWater = distance(position, positionOpaque);
                     float fogDensity = isBlockWater(mcEntity) ? ATMOSPHERIC_FOG_DENSITY_WATER : FOG_DENSITY_ICE;
                     atmosPhogWater = mix(atmosPhogWater, FAR, opaqueFog) * fogDensity;

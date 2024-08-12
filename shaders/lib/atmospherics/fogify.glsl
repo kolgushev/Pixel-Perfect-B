@@ -1,8 +1,8 @@
-float fogifyDistanceOnly(in vec3 position, in float far, in float blindness, in float farRcp) {
+float fogifyDistanceOnly(in vec3 position, in float far, in float blindness, in float farRcp, in float hardness) {
     // Render fog in a cylinder shape
     float fogFlat = length(position.y);
     float fogTube;
-    if(blindness == 0) {
+    if(blindness == 0.0) {
         fogTube = length(position.xz);
         #if defined g_clouds
             fogTube *= CLOUD_EXTENSION;
@@ -10,8 +10,8 @@ float fogifyDistanceOnly(in vec3 position, in float far, in float blindness, in 
                 fogTube *= 8.1;
             #endif
         #endif
-        fogFlat = smoothstep(0.875, 1.0, fogFlat * farRcp);
-        fogTube = smoothstep(0.875, 1.0, fogTube * farRcp);
+        fogFlat = smoothstep(hardness, 1.0, fogFlat * farRcp);
+        fogTube = smoothstep(hardness, 1.0, fogTube * farRcp);
         fogTube = clamp(fogTube + fogFlat, 0.0, 1.0);
     } else {
         fogTube = length(position);
@@ -27,7 +27,7 @@ float fogifyDistanceOnly(in vec3 position, in float far, in float blindness, in 
 vec4 fogify(in vec3 position, in vec3 positionWater, in vec4 transparency, in vec3 diffuse, in float far, in int isEyeInWater, in float nightVisionEffect, in float blindnessEffect, in bool isSpectator, in float fogWeather, in vec3 fogColor, in vec3 cameraPosition, in float frameTimeCounter, in float lavaNoise) {
     vec3 composite = diffuse.rgb;
     float farRcp = 1 / far;
-    float fogTube = fogifyDistanceOnly(position, far, blindnessEffect, farRcp);
+    float fogTube = fogifyDistanceOnly(position, far, blindnessEffect, farRcp, 0.875);
 
     float atmosPhog = 1.0;
     vec3 atmosPhogColor = vec3(0);
