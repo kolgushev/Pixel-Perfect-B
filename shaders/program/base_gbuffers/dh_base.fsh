@@ -38,17 +38,28 @@ void main() {
     // DH terrain dithers out when it is about to be replaced by standard terrain
     // idea for fadeout is originally from BSL, but implementation is from CLOSE_FADE_OUT 
     #if defined TAA_ENABLED
-        float offset = frameCounter & 1;
+        #if defined BLUE_DITHERING
+            float offset = frameCounter * 113;
+        #else
+            float offset = frameCounter & 1;
+        #endif
     #else
         float offset = 0.0;
     #endif
-    float noiseToSurpass = tile(gl_FragCoord.xy + offset, NOISE_CHECKERBOARD_1D, true).r;
+
+    #if defined BLUE_DITHERING
+        #define DITHER_NOISE NOISE_BLUE_1D
+    #else
+        #define DITHER_NOISE NOISE_CHECKERBOARD_1D
+    #endif
+
+    float noiseToSurpass = tile(gl_FragCoord.xy + offset, DITHER_NOISE, true).r;
 
     noiseToSurpass = noiseToSurpass * (1 - EPSILON) + EPSILON;
 
     float transition = fogifyDistanceOnly(position, (far - 16.0), 0.0, 1.0 / (far - 16.0), 0.6);
     if(noiseToSurpass > transition
-    #if defined gc_transparent
+    #if defined gc_transparent && !defined SMOOTH_TRANSITION_TO_DH
         // if we do this never, we have weird horizon underwater
         // if we do this always, transition to DH terrain looks bad overwater
         && isEyeInWater == 1

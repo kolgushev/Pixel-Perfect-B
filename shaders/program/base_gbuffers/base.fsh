@@ -54,16 +54,34 @@ void main() {
         #endif
     #endif
 
-    // discard when transitioning to DH terrain
     #if defined SMOOTH_TRANSITION_TO_DH && defined DISTANT_HORIZONS && !defined g_clouds && !defined g_weather && !defined gc_hand && !defined gc_sky
-        #define NOISE_TO_SURPASS_DEFINED
+        #define do_smooth_transition
+    #endif
+    
+    #if defined do_smooth_transition || defined fade_out_items
         // sample noise texture
         #if defined TAA_ENABLED
-            float offset = frameCounter & 1;
+            #if defined BLUE_DITHERING
+                float offset = frameCounter * 113;
+            #else
+                float offset = frameCounter & 1;
+            #endif
         #else
             float offset = 0.0;
         #endif
-        float noiseToSurpass = tile(gl_FragCoord.xy + offset, NOISE_CHECKERBOARD_1D, true).r;
+
+        #if defined BLUE_DITHERING
+            #define DITHER_NOISE NOISE_BLUE_1D
+        #else
+            #define DITHER_NOISE NOISE_CHECKERBOARD_1D
+        #endif
+
+        float noiseToSurpass = tile(gl_FragCoord.xy + offset, DITHER_NOISE, true).r;
+    #endif
+
+
+    // discard when transitioning to DH terrain
+    #if defined do_smooth_transition
 
         float noiseToSurpassMod = noiseToSurpass * (1 - EPSILON) + EPSILON;
         float transition = fogifyDistanceOnly(position, far, 0.0, 1.0 / far, 0.6);
@@ -73,17 +91,6 @@ void main() {
 
     // discard if too close
     #if defined fade_out_items
-        #if !defined NOISE_TO_SURPASS_DEFINED
-            #define NOISE_TO_SURPASS_DEFINED
-            // sample noise texture
-            #if defined TAA_ENABLED
-                float offset = frameCounter & 1;
-            #else
-                float offset = 0.0;
-            #endif
-            float noiseToSurpass = tile(gl_FragCoord.xy + offset, NOISE_CHECKERBOARD_1D, true).r;
-        #endif
-
         #if defined CLOSE_FADE_OUT_FULL
             noiseToSurpass = noiseToSurpass * (1 - EPSILON) + EPSILON;
         #else
