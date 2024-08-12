@@ -54,8 +54,9 @@ void main() {
         #endif
     #endif
 
-    // discard if too close
-    #if defined fade_out_items
+    // discard when transitioning to DH terrain
+    #if defined SMOOTH_TRANSITION_TO_DH && defined DISTANT_HORIZONS && !defined g_clouds && !defined g_weather && !defined gc_hand && !defined gc_sky
+        #define NOISE_TO_SURPASS_DEFINED
         // sample noise texture
         #if defined TAA_ENABLED
             float offset = frameCounter & 1;
@@ -64,12 +65,29 @@ void main() {
         #endif
         float noiseToSurpass = tile(gl_FragCoord.xy + offset, NOISE_CHECKERBOARD_1D, true).r;
 
+        float noiseToSurpassMod = noiseToSurpass * (1 - EPSILON) + EPSILON;
+
+        if(noiseToSurpassMod <= smoothstep(0.8 * far, 1.0 * far, length(position))) discard;
+    #endif
+
+    // discard if too close
+    #if defined fade_out_items
+        #if !defined NOISE_TO_SURPASS_DEFINED
+            #define NOISE_TO_SURPASS_DEFINED
+            // sample noise texture
+            #if defined TAA_ENABLED
+                float offset = frameCounter & 1;
+            #else
+                float offset = 0.0;
+            #endif
+            float noiseToSurpass = tile(gl_FragCoord.xy + offset, NOISE_CHECKERBOARD_1D, true).r;
+        #endif
+
         #if defined CLOSE_FADE_OUT_FULL
             noiseToSurpass = noiseToSurpass * (1 - EPSILON) + EPSILON;
         #else
             noiseToSurpass = noiseToSurpass * 1.5 - 0.5;
         #endif
-
 
         if(noiseToSurpass > smoothstep(0.47 * FADE_OUT_RADIUS, 0.6 * FADE_OUT_RADIUS, length(position))) discard;
     #endif

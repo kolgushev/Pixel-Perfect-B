@@ -32,7 +32,7 @@ void main() {
     vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
     float depth = texture(depthtex0, texcoordScreenspace).r;
 
-    // don't render if blind or if rendering standard terrain
+    // don't render if blind or if rendering behind standard terrain
     if(depth != 1.0 || blindnessSmooth > (1.0 - EPSILON)) discard;
 
     // DH terrain dithers out when it is about to be replaced by standard terrain
@@ -46,7 +46,7 @@ void main() {
 
     noiseToSurpass = noiseToSurpass * (1 - EPSILON) + EPSILON;
 
-    if(noiseToSurpass > smoothstep(0.8 * (far - 8.0), 1.0 * (far - 8.0), length(position))
+    if(noiseToSurpass > smoothstep(0.8 * far, 1.0 * far, length(position))
     #if defined gc_transparent
         // if we do this never, we have weird horizon underwater
         // if we do this always, transition to DH terrain looks bad overwater

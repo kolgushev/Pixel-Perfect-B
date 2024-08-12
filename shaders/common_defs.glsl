@@ -523,12 +523,12 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define INVISIBILITY_DISTORTION 1 // [0 1 2]
 #define INVISIBILITY_DISTORT_STRENGTH 0.005 // [0.003 0.004 0.005 0.006 0.007 0.008 0.009 0.01 0.011 0.012 0.013 0.014 0.015 0.016 0.017 0.018 0.019 0.02]
 
-#define FREEZING_DISTORTION
+// #define FREEZING_DISTORTION
 #ifdef FREEZING_DISTORTION
 #endif
 #define FREEZING_DISTORT_STRENGTH 5.0 // [1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0]
 
-#define UNDERWATER_DISTORTION
+// #define UNDERWATER_DISTORTION
 #ifdef UNDERWATER_DISTORTION
 #endif
 #define UNDERWATER_DISTORT_STRENGTH 0.4 // [0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1.0]
@@ -543,6 +543,10 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #ifdef TEX_RENDER
 #endif
 #define TEX_RES 16 // [4 8 16 32 64 128 256 512 1024 2048 4096]
+
+#define SMOOTH_TRANSITION_TO_DH
+#ifdef SMOOTH_TRANSITION_TO_DH
+#endif
 
 #define SHADOWS_ENABLED_USER
 #ifdef SHADOWS_ENABLED_USER
