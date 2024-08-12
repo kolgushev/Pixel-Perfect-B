@@ -679,7 +679,6 @@ void main() {
         #else
             float shadow = basicDirectShading(lightmap.g);
         #endif
-
     #endif
 
     vec3 lightningColor = vec3(0.0);

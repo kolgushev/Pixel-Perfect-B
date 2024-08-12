@@ -219,7 +219,11 @@ void main() {
                 skyTime,
                 subsurface);
         #else
-            float shadow = 1.0;
+            #if defined VANILLA_SHADOWS
+                float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;
+            #else
+                float shadow = basicDirectShading(lightmap.g);
+            #endif
         #endif
     #else
         #if defined VANILLA_SHADOWS
