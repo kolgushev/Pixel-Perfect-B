@@ -208,17 +208,19 @@ void main() {
         vec3 shadowPos = position;
         vec3 pixelatedPosition = position;
 
-        // float shadow = getShadow(
-        //     shadowPos,
-        //     normal,
-        //     getTBN(normal, tangent),
-        //     gl_FragCoord.xy,
-        //     viewInverse(shadowLightPosition),
-        //     lightmap.g,
-        //     skyTime,
-        //     subsurface);
-
-        float shadow = 1.0;
+        #if defined DH_SHADOWS_ENABLED
+            float shadow = getShadow(
+                shadowPos,
+                normal,
+                getTBN(normal, tangent),
+                gl_FragCoord.xy,
+                viewInverse(shadowLightPosition),
+                lightmap.g,
+                skyTime,
+                subsurface);
+        #else
+            float shadow = 1.0;
+        #endif
     #else
         #if defined VANILLA_SHADOWS
             float shadow = lightmap.g < 1 - RCP_16 ? 0 : 1;

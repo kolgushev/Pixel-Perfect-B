@@ -1,13 +1,23 @@
 // returns signed distance between position and closest surface to the sun on the ray from sun to position
 float shadowSample(in vec3 position) {
     vec3 shadowPosition = position;
-    
-    shadowPosition.xy = distortShadow(shadowPosition.xy);
+
+    bool isOOB = length(shadowPosition.xy) > shadowDistance;
+    shadowPosition.xy = isOOB ? distortShadowDH(shadowPosition.xy) : distortShadow(shadowPosition.xy);
+
+    if(isOOB && (shadowPosition.x > (0.5 - 0.5 * ISQRT_2) || shadowPosition.y > (0.5 - 0.5 * ISQRT_2))) {
+        // This value is arbitrary, but has to be pretty large
+        return 2000.0;
+    }
+
     shadowPosition = shadowPosition * 0.5 + 0.5;
-    
+
     vec3 shadowSurface = vec3(shadowPosition.xy, texture(shadowtex0, shadowPosition.xy).r);
+
     float shadowDiff = shadowSurface.z - shadowPosition.z;
 
+    // shadowPosition.xy not being spatially-accurate doesn't matter, since we're comparing two points with the same xy coordinates
+    // TODO: Figure out if linearizeDepth can be used here
     return distance((shadowProjectionInverse * vec4(shadowPosition * 2.0 - 1.0, 1.0)).xyz, 
                     (shadowProjectionInverse * vec4(shadowSurface * 2.0 - 1.0, 1.0)).xyz) * sign(shadowDiff);
 }
@@ -24,12 +34,12 @@ float shadowStep(in float len, in float subsurface, in float factor) {
 
 float getShadow(in vec3 position, in vec3 normal, in mat3 TBN, in vec2 screenPos, in vec3 shadowLightPosition, in float lightmapLight, in float skyTime, in float subsurface) {
     vec3 shadowLightPos = normalize(shadowLightPosition);
-    #if defined DO_SUBSURFACE
+    #if defined DH_SHADOWS_ENABLED
         float shadowCutoff = 0.0;
     #else
-        float shadowCutoff = smoothstep(0.9, 1.0, length(position) / (shadowDistance * SHADOW_CUTOFF));
+        float shadowCutoff = smoothstep(0.9, 1.0, length(position) * (1.0 / (SHADOW_DISTANCE * SHADOW_CUTOFF)));
     #endif
-    float basicShading = basicDirectShading(skyTime);
+    float basicShading = basicDirectShading(lightmapLight);
     float NdotL = dot(normal, shadowLightPos);
     bool isUnlit = NdotL < -SHADOW_NORMAL_MIX_THRESHOLD;
     bool isSubsurf = subsurface > EPSILON;

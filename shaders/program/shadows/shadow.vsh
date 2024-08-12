@@ -9,7 +9,7 @@ in vec2 mc_Entity;
 out vec2 texcoord;
 out vec3 position;
 out vec3 normal;
-
+out float dist;
 
 #include "/lib/use.glsl"
 
@@ -43,6 +43,7 @@ void main() {
 
 
             gl_Position = toClipspace(projectionMatrix, modelViewMatrix, gl_Position.xyz);
+            dist = length(gl_Position.xy);
             
             gl_Position.xy = distortShadow(gl_Position.xy);
         }
