@@ -46,7 +46,8 @@ void main() {
 
     noiseToSurpass = noiseToSurpass * (1 - EPSILON) + EPSILON;
 
-    if(noiseToSurpass > smoothstep(0.8 * (far - 16.0), 1.0 * (far - 16.0), length(position))
+    float transition = fogifyDistanceOnly(position, (far - 16.0), 0.0, 1.0 / (far - 16.0));
+    if(noiseToSurpass > transition
     #if defined gc_transparent
         // if we do this never, we have weird horizon underwater
         // if we do this always, transition to DH terrain looks bad overwater

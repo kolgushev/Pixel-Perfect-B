@@ -66,8 +66,9 @@ void main() {
         float noiseToSurpass = tile(gl_FragCoord.xy + offset, NOISE_CHECKERBOARD_1D, true).r;
 
         float noiseToSurpassMod = noiseToSurpass * (1 - EPSILON) + EPSILON;
+        float transition = fogifyDistanceOnly(position, far, 0.0, 1.0 / far);
 
-        if(noiseToSurpassMod <= smoothstep(0.8 * far, 1.0 * far, length(position))) discard;
+        if(noiseToSurpassMod <= transition) discard;
     #endif
 
     // discard if too close
