@@ -44,6 +44,9 @@ templates:
     tall_grass:
         half:
             values: ['upper', 'lower']
+    tall_seagrass:
+        half:
+            values: ['upper', 'lower']
     sunflower:
         half:
             values: ['upper', 'lower']
@@ -425,6 +428,7 @@ categories:
         - 'rose_bush:half=upper'
         - 'peony:half=upper'
         - 'tall_grass:half=upper'
+        - 'tall_seagrass:half=upper'
         - 'sunflower:half=upper'
         - 'pitcher_plant:half=upper'
     on_water:
@@ -671,6 +675,8 @@ categories:
         - blue_orchid
         - fern
         - grass
+        - seagrass
+        - tall_seagrass
         - short_grass
         - warped_roots
         - nether_sprouts
