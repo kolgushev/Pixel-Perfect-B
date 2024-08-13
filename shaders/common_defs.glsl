@@ -766,6 +766,10 @@ const float shadowIntervalSize = 8.0;
 #define THUNDER_BRIGHTNESS 0.6
 #define RAINCLOUD_BRIGHTNESS 0.1
 
+#define CLOUD_FOG_ENABLED
+#ifdef CLOUD_FOG_ENABLED
+#endif
+
 // DIM_NO_SKY is for dimensions which lack any fullscreen-covering gbuffers_skybasic/skytextured
 // DIM_NO_HORIZON is for dimensions which don't have a defined horizon (and therefore look better with sky visible below said horizon)
 // DIM_NO_SKYLIGHT is for dimensions which don't have values for skylight

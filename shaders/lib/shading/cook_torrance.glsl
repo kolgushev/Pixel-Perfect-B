@@ -94,71 +94,81 @@ vec3 singleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition
 
 	// Does not include ambient light so that multiple lights can be summed up
 	vec3 normalizedLight = normalize(relativeLightPosition);
-	vec3 normalizedView = normalize(-position);
-
-	// correct for when dot(normal, view) < 0 (this can happen with normal mapping)
-	if(dot(normal, normalizedView) < 0.0) {
-		normalizedView = reflect(normalizedView, normal);
-	}
-
-	// set a min value, since GGX and Blinn-Phong can't handle 0 roughness
-	float roughness2 = max(roughness * roughness, 1e-5);
 
 
-	#if defined USE_LIGHT_RADIUS_HACK
-		#define REFLECTED_LIGHT
-		vec3 reflectedLight = reflect(-normalizedLight, normal);
+	#if defined USE_PBR
+		vec3 normalizedView = normalize(-position);
 
-		// pretend we're pointing exactly at the light source if we land within a certain radius of it
-		normalizedView = normalize(mix(normalizedView, reflectedLight, smoothstep(0.998, 1.0, dot(normalizedView, reflectedLight)) * max(1.0 - roughness2 * 3.0e4, 0.0)));
-	#endif
-
-	vec3 halfVec = normalize(normalizedLight + normalizedView);
-
-	vec3 F;
-	#if defined COMPLEX_METALS
-		#include "/lib/shading/metal_reflectances_complex.glsl"
-	
-		if(metalId == -2 || metalId == -1) {
-	#endif
-
-	#if FRESNEL_MODEL == 0
-		F = fresnelSchlick(normalizedLight, halfVec, F0);
-	#endif
-
-	#if defined COMPLEX_METALS
-		} else {
-			F = fresnelComplex(normalizedLight, halfVec, NK_INDEX[metalId]);
+		// correct for when dot(normal, view) < 0 (this can happen with normal mapping)
+		if(dot(normal, normalizedView) < 0.0) {
+			normalizedView = reflect(normalizedView, normal);
 		}
-	#endif
 
-	#if GEOMETRY_MODEL == 0
-		float G = geometryGGX(normalizedLight, normalizedView, normal, halfVec, roughness2);
-	#elif GEOMETRY_MODEL == 1
-		float G = geometryCookTorrance(normalizedLight, normalizedView, normal, halfVec);
-	#endif
+		// set a min value, since GGX and Blinn-Phong can't handle 0 roughness
+		float roughness2 = max(roughness * roughness, 1e-5);
 
-	#if DISTRIBUTION_MODEL == 0
-		float D = distributionGGX(normal, halfVec, roughness2);
-	#elif DISTRIBUTION_MODEL == 1
-		float D = distributionBlinnPhong(normal, halfVec, roughness2);
+
+		#if defined USE_LIGHT_RADIUS_HACK
+			#define REFLECTED_LIGHT
+			vec3 reflectedLight = reflect(-normalizedLight, normal);
+
+			// pretend we're pointing exactly at the light source if we land within a certain radius of it
+			normalizedView = normalize(mix(normalizedView, reflectedLight, smoothstep(0.998, 1.0, dot(normalizedView, reflectedLight)) * max(1.0 - roughness2 * 3.0e4, 0.0)));
+		#endif
+
+		vec3 halfVec = normalize(normalizedLight + normalizedView);
+
+		vec3 F;
+		#if defined COMPLEX_METALS
+			#include "/lib/shading/metal_reflectances_complex.glsl"
+		
+			if(metalId == -2 || metalId == -1) {
+		#endif
+
+		#if FRESNEL_MODEL == 0
+			F = fresnelSchlick(normalizedLight, halfVec, F0);
+		#endif
+
+		#if defined COMPLEX_METALS
+			} else {
+				F = fresnelComplex(normalizedLight, halfVec, NK_INDEX[metalId]);
+			}
+		#endif
+
+		#if GEOMETRY_MODEL == 0
+			float G = geometryGGX(normalizedLight, normalizedView, normal, halfVec, roughness2);
+		#elif GEOMETRY_MODEL == 1
+			float G = geometryCookTorrance(normalizedLight, normalizedView, normal, halfVec);
+		#endif
+
+		#if DISTRIBUTION_MODEL == 0
+			float D = distributionGGX(normal, halfVec, roughness2);
+		#elif DISTRIBUTION_MODEL == 1
+			float D = distributionBlinnPhong(normal, halfVec, roughness2);
+		#endif
+
+		// Cook-Torrance specular * dot(n, l)
+		vec3 specular = D * G * F / (4.0 * dot(normal, normalizedView));
+
+		vec3 clearcoatLight = vec3(0.0);
+		float clearcoatMod = clearcoat;
+		// clearcoat
+		if(clearcoat > 0.0) {
+			vec3 clearcoatReflection = reflect(-normalizedView, clearcoatNormal);
+			clearcoatMod *= fresnelSchlick(clearcoatReflection, clearcoatNormal, 0.1);
+			clearcoatLight = lightColor * smoothstep(0.9985, 0.999, dot(normalizedLight, clearcoatReflection));
+		}
+	#else
+		float F = 0.0;
+		vec3 specular = vec3(0.0);
+		float clearcoatMod = 0.0;
+		vec3 clearcoatLight = vec3(0.0);
 	#endif
 
 	// lambertian diffuse * dot(n, l)
 	vec3 diffuse = vec3(0.0);
 	if(metalId == -2) {
 		diffuse = albedo * RCP_PI * dot(normal, normalizedLight) * (1.0 - F) * mix(1.0, 0.5, subsurface);
-	}
-	// Cook-Torrance specular * dot(n, l)
-	vec3 specular = D * G * F / (4.0 * dot(normal, normalizedView));
-
-	vec3 clearcoatLight = vec3(0.0);
-	float clearcoatMod = clearcoat;
-	// clearcoat
-	if(clearcoat > 0.0) {
-		vec3 clearcoatReflection = reflect(-normalizedView, clearcoatNormal);
-		clearcoatMod *= fresnelSchlick(clearcoatReflection, clearcoatNormal, 0.1);
-		clearcoatLight = lightColor * smoothstep(0.9985, 0.999, dot(normalizedLight, clearcoatReflection));
 	}
 
 	return lightColor * (diffuse + specular) * (1.0 - clearcoatMod) + clearcoatLight * clearcoatMod;

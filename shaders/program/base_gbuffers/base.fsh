@@ -46,6 +46,15 @@ void main() {
         #define FAR far
     #endif
 
+    #if defined g_clouds && !defined CLOUD_FOG_ENABLED
+        #define HAVE_TEXCOORD_SCREENSPACE
+        vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
+
+        float depthDH = texture(dhDepthTex1, texcoordScreenspace).r;
+
+        if(depthDH < 1.0) discard;
+    #endif
+
     #if defined gc_sky && defined DIM_TWILIGHT
         #if defined g_skybasic
             if(stars.g <= 0.5) {
@@ -154,7 +163,9 @@ void main() {
         albedo.rgb *= color.rgb;
 
         #if defined g_clouds
-            albedo.a *= step(0.1, albedo.a) * 0.6;
+            albedo.a *= step(0.1, albedo.a);
+            // cloud albedo color is altered by weather & time of day, we want to do that ourselves
+            albedo.rgb = CLOUD_COLOR * mix(1 - rain, 1, RAINCLOUD_BRIGHTNESS);
         #elif defined g_damagedblock
             albedo.a = clamp(albedo.a - 0.003, 0.0, 1.0);
         #elif !defined gc_terrain
@@ -604,7 +615,6 @@ void main() {
             );
         #endif
 
-        lightColor[0] *= CLOUD_COLOR * mix(1 - rain, 1, RAINCLOUD_BRIGHTNESS);
         lightColor[0] += lightColor[1];
         lightColor[1] = vec3(0);
     #elif defined g_weather
@@ -703,9 +713,14 @@ void main() {
     #endif
 
     #if defined VOLUMETRIC_PARTICLES && defined gc_particles
-        #define HAVE_DEPTH
-        vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
-        float depth = texture(depthtex1, texcoordScreenspace).r;
+        #if !defined HAVE_DEPTH 
+            #define HAVE_DEPTH
+            #if !defined HAVE_TEXCOORD_SCREENSPACE
+                #define HAVE_TEXCOORD_SCREENSPACE
+                vec2 texcoordScreenspace = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
+            #endif
+            float depth = texture(depthtex1, texcoordScreenspace).r;
+        #endif
 
         // particles are considered about 0.1 blocks thick
         albedo.a *= smoothstep(0.0, 0.2, length(depthToView(texcoordScreenspace, depth, gbufferProjectionInverse)) - length(position));
@@ -753,7 +768,10 @@ void main() {
         vec4 fogged = fogify(position, position, albedo, diffuse, FAR, isEyeInWater, nightVision, blindnessSmooth, isSpectator, fogWeatherSkyProcessed, fogColor, cameraPosition, frameTimeCounter, lavaNoise(cameraPosition.xz, frameTimeCounter));
 
         albedo.rgb = fogged.rgb;
-        albedo.a *= 1 - fogged.a;
+
+        #if !defined g_clouds || defined CLOUD_FOG_ENABLED
+            albedo.a *= 1 - fogged.a;
+        #endif
 
         #if defined WATER_FOG_FROM_OUTSIDE && defined g_water
             vec4 overlay = vec4(0);

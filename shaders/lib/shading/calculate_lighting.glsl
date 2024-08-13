@@ -7,12 +7,12 @@ float normalLighting(in vec3 normal, in vec3 lightPos, in float subsurface) {
     
     #if defined DO_SUBSURFACE
         if(subsurface > 0.0) {
-            return mix(clamp(shading, 0.0, 1.0), min(abs(shading), 1.0) * 0.5, subsurface);
+            return mix(clamp(shading, 0.0, 1.0), min(abs(shading), 1.0) * 0.5, subsurface) * RCP_PI;
         } else {
-            return clamp(shading, 0.0, 1.0);
+            return clamp(shading, 0.0, 1.0) * RCP_PI;
         }
     #else
-        return clamp(shading, 0.0, 1.0);
+        return clamp(shading, 0.0, 1.0) * RCP_PI;
     #endif
 }
 
@@ -101,12 +101,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
 
             vec3 moonLighting = vec3(0.0);
             if(moonIntensity > 0.0) {
-                #if defined USE_PBR && !defined g_clouds
-                    moonLighting = singleLight(normal, incident, moonPositionWorld, albedo, F0, roughness, metalId, subsurface, clearcoatStrength, clearcoatNormal, moonBrightness * MOON_COLOR * moonIntensity);
-                #else
-                    float moonShading = normalLighting(normal, moonPositionWorld, subsurface);
-                    moonLighting = moonShading * moonBrightness * MOON_COLOR * moonIntensity;
-                #endif
+                moonLighting = singleLight(normal, incident, moonPositionWorld, albedo, F0, roughness, metalId, subsurface, clearcoatStrength, clearcoatNormal, moonBrightness * MOON_COLOR * moonIntensity);
             }
         #else
             vec3 moonLighting = vec3(0.0);
@@ -118,12 +113,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             // TODO: modify sun color during sunset/sunrise
             vec3 sunLighting = vec3(0.0);
             if(sunIntensity > 0.0) {
-                #if defined USE_PBR && !defined g_clouds
-                    sunLighting = singleLight(normal, incident, sunPositionWorld, albedo, F0, roughness, metalId, subsurface, clearcoatStrength, clearcoatNormal, SUN_COLOR * sunIntensity);
-                #else
-                    float sunShading = normalLighting(normal, sunPositionWorld, subsurface);
-                    sunLighting = sunShading * SUN_COLOR * sunIntensity;
-                #endif
+                sunLighting = singleLight(normal, incident, sunPositionWorld, albedo, F0, roughness, metalId, subsurface, clearcoatStrength, clearcoatNormal, SUN_COLOR * sunIntensity);
             }
         #else
             vec3 sunLighting = vec3(0.0);
@@ -135,10 +125,6 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             directSolarLighting *= directLightMult;
         #else
             directSolarLighting *= rainMultiplier(rain);
-        #endif
-
-        #if !defined USE_PBR && !defined g_clouds
-            directSolarLighting *= albedo * RCP_PI;
         #endif
 
         // // shade according to sky color
