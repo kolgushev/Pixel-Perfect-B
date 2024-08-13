@@ -391,13 +391,7 @@ void main() {
         
     #endif
 
-    #if defined DIM_END
-        // #if defined g_skytextured
-        //     // turn the end sky into a hemisphere-like shape
-        //     position.xz *= 0.5;
-        // #endif
-
-
+    #if defined DIM_END && !defined gc_skybox
         if(END_WARPING > 0.0) {
             float displacement = tile((position.xz + cameraPosition.xz + EPSILON) * 0.1, NOISE_PERLIN_4D, false).x - 0.5;
             position.y *= pow(pow(position.x, 2) + pow(position.z, 2), 0.02 * END_WARPING);
