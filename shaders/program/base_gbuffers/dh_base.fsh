@@ -116,7 +116,9 @@ void main() {
     #if defined AUTO_MAT
         switch(mcEntity) {
             case DH_BLOCK_LEAVES:
-                roughness = 0.6;
+                // High roughness due to varied normals approximating rough microfacet model at distance
+                // (and also automat doesn't count leaves as smooth)
+                roughness = 0.9;
                 subsurface = 0.5;
                 reflectance = vec3(0.04);
                 break;
@@ -163,7 +165,8 @@ void main() {
                 reflectance = vec3(0.02);
                 break;
             case DH_BLOCK_WATER:
-                roughness = 0.05;
+                // Higher-than-usual roughness due to automat in non-DH terrain
+                roughness = 0.4;
                 reflectance = vec3(0.02);
                 break;
             case DH_BLOCK_ILLUMINATED:
