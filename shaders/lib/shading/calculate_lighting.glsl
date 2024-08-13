@@ -94,12 +94,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
 
         vec3 torchLighting = gammaCorrection(lightmapAdjusted.x * torchColor, lightBoost) * BLOCK_LIGHT_MULT;
 
-        #if defined USE_PBR && !defined g_clouds
-            // adjust roughness to reduce weird-looking specular
-            torchLighting = singleLight(normal, incident, normal, albedo, F0, mix(roughness, 1.0, 0.5), metalId, subsurface, clearcoatStrength, clearcoatNormal, torchLighting);
-        #else
-            torchLighting *= albedo * RCP_PI;
-        #endif
+        torchLighting *= albedo * RCP_PI;
 
         #if defined HAS_MOON
             float moonIntensity = clamp(-skyTime * 4.0, 0.0, 1.0);
