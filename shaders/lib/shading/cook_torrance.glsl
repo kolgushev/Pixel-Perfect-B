@@ -78,6 +78,25 @@ float distributionBlinnPhong(in vec3 normal, in vec3 halfVec, in float roughness
 	return pow(nDotM, 2 / roughness2 - 2) / (PI * roughness2);
 }
 
+// Referencing https://www.pbr-book.org/3ed-2018/Reflection_Models/Microfacet_Models#OrenndashNayarDiffuseReflection
+float diffuseOrenNayar(in vec3 light, in vec3 view, in vec3 normal, in float roughness2) {
+	float a = 1.0 - 0.5 * roughness2 / (roughness2 + 0.33);
+	float b = 0.45 * roughness2 / (roughness2 + 0.09);
+
+	vec3 lightProjected = normalize(light - dot(light, normal) * normal);
+	vec3 viewProjected = normalize(view - dot(view, normal) * normal);
+
+	float cosPhiDiff = dot(lightProjected, viewProjected);
+
+	float thetaLight = acos(dot(light, normal));
+	float thetaView = acos(dot(view, normal));
+
+	float alpha = max(thetaLight, thetaView);
+	float beta = min(thetaLight, thetaView);
+
+	return a + b * max(0.0, cosPhiDiff) * sin(alpha) * tan(beta);
+}
+
 vec3 singleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition /* from surface to light source */, in vec3 albedo, in vec3 F0, in float roughness, in int metalId, in float subsurface, in float clearcoat, in vec3 clearcoatNormal, in vec3 lightColor) {
 	#if DIFFUSE_MODEL != 1
 		if(dot(normal, relativeLightPosition) <= 0.0) {
@@ -97,17 +116,20 @@ vec3 singleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition
 	// Does not include ambient light so that multiple lights can be summed up
 	vec3 normalizedLight = normalize(relativeLightPosition);
 
+	#if defined USE_PBR || DIFFUSE_MODEL == 2
+		vec3 normalizedViewRaw = normalize(-position);
+		// set a min value, since GGX and Blinn-Phong can't handle 0 roughness
+		float roughness2 = max(roughness * roughness, 1e-5);
+	#endif
 
 	#if defined USE_PBR
-		vec3 normalizedView = normalize(-position);
+		vec3 normalizedView = normalizedViewRaw;
 
 		// correct for when dot(normal, view) < 0 (this can happen with normal mapping)
 		if(dot(normal, normalizedView) < 0.0) {
 			normalizedView = reflect(normalizedView, normal);
 		}
 
-		// set a min value, since GGX and Blinn-Phong can't handle 0 roughness
-		float roughness2 = max(roughness * roughness, 1e-5);
 
 
 		#if defined USE_LIGHT_RADIUS_HACK
@@ -186,6 +208,9 @@ vec3 singleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition
 				// 0.637 is the integral of max(0, cos(theta)) divided by the integral of cos(theta)*0.5+0.5, both over the range [-PI, PI]
 				// meaning this implementation will on average give the same brightness as standard lambertian
 				diffuse *= diffuseMult * 0.637;
+			#elif DIFFUSE_MODEL == 2
+				// raw to avoid reflection and light hack
+				diffuse *= diffuseOrenNayar(normalizedLight, normalizedViewRaw, normal, roughness2) * clamp(dot(normal, normalizedLight), 0.0, 1.0) * (1.0 - MAX_SUBSURFACE_LIGHT * subsurface);
 			#endif
 	#if defined USE_PBR
 		}
