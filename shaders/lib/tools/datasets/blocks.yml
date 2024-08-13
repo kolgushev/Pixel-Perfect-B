@@ -101,6 +101,9 @@ categories:
         - redstone_wire
     netherite_block:
         - netherite_block
+    end_portal:
+        - end_portal
+        - end_gateway
     cross_cutouts:
         - crimson_fungus
         - twisting_vines_plant
