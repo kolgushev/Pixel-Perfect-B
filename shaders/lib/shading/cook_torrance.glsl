@@ -83,7 +83,7 @@ vec3 singleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition
 		#if defined DO_SUBSURFACE
 			if(subsurface > 0.0) {
 				// assuming ~half of light passes through fully-translucent surface, and that it is a plane (since cutout leaves are probably the block utilizing this the most)
-				return albedo * RCP_PI * abs(dot(normal, normalize(relativeLightPosition))) * subsurface * lightColor * subsurface * 0.5;
+				return albedo * RCP_PI * abs(dot(normal, normalize(relativeLightPosition))) * subsurface * lightColor * subsurface * MAX_SUBSURFACE_LIGHT;
 			} else {
 				return vec3(0.0);
 			}
@@ -168,7 +168,7 @@ vec3 singleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition
 	// lambertian diffuse * dot(n, l)
 	vec3 diffuse = vec3(0.0);
 	if(metalId == -2) {
-		diffuse = albedo * RCP_PI * dot(normal, normalizedLight) * (1.0 - F) * mix(1.0, 0.5, subsurface);
+		diffuse = albedo * RCP_PI * dot(normal, normalizedLight) * (1.0 - F) * (1.0 - MAX_SUBSURFACE_LIGHT * subsurface);
 	}
 
 	return lightColor * (diffuse + specular) * (1.0 - clearcoatMod) + clearcoatLight * clearcoatMod;

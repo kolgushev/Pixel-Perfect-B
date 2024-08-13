@@ -291,6 +291,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #ifdef DO_SUBSURFACE
 #endif
 
+#define MAX_SUBSURFACE_LIGHT 0.7 // [0.5, 0.6, 0.7, 0.8, 0.9]
+
 // #define COMPLEX_METALS
 #ifdef COMPLEX_METALS
 #endif
