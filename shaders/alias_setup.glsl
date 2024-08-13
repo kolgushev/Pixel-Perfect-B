@@ -27,9 +27,6 @@
 #if defined g_entities || defined g_entities_glowing || defined g_spidereyes || defined g_entities_translucent || defined gc_block_entities
     #define gc_entities
 #endif
-#if defined DIM_USES_SKYBOX && defined g_skytextured
-    #define gc_skybox
-#endif
 #if defined g_hand || defined g_hand_water
     #define gc_hand
 #endif
@@ -38,10 +35,6 @@
 #endif
 #if defined g_dh_terrain || defined g_dh_water
     #define gc_dh
-#endif
-
-#if defined gc_skybox && defined DIM_END
-    #define NO_AA
 #endif
 
 // These are already supported, this is mainly for linting

@@ -164,8 +164,6 @@ void main() {
 
         #if defined g_clouds
             albedo.a *= step(0.1, albedo.a);
-            // cloud albedo color is altered by weather & time of day, we want to do that ourselves
-            albedo.rgb = CLOUD_COLOR * mix(1 - rain, 1, RAINCLOUD_BRIGHTNESS);
         #elif defined g_damagedblock
             albedo.a = clamp(albedo.a - 0.003, 0.0, 1.0);
         #elif !defined gc_terrain
@@ -198,9 +196,9 @@ void main() {
             float gradient = smoothstep(-1, 0.1, vertical);
             albedo.rgb *= gradient;
 
-            float gradient2 = smoothstep(-0.2, 1, vertical);
+            float gradient2 = smoothstep(-0.2, 1.2, vertical);
             if(bossBattle != 2) {
-                albedo.rgb = mix(albedo.rgb, albedo.rgb * getEmissiveness(albedo.rgb * 7, LUMINANCE_COEFFS_RGB) * 0.525, pow(gradient2, 2));
+                albedo.rgb = mix(albedo.rgb, albedo.rgb * getEmissiveness(albedo.rgb * 7, LUMINANCE_COEFFS_RGB) * 3.0, pow(gradient2, 2));
             }
         #elif !defined DIM_NO_HORIZON
             // prevent underground sun/moon, add virtual horizon
@@ -232,6 +230,11 @@ void main() {
         #elif HDR_TEX_STANDARD == 2
             albedo.rgb = aces_fitted_inverse(albedo.rgb);
         #endif
+    #endif
+
+    #if defined g_clouds
+        // cloud albedo color is altered by weather & time of day, we want to do that ourselves
+        albedo.rgb = CLOUD_COLOR * mix(1 - rain, 1, RAINCLOUD_BRIGHTNESS);
     #endif
 
     #if defined g_line

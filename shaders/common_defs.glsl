@@ -937,6 +937,14 @@ const float shadowIntervalSize = 8.0;
     #define FAST_GI_EXPOSURE_CORRECT_GRAY 0.3
 #endif
 
+#if defined DIM_USES_SKYBOX && defined g_skytextured
+    #define gc_skybox
+#endif
+
+#if defined gc_skybox && defined DIM_END
+    #define NO_AA
+#endif
+
 #if defined ATMOSPHERIC_FOG_USER && defined HAS_ATMOSPHERIC_FOG
     #define ATMOSPHERIC_FOG
 #endif
