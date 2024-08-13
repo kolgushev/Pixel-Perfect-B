@@ -79,18 +79,20 @@ float distributionBlinnPhong(in vec3 normal, in vec3 halfVec, in float roughness
 }
 
 vec3 singleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition /* from surface to light source */, in vec3 albedo, in vec3 F0, in float roughness, in int metalId, in float subsurface, in float clearcoat, in vec3 clearcoatNormal, in vec3 lightColor) {
-	if(dot(normal, relativeLightPosition) <= 0.0) {
-		#if defined DO_SUBSURFACE
-			if(subsurface > 0.0) {
-				// assuming ~half of light passes through fully-translucent surface, and that it is a plane (since cutout leaves are probably the block utilizing this the most)
-				return albedo * RCP_PI * abs(dot(normal, normalize(relativeLightPosition))) * subsurface * lightColor * subsurface * MAX_SUBSURFACE_LIGHT;
-			} else {
+	#if DIFFUSE_MODEL != 1
+		if(dot(normal, relativeLightPosition) <= 0.0) {
+			#if defined DO_SUBSURFACE
+				if(subsurface > 0.0) {
+					// assuming ~half of light passes through fully-translucent surface, and that it is a plane (since cutout leaves are probably the block utilizing this the most)
+					return albedo * RCP_PI * abs(dot(normal, normalize(relativeLightPosition))) * subsurface * lightColor * subsurface * MAX_SUBSURFACE_LIGHT;
+				} else {
+					return vec3(0.0);
+				}
+			#else
 				return vec3(0.0);
-			}
-		#else
-			return vec3(0.0);
-		#endif
-	}
+			#endif
+		}
+	#endif
 
 	// Does not include ambient light so that multiple lights can be summed up
 	vec3 normalizedLight = normalize(relativeLightPosition);
@@ -167,9 +169,27 @@ vec3 singleLight(in vec3 normal, in vec3 position, in vec3 relativeLightPosition
 
 	// lambertian diffuse * dot(n, l)
 	vec3 diffuse = vec3(0.0);
-	if(metalId == -2) {
-		diffuse = albedo * RCP_PI * dot(normal, normalizedLight) * (1.0 - F) * (1.0 - MAX_SUBSURFACE_LIGHT * subsurface);
-	}
+	#if defined USE_PBR
+		if(metalId == -2) {
+	#endif
+			diffuse = albedo * RCP_PI * (1.0 - F);
+			#if DIFFUSE_MODEL == 0
+				diffuse *= clamp(dot(normal, normalizedLight), 0.0, 1.0) * (1.0 - MAX_SUBSURFACE_LIGHT * subsurface);
+			#elif DIFFUSE_MODEL == 1
+				float diffuseMult = dot(normal, normalizedLight) * 0.5 + 0.5;
+				diffuseMult *= (1.0 - MAX_SUBSURFACE_LIGHT * subsurface);
+				#if defined DO_SUBSURFACE
+					if(subsurface > 0.0) {
+						diffuseMult += dot(normal, normalizedLight) * -0.5 + 0.5;
+					}
+				#endif
+				// 0.637 is the integral of max(0, cos(theta)) divided by the integral of cos(theta)*0.5+0.5, both over the range [-PI, PI]
+				// meaning this implementation will on average give the same brightness as standard lambertian
+				diffuse *= diffuseMult * 0.637;
+			#endif
+	#if defined USE_PBR
+		}
+	#endif
 
 	return lightColor * (diffuse + specular) * (1.0 - clearcoatMod) + clearcoatLight * clearcoatMod;
 }

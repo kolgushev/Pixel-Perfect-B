@@ -314,6 +314,8 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define GEOMETRY_MODEL 0 // [0 1]
 // 0: GGX 1: Blinn-Phong
 #define DISTRIBUTION_MODEL 0 // [0 1]
+// 0: Lambert 1: Half-Lambert 2: Oren-Nayar
+#define DIFFUSE_MODEL 0 // [0 1 2]
 
 // #define RIMLIGHT_ENABLED
 #ifdef RIMLIGHT_ENABLED

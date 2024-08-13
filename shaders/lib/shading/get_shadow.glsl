@@ -24,11 +24,17 @@ float shadowSample(in vec3 position) {
 
 float shadowStep(in float len, in float subsurface, in float factor) {
     float sharpShadow = smoothstep(0.0, EPSILON, len);
-    #if defined DO_SUBSURFACE
+    #if defined DO_SUBSURFACE || DIFFUSE_MODEL == 1
         float smoothShadow = smoothstep(0.1 - SQRT_3, 0.0, len);
-        return mix(subsurface < EPSILON ? 0.0 : smoothShadow * smoothShadow, sharpShadow, factor);
+    #endif
+    #if DIFFUSE_MODEL == 1
+        return smoothShadow;
     #else
-        return mix(0.0, sharpShadow, factor);
+        #if defined DO_SUBSURFACE
+            return mix(subsurface < EPSILON ? 0.0 : smoothShadow * smoothShadow, sharpShadow, factor);
+        #else
+            return mix(0.0, sharpShadow, factor);
+        #endif
     #endif
 }
 
@@ -41,8 +47,12 @@ float getShadow(in vec3 position, in vec3 normal, in mat3 TBN, in vec2 screenPos
     #endif
     float basicShading = basicDirectShading(lightmapLight);
     float NdotL = dot(normal, shadowLightPos);
-    bool isUnlit = NdotL < -SHADOW_NORMAL_MIX_THRESHOLD;
     bool isSubsurf = subsurface > EPSILON;
+    #if DIFFUSE_MODEL == 1
+        bool isUnlit = isSubsurf;
+    #else
+        bool isUnlit = NdotL < -SHADOW_NORMAL_MIX_THRESHOLD;
+    #endif
 
     if(
         isUnlit
@@ -59,7 +69,11 @@ float getShadow(in vec3 position, in vec3 normal, in mat3 TBN, in vec2 screenPos
         // TODO: Calculate the extension amount analytically
         vec3 shadowPosition = position + normal * 0.1;
 
-        float factor = smoothstep(-SHADOW_NORMAL_MIX_THRESHOLD, 0.0, NdotL);
+        #if DIFFUSE_MODEL == 1
+            float factor = 1.0;
+        #else
+            float factor = smoothstep(-SHADOW_NORMAL_MIX_THRESHOLD, 0.0, NdotL);
+        #endif
 
         #if SHADOW_FILTERING == FILTERING_NONE
             shadowPosition = toClipspace(shadowProjection, shadowModelView, shadowPosition).xyz;
