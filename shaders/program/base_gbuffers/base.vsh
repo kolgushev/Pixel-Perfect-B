@@ -168,7 +168,7 @@ void main() {
     #if (defined g_terrain || defined g_water || (defined g_weather && defined WAVING_RAIN_ENABLED)) && defined WAVING_ENABLED && !defined DIM_NO_WIND
         #if !defined g_weather
             bool isTopPart = at_midBlock.y < 10 || (isBlockWavesFromBottom(mc_Entity.x) && at_midBlock.y < 30) || (isBlockOnWater(mc_Entity.x));
-            bool isFullWaving = !isBlockCrossCutouts(mc_Entity.x) && !isBlockCrossCutoutsUpsideDown(mc_Entity.x);
+            bool isFullWaving = !isBlockCrossCutouts(mc_Entity.x) && !isBlockCrossCutoutsUpsideDown(mc_Entity.x) && !isBlockWavesFromBottom(mc_Entity.x);
             bool isWater = isBlockWater(mc_Entity.x) || isBlockOnWater(mc_Entity.x);
             bool isUpper = isBlockTopHalf(mc_Entity.x);
 
@@ -340,7 +340,7 @@ void main() {
             }
 
             if(isSuperStiff) {
-                offset *= 0.5;
+                offset *= 0.3;
             }
 
             #if defined g_terrain && defined FLATTEN_GRASS && !defined STILL_WIND
