@@ -71,7 +71,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
                 float sunShading = normalLighting(normalViewspace, sunPosition, subsurface);
                 float moonShading = normalLighting(normalViewspace, moonPosition, subsurface);
 
-                skyShading = mix(moonShading, sunShading, clamp(skyTime * 8.0 + 0.5, 0.0, 1.0) * 0.5 + 0.5);
+                skyShading = mix(moonShading, sunShading, clamp(skyTime * 2.0 * SKY_TRANSITION_SPEED + 0.5, 0.0, 1.0) * 0.5 + 0.5);
 
                 directSolarLighting *= skyShading;
             #endif
@@ -100,7 +100,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             torchLighting *= albedo * RCP_PI;
 
             #if defined HAS_MOON
-                float moonIntensity = clamp(-skyTime * 4.0, 0.0, 1.0);
+                float moonIntensity = clamp(-skyTime * SKY_TRANSITION_SPEED, 0.0, 1.0);
 
                 vec3 moonLighting = vec3(0.0);
                 if(moonIntensity > 0.0) {
@@ -111,7 +111,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             #endif
             
             #if defined HAS_SUN
-                float sunIntensity = clamp(skyTime * 4.0, 0.0, 1.0);
+                float sunIntensity = clamp(skyTime * SKY_TRANSITION_SPEED, 0.0, 1.0);
 
                 // TODO: modify sun color during sunset/sunrise
                 vec3 sunLighting = vec3(0.0);
@@ -134,7 +134,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             // vec3 skyColor = pixelPerfectSkyVector(normal, normalize(sunPositionWorld));
             // vec3 skyLighting = skyColor * lightmapAdjusted.y;
 
-            vec3 skyColor = actualSkyColor(clamp(skyTime * 4.0, -1.0, 1.0)) * mix(1 - rain, 1, THUNDER_BRIGHTNESS) + lightningFlash(isLightning, rain);
+            vec3 skyColor = actualSkyColor(clamp(skyTime * SKY_TRANSITION_SPEED, -1.0, 1.0)) * mix(1 - rain, 1, THUNDER_BRIGHTNESS) + lightningFlash(isLightning, rain);
             // technically the pow2 here isn't accurate, but it makes the falloff near the edges of the light look better
             vec3 skyLighting = skyColor * skyShading * lightmapAdjusted.y;
 

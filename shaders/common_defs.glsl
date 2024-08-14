@@ -596,7 +596,7 @@ const float entityShadowDistanceMul = 0.3; // [0.1 0.2 0.3 0.4]
 #ifdef PIXELATED_SHADOWS
 #endif
 
-#define SHADOW_TRANSITION_MIXING 0 // [0 1]
+#define SKY_TRANSITION_SPEED 5.0
 
 #define SMOOTH_LAVA
 #ifdef SMOOTH_LAVA
