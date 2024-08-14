@@ -481,7 +481,7 @@ void main() {
         #endif
 
         #if (defined MC_TEXTURE_FORMAT_LAB_PBR_1_3 || defined AUTO_MAT) && defined g_terrain
-            if(isBlockAutomatEmissionOnly(mcEntity)) {
+            if(isBlockAutomatLowAlbedo(mcEntity)) {
                 albedo.rgb *= 0.1;
             }
         #endif
@@ -600,6 +600,7 @@ void main() {
                 -2,
                 0.0,
                 vec3(0.0),
+                true,
                 clearcoatStrength,
                 clearcoatNormal,
                 UP,
@@ -618,7 +619,7 @@ void main() {
 
             mat2x3 lightColor = mat2x3(
                 skyColor,
-                vec3(0)
+                vec3(0.0)
             );
         #endif
 
@@ -626,8 +627,8 @@ void main() {
         lightColor[1] = vec3(0);
     #elif defined g_weather
         mat2x3 lightColor = mat2x3(
-            vec3(1),
-            vec3(0)
+            vec3(1.0),
+            vec3(0.0)
         );
     #elif defined IS_SHADED
         mat2x3 lightColor = getLightColor(
@@ -643,6 +644,7 @@ void main() {
             metalId,
             subsurface,
             emissiveness,
+            !isBlockAutomatNoLighting(mcEntity),
             clearcoatStrength,
             clearcoatNormal,
             normalMod,

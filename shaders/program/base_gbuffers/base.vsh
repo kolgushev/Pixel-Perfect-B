@@ -30,10 +30,10 @@ flat out int mcEntity;
 #endif
 
 
+in vec2 mc_Entity;
 in vec3 at_velocity;
 
 #if defined gc_terrain
-    in vec2 mc_Entity;
     in vec3 at_midBlock;
 #endif
 
@@ -47,10 +47,8 @@ void main() {
 
     #if defined gc_terrain
         mcEntity = int(mc_Entity.x);
-    #elif defined gc_emissive
-        mcEntity = 1;
     #else
-        mcEntity = -1;
+        mcEntity = int(mc_Entity.y);
     #endif
 
     #if defined g_armor_glint

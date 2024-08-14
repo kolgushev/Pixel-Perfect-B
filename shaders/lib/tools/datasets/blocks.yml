@@ -483,6 +483,8 @@ categories:
         - sculk_sensor
         - calibrated_sculk_sensor
         - end_portal_frame
+        - end_portal
+        - end_gateway
         - amethyst_cluster
         - large_amethyst_bud
         - medium_amethyst_bud
@@ -501,11 +503,14 @@ categories:
         - redstone_wire:
               power:
                   range: [1, 15]
-    automat_emission_only:
+    automat_low_albedo:
         - lava
         - flowing_lava
+    automat_no_lighting:
         - fire
         - soul_fire
+        - end_gateway
+        - end_portal
     automat_matte:
         - diorite
         - mushroom_stem

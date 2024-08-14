@@ -207,6 +207,7 @@ void main() {
         metalId,
         subsurface,
         emissiveness,
+        true,
         0.0,
         UP,
         normal,
