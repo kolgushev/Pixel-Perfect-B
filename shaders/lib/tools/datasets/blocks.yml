@@ -748,7 +748,6 @@ categories:
         - 'twilightforest:rainbow_oak_leaves'
         - torchflower
         - pink_petals
-        - powder_snow
         - cobweb
     automat_somewhat_porous:
         - 'grass_block:snowy=false'
