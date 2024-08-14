@@ -40,6 +40,12 @@ flat in int mcEntity;
 #include "/lib/use.glsl"
 
 void main() {
+    #if defined LIME_CONCRETE_AS_GREEN_SCREEN
+        if(isBlockLimeConcrete(mcEntity)) {
+            b1 = vec4(0.0, 2.0, 0.0, 1.0);
+        } else {
+    #endif
+
     #if defined DISTANT_HORIZONS && !defined g_clouds
         #define FAR dhFarPlane
     #else
@@ -860,5 +866,8 @@ void main() {
 
     #if defined WHITE_WORLD
         b1 = color;
+    #endif
+    #if defined LIME_CONCRETE_AS_GREEN_SCREEN
+        }
     #endif
 }

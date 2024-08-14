@@ -104,6 +104,8 @@ categories:
     end_portal:
         - end_portal
         - end_gateway
+    lime_concrete:
+        - lime_concrete
     cross_cutouts:
         - crimson_fungus
         - twisting_vines_plant
