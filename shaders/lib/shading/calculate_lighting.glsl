@@ -134,7 +134,7 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             // vec3 skyColor = pixelPerfectSkyVector(normal, normalize(sunPositionWorld));
             // vec3 skyLighting = skyColor * lightmapAdjusted.y;
 
-            vec3 skyColor = actualSkyColor(skyTime) * mix(1 - rain, 1, THUNDER_BRIGHTNESS) + lightningFlash(isLightning, rain);
+            vec3 skyColor = actualSkyColor(clamp(skyTime * 4.0, -1.0, 1.0)) * mix(1 - rain, 1, THUNDER_BRIGHTNESS) + lightningFlash(isLightning, rain);
             // technically the pow2 here isn't accurate, but it makes the falloff near the edges of the light look better
             vec3 skyLighting = skyColor * skyShading * lightmapAdjusted.y;
 
