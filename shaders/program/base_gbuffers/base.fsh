@@ -631,7 +631,7 @@ void main() {
         lightColor[1] = vec3(0);
     #elif defined g_weather
         mat2x3 lightColor = mat2x3(
-            vec3(1.0),
+            albedo.rgb,
             vec3(0.0)
         );
     #elif defined IS_SHADED
