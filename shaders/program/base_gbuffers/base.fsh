@@ -475,9 +475,7 @@ void main() {
         #endif
 
         #if (defined MC_TEXTURE_FORMAT_LAB_PBR_1_3 || defined AUTO_MAT) && defined g_terrain
-            // lava actually has a very low albedo, its orange color is exclusively because of emission
-            // simulate that here
-            if(isBlockLava(mcEntity)) {
+            if(isBlockAutomatEmissionOnly(mcEntity)) {
                 albedo.rgb *= 0.1;
             }
         #endif

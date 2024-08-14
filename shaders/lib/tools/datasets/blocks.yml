@@ -499,12 +499,22 @@ categories:
         - redstone_wire:
               power:
                   range: [1, 15]
+    automat_emission_only:
+        - lava
+        - flowing_lava
     automat_matte:
         - diorite
         - mushroom_stem
         - red_mushroom_block
         - sponge
         - magma_block
+        - nether_bricks
+        - cracked_nether_bricks
+        - nether_brick_stairs
+        - nether_brick_slab
+        - nether_brick_wall
+        - nether_brick_fence
+        - chiseled_nether_bricks
         - dead_tube_coral_block
         - dead_tube_coral_fan
         - dead_brain_coral_block
