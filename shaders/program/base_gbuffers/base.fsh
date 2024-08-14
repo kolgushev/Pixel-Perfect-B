@@ -480,7 +480,7 @@ void main() {
             #endif
         #endif
 
-        #if (defined MC_TEXTURE_FORMAT_LAB_PBR_1_3 || defined AUTO_MAT) && defined g_terrain
+        #if !defined MC_TEXTURE_FORMAT_LAB_PBR_1_3 && defined AUTO_MAT && defined g_terrain
             if(isBlockAutomatLowAlbedo(mcEntity)) {
                 albedo.rgb *= 0.1;
             }
