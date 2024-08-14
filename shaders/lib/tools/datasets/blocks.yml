@@ -184,6 +184,7 @@ categories:
         - sunflower
         - pitcher_plant
         - torchflower
+        - torchflower_crop
         - 'fire:east=false:north=false:south=false:west=false'
         - soul_fire
         - 'twilightforest:mayapple'
@@ -426,6 +427,7 @@ categories:
         - 'twilightforest:mining_leaves'
         - 'twilightforest:sorting_leaves'
         - 'twilightforest:rainbow_oak_leaves'
+        - torchflower_crop
     waves_from_bottom:
         - pink_petals
         # very top of grown bamboo
@@ -750,6 +752,7 @@ categories:
         - 'twilightforest:sorting_leaves'
         - 'twilightforest:rainbow_oak_leaves'
         - torchflower
+        - torchflower_crop
         - pink_petals
         - cobweb
     automat_somewhat_porous:
