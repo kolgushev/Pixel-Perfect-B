@@ -407,7 +407,7 @@ void main() {
             #endif
 
             #if defined USE_PBR
-                vec4 averageColor = textureLod(colortex0, texcoordMod, 100);
+                vec4 averageColor = textureLod(colortex0, texcoordMod, 15);
                 float averageLuminance = dot(averageColor.rgb, LUMINANCE_COEFFS_RGB);
                 float pixelLuminance = dot(albedo.rgb, LUMINANCE_COEFFS_AP1);
                 
