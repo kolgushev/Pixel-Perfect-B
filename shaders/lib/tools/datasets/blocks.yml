@@ -96,6 +96,9 @@ categories:
     lava:
         - lava
         - flowing_lava
+    fire:
+        - fire
+        - soul_fire
     redstone:
         - redstone_block
         - redstone_wire

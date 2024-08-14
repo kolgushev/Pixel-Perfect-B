@@ -484,6 +484,10 @@ void main() {
             if(isBlockAutomatLowAlbedo(mcEntity)) {
                 albedo.rgb *= 0.1;
             }
+
+            if(isBlockFire(mcEntity)) {
+                emissiveness *= 2.0;
+            }
         #endif
 
         #if NORMAL_MAP_STRENGTH != 0
