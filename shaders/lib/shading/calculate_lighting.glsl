@@ -193,6 +193,8 @@ mat2x3 getLightColor(in vec3 lightAndAO, in float AOMap, in vec3 albedo, in vec3
             indirectLighting *= albedo;
             directSolarLighting *= adjustedAo * albedo;
         #endif
+    } else {
+        emissiveness += albedo * UNLIT_MIN_EMISSION;
     }
 
     indirectLighting += emissiveness * DEFAULT_EMISSIVE_STRENGTH;
