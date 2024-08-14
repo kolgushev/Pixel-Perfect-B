@@ -200,7 +200,7 @@ void main() {
 				#define FAR far
 			#endif
 
-			colored += colored * diffuseBlur * FAST_GI_STRENGTH * (1 - fogifyDistanceOnly(position, FAR, blindnessSmooth, 1 / FAR));
+			colored += colored * diffuseBlur * FAST_GI_STRENGTH * (1 - fogifyDistanceOnly(position, FAR, blindnessSmooth, 1 / FAR, 0.875));
 			// colored = diffuseBlur;
 		}
 	#endif
