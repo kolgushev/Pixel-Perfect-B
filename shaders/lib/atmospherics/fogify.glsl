@@ -1,6 +1,5 @@
 float fogifyDistanceOnly(in vec3 position, in float far, in float blindness, in float farRcp, in float hardness) {
     // Render fog in a cylinder shape
-    float fogFlat = length(position.y);
     float fogTube;
     if(blindness == 0.0) {
         fogTube = length(position.xz);
@@ -10,7 +9,11 @@ float fogifyDistanceOnly(in vec3 position, in float far, in float blindness, in 
                 fogTube *= 8.1;
             #endif
         #endif
-        fogFlat = smoothstep(hardness, 1.0, fogFlat * farRcp);
+        #if !defined g_beaconbeam
+            float fogFlat = smoothstep(hardness, 1.0, length(position.y) * farRcp);
+        #else
+            float fogFlat = 0.0;
+        #endif
         fogTube = smoothstep(hardness, 1.0, fogTube * farRcp);
         fogTube = clamp(fogTube + fogFlat, 0.0, 1.0);
     } else {
@@ -20,7 +23,6 @@ float fogifyDistanceOnly(in vec3 position, in float far, in float blindness, in 
         fogTube = smoothstep(0.0, 1.0, fogTube);
     }
     
-
     return fogTube;
 }
 
