@@ -2,7 +2,7 @@
 float shadowSample(in vec3 position) {
     vec3 shadowPosition = position;
 
-    bool isOOB = length(shadowPosition.xy) > shadowDistance;
+    bool isOOB = length(shadowPosition.xy) > 1.0;
     shadowPosition.xy = isOOB ? distortShadowDH(shadowPosition.xy) : distortShadow(shadowPosition.xy);
 
     if(isOOB && (shadowPosition.x > (0.5 - 0.5 * ISQRT_2) || shadowPosition.y > (0.5 - 0.5 * ISQRT_2))) {

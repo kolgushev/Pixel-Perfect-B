@@ -563,7 +563,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #ifdef SHADOWS_ENABLED_USER
 #endif
 
-// #define DH_SHADOWS_ENABLED
+#define DH_SHADOWS_ENABLED
 #ifdef DH_SHADOWS_ENABLED
 #endif
 
@@ -578,9 +578,9 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #define SHADOW_CUTOFF 0.76
 
 #define SHADOW_DISTANCE 150.0 // [100.0 125.0 150.0 175.0 200.0 225.0 250.0 275.0 300.0]
-#define DH_SHADOW_DISTANCE 1024.0
+#define DH_SHADOW_DISTANCE 2048.0
 
-const int shadowMapResolution = 4096; // [512 1024 2048 4096 8192]
+const int shadowMapResolution = 16384; // [512 1024 2048 4096 8192]
 const float shadowDistance = SHADOW_DISTANCE;
 const float entityShadowDistanceMul = 0.3; // [0.1 0.2 0.3 0.4]
 
