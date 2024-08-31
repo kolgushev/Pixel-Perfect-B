@@ -118,12 +118,10 @@ void main() {
             case DH_BLOCK_LEAVES:
                 // High roughness due to varied normals approximating rough microfacet model at distance
                 // (and also automat doesn't count leaves as smooth)
-                roughness = 0.9;
                 subsurface = 0.5;
                 reflectance = vec3(0.04);
                 break;
             case DH_BLOCK_STONE:
-                roughness = 0.9;
                 reflectance = vec3(0.02);
                 break;
             case DH_BLOCK_WOOD:
@@ -135,15 +133,12 @@ void main() {
                 reflectance = albedo.rgb;
                 break;
             case DH_BLOCK_DIRT:
-                roughness = 0.85;
                 reflectance = vec3(0.02);
                 break;
             case DH_BLOCK_LAVA:
-                roughness = 0.9;
                 reflectance = vec3(0.1);
                 break;
             case DH_BLOCK_DEEPSLATE:
-                roughness = 0.9;
                 reflectance = vec3(0.02);
                 break;
             case DH_BLOCK_SNOW:
@@ -161,7 +156,6 @@ void main() {
                 reflectance = vec3(0.05);
                 break;
             case DH_BLOCK_NETHER_STONE:
-                roughness = 0.9;
                 reflectance = vec3(0.02);
                 break;
             case DH_BLOCK_WATER:
@@ -170,7 +164,6 @@ void main() {
                 reflectance = vec3(0.02);
                 break;
             case DH_BLOCK_ILLUMINATED:
-                roughness = 0.9;
                 reflectance = vec3(0.02);
                 break;
         }
