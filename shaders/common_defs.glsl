@@ -563,7 +563,7 @@ NOTE: Any color values that aren't multiplied by a color trasform (eg. RGB_to_AP
 #ifdef SHADOWS_ENABLED_USER
 #endif
 
-#define DH_SHADOWS_ENABLED
+// #define DH_SHADOWS_ENABLED
 #ifdef DH_SHADOWS_ENABLED
 #endif
 
