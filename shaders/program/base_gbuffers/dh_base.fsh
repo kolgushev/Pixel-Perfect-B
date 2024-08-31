@@ -108,7 +108,7 @@ void main() {
 
     // -2 dielectric, -1 generic metal, 0-n hardcoded metal
     int metalId = mcEntity == DH_BLOCK_METAL ? -1 : -2;
-    float roughness = 0.8;
+    float roughness = 0.9;
     float subsurface = 0.0;
     vec3 reflectance = vec3(0.02);
     vec3 emissiveness = vec3(0.0);
