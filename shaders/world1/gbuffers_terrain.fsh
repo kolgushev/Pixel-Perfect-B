@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/gbuffers/terrain.fsh"
+#include "/program/gbuffers/terrain_fragment.glsl"

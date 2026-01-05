@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/gbuffers/clouds.vsh"
+#include "/program/gbuffers/clouds_vertex.glsl"

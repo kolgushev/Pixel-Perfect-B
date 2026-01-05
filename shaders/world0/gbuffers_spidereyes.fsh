@@ -1,4 +1,4 @@
 #version 330
 #define DIM_OVERWORLD
 
-#include "/program/gbuffers/spidereyes.fsh"
+#include "/program/gbuffers/spidereyes_fragment.glsl"

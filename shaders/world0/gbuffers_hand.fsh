@@ -1,4 +1,4 @@
 #version 330
 #define DIM_OVERWORLD
 
-#include "/program/gbuffers/hand.fsh"
+#include "/program/gbuffers/hand_fragment.glsl"

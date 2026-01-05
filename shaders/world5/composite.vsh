@@ -1,4 +1,4 @@
 #version 330
 #define DIM_TWILIGHT
 
-#include "/program/post/0.vsh"
+#include "/program/post/0_vertex.glsl"

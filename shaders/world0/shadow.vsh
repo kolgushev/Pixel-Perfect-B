@@ -1,4 +1,4 @@
 #version 330
 #define DIM_OVERWORLD
 
-#include "/program/shadows/shadow.vsh"
+#include "/program/shadows/shadow_vertex.glsl"

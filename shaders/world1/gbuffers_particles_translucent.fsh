@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/gbuffers/particles_translucent.fsh"
+#include "/program/gbuffers/particles_translucent_fragment.glsl"

@@ -1,4 +1,4 @@
 #version 330
 #define DIM_OVERWORLD
 
-#include "/program/gbuffers/terrain.vsh"
+#include "/program/gbuffers/terrain_vertex.glsl"

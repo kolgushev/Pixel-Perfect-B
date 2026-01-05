@@ -1,4 +1,4 @@
 #version 330
 #define DIM_TWILIGHT
 
-#include "/program/gbuffers/textured_lit.fsh"
+#include "/program/gbuffers/textured_lit_fragment.glsl"

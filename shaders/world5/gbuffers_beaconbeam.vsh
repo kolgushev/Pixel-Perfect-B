@@ -1,4 +1,4 @@
 #version 330
 #define DIM_TWILIGHT
 
-#include "/program/gbuffers/beaconbeam.vsh"
+#include "/program/gbuffers/beaconbeam_vertex.glsl"

@@ -1,4 +1,4 @@
 #version 330
 #define DIM_TWILIGHT
 
-#include "/program/gbuffers/entities_glowing.vsh"
+#include "/program/gbuffers/entities_glowing_vertex.glsl"

@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/gbuffers/beaconbeam.vsh"
+#include "/program/gbuffers/beaconbeam_vertex.glsl"

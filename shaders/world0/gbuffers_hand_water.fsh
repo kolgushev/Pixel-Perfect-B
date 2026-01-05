@@ -1,4 +1,4 @@
 #version 330
 #define DIM_OVERWORLD
 
-#include "/program/gbuffers/hand_water.fsh"
+#include "/program/gbuffers/hand_water_fragment.glsl"

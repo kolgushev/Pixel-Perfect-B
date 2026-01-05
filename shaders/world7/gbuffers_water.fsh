@@ -1,4 +1,4 @@
 #version 330
 #define DIM_TWILIGHT
 
-#include "/program/gbuffers/water.fsh"
+#include "/program/gbuffers/water_fragment.glsl"

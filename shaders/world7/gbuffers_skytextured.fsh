@@ -1,4 +1,4 @@
 #version 330
 #define DIM_TWILIGHT
 
-#include "/program/gbuffers/skytextured.fsh"
+#include "/program/gbuffers/skytextured_fragment.glsl"

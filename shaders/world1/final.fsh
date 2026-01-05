@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/post/final.fsh"
+#include "/program/post/final_fragment.glsl"

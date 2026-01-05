@@ -1,4 +1,4 @@
 #version 330
 #define DIM_NETHER
 
-#include "/program/gbuffers/block.fsh"
+#include "/program/gbuffers/block_fragment.glsl"

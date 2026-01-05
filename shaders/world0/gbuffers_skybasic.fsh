@@ -1,4 +1,4 @@
 #version 330
 #define DIM_OVERWORLD
 
-#include "/program/gbuffers/skybasic.fsh"
+#include "/program/gbuffers/skybasic_fragment.glsl"

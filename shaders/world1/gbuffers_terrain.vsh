@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/gbuffers/terrain.vsh"
+#include "/program/gbuffers/terrain_vertex.glsl"

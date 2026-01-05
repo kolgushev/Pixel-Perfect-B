@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/gbuffers/armor_glint.fsh"
+#include "/program/gbuffers/armor_glint_fragment.glsl"

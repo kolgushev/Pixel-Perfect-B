@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/gbuffers/entities.fsh"
+#include "/program/gbuffers/entities_fragment.glsl"

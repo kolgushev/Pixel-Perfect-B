@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/gbuffers/skytextured.vsh"
+#include "/program/gbuffers/skytextured_vertex.glsl"

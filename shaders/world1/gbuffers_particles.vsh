@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/gbuffers/particles.vsh"
+#include "/program/gbuffers/particles_vertex.glsl"

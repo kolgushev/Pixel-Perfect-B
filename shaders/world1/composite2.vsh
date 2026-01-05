@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/post/2.vsh"
+#include "/program/post/2_vertex.glsl"

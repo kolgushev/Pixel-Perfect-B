@@ -1,4 +1,4 @@
 #version 330
 #define DIM_NETHER
 
-#include "/program/gbuffers/weather.fsh"
+#include "/program/gbuffers/weather_fragment.glsl"

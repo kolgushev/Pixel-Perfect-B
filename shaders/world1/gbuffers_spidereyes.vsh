@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/gbuffers/spidereyes.vsh"
+#include "/program/gbuffers/spidereyes_vertex.glsl"

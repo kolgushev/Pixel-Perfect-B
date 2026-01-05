@@ -1,4 +1,4 @@
 #version 330
 #define DIM_END
 
-#include "/program/gbuffers/block.vsh"
+#include "/program/gbuffers/block_vertex.glsl"

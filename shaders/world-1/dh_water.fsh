@@ -1,4 +1,4 @@
 #version 140
 #define DIM_NETHER
 
-#include "/program/gbuffers/dh_water.fsh"
+#include "/program/gbuffers/dh_water_fragment.glsl"

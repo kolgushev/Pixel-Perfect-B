@@ -1,4 +1,4 @@
 #version 330
 #define DIM_OVERWORLD
 
-#include "/program/gbuffers/beaconbeam.fsh"
+#include "/program/gbuffers/beaconbeam_fragment.glsl"

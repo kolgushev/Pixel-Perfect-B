@@ -1,4 +1,4 @@
 #version 330
 #define DIM_TWILIGHT
 
-#include "/program/gbuffers/terrain.vsh"
+#include "/program/gbuffers/terrain_vertex.glsl"

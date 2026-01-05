@@ -1,4 +1,4 @@
 #version 330
 #define DIM_TWILIGHT
 
-#include "/program/post/2.fsh"
+#include "/program/post/2_fragment.glsl"

@@ -1,4 +1,4 @@
 #version 330
 #define DIM_NETHER
 
-#include "/program/gbuffers/block_translucent.fsh"
+#include "/program/gbuffers/block_translucent_fragment.glsl"
